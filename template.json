@@ -1,0 +1,86 @@
+{
+"Actor": {
+  "types": ["character"],
+    "templates": {
+      "characteristics": {
+        "characteristics": {
+          "End": {
+            "species": 0,
+            "initial": 8,
+            "modifier": 0,
+            "advances": 0
+          },
+          "Str": {
+            "species": 0,
+            "initial": 8,
+            "modifier": 0,
+            "advances": 0
+          },
+          "Spd": {
+            "species": 0,
+            "initial": 8,
+            "modifier": 0,
+            "advances": 0
+          },
+          "Com": {
+            "species": 0,
+            "initial": 8,
+            "modifier": 0,
+            "advances": 0
+          },
+          "Emp": {
+            "species": 0,
+            "initial": 8,
+            "modifier": 0,
+            "advances": 0
+          },
+          "Foc": {
+            "species": 0,
+            "initial": 8,
+            "modifier": 0,
+            "advances": 0
+          },
+          "Res": {
+            "species": 0,
+            "initial": 8,
+            "modifier": 0,
+            "advances": 0
+          },
+          "Int": {
+            "species": 0,
+            "initial": 8,
+            "modifier": 0,
+            "advances": 0
+          }
+        }
+      }
+    },
+  "htmlFields": ["biography"],
+  "character": {
+    "biography": "",
+    "health": {
+      "value": 10,
+      "min": 0,
+      "max": 10
+    },
+    "heartRate": {
+      "value": 50,
+      "min": 0,
+      "max": 200
+    },
+    "attributes": {},
+    "groups": {}
+  }
+},
+"Item": {
+  "types": ["item"],
+  "htmlFields": ["description"],
+  "item": {
+    "description": "",
+    "quantity": 1,
+    "weight": 0,
+    "attributes": {},
+    "groups": {}
+  }
+}
+}
