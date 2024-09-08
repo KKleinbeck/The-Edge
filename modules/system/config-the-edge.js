@@ -10,3 +10,5 @@ THE_EDGE.characteristics = {
     "Res": "CHAR.RES",
     "Int": "CHAR.INT"
 };
+
+export default THE_EDGE

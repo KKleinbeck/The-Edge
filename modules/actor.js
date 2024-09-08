@@ -1,10 +1,21 @@
 import { EntitySheetHelper } from "./helper.js";
+import THE_EDGE from "./system/config-the-edge.js";
 
 /**
  * Extend the base Actor document to support attributes and groups with a custom template creation dialog.
  * @extends {Actor}
  */
 export class SimpleActor extends Actor {
+
+  static async create(data, options) {
+    console.log(data.system)
+    for (const key of Object.keys(THE_EDGE.characteristics)) {
+      mergeObject(data,
+        {system: { characteristics: {[key]: {initial: 8, advances: 0, modifiers: 0}}}}
+      )
+    }
+    return await super.create(data, options);
+  }
 
   /** @inheritdoc */
   prepareDerivedData() {
@@ -14,7 +25,7 @@ export class SimpleActor extends Actor {
     EntitySheetHelper.clampResourceValues(this.system.attributes);
 
     for (let ch of Object.values(this.system.characteristics)) {
-      ch.value = ch.initial + ch.advances + (ch.modifier || 0) + ch.gearmodifier;
+      ch.value = ch.initial + ch.advances + (ch.modifier || 0) + (ch.gearmodifier || 0);
     }
   }
 
@@ -267,11 +278,22 @@ export class SimpleActor extends Actor {
 
   // Generates dict for the charactersheet to parse
   prepareSheet() {
-    return {
+    let preparedData = { system: { characteristics: {} } };
+    for (const key of Object.keys(THE_EDGE.characteristics)) {
+      preparedData.system.characteristics[key] = {
+        cost: 0, // Todo: calculate
+        refunt: 0
+      }
+    }
+
+    mergeObject(preparedData, {
       bodyAttrs: ["End","Str","Spd"], // Endurance, Strength, Speed
       socialAttrs: ["Com","Emp"], // Communication, Empathy
       mentalAttrs: ["Foc","Res","Int"], // Focus, Resilience, Intelligence
+      attrs: ["End","Str","Spd","Com","Emp","Foc","Res","Int"],
       canAdvance: true,
-    };
+    });
+
+    return preparedData
   }
 }

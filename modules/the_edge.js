@@ -5,7 +5,7 @@
 
 // Import Modules
 import initHooks from "./hooks/init.js";
-// import THE_EDGE from "./system/config-the-edge.js"
+import THE_EDGE from "./system/config-the-edge.js"
 import { SimpleActor } from "./actor.js";
 import { SimpleItem } from "./item.js";
 import { SimpleItemSheet } from "./item-sheet.js";
@@ -36,7 +36,7 @@ Hooks.once("init", async function() {
   game.the_edge = {
     SimpleActor,
     createWorldbuildingMacro,
-    // config: THE_EDGE
+    config: THE_EDGE
   };
 
   // Define custom Document classes
