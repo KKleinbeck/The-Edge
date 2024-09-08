@@ -1,5 +1,7 @@
 :root {
-  --minColumnWidth: 396px;
+  --minColumnWidth: 330px;
+  --minColumnWidth40: 264px;
+  --minColumnWidth60: 396px;
 }
 
 .the_edge {
@@ -298,22 +300,10 @@
   }
 }
 
-.minimumColumnLayout .characteristics-table{
-  min-width: unset
-}
-
 .characteristics-table {
-  flex: 6;
-  display: block;   
+  display: block;
+  width: 100%;
   min-width: var(--minColumnWidth60);
-
-  .table-data, .table-header {
-    flex: 1;
-  }
-
-  .table-data:first-child, .table-header:first-child {
-    flex: 2;
-  }
 }
   
 .characteristics-table .table-row {
@@ -322,6 +312,14 @@
   border-bottom: none;
   border-right: none;
   display: flex;
+}
+
+.table-row .table-data, .table-header {
+  flex: 1;
+}
+
+.table-row .table-data:first-child, .table-header:first-child {
+  flex: 1.5;
 }
 
 .header-label {
