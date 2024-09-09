@@ -1,11 +1,10 @@
-import LocalisationHelper from "../../lang/localisation_helper.js";
+import LocalisationServer from "../../lang/localisation_server.js";
 
 export default function() {
     Handlebars.registerHelper({
-        attrName: (a) => LocalisationHelper.attributeLocalization(a),
+        genName: (a) => LocalisationServer.genericLocalisation(a),
+        attrName: (a) => LocalisationServer.attributeLocalisation(a),
         getAttr: (a, b, c) => { return a.system.characteristics[b][c]; },
-        attrAbbr: (a) => LocalisationHelper.attributeAbbrLocalization(a),
-        getZone: (a, b) => {return 1; a.heartRate;return a.system.heartRate.max * 100 / (45 + 15*b);}
-        // getZone: (a, b) => {return a.system.heartRate.max * 100 / (45 + 15*b);}
+        attrAbbr: (a) => LocalisationServer.attributeAbbrLocalisation(a),
     })
 }

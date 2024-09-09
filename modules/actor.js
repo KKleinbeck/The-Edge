@@ -1,5 +1,4 @@
 import { EntitySheetHelper } from "./helper.js";
-import THE_EDGE from "./system/config-the-edge.js";
 
 /**
  * Extend the base Actor document to support attributes and groups with a custom template creation dialog.
@@ -312,7 +311,8 @@ export class SimpleActor extends Actor {
           value: Math.min(8 + Math.floor(ch["Spd"].value / 1.5),            ch["Foc"].value * 2),
           tooltip: "Min(9+ Spd/1.5, 2 Foc)".replace(/[ ]/g, "\u00a0")
          }
-      }
+      },
+      herotoken: [true, false]
     });
 
     return preparedData

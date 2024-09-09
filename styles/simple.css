@@ -19,7 +19,8 @@
   height: 100%;
 }
 .the_edge .sheet-header {
-  flex: 0 0 100px;
+  min-width: 950;
+  flex: 0 0 150px;
   overflow: hidden;
   display: flex;
   flex-direction: row;
@@ -28,16 +29,33 @@
   margin-bottom: 10px;
 }
 .the_edge .sheet-header .profile-img {
-  flex: 0 0 100px;
-  height: 100px;
+  flex: 0 0 150px;
+  height: 150px;
   margin-right: 10px;
+}
+.the_edge .sheet-header .token-img {
+  border: none;
+  margin-left: 5px;
+  margin-right: 5px;
+  padding: 0;
+  width: 33px;
+  height: 51px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: inline-block;
+}
+.hero-token {
+  background-image: url('../icons/hero_token.png');
+}
+.hero-token-spent {
+  background-image: url('../icons/hero_token_spent.png');
 }
 .the_edge .sheet-header .header-fields {
   flex: 1;
-  height: 100px;
+  height: 150px;
 }
 .the_edge .sheet-header h1.charname {
-  height: 50px;
+  height: 40px;
   padding: 0px;
   margin: 5px 0;
   border-bottom: 0;
@@ -47,8 +65,17 @@
   height: 100%;
   margin: 0;
 }
+.sheet-header .attribute-title {
+  text-align: center;
+  font-size: 14px; /* Adjust font size as needed */
+  margin-top: 5px;
+  margin-left: 10px; /* Adds a small indent */
+  margin-right: 10px; /* Adds a small indent */
+  margin-bottom: 0; /* Space between title and the horizontal line */
+  font-weight: bold; /* Optional: Make the title bold */
+}
 .the_edge .resource {
-  width: 50%;
+  width: 40%;
   height: 40px;
   margin-top: 10px;
   float: left;
@@ -62,6 +89,17 @@
   padding: 2px 8px; /* Padding inside the box */
   font-size: 14px; /* Adjust font size as needed */
   width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+.the_edge .output-fixed {
+  display: inline-block;
+  background-color: #e0e0e0; /* Grey background */
+  border: 1px solid #000; /* Black border */
+  border-radius: 5px; /* Rounded corners */
+  padding: 2px 8px; /* Padding inside the box */
+  font-size: 14px; /* Adjust font size as needed */
+  width: 54px;
   box-sizing: border-box;
   text-align: center;
 }
@@ -372,6 +410,13 @@
 
 .columned-page .page {
   flex: 0 1 auto; /* Allows the column to take as much width as needed based on content */
+}
+
+.columned-page .page-centered {
+  flex-wrap: wrap;
+  margin-left: auto; /* Moves the page to the right edge*/
+  margin-right: auto; /* Moves the page to the right edge*/
+  flex: 0 1 auto;
 }
 
 .columned-page .page-right-aligned {

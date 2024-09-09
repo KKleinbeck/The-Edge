@@ -1,6 +1,6 @@
-import { EntitySheetHelper } from "./helper.js";
+import {EntitySheetHelper} from "./helper.js";
 import {ATTRIBUTE_TYPES} from "./constants.js";
-import ChatServer from "./system/chat_server.js";
+import ChatServer from "system/chat_server.js";
 
 export class SimpleActorSheet extends ActorSheet {
 
@@ -56,7 +56,8 @@ export class SimpleActorSheet extends ActorSheet {
     });
 
     // Hero Tokens
-    html.find(".hero-token").mousedown(ev => ChatServer.transmit("herotoken", "TEST"));
+    html.find(".hero-token").mousedown(ev => console.log( "TEST"));
+    // html.find(".hero-token").mousedown(ev => ChatServer.transmit("herotoken", "TEST"));
   }
 
   _onItemControl(event) {

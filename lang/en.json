@@ -19,6 +19,10 @@
     "RES": "RES",
     "INT": "INT"
   },
+  "HEALTH": "Health",
+  "HEARTRATE": "Heart rate",
+  "HEROTOKEN": "Hero token",
+
   "SETTINGS.SimpleMacroShorthandN": "Shortened Macro Syntax",
   "SETTINGS.SimpleMacroShorthandL": "Enable a shortened macro syntax which allows referencing attributes directly, for example @str instead of @attributes.str.value. Disable this setting if you need the ability to reference the full attribute model, for example @attributes.str.label.",
   "SETTINGS.SimpleInitFormulaN": "Initiative Formula",
@@ -55,5 +59,7 @@
   "SIMPLE.DeleteGroupContent": "Do you wish to delete this group? This will delete the following group and all attributes included in it: ",
 
   "SIMPLE.Create": "Create",
-  "SIMPLE.New": "New"
+  "SIMPLE.New": "New",
+
+  "CHAT.HEROTOKEN": "_USER_ requested to use a hero token."
 }

@@ -2,20 +2,34 @@
 
     {{!-- Sheet Header --}}
     <header class="sheet-header">
-        <img class="profile-img" src="{{data.img}}" data-edit="img" title="{{data.name}}" height="100" width="100" />
+        <img class="profile-img" src="{{data.img}}" data-edit="img" title="{{data.name}}"/>
         <div class="header-fields">
             <h1 class="charname">
                 <input name="name" type="text" value="{{data.name}}" placeholder="Name" />
             </h1>
-            <div class="resource nobr">
-                <input type="number" name="system.health.value" value="{{systemData.health.value}}"/>
-                <span> / </span>
-                <input type="number" name="system.health.max" value="{{systemData.health.max}}"/>
-            </div>
-            <div class="resource">
-                <input type="number" name="system.heartRate.value" value="{{systemData.heartRate.value}}"/>
-                <span> / </span>
-                <input type="number" name="system.heartRate.max" value="{{systemData.heartRate.max}}"/>
+            <div class="columned-page">
+                <div class="page-centered">
+                    <p class="attribute-title">{{genName "HEALTH"}}</p>
+                    <span class="output-fixed">{{systemData.health.value}}</span>
+                    <span> / </span>
+                    <span class="output-fixed">{{systemData.health.max}}</span>
+                </div>
+                <div class="page-centered">
+                    <p class="attribute-title">{{genName "HEARTRATE"}}</p>
+                    <span class="output-fixed">{{systemData.heartRate.value}}</span>
+                    <span> / </span>
+                    <span class="output-fixed">{{systemData.heartRate.max}}</span>
+                </div>
+                <div class="page-centered">
+                    <p class="attribute-title">{{genName "herotoken"}}</p>
+                    {{#each prepare.herotoken as |token|}}
+                        {{#if token}}
+                        <a class="token-img hero-token"></a>
+                        {{else}}
+                        <a class="token-img hero-token-spent"></a>
+                        {{/if}}
+                    {{/each}}
+                </div>
             </div>
         </div>
     </header>
