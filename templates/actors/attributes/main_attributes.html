@@ -4,44 +4,42 @@
             <div class="table-header"></div> <!-- Empty first cell-->
             {{#each prepare.attrs as |ch|}}
             <div data-tooltip="{{attrName ch}}" class="table-header">
-                <div class="header-label">
-                    {{#if ../prepare.canAdvance}}<a data-attr="{{ch}}" class="advance refund-attribute"><i data-tooltip="{{getAttr ../prepare ch 'refund'}}" class="fas fa-minus"></i></a> <b>{{attrAbbr ch}}</b> <a data-attr="{{ch}}" class="advance advance-attribute"><i data-tooltip="{{getAttr ../prepare ch 'cost'}}" class="fas fa-plus"></i></a>
-                    {{else}}
-                    <b>{{attrAbbr ch}}</b>
-                    {{/if}}
-                </div>
+                {{#if ../prepare.canAdvance}}<a data-attr="{{ch}}" class="advance refund-attribute"><i data-tooltip="{{getAttr ../prepare ch 'refund'}}" class="fas fa-minus"></i></a> <b>{{attrAbbr ch}}</b> <a data-attr="{{ch}}" class="advance advance-attribute"><i data-tooltip="{{getAttr ../prepare ch 'cost'}}" class="fas fa-plus"></i></a>
+                {{else}}
+                <b>{{attrAbbr ch}}</b>
+                {{/if}}
             </div>
             {{/each}}
         </div>
         <div class="table-row">
             <div class="row-type table-data">
-                <div class="header-block lineheight">
+                <div class="column-name lineheight">
                     {{localize "Initial"}}
                 </div>
             </div>
             {{#each prepare.attrs as |ch|}}
             <div class="table-data">
-                <input name="system.characteristics.{{ch}}.initial" type="number" value="{{getAttr ../actor ch 'initial'}}" data-dtype="Number">
+                <span class="output">{{getAttr ../actor ch 'initial'}}</span>
             </div>
             {{/each}}
         </div>
         {{#if prepare.canAdvance}}
         <div class="table-row">
             <div class="row-type table-data">
-                <div class="header-block lineheight">
+                <div class="column-name lineheight">
                     {{localize "Advances"}}
                 </div>
             </div>
             {{#each prepare.attrs as |ch|}}
             <div class="table-data">
-                <input name="system.characteristics.{{ch}}.advances" type="number" value="{{getAttr ../actor ch 'advances'}}" data-dtype="Number">
+                <span class="output">{{getAttr ../actor ch 'advances'}}</span>
             </div>
             {{/each}}
         </div>
         {{/if}}
         <div class="actor-main-attr-modifier table-row">
             <div class="row-type table-data">
-                <div class="header-block lineheight">
+                <div class="column-name lineheight">
                     {{localize "Modifiers"}}
                 </div>
             </div>

@@ -1,0 +1,16 @@
+<div class="section right-aligned-text">
+  <p class="section-title">Conditioning</p>
+  <hr />
+  <div class="columned-page">
+    <div class="page-right-aligned">
+      {{#each prepare.zones as |dict i|}}
+      <p data-tooltip={{dict.tooltip}}>Zone {{i}}<span class="output">{{dict.value}}</span></p>
+      {{/each}}
+    </div>
+    <div class="page-right-aligned">
+      {{#each prepare.speeds as |dict name|}}
+      <p data-tooltip={{dict.tooltip}}>{{name}} speed<span class="output">{{dict.value}}</span></p>
+      {{/each}}
+    </div>
+  </div>
+</div>

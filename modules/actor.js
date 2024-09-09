@@ -8,12 +8,6 @@ import THE_EDGE from "./system/config-the-edge.js";
 export class SimpleActor extends Actor {
 
   static async create(data, options) {
-    console.log(data.system)
-    for (const key of Object.keys(THE_EDGE.characteristics)) {
-      mergeObject(data,
-        {system: { characteristics: {[key]: {initial: 8, advances: 0, modifiers: 0}}}}
-      )
-    }
     return await super.create(data, options);
   }
 
@@ -279,19 +273,46 @@ export class SimpleActor extends Actor {
   // Generates dict for the charactersheet to parse
   prepareSheet() {
     let preparedData = { system: { characteristics: {} } };
-    for (const key of Object.keys(THE_EDGE.characteristics)) {
+    for (const key of Object.keys(this.system.characteristics)) {
       preparedData.system.characteristics[key] = {
         cost: 0, // Todo: calculate
-        refunt: 0
+        refund: 0
       }
     }
 
+    console.log(this.system);
+    let ch = this.system.characteristics
     mergeObject(preparedData, {
-      bodyAttrs: ["End","Str","Spd"], // Endurance, Strength, Speed
-      socialAttrs: ["Com","Emp"], // Communication, Empathy
-      mentalAttrs: ["Foc","Res","Int"], // Focus, Resilience, Intelligence
       attrs: ["End","Str","Spd","Com","Emp","Foc","Res","Int"],
       canAdvance: true,
+      zones: {
+        1: {
+          value: this.system.heartRate.max * 60 / 100,
+          tooltip: "60% Max Heart Rate".replace(/[ ]/g, "\u00a0")
+        },
+        2: {
+          value: this.system.heartRate.max * 75 / 100,
+          tooltip: "75% Max Heart Rate".replace(/[ ]/g, "\u00a0")
+        },
+        3: {
+          value: this.system.heartRate.max * 90 / 100,
+          tooltip: "90% Max Heart Rate".replace(/[ ]/g, "\u00a0")
+        }
+      },
+      speeds: {
+        Stride: { 
+          value: Math.min(5 + Math.floor(ch["Spd"].value / 6  ),            ch["Foc"].value),
+          tooltip: "Min(5 + Spd/6, Foc)".replace(/[ ]/g, "\u00a0")
+         },
+        Run: { 
+          value: Math.min(7 + Math.floor(ch["Spd"].value / 3  ), Math.floor(ch["Foc"].value * 1.5)),
+          tooltip: "Min(7+ Spd/3, 1.5 Foc)".replace(/[ ]/g, "\u00a0")
+         },
+        Sprint: { 
+          value: Math.min(8 + Math.floor(ch["Spd"].value / 1.5),            ch["Foc"].value * 2),
+          tooltip: "Min(9+ Spd/1.5, 2 Foc)".replace(/[ ]/g, "\u00a0")
+         }
+      }
     });
 
     return preparedData

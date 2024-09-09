@@ -8,7 +8,7 @@ export class SimpleActorSheet extends ActorSheet {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["the_edge", "sheet", "actor"],
       template: "systems/the_edge/templates/actors/actor-sheet.html",
-      width: 650,
+      width: 700,
       height: 600,
       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "attributes"}],
       scrollY: [".attributes", ".skills", ".items", ".biography"],
