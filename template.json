@@ -69,6 +69,10 @@
       "min": 0,
       "max": 200
     },
+    "heroToken": {
+      "max": 2,
+      "available": 1
+    },
     "languages": {},
     "attributes": {},
     "groups": {}

@@ -6,6 +6,7 @@ export class SimpleActorSheet extends ActorSheet {
 
   /** @inheritdoc */
   static get defaultOptions() {
+    console.log(super.defaultOptions)
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["the_edge", "sheet", "actor"],
       template: "systems/the_edge/templates/actors/actor-sheet.html",
@@ -17,11 +18,19 @@ export class SimpleActorSheet extends ActorSheet {
     });
   }
 
+  async render(force, options) {
+    if (options && 'width' in options) {
+      options.width = options.width < 600 ? 600 : options.width;
+    }
+    super.render(force, options)
+  }
+
   async getData(options) {
     const context = await super.getData(options);
     EntitySheetHelper.getAttributeData(context.data);
     context.shorthand = !!game.settings.get("the_edge", "macroShorthand");
     context.systemData = context.data.system;
+    console.log(context.data)
     context.dtypes = ATTRIBUTE_TYPES;
     context.biographyHTML = await TextEditor.enrichHTML(context.systemData.biography, {
       secrets: this.document.isOwner,
@@ -56,7 +65,31 @@ export class SimpleActorSheet extends ActorSheet {
     });
 
     // Hero Tokens
-    html.find(".hero-token").mousedown(ev => ChatServer.transmit("herotoken", "TEST"));
+    html.find(".hero-token").mousedown(ev => this._useHeroToken(ev));
+    html.find(".hero-token-spent").mousedown(ev => this._regenerateHeroToken(ev));
+
+    // Attributes
+    html.find(".attr-d20").mousedown(ev => this._rollAttr(ev));
+  }
+
+  async _useHeroToken(ev) {
+    let name = super.getData().data.name;
+    // ChatServer.transmit("herotoken", name)
+    this.actor.system.heroToken.available -= 1;
+    this._render();
+  }
+
+  async _regenerateHeroToken(ev){
+    let name = super.getData().data.name;
+    // ChatServer.transmit("herotokenspent", name)
+    this.actor.system.heroToken.available += 1;
+    this._render();
+  }
+
+  async _rollAttr(ev) {
+    const target = ev.currentTarget; // HTMLElement
+    const attr = target.className.split("d20-")[1].slice(0, 3);
+    ChatServer.transmitPlain(attr)
   }
 
   _onItemControl(event) {

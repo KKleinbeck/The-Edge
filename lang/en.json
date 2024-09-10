@@ -61,5 +61,6 @@
   "SIMPLE.Create": "Create",
   "SIMPLE.New": "New",
 
-  "CHAT.HEROTOKEN": "_USER_ requested to use a hero token."
+  "CHAT.HEROTOKEN": "_USER_ requested to use a hero token.",
+  "CHAT.HEROTOKENSPENT": "_USER_ requestes a hero token."
 }

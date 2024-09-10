@@ -280,7 +280,8 @@ export class SimpleActor extends Actor {
     }
 
     console.log(this.system);
-    let ch = this.system.characteristics
+    let sys = this.system;
+    let ch = sys.characteristics;
     mergeObject(preparedData, {
       attrs: ["End","Str","Spd","Com","Emp","Foc","Res","Int"],
       canAdvance: true,
@@ -312,7 +313,7 @@ export class SimpleActor extends Actor {
           tooltip: "Min(9+ Spd/1.5, 2 Foc)".replace(/[ ]/g, "\u00a0")
          }
       },
-      herotoken: [true, false]
+      herotoken: Array(sys.heroToken.max).fill(false).fill(true, 0, sys.heroToken.available)
     });
 
     return preparedData

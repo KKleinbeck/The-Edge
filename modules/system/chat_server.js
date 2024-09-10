@@ -6,6 +6,11 @@ export default class ChatServer {
       ChatMessage.create(this._chatDataSetup(msg, "roll"))
   }
 
+  static transmitPlain(id) {
+      let msg = `<h2>${id}</h2>`;
+      ChatMessage.create(this._chatDataSetup(msg, "roll"))
+  }
+
   static _chatDataSetup(content, modeOverride, forceWhisper, forceWhisperIDs) {
       let chatData = {
           user: game.user.id,

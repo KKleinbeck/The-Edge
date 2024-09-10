@@ -19,8 +19,7 @@
   height: 100%;
 }
 .the_edge .sheet-header {
-  min-width: 950;
-  flex: 0 0 150px;
+  flex: 0 0 185px;
   overflow: hidden;
   display: flex;
   flex-direction: row;
@@ -50,6 +49,51 @@
 .hero-token-spent {
   background-image: url('../icons/hero_token_spent.png');
 }
+.the_edge .attr-d20 {
+  border: none;
+  margin-left: 0px;
+  margin-right: 0px;
+  padding: 0;
+  width: 35px;
+  height: 42px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: inline-block;
+  position: relative;
+}
+.d20-overlay {
+  position: absolute; /* Position the text absolutely inside the parent */
+  top: 40%; /* Center the text vertically */
+  left: 50%; /* Center the text horizontally */
+  transform: translate(-50%, -40%); /* Adjust for perfect centering */
+  z-index: 1; /* Ensure the text is above the background */
+  text-transform: uppercase; /* Makes the text all capital letters */
+  font-weight: bold; /* Optional: Make the title bold */
+}
+.d20-End {
+  background-image: url('../icons/d20r1.png');
+}
+.d20-Str {
+  background-image: url('../icons/d20r2.png');
+}
+.d20-Spd {
+  background-image: url('../icons/d20r3.png');
+}
+.d20-Com {
+  background-image: url('../icons/d20g2.png');
+}
+.d20-Emp {
+  background-image: url('../icons/d20g1.png');
+}
+.d20-Foc {
+  background-image: url('../icons/d20b2.png');
+}
+.d20-Res {
+  background-image: url('../icons/d20b3.png');
+}
+.d20-Int {
+  background-image: url('../icons/d20b1.png');
+}
 .the_edge .sheet-header .header-fields {
   flex: 1;
   height: 150px;
@@ -69,8 +113,8 @@
   text-align: center;
   font-size: 14px; /* Adjust font size as needed */
   margin-top: 5px;
-  margin-left: 10px; /* Adds a small indent */
-  margin-right: 10px; /* Adds a small indent */
+  margin-left: 5px; /* Adds a small indent */
+  margin-right: 5px; /* Adds a small indent */
   margin-bottom: 0; /* Space between title and the horizontal line */
   font-weight: bold; /* Optional: Make the title bold */
 }
@@ -292,8 +336,8 @@
   margin: 0 5px;
 }
 .the_edge.sheet.actor {
-  min-width: 560px;
-  min-height: 420px;
+  min-width: 600px;
+  min-height: 560px;
 }
 .the_edge.sheet.item {
   min-width: 460px;
