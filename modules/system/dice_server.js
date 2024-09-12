@@ -10,11 +10,10 @@ export default class DiceServer {
   // - l[n]: take lowest n dices
   // - KOMMA: return mutliple rolls
   static async attributeCheck(threshold) {
-    const res = (await this._basicRoll("1d20h3"));
+    const res = (await this._basicRoll("1d20a3"));
     if (res === undefined) return undefined;
     const diceRes = res[0];
 
-    console.log(diceRes)
     if (threshold > diceRes) {
       console.log("Success");
     }
@@ -61,6 +60,10 @@ export default class DiceServer {
           return undefined;
         }
       }
+    }
+    else {
+      ChatServer.transmitError("IllicitRole", {"_ROLE_": rollDescription})
+      return undefined;
     }
 
     return [11];
