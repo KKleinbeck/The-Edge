@@ -1,6 +1,7 @@
 import { EntitySheetHelper } from "./helper.js";
 import {ATTRIBUTE_TYPES} from "./constants.js";
 import ChatServer from "./system/chat_server.js";
+import DiceServer from "./system/dice_server.js";
 
 export class SimpleActorSheet extends ActorSheet {
 
@@ -30,7 +31,6 @@ export class SimpleActorSheet extends ActorSheet {
     EntitySheetHelper.getAttributeData(context.data);
     context.shorthand = !!game.settings.get("the_edge", "macroShorthand");
     context.systemData = context.data.system;
-    console.log(context.data)
     context.dtypes = ATTRIBUTE_TYPES;
     context.biographyHTML = await TextEditor.enrichHTML(context.systemData.biography, {
       secrets: this.document.isOwner,
@@ -74,14 +74,14 @@ export class SimpleActorSheet extends ActorSheet {
 
   async _useHeroToken(ev) {
     let name = super.getData().data.name;
-    // ChatServer.transmit("herotoken", name)
+    // ChatServer.transmit("herotoken", {"_USER_": name})
     this.actor.system.heroToken.available -= 1;
     this._render();
   }
 
   async _regenerateHeroToken(ev){
     let name = super.getData().data.name;
-    // ChatServer.transmit("herotokenspent", name)
+    // ChatServer.transmit("herotokenspent", {"_USER_": name})
     this.actor.system.heroToken.available += 1;
     this._render();
   }
@@ -89,7 +89,9 @@ export class SimpleActorSheet extends ActorSheet {
   async _rollAttr(ev) {
     const target = ev.currentTarget; // HTMLElement
     const attr = target.className.split("d20-")[1].slice(0, 3);
-    ChatServer.transmitPlain(attr)
+    const threshold = this.actor.system.characteristics[attr]["value"];
+    console.log(threshold)
+    await DiceServer.attributeCheck(threshold);
   }
 
   _onItemControl(event) {

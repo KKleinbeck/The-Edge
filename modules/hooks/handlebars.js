@@ -1,4 +1,4 @@
-import LocalisationServer from "../../lang/localisation_server.js";
+import LocalisationServer from "../system/localisation_server.js";
 
 export default function() {
     Handlebars.registerHelper({

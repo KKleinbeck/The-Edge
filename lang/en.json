@@ -62,5 +62,8 @@
   "SIMPLE.New": "New",
 
   "CHAT.HEROTOKEN": "_USER_ requested to use a hero token.",
-  "CHAT.HEROTOKENSPENT": "_USER_ requestes a hero token."
+  "CHAT.HEROTOKENSPENT": "_USER_ requestes a hero token.",
+
+  "CHATERROR.DICEADVANTAGE": "Single (Dis-)Advantage roll<PART>(Dis-)Advantage roll has to have at least 2 tries (e.g. \"2a1d20\")<PART>Illicit role: _ROLE_",
+  "CHATERROR.DICESUBSET": "Too large subset<PART>Had to choose _SUBSET_ dice out of _DICE_. Illicit role: _ROLE_"
 }
