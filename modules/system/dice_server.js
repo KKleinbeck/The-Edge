@@ -1,7 +1,7 @@
 import ChatServer from "./chat_server.js";
 
 export default class DiceServer {
-  // [2]a1d20 + 3d3d10h2 + 5d6l3, [1]d20
+  // [2]a1d20 + 3d3d10h2 + 5d6l3, [1]d20+60
   // Meaning:
   // - [n=2]a: advantage (default highest of two rolls)
   // - [n=2]d: disadvantage (default lowest of two rolls)
@@ -10,7 +10,7 @@ export default class DiceServer {
   // - l[n]: take lowest n dices
   // - KOMMA: return mutliple rolls
   static async attributeCheck(threshold) {
-    const res = (await this._basicRoll("1d20a3"));
+    const res = (await this._basicRoll("5d20h3"));
     if (res === undefined) return undefined;
     const diceRes = res[0];
 
@@ -35,6 +35,7 @@ export default class DiceServer {
       let subsetType = match[5];
       let nSubset = match[6] ? match[6] : 1;
 
+      // Parameter Setup
       if (vantageRolls) {
         nVantageRolls = match[1] ? match[1] : 2;
         if (nVantageRolls == 1) {
@@ -45,7 +46,10 @@ export default class DiceServer {
       }
       else {
         nDices = match[1] ? match[1] : 1;
+        nVantageRolls = 1; // fill with dummy value to avoid branching code later
+        vantageRolls = "h";
       }
+
       if (vantageRolls) {
         console.log("(Dis-)Adv rolls:", nVantageRolls);
         console.log("(Dis-)Advantage:", vantageRolls);
@@ -60,16 +64,45 @@ export default class DiceServer {
           return undefined;
         }
       }
-    }
-    else {
-      ChatServer.transmitError("IllicitRole", {"_ROLE_": rollDescription})
-      return undefined;
+
+      // Roll generation
+      let vantageResults = [];
+      for (let i = 1; i <= nVantageRolls; ++i) {
+        let results = []
+        for (let j = 1; j <= nDices; ++j) {
+          results.push(await this._randInt(1, nSides));
+        }
+        switch (subsetType) {
+          case "h":
+            //TODO: needs fixing
+            console.log(results)
+            vantageResults.push(
+              results.sort((a, b) => a-b).slice(-nSubset).reduce((a, b) => a + b, 0)
+            );
+            break;
+          case "h":
+            vantageResults.push(
+              results.sort((a, b) => a-b).slice(nSubset).reduce((a, b) => a + b, 0)
+            );
+            break;
+          default:
+            vantageResults.push(
+              results.reduce((a,b) => a + b, 0)
+            )
+
+        }
+        vantageResults.push(this._randInt(1, nSides));
+        console.log(vantageResults)
+        return vantageResults[0]
+      }
     }
 
-    return [11];
+    // If no match
+    ChatServer.transmitError("IllicitRole", {"_ROLE_": rollDescription})
+    return undefined;
   }
 
   static async _randInt(min, max) {
-    Math.floor((max * Math.random() - min + 1) + min)
+    return Math.floor((max * Math.random() - min + 1) + min);
   }
 }
