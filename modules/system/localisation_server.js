@@ -11,11 +11,7 @@ export default class LocalisationServer {
         return game.i18n.localize(`CHARAbbr.${id.toUpperCase()}`)
     }
 
-    static chatLocalisation(id) {
-        return game.i18n.localize(`CHAT.${id.toUpperCase()}`)
-    }
-
-    static chatErrorLocalisation(id) {
-        return game.i18n.localize(`CHATERROR.${id.toUpperCase()}`)
+    static chatLocalisation(id, type) {
+        return game.i18n.localize(`CHAT${type.toUpperCase()}.${id.toUpperCase()}`)
     }
 }

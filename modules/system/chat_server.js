@@ -1,32 +1,49 @@
 import LocalisationServer from "./localisation_server.js";
 
-export default class ChatServer {
-  static transmit(id, details) {
-    let msg = `<h2>${LocalisationServer.chatLocalisation(id)}</h2>`;
-    for (const [key, value] of Object.entries(details)) {
-      msg = msg.replace(key, value);
-    }
-    ChatMessage.create(this._chatDataSetup(msg, "roll"))
-  }
+// Architecture idea:
+// abstract ChatServer class
+// multiple specialised subclasses (Dicerolls, communication...)
+// enum instead of dicts with names for replacement
+// Subclasses come with an required method
 
+export default class ChatServer {
   static transmitPlain(msg) {
     ChatMessage.create(this._chatDataSetup(`<h2>${msg}</h2>`, "roll"))
   }
-
-  static transmitError(id, details) {
-    const parts = LocalisationServer.chatErrorLocalisation(id).split("<PART>");
-    let msg = `<h2 color="red">${parts[0]}</h2>`;
+  
+  static transmit(id, details, type = "") {
+    const parts = LocalisationServer.chatLocalisation(id, type).split("<PART>");
+    const colour = type.toUpperCase() == "ERROR" ? "red" : "black";
+    let msg = `<h2 style="color:${colour};">${parts[0]}</h2>`;
     if (parts.length > 1) {
         for (let i = 1; i < parts.length; ++i) {
             msg += `<p>${parts[i]}</p>`;
         }
     }
+    msg = this.fillInDetails(msg, details)
+    ChatMessage.create(this._chatDataSetup(msg, "roll"))
+  }
+
+  static async transmitRoll(id, details) {
+    const parts = LocalisationServer.chatLocalisation(id, "dice").split("<PART>");
+    let html = undefined;
+    switch (id.toUpperCase()) {
+      case "ABILITYCHECK":
+        html = await renderTemplate("systems/the_edge/templates/chat/attribute_check.html", details);
+        console.log(html)
+    }
+    // msg = this.fillInDetails(msg, details);
+    console.log(html)
+    ChatMessage.create(this._chatDataSetup(html, "roll"))
+  }
+
+  static fillInDetails(msg, details) {
     if (details) {
       for (const [key, value] of Object.entries(details)) {
         msg = msg.replace(key, value);
       }
     }
-    ChatMessage.create(this._chatDataSetup(msg, "roll"))
+    return msg;
   }
 
   static _chatDataSetup(content, modeOverride, forceWhisper, forceWhisperIDs) {

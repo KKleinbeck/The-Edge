@@ -44,6 +44,7 @@ Hooks.once("init", async function() {
   CONFIG.Item.documentClass = SimpleItem;
   CONFIG.Token.documentClass = SimpleTokenDocument;
   CONFIG.Token.objectClass = SimpleToken;
+  CONFIG.ChatMessage.template = "systems/the_edge/templates/chat/chat_message.html"
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);

@@ -61,7 +61,20 @@
   display: inline-block;
   position: relative;
 }
-.d20-overlay {
+.the_edge .attr-d20-chat {
+  border: none;
+  margin-left: 0px;
+  margin-right: 0px;
+  padding: 0;
+  width: 28px;
+  height: 33px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: inline-block;
+  position: relative;
+}
+.the_edge .d20-overlay {
+  white-space: nowrap;
   position: absolute; /* Position the text absolutely inside the parent */
   top: 40%; /* Center the text vertically */
   left: 50%; /* Center the text horizontally */
@@ -70,28 +83,34 @@
   text-transform: uppercase; /* Makes the text all capital letters */
   font-weight: bold; /* Optional: Make the title bold */
 }
-.d20-End {
+.the_edge .centered-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+.the_edge .d20-End {
   background-image: url('../icons/d20r1.png');
 }
-.d20-Str {
+.the_edge .d20-Str {
   background-image: url('../icons/d20r2.png');
 }
-.d20-Spd {
+.the_edge .d20-Spd {
   background-image: url('../icons/d20r3.png');
 }
-.d20-Com {
+.the_edge .d20-Com {
   background-image: url('../icons/d20g2.png');
 }
-.d20-Emp {
+.the_edge .d20-Emp {
   background-image: url('../icons/d20g1.png');
 }
-.d20-Foc {
+.the_edge .d20-Foc {
   background-image: url('../icons/d20b2.png');
 }
-.d20-Res {
+.the_edge .d20-Res {
   background-image: url('../icons/d20b3.png');
 }
-.d20-Int {
+.the_edge .d20-Int {
   background-image: url('../icons/d20b1.png');
 }
 .the_edge .sheet-header .header-fields {

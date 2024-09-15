@@ -9,20 +9,19 @@ export default class DiceServer {
   // - h[n]: take highest n dices
   // - l[n]: take lowest n dices
   // - KOMMA: return mutliple rolls
-  static async attributeCheck(threshold) {
-    const res = (await this._basicRoll("5d20h3"));
-    if (res === undefined) return undefined;
-    const diceRes = res[0];
+  static async attributeCheck(threshold, ability) {
+    const diceRes = await this._basicRoll("3a5d20h3", true);
+    if (diceRes === undefined) return undefined;
 
-    if (threshold > diceRes) {
-      console.log("Success");
-    }
-    else {
-      console.log("Failed Check")
-    }
+    let outcome = undefined;
+    if (threshold >= diceRes) outcome = "Success";
+    else if (diceRes == 1)  outcome = "CritSucces";
+    else if (diceRes == 20) outcome = "CritFailure";
+    else outcome = "Failed";
+    ChatServer.transmitRoll("AbilityCheck", {ability: ability, roll: diceRes, outcome: outcome, threshold: threshold})
   }
 
-  static async _basicRoll(rollDescription) {
+  static async _basicRoll(rollDescription, isCheck = false) {
     //just an individual role, i.e., '2d3d20h2'
     const regex = /^(\d*)?([ad])?(\d*)?d(\d+)([hl])?(\d*)?$/;
     const match = rollDescription.match(regex);
@@ -39,15 +38,13 @@ export default class DiceServer {
       if (vantageRolls) {
         nVantageRolls = match[1] ? match[1] : 2;
         if (nVantageRolls == 1) {
-          ChatServer.transmitError("DiceAdvantage", {"_ROLE_": rollDescription});
           return undefined;
         }
         nDices = match[3] ? match[3] : 1;
       }
       else {
         nDices = match[1] ? match[1] : 1;
-        nVantageRolls = 1; // fill with dummy value to avoid branching code later
-        vantageRolls = "h";
+        nVantageRolls = 1; // pseudo so that we prevent conditions later
       }
 
       if (vantageRolls) {
@@ -60,7 +57,6 @@ export default class DiceServer {
         console.log("Highest/Lowest: ", subsetType);
         console.log("N accapted dice:", nSubset);
         if (nSubset >= nDices) {
-          ChatServer.transmitError("DiceSubset", {"_SUBSET_": nSubset, "_DICE_": nDices, "_ROLE_": rollDescription});
           return undefined;
         }
       }
@@ -72,33 +68,37 @@ export default class DiceServer {
         for (let j = 1; j <= nDices; ++j) {
           results.push(await this._randInt(1, nSides));
         }
+        console.log(results)
         switch (subsetType) {
           case "h":
-            //TODO: needs fixing
-            console.log(results)
             vantageResults.push(
               results.sort((a, b) => a-b).slice(-nSubset).reduce((a, b) => a + b, 0)
             );
             break;
-          case "h":
+          case "l":
             vantageResults.push(
-              results.sort((a, b) => a-b).slice(nSubset).reduce((a, b) => a + b, 0)
+              results.sort((a, b) => a-b).slice(0, nSubset).reduce((a, b) => a + b, 0)
             );
             break;
           default:
             vantageResults.push(
               results.reduce((a,b) => a + b, 0)
             )
-
         }
-        vantageResults.push(this._randInt(1, nSides));
-        console.log(vantageResults)
-        return vantageResults[0]
+      }
+      console.log(vantageResults)
+      switch (vantageRolls) {
+        case "a":
+          return isCheck ? Math.min(...vantageResults) : Math.max(...vantageResults);
+        case "d":
+          return isCheck ? Math.max(...vantageResults) : Math.max(...vantageResults);
+        default: // Only one dice roll
+          return vantageResults[0];
       }
     }
 
     // If no match
-    ChatServer.transmitError("IllicitRole", {"_ROLE_": rollDescription})
+    ChatServer.transmit("IllicitRole", {"_ROLE_": rollDescription}, "error")
     return undefined;
   }
 

@@ -91,7 +91,7 @@ export class SimpleActorSheet extends ActorSheet {
     const attr = target.className.split("d20-")[1].slice(0, 3);
     const threshold = this.actor.system.characteristics[attr]["value"];
     console.log(threshold)
-    await DiceServer.attributeCheck(threshold);
+    await DiceServer.attributeCheck(threshold, attr);
   }
 
   _onItemControl(event) {
