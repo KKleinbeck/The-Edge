@@ -271,6 +271,7 @@ export class SimpleActor extends Actor {
 
   // Generates dict for the charactersheet to parse
   prepareSheet() {
+    console.log(this.system);
     let preparedData = { system: { characteristics: {} } };
     for (const key of Object.keys(this.system.characteristics)) {
       preparedData.system.characteristics[key] = {
@@ -279,7 +280,14 @@ export class SimpleActor extends Actor {
       }
     }
 
-    console.log(this.system);
+    mergeObject(preparedData, {skillsLeft: {}, skillsMiddle: {}, skillsRight: {}})
+    for (const skill of ["physical", "mental", "technical"]) {
+      preparedData.skillsLeft[skill] = Object.keys(this.system.skills[skill]);
+    }
+    for (const skill of ["knowledge", "social", "environmental"]) {
+      preparedData.skillsRight[skill] = Object.keys(this.system.skills[skill]);
+    }
+
     let sys = this.system;
     let ch = sys.characteristics;
     mergeObject(preparedData, {
@@ -316,6 +324,7 @@ export class SimpleActor extends Actor {
       herotoken: Array(sys.heroToken.max).fill(false).fill(true, 0, sys.heroToken.available)
     });
 
+    // console.log(preparedData)
     return preparedData
   }
 }

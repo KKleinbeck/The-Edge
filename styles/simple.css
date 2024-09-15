@@ -15,6 +15,9 @@
   padding: 5px;
   overflow-y: hidden;
 }
+.the_edge .input-restrainer {
+  width: 20px;
+}
 .the_edge form {
   height: 100%;
 }
@@ -112,6 +115,54 @@
 }
 .the_edge .d20-Int {
   background-image: url('../icons/d20b1.png');
+}
+.the_edge .skill-header {
+  margin-top: 15px;
+  margin-bottom: -8px; /* Space between title and the horizontal line */
+}
+.the_edge .skill-title {
+  flex: 7;
+  font-size: 14px;
+  text-transform: uppercase; /* Makes the text all capital letters */
+  font-weight: bold; /* Optional: Make the title bold */
+}
+.the_edge .skill-column {
+  flex: 1;
+}
+.the_edge .skill-box {
+  align-items: center;
+  display: flex;
+  width: 100%;
+  gap: 6px;
+  line-height: 14px;
+  height: 24px;
+}
+.the_edge .skill-box .name {
+  flex: 7;
+  font-weight: bold;
+}
+.the_edge .attr-d20-skill {
+  border: none;
+  margin-left: 0px;
+  margin-right: 0px;
+  padding: 0;
+  width: 20px;
+  height: 24px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: inline-block;
+  position: relative;
+}
+.the_edge .d20-overlay-skill {
+  white-space: nowrap;
+  position: absolute; /* Position the text absolutely inside the parent */
+  top: 50%; /* Center the text vertically */
+  left: 50%; /* Center the text horizontally */
+  transform: translate(-50%, -40%); /* Adjust for perfect centering */
+  z-index: 1; /* Ensure the text is above the background */
+  text-transform: uppercase; /* Makes the text all capital letters */
+  font-weight: bold; /* Optional: Make the title bold */
+  font-size: 10px;
 }
 .the_edge .sheet-header .header-fields {
   flex: 1;
@@ -231,132 +282,9 @@
   flex: none;
   width: auto;
 }
-.the_edge .attributes {
-  position: relative;
-}
-.the_edge .attributes .attribute-control,
-.the_edge .attributes .group-control {
-  flex: 0 0 20px;
-  text-align: center;
-  line-height: 28px;
-  border: none;
-}
-.the_edge .attributes .attribute-roll {
-  flex: 0 0 20px;
-  text-align: center;
-  border-bottom: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.the_edge .attributes .group-prefix {
-  height: 31px;
-  margin-right: 10px;
-}
-.the_edge .attributes .button {
-  width: 100%;
-  flex: 1;
-  margin: 0;
-  background: rgba(0, 0, 0, 0.1);
-  border: 2px groove #f0f0e0;
-  border-radius: 3px;
-  font-size: 14px;
-  line-height: 28px;
-  display: block;
-}
-.the_edge .attributes .attribute-key {
-  background: transparent;
-  border: none;
-}
-.the_edge .attributes-header {
-  position: sticky;
-  top: 0;
-  left: 0;
-  align-items: center;
-  padding: 0 5px;
-  margin: 5px 0;
-  background: #cfcdc2;
-  border: 1px solid #AAA;
-  border-radius: 2px;
-  text-align: left;
-  font-weight: bold;
-}
-.the_edge .attributes-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.the_edge .attributes-list li > * {
-  margin: 0 3px;
-  height: 28px;
-  line-height: 24px;
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  border-bottom: 1px solid #AAA;
-}
-.the_edge .attributes-list .attribute-col label {
-  font-size: 10px;
-  text-align: center;
-  line-height: 1;
-}
-.the_edge .attributes-list .attribute-col input {
-  font-size: 11px;
-  text-align: center;
-  line-height: 1;
-  height: 50%;
-}
-.the_edge .attribute input[type="text"]::placeholder,
-.the_edge .group-header input[type="text"]::placeholder {
-  opacity: 0;
-  transition: opacity 0.25s ease-in-out;
-}
-.the_edge .attribute input[type="text"]:focus::placeholder,
-.the_edge .group-header input[type="text"]:focus::placeholder {
-  opacity: 1;
-}
-.the_edge .group-controls {
-  margin: 5px;
-}
-.the_edge .groups-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.the_edge .group {
-  margin: 5px 0 0;
-  padding: 0;
-}
-.the_edge .group-header {
-  align-items: center;
-  background: rgba(0, 0, 0, 0.05);
-  border: 1px solid #AAA;
-  border-radius: 2px;
-  padding: 2px 5px;
-}
-.the_edge .group-key,
-.the_edge .group-label {
-  font-weight: bold;
-  border: none;
-  border-bottom: 1px solid #AAA;
-  background: transparent;
-  border-radius: 0;
-  margin-right: 6px;
-}
-.the_edge .group-key {
-  opacity: 0.75;
-}
-.the_edge .group-label {
-  flex: 2;
-}
-.the_edge .group-dtype {
-  height: 24px;
-  flex: 0 0 116px;
-  margin: 0 5px;
-}
 .the_edge.sheet.actor {
   min-width: 600px;
-  min-height: 560px;
+  min-height: 955px;
 }
 .the_edge.sheet.item {
   min-width: 460px;
@@ -487,30 +415,31 @@
   flex: 0 1 auto;
 }
 
-.section {
-    margin-bottom: 32px; /* Space between sections */
+.the_edge .section {
+  margin-bottom: 32px; /* Space between sections */
 }
 
-.section-title {
-    font-size: 14px; /* Adjust font size as needed */
-    text-transform: uppercase; /* Makes the text all capital letters */
-    margin-top: 10px;
-    margin-left: 10px; /* Adds a small indent */
-    margin-right: 10px; /* Adds a small indent */
-    margin-bottom: 5px; /* Space between title and the horizontal line */
-    font-weight: bold; /* Optional: Make the title bold */
+.the_edge .section-title {
+  font-size: 14px;
+  text-transform: uppercase; /* Makes the text all capital letters */
+  margin-top: 10px;
+  margin-left: 10px; /* Adds a small indent */
+  margin-right: 10px; /* Adds a small indent */
+  margin-bottom: 5px; /* Space between title and the horizontal line */
+  font-weight: bold; /* Optional: Make the title bold */
 }
 
-.section .output {
+.the_edge .section .output {
   width: 60px;
   margin-left: 10px;
 }
 
-hr {
+.the_edge .hr {
     border: none;
     border-top: 1px solid #ccc; /* Style the horizontal line */
     width: 100%; /* Make sure the line spans the entire column */
-    margin: 0;
+    margin: 0px;
+    margin-top: 0px;
 }
 
 .right-aligned-text {

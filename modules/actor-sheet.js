@@ -7,7 +7,7 @@ export class SimpleActorSheet extends ActorSheet {
 
   /** @inheritdoc */
   static get defaultOptions() {
-    console.log(super.defaultOptions)
+    // console.log(super.defaultOptions)
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["the_edge", "sheet", "actor"],
       template: "systems/the_edge/templates/actors/actor-sheet.html",
@@ -90,7 +90,6 @@ export class SimpleActorSheet extends ActorSheet {
     const target = ev.currentTarget; // HTMLElement
     const attr = target.className.split("d20-")[1].slice(0, 3);
     const threshold = this.actor.system.characteristics[attr]["value"];
-    console.log(threshold)
     await DiceServer.attributeCheck(threshold, attr);
   }
 

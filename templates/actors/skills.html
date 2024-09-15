@@ -1,20 +1,88 @@
-<header class="attributes-header flexrow">
-  <span class="attribute-key">{{localize "SIMPLE.AttributeKey"}}</span>
-  <span class="attribute-value">{{localize "SIMPLE.AttributeValue"}}</span>
-  <span class="attribute-label">{{localize "SIMPLE.AttributeLabel"}}</span>
-  <span class="attribute-dtype">{{localize "SIMPLE.AttributeDtype"}}</span>
-  <a class="attribute-control" data-action="create" data-group="{{group}}"><i class="fas fa-plus"></i></a>
-</header>
-
-{{!-- Render the attribute list partial. --}}
-{{> "systems/the_edge/templates/parts/sheet-attributes.html" attributes=systemData.ungroupedAttributes dtypes=dtypes}}
-
-{{!-- Render the grouped attributes partial and control. --}}
-<div class="groups">
-  {{> "systems/the_edge/templates/parts/sheet-groups.html" attributes=systemData.groupedAttributes groups=systemData.groups dtypes=dtypes}}
-
-  <div class="group-controls flexrow">
-      <input class="group-prefix" type="text" value=""/>
-      <a class="button group-control" data-action="create-group"><i class="fas fa-plus"></i>Add Attribute Group</a>
+<div class="columned-page">
+  <div class="fixed-page">
+    {{#each prepare.skillsLeft as |skills category|}}
+      <div class="skill-box skill-header">
+        <div class="skill-title">{{category}}</div>
+        <div class="skill-column">{{genName "Adv"}}</div>
+        <div class="skill-column">{{genName "Mod"}}</div>
+        <div class="skill-column"></div>
+        <div class="skill-column"></div>
+        <div class="skill-column"></div>
+      </div>
+      <hr />
+      {{#each skills as |skill|}}
+      <div class="skill-box">
+        <div class="name">
+          {{skill}}
+        </div>
+        <div class="skill-column">
+          <span class="output">{{getSkill ../../actor category skill 'advances'}}</span>
+        </div>
+        <div class="skill-column">
+          <div class="input-restrainer">
+            <input name="system.skills.{{category}}.{{skill}}.modifier" type="number" value="{{getSkill ../../actor category skill 'modifier'}}" data-dtype="Number">
+          </div>
+        </div>
+        <div class="skill-column">
+          <a class="attr-d20-skill d20-{{getSkillDice ../../actor skill 0}}" data-tooltip="{{getSkillDice ../../actor skill 0}}">
+              <span class="d20-overlay-skill">{{getSkillDice ../../actor skill 0}}</span>
+          </a>
+        </div>
+        <div class="skill-column">
+          <a class="attr-d20-skill d20-{{getSkillDice ../../actor skill 1}}" data-tooltip="{{getSkillDice ../../actor skill 1}}">
+              <span class="d20-overlay-skill">{{getSkillDice ../../actor skill 1}}</span>
+          </a>
+        </div>
+        <div class="skill-column">
+          <a class="attr-d20-skill d20-{{getSkillDice ../../actor skill 2}}" data-tooltip="{{getSkillDice ../../actor skill 2}}">
+              <span class="d20-overlay-skill">{{getSkillDice ../../actor skill 2}}</span>
+          </a>
+        </div>
+      </div>
+      {{/each}}
+    {{/each}}
+  </div>
+  <div class="fixed-page">
+    {{#each prepare.skillsRight as |skills category|}}
+      <div class="skill-box skill-header">
+        <div class="skill-title">{{category}}</div>
+        <div class="skill-column">{{genName "Adv"}}</div>
+        <div class="skill-column">{{genName "Mod"}}</div>
+        <div class="skill-column"></div>
+        <div class="skill-column"></div>
+        <div class="skill-column"></div>
+      </div>
+      <hr />
+      {{#each skills as |skill|}}
+      <div class="skill-box">
+        <div class="name">
+          {{skill}}
+        </div>
+        <div class="skill-column">
+          <span class="output">{{getSkill ../../actor category skill 'advances'}}</span>
+        </div>
+        <div class="skill-column">
+          <div class="input-restrainer">
+            <input name="system.skills.{{category}}.{{skill}}.modifier" type="number" value="{{getSkill ../../actor category skill 'modifier'}}" data-dtype="Number">
+          </div>
+        </div>
+        <div class="skill-column">
+          <a class="attr-d20-skill d20-{{getSkillDice ../../actor skill 0}}" data-tooltip="{{getSkillDice ../../actor skill 0}}">
+              <span class="d20-overlay-skill">{{getSkillDice ../../actor skill 0}}</span>
+          </a>
+        </div>
+        <div class="skill-column">
+          <a class="attr-d20-skill d20-{{getSkillDice ../../actor skill 1}}" data-tooltip="{{getSkillDice ../../actor skill 1}}">
+              <span class="d20-overlay-skill">{{getSkillDice ../../actor skill 1}}</span>
+          </a>
+        </div>
+        <div class="skill-column">
+          <a class="attr-d20-skill d20-{{getSkillDice ../../actor skill 2}}" data-tooltip="{{getSkillDice ../../actor skill 2}}">
+              <span class="d20-overlay-skill">{{getSkillDice ../../actor skill 2}}</span>
+          </a>
+        </div>
+      </div>
+      {{/each}}
+    {{/each}}
   </div>
 </div>

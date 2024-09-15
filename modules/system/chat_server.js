@@ -30,10 +30,7 @@ export default class ChatServer {
     switch (id.toUpperCase()) {
       case "ABILITYCHECK":
         html = await renderTemplate("systems/the_edge/templates/chat/attribute_check.html", details);
-        console.log(html)
     }
-    // msg = this.fillInDetails(msg, details);
-    console.log(html)
     ChatMessage.create(this._chatDataSetup(html, "roll"))
   }
 

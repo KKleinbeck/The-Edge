@@ -10,14 +10,14 @@ export default class DiceServer {
   // - l[n]: take lowest n dices
   // - KOMMA: return mutliple rolls
   static async attributeCheck(threshold, ability) {
-    const diceRes = await this._basicRoll("3a5d20h3", true);
+    const diceRes = await this._basicRoll("1d20", true);
     if (diceRes === undefined) return undefined;
 
     let outcome = undefined;
-    if (threshold >= diceRes) outcome = "Success";
-    else if (diceRes == 1)  outcome = "CritSucces";
+    if (diceRes == 1)  outcome = "CritSuccess";
     else if (diceRes == 20) outcome = "CritFailure";
-    else outcome = "Failed";
+    else if (threshold >= diceRes) outcome = "Success";
+    else outcome = "Failure";
     ChatServer.transmitRoll("AbilityCheck", {ability: ability, roll: diceRes, outcome: outcome, threshold: threshold})
   }
 
@@ -47,18 +47,8 @@ export default class DiceServer {
         nVantageRolls = 1; // pseudo so that we prevent conditions later
       }
 
-      if (vantageRolls) {
-        console.log("(Dis-)Adv rolls:", nVantageRolls);
-        console.log("(Dis-)Advantage:", vantageRolls);
-      }
-      console.log("Number dices:   ", nDices);
-      console.log("Sides dice:     ", nSides);
-      if (subsetType) {
-        console.log("Highest/Lowest: ", subsetType);
-        console.log("N accapted dice:", nSubset);
-        if (nSubset >= nDices) {
-          return undefined;
-        }
+      if (subsetType && nSubset >= nDices) {
+        return undefined;
       }
 
       // Roll generation

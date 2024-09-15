@@ -53,11 +53,113 @@
           "advances": 0
         }
       }
+    },
+    "skills" : {
+      "skills": {
+        "overview": {
+          "climbing": ["End", "Str", "Foc"],
+          "jumping": ["Str", "Str", "Spd"],
+          "driving": ["End", "Spd", "Foc"],
+          "swimming": ["End", "End", "Str"],
+          "throwing": ["Str", "Spd", "Spd"],
+          "balance": ["End", "Str", "Foc"],
+          "fine motor skills": ["End", "Foc", "Foc"],
+          "pick pocketing": ["Spd", "Com", "Foc"],
+          "investigation": ["Foc", "Foc", "Int"],
+          "composure": ["Str", "Res", "Res"],
+          "logic & mathematics": ["Foc", "Int", "Int"],
+          "orientation": ["Foc", "Res", "Int"],
+          "reconnoitre": ["Foc", "Res", "Int"],
+          "stalking": ["Spd", "Emp", "Foc"],
+          "electronics": ["Foc", "Int", "Int"],
+          "software": ["Foc", "Foc", "Int"],
+          "rigging": ["Str", "Foc", "Int"],
+          "mechanical": ["Str", "Str", "Int"],
+          "explosives": ["Foc", "Foc", "Int"],
+          "chemistry": ["Foc", "Res", "Int"],
+          "bots and mechs": ["Str", "Foc", "Int"],
+          "first aid": ["Spd", "Foc", "Res"],
+          "medicine": ["Foc", "Foc", "Res"],
+          "history": ["Emp", "Emp", "Int"],
+          "legends and religions": ["Com", "Emp", "Int"],
+          "tactics": ["Emp", "Emp", "Int"],
+          "human cultures": ["Com", "Emp", "Int"],
+          "aliens cultures": ["Emp", "Emp", "Int"],
+          "convincing": ["Com", "Com", "Emp"],
+          "lying": ["Com", "Emp", "Emp"],
+          "intimidation": ["Str", "Com", "Emp"],
+          "haggling": ["Com", "Com", "Emp"],
+          "gambling": ["Emp", "Foc", "Res"],
+          "ropes and knots": ["End", "Foc", "Int"],
+          "plants": ["Foc", "Int", "Int"],
+          "animals": ["Emp", "Foc", "Int"],
+          "city navigation": ["Com", "Foc", "Int"],
+          "astro navigation": ["Res", "Int", "Int"],
+          "wilderniss navigation": ["Foc", "Res", "Int"],
+          "wood work": ["End", "Str", "Foc"],
+          "cooking & gutting": ["Str", "Foc", "Int"],
+          "digging": ["End", "Str", "Str"]
+        },
+        "physical": {
+          "climbing": {"advances": 0, "modifier": 0},
+          "jumping": {"advances": 0, "modifier": 0},
+          "driving": {"advances": 0, "modifier": 0},
+          "swimming": {"advances": 0, "modifier": 0},
+          "throwing": {"advances": 0, "modifier": 0},
+          "balance": {"advances": 0, "modifier": 0},
+          "fine motor skills": {"advances": 0, "modifier": 0},
+          "pick pocketing": {"advances": 0, "modifier": 0}
+        },
+        "mental": {
+          "investigation": {"advances": 0, "modifier": 0},
+          "composure": {"advances": 0, "modifier": 0},
+          "logic & mathematics": {"advances": 0, "modifier": 0},
+          "orientation": {"advances": 0, "modifier": 0},
+          "reconnoitre": {"advances": 0, "modifier": 0},
+          "stalking": {"advances": 0, "modifier": 0}
+        },
+        "technical": {
+          "electronics": {"advances": 0, "modifier": 0},
+          "software": {"advances": 0, "modifier": 0},
+          "rigging": {"advances": 0, "modifier": 0},
+          "mechanical": {"advances": 0, "modifier": 0},
+          "explosives": {"advances": 0, "modifier": 0},
+          "chemistry": {"advances": 0, "modifier": 0},
+          "bots and mechs": {"advances": 0, "modifier": 0}
+        },
+        "knowledge": {
+          "first aid": {"advances": 0, "modifier": 0},
+          "medicine": {"advances": 0, "modifier": 0},
+          "history": {"advances": 0, "modifier": 0},
+          "legends and religions": {"advances": 0, "modifier": 0},
+          "tactics": {"advances": 0, "modifier": 0}
+        },
+        "social": {
+          "human cultures": {"advances": 0, "modifier": 0},
+          "aliens cultures": {"advances": 0, "modifier": 0},
+          "convincing": {"advances": 0, "modifier": 0},
+          "lying": {"advances": 0, "modifier": 0},
+          "intimidation": {"advances": 0, "modifier": 0},
+          "haggling": {"advances": 0, "modifier": 0},
+          "gambling": {"advances": 0, "modifier": 0}
+        },
+        "environmental": {
+          "ropes and knots": {"advances": 0, "modifier": 0},
+          "plants": {"advances": 0, "modifier": 0},
+          "animals": {"advances": 0, "modifier": 0},
+          "city navigation": {"advances": 0, "modifier": 0},
+          "astro navigation": {"advances": 0, "modifier": 0},
+          "wilderniss navigation": {"advances": 0, "modifier": 0},
+          "wood work": {"advances": 0, "modifier": 0},
+          "cooking & gutting": {"advances": 0, "modifier": 0},
+          "digging": {"advances": 0, "modifier": 0}
+        }
+      }
     }
   },
   "htmlFields": ["biography"],
   "character": {
-    "templates": ["characteristics"],
+    "templates": ["characteristics", "skills"],
     "biography": "",
     "health": {
       "value": 10,
