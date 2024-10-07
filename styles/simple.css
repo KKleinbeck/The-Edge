@@ -116,20 +116,20 @@
 .the_edge .d20-Int {
   background-image: url('../icons/d20b1.png');
 }
-.the_edge .skill-header {
+.the_edge .proficiency-header {
   margin-top: 15px;
   margin-bottom: -8px; /* Space between title and the horizontal line */
 }
-.the_edge .skill-title {
+.the_edge .proficiency-title {
   flex: 7;
   font-size: 14px;
   text-transform: uppercase; /* Makes the text all capital letters */
   font-weight: bold; /* Optional: Make the title bold */
 }
-.the_edge .skill-column {
+.the_edge .proficiency-column {
   flex: 1;
 }
-.the_edge .skill-box {
+.the_edge .proficiency-box {
   align-items: center;
   display: flex;
   width: 100%;
@@ -137,11 +137,11 @@
   line-height: 14px;
   height: 24px;
 }
-.the_edge .skill-box .name {
+.the_edge .proficiency-box .name {
   flex: 7;
   font-weight: bold;
 }
-.the_edge .attr-d20-skill {
+.the_edge .attr-d20-proficiency {
   border: none;
   margin-left: 0px;
   margin-right: 0px;
@@ -153,7 +153,7 @@
   display: inline-block;
   position: relative;
 }
-.the_edge .d20-overlay-skill {
+.the_edge .d20-overlay-proficiency {
   white-space: nowrap;
   position: absolute; /* Position the text absolutely inside the parent */
   top: 50%; /* Center the text vertically */
@@ -334,7 +334,7 @@
     flex: 100%;
   }
 
-  &.skills {
+  &.proficiencies {
     border: 0.5px solid var(--border-color);
     margin: 0;
     padding: 2px;

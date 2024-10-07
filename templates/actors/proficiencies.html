@@ -1,0 +1,88 @@
+<div class="columned-page">
+  <div class="fixed-page">
+    {{#each prepare.proficienciesLeft as |proficiencies category|}}
+      <div class="proficiency-box proficiency-header">
+        <div class="proficiency-title">{{category}}</div>
+        <div class="proficiency-column">{{genName "Adv"}}</div>
+        <div class="proficiency-column">{{genName "Mod"}}</div>
+        <div class="proficiency-column"></div>
+        <div class="proficiency-column"></div>
+        <div class="proficiency-column"></div>
+      </div>
+      <hr />
+      {{#each proficiencies as |proficiency|}}
+      <div class="proficiency-box">
+        <div class="name">
+          {{proficiency}}
+        </div>
+        <div class="proficiency-column">
+          <span class="output">{{getProficiency ../../actor category proficiency 'advances'}}</span>
+        </div>
+        <div class="proficiency-column">
+          <div class="input-restrainer">
+            <input name="system.proficiencies.{{category}}.{{proficiency}}.modifier" type="number" value="{{getProficiency ../../actor category proficiency 'modifier'}}" data-dtype="Number">
+          </div>
+        </div>
+        <div class="proficiency-column">
+          <a class="attr-d20-proficiency d20-{{getProficiencyDice ../../actor proficiency 0}}" data-tooltip="{{getProficiencyDice ../../actor proficiency 0}}">
+              <span class="d20-overlay-proficiency">{{getProficiencyDice ../../actor proficiency 0}}</span>
+          </a>
+        </div>
+        <div class="proficiency-column">
+          <a class="attr-d20-proficiency d20-{{getProficiencyDice ../../actor proficiency 1}}" data-tooltip="{{getProficiencyDice ../../actor proficiency 1}}">
+              <span class="d20-overlay-proficiency">{{getProficiencyDice ../../actor proficiency 1}}</span>
+          </a>
+        </div>
+        <div class="proficiency-column">
+          <a class="attr-d20-proficiency d20-{{getProficiencyDice ../../actor proficiency 2}}" data-tooltip="{{getProficiencyDice ../../actor proficiency 2}}">
+              <span class="d20-overlay-proficiency">{{getProficiencyDice ../../actor proficiency 2}}</span>
+          </a>
+        </div>
+      </div>
+      {{/each}}
+    {{/each}}
+  </div>
+  <div class="fixed-page">
+    {{#each prepare.proficienciesRight as |proficiencies category|}}
+      <div class="proficiency-box proficiency-header">
+        <div class="proficiency-title">{{category}}</div>
+        <div class="proficiency-column">{{genName "Adv"}}</div>
+        <div class="proficiency-column">{{genName "Mod"}}</div>
+        <div class="proficiency-column"></div>
+        <div class="proficiency-column"></div>
+        <div class="proficiency-column"></div>
+      </div>
+      <hr />
+      {{#each proficiencies as |proficiency|}}
+      <div class="proficiency-box">
+        <div class="name">
+          {{proficiency}}
+        </div>
+        <div class="proficiency-column">
+          <span class="output">{{getProficiency ../../actor category proficiency 'advances'}}</span>
+        </div>
+        <div class="proficiency-column">
+          <div class="input-restrainer">
+            <input name="system.proficiencies.{{category}}.{{proficiency}}.modifier" type="number" value="{{getProficiency ../../actor category proficiency 'modifier'}}" data-dtype="Number">
+          </div>
+        </div>
+        <div class="proficiency-column">
+          <a class="attr-d20-proficiency d20-{{getProficiencyDice ../../actor proficiency 0}}" data-tooltip="{{getProficiencyDice ../../actor proficiency 0}}">
+              <span class="d20-overlay-proficiency">{{getProficiencyDice ../../actor proficiency 0}}</span>
+          </a>
+        </div>
+        <div class="proficiency-column">
+          <a class="attr-d20-proficiency d20-{{getProficiencyDice ../../actor proficiency 1}}" data-tooltip="{{getProficiencyDice ../../actor proficiency 1}}">
+              <span class="d20-overlay-proficiency">{{getProficiencyDice ../../actor proficiency 1}}</span>
+          </a>
+        </div>
+        <div class="proficiency-column">
+          <a class="attr-d20-proficiency d20-{{getProficiencyDice ../../actor proficiency 2}}" data-tooltip="{{getProficiencyDice ../../actor proficiency 2}}">
+              <span class="d20-overlay-proficiency">{{getProficiencyDice ../../actor proficiency 2}}</span>
+          </a>
+        </div>
+      </div>
+      {{/each}}
+    {{/each}}
+  </div>
+</div>

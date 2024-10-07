@@ -10,7 +10,7 @@ export const preloadHandlebarsTemplates = async function() {
     // Actor templates
     "systems/the_edge/templates/actors/biography.html",
     "systems/the_edge/templates/actors/items.html",
-    "systems/the_edge/templates/actors/skills.html",
+    "systems/the_edge/templates/actors/proficiencies.html",
     "systems/the_edge/templates/actors/attributes/layout.html",
     "systems/the_edge/templates/actors/attributes/main_attributes.html",
     "systems/the_edge/templates/actors/attributes/conditioning.html",

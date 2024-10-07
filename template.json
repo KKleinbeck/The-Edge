@@ -22,6 +22,12 @@
           "modifier": 0,
           "advances": 0
         },
+        "Crd": {
+          "species": 0,
+          "initial": 8,
+          "modifier": 0,
+          "advances": 0
+        },
         "Com": {
           "species": 0,
           "initial": 8,
@@ -54,8 +60,8 @@
         }
       }
     },
-    "skills" : {
-      "skills": {
+    "proficiencies" : {
+      "proficiencies": {
         "overview": {
           "climbing": ["End", "Str", "Foc"],
           "jumping": ["Str", "Str", "Spd"],
@@ -159,7 +165,7 @@
   },
   "htmlFields": ["biography"],
   "character": {
-    "templates": ["characteristics", "skills"],
+    "templates": ["characteristics", "proficiencies"],
     "biography": "",
     "health": {
       "value": 10,
@@ -174,6 +180,10 @@
     "heroToken": {
       "max": 2,
       "available": 1
+    },
+    "PracticeHours": {
+      "max": 30000,
+      "used": 0
     },
     "languages": {},
     "attributes": {},
