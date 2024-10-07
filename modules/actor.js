@@ -291,7 +291,7 @@ export class SimpleActor extends Actor {
     let sys = this.system;
     let ch = sys.characteristics;
     mergeObject(preparedData, {
-      attrs: ["End","Str","Spd","Com","Emp","Foc","Res","Int"],
+      attrs: ["End","Str","Spd","Crd","Cha","Emp","Foc","Res","Int"],
       canAdvance: true,
       zones: {
         1: {

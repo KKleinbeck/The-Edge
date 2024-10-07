@@ -101,7 +101,10 @@
 .the_edge .d20-Spd {
   background-image: url('../icons/d20r3.png');
 }
-.the_edge .d20-Com {
+.the_edge .d20-Crd {
+  background-image: url('../icons/d20p.png');
+}
+.the_edge .d20-Cha {
   background-image: url('../icons/d20g2.png');
 }
 .the_edge .d20-Emp {
@@ -283,7 +286,7 @@
   width: auto;
 }
 .the_edge.sheet.actor {
-  min-width: 600px;
+  min-width: 650px;
   min-height: 955px;
 }
 .the_edge.sheet.item {
