@@ -21,6 +21,11 @@ export default class DiceServer {
     ChatServer.transmitRoll("AbilityCheck", {ability: ability, roll: diceRes, outcome: outcome, threshold: threshold})
   }
 
+  static async proficiencyCheck(check, modificators) {
+    const diceRes = await new Roll("3d20").evaluate({async: true});
+    console.log(diceRes.dice[0].results)
+  }
+
   static async _basicRoll(rollDescription, isCheck = false) {
     //just an individual role, i.e., '2d3d20h2'
     const regex = /^(\d*)?([ad])?(\d*)?d(\d+)([hl])?(\d*)?$/;
@@ -58,7 +63,6 @@ export default class DiceServer {
         for (let j = 1; j <= nDices; ++j) {
           results.push(await this._randInt(1, nSides));
         }
-        console.log(results)
         switch (subsetType) {
           case "h":
             vantageResults.push(
@@ -76,7 +80,6 @@ export default class DiceServer {
             )
         }
       }
-      console.log(vantageResults)
       switch (vantageRolls) {
         case "a":
           return isCheck ? Math.min(...vantageResults) : Math.max(...vantageResults);

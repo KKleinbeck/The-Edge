@@ -144,6 +144,16 @@
   flex: 7;
   font-weight: bold;
 }
+.proficiency-dialog-box { /* As Dialog, don't add the_edge before  */
+  display: flex;
+  gap: 9px;
+  align-items: center;
+}
+.input-box {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 15px;
+}
 .the_edge .attr-d20-proficiency {
   border: none;
   margin-left: 0px;
@@ -159,6 +169,7 @@
 .the_edge .d20-overlay-proficiency {
   white-space: nowrap;
   position: absolute; /* Position the text absolutely inside the parent */
+  background: rgba(255, 255, 255, 0.5);
   top: 50%; /* Center the text vertically */
   left: 50%; /* Center the text horizontally */
   transform: translate(-50%, -40%); /* Adjust for perfect centering */

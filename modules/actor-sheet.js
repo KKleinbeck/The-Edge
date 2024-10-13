@@ -2,6 +2,7 @@ import { EntitySheetHelper } from "./helper.js";
 import {ATTRIBUTE_TYPES} from "./constants.js";
 import ChatServer from "./system/chat_server.js";
 import DiceServer from "./system/dice_server.js";
+import DialogProficiency from "./dialogs/dialog-proficiency.js";
 
 export class SimpleActorSheet extends ActorSheet {
 
@@ -70,6 +71,9 @@ export class SimpleActorSheet extends ActorSheet {
 
     // Attributes
     html.find(".attr-d20").mousedown(ev => this._rollAttr(ev));
+
+    // Proficiencies
+    html.find(".attr-d20-proficiency").click(ev => this._rollProficiency(ev))
   }
 
   async _useHeroToken(ev) {
@@ -91,6 +95,16 @@ export class SimpleActorSheet extends ActorSheet {
     const attr = target.className.split("d20-")[1].slice(0, 3);
     const threshold = this.actor.system.characteristics[attr]["value"];
     await DiceServer.attributeCheck(threshold, attr);
+  }
+
+  async _rollProficiency(ev) {
+    const target = ev.currentTarget; // HTMLElement
+    const proficiency = target.className.split("ProfID-")[1];
+    // await DiceServer.attributeCheck(threshold, attr);
+    let d = DialogProficiency.start({
+      name: proficiency,
+      dices: this.actor.system.proficiencies.overview[proficiency]
+    })
   }
 
   _onItemControl(event) {
