@@ -14,11 +14,10 @@ export default class DialogProficiency extends Dialog{
       roll: {
         label: game.i18n.localize("DIALOG.ROLL"),
         callback: (html) => {
-          console.log(html.find('[name="Modifier"]').val())
-          let check = {dices: checkData.dices};
+          let check = {name: checkData.name, dices: checkData.dices, thresholds: checkData.thresholds};
           let modificators = {
-            character: 0,
-            temporary: html.find('[name="Modifier"]').val(),
+            character: checkData.modificator,
+            temporary: parseInt(html.find('[name="Modifier"]').val()),
             advantage: html.find('[name="Advantage"]').val()
           }
           DiceServer.proficiencyCheck(check, modificators)

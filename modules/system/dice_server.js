@@ -18,12 +18,49 @@ export default class DiceServer {
     else if (diceRes == 20) outcome = "CritFailure";
     else if (threshold >= diceRes) outcome = "Success";
     else outcome = "Failure";
-    ChatServer.transmitRoll("AbilityCheck", {ability: ability, roll: diceRes, outcome: outcome, threshold: threshold})
+    ChatServer.transmitRoll("AbilityCheck", {ability: ability, roll: diceRes, outcome: outcome, threshold: threshold});
   }
 
   static async proficiencyCheck(check, modificators) {
+    console.log(modificators)
     const diceRes = await new Roll("3d20").evaluate({async: true});
-    console.log(diceRes.dice[0].results)
+    let results = [];
+    let failedSum = 0;
+    let sum = 0;
+    for (let i = 0; i < 3; i++) {
+      results.push(diceRes.dice[0].results[i].result)
+      console.log("Result ", i, ": ", results[i])
+      let netOutcome = check.thresholds[i] - results[i]
+      console.log("Threshold ", i, ": ", check.thresholds[i])
+      failedSum += Math.min(netOutcome, 0)
+      sum += netOutcome
+    }
+
+    const modificator = modificators.character + modificators.temporary;
+    let result = {
+      proficiency: check.name, dices: check.dices, thresholds: check.thresholds,
+      results: results, character_mod: modificators.character, temporary_mod: modificators.temporary
+    };
+    if (modificator > 0) {
+      // Is the modificator great enough to make the check?
+      let reserves = modificator + failedSum 
+      if (reserves >= 0) {
+        mergeObject(result, {outcome: "Passed", quality: Math.floor((modificator + sum) / 3)});
+      }
+      else mergeObject(result, {outcome: "Failed", quality: Math.floor(reserves / 3)});
+      console.log("M1 branch", failedSum, modificator + sum);
+    }
+    else {
+      // Negative modificator requires all checks to pass
+      if (failedSum < 0) mergeObject(result, {outcome: "Failure", quality: Math.floor((modificator + failedSum) / 3)});
+      else {
+        mergeObject(result, {outcome: sum < -modificator ? "Failure" : "Passed", quality: Math.floor((modificator + sum) / 3)});
+      }
+      console.log("M2 branch", failedSum, modificator + sum);
+    }
+    console.log(result);
+    ChatServer.transmitRoll("ProficiencyCheck", result);
+    return result;
   }
 
   static async _basicRoll(rollDescription, isCheck = false) {

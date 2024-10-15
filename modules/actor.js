@@ -18,7 +18,7 @@ export class SimpleActor extends Actor {
     EntitySheetHelper.clampResourceValues(this.system.attributes);
 
     for (let ch of Object.values(this.system.characteristics)) {
-      ch.value = ch.initial + ch.advances + (ch.modifier || 0) + (ch.gearmodifier || 0);
+      ch.value = ch.initial + ch.advances + ch.species + ch.modifier + (ch.gearmodifier || 0);
     }
   }
 

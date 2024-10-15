@@ -25,11 +25,15 @@ export default class ChatServer {
   }
 
   static async transmitRoll(id, details) {
-    const parts = LocalisationServer.chatLocalisation(id, "dice").split("<PART>");
     let html = undefined;
     switch (id.toUpperCase()) {
       case "ABILITYCHECK":
         html = await renderTemplate("systems/the_edge/templates/chat/attribute_check.html", details);
+        break;
+      
+      case "PROFICIENCYCHECK":
+        html = await renderTemplate("systems/the_edge/templates/chat/proficiency_check.html", details);
+        break;
     }
     ChatMessage.create(this._chatDataSetup(html, "roll"))
   }

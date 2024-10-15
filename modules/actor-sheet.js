@@ -101,9 +101,26 @@ export class SimpleActorSheet extends ActorSheet {
     const target = ev.currentTarget; // HTMLElement
     const proficiency = target.className.split("ProfID-")[1];
     // await DiceServer.attributeCheck(threshold, attr);
+    let modificator = 0;
+    for (const [key, value] of Object.entries(this.actor.system.proficiencies)) {
+      if (key == "overview") continue;
+      else if (proficiency in value) {
+        modificator = this.actor.system.proficiencies[key][proficiency]["advances"] +
+          this.actor.system.proficiencies[key][proficiency]["modifier"];
+        break;
+      }
+    }
+    const dices = this.actor.system.proficiencies.overview[proficiency];
+    const thresholds = []
+    for (const dice of dices) {
+      const char = this.actor.system.characteristics[dice];
+      thresholds.push(char["value"])
+    }
     let d = DialogProficiency.start({
       name: proficiency,
-      dices: this.actor.system.proficiencies.overview[proficiency]
+      dices: dices,
+      thresholds: thresholds,
+      modificator: modificator
     })
   }
 
