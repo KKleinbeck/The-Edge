@@ -281,11 +281,11 @@ export class SimpleActor extends Actor {
     }
 
     mergeObject(preparedData, {proficienciesLeft: {}, proficienciesRight: {}})
-    for (const proficiency of ["physical", "mental", "technical"]) {
-      preparedData.proficienciesLeft[proficiency] = Object.keys(this.system.proficiencies[proficiency]);
+    for (const proficiencyClass of ["Physical", "Environmental", "Mental"]) {
+      preparedData.proficienciesLeft[proficiencyClass] = Object.keys(this.system.proficiencies[proficiencyClass]);
     }
-    for (const proficiency of ["knowledge", "social", "environmental"]) {
-      preparedData.proficienciesRight[proficiency] = Object.keys(this.system.proficiencies[proficiency]);
+    for (const proficiencyClass of ["Technical", "Social", "Knowledge"]) {
+      preparedData.proficienciesRight[proficiencyClass] = Object.keys(this.system.proficiencies[proficiencyClass]);
     }
 
     let sys = this.system;

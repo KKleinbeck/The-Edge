@@ -8,7 +8,7 @@ export default function() {
         getAttr: (a, b, c) => { return a.system.characteristics[b][c]; },
         getEntry: (a, b) => { return a[b]; },
         getProficiency: (a, b, c, d) => { return a.system.proficiencies[b][c][d]; },
-        getProficiencyDice: (a, b, c) => { return a.system.proficiencies.overview[b][c]; },
+        getProficiencyDice: (a, b, c, d) => { return a.system.proficiencies[b][c].dices[d]; },
         proficiencyName: (a) => LocalisationServer.proficiencyLocalisation(a),
         attrAbbr: (a) => LocalisationServer.attributeAbbrLocalisation(a),
     })
