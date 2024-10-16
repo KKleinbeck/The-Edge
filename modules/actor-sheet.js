@@ -71,6 +71,7 @@ export class SimpleActorSheet extends ActorSheet {
 
     // Attributes
     html.find(".attr-d20").mousedown(ev => this._rollAttr(ev));
+    html.find(".advance").click(ev => this._advanceAttr(ev));
 
     // Proficiencies
     html.find(".attr-d20-proficiency").click(ev => this._rollProficiency(ev))
@@ -95,6 +96,14 @@ export class SimpleActorSheet extends ActorSheet {
     const attr = target.className.split("d20-")[1].slice(0, 3);
     const threshold = this.actor.system.characteristics[attr]["value"];
     await DiceServer.attributeCheck(threshold, attr);
+  }
+
+  async _advanceAttr(ev) {
+    const target = ev.currentTarget;
+    let attr = target.getAttribute("data-attr");
+    let type = target.className.split("attribute-")[1];
+    this.actor._advanceAttr(attr, type);
+    this._render();
   }
 
   async _rollProficiency(ev) {

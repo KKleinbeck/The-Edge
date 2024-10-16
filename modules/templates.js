@@ -11,9 +11,12 @@ export const preloadHandlebarsTemplates = async function() {
     "systems/the_edge/templates/actors/biography.html",
     "systems/the_edge/templates/actors/items.html",
     "systems/the_edge/templates/actors/proficiencies/layout.html",
+    //Attributes
     "systems/the_edge/templates/actors/attributes/layout.html",
     "systems/the_edge/templates/actors/attributes/main_attributes.html",
+    "systems/the_edge/templates/actors/attributes/languages.html",
     "systems/the_edge/templates/actors/attributes/conditioning.html",
+    "systems/the_edge/templates/actors/attributes/progress.html",
     // Attribute list partial.
     "systems/the_edge/templates/parts/sheet-attributes.html",
     "systems/the_edge/templates/parts/sheet-groups.html"

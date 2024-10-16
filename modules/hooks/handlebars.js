@@ -11,5 +11,6 @@ export default function() {
         getProficiencyDice: (a, b, c, d) => { return a.system.proficiencies[b][c].dices[d]; },
         proficiencyName: (a) => LocalisationServer.proficiencyLocalisation(a),
         attrAbbr: (a) => LocalisationServer.attributeAbbrLocalisation(a),
+        log: (a) => console.log(a),
     })
 }

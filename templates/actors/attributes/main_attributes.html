@@ -4,9 +4,12 @@
             <div class="table-header"></div> <!-- Empty first cell-->
             {{#each prepare.attrs as |ch|}}
             <div data-tooltip="{{attrName ch}}" class="table-header">
-                {{#if ../prepare.canAdvance}}<a data-attr="{{ch}}" class="advance refund-attribute"><i data-tooltip="{{getAttr ../prepare ch 'refund'}}" class="fas fa-minus"></i></a> <b>{{attrAbbr ch}}</b> <a data-attr="{{ch}}" class="advance advance-attribute"><i data-tooltip="{{getAttr ../prepare ch 'cost'}}" class="fas fa-plus"></i></a>
+                {{#if ../prepare.canAdvance}}
+                    <a data-attr="{{ch}}" class="advance attribute-refund"><i data-tooltip="{{getAttr ../prepare ch 'refund'}}" class="fas fa-minus advance-fa"></i></a>
+                    <b>{{attrAbbr ch}}</b>
+                    <a data-attr="{{ch}}" class="advance attribute-advance"><i data-tooltip="{{getAttr ../prepare ch 'cost'}}" class="fas fa-plus advance-fa"></i></a>
                 {{else}}
-                <b>{{attrAbbr ch}}</b>
+                    <b>{{attrAbbr ch}}</b>
                 {{/if}}
             </div>
             {{/each}}
@@ -14,12 +17,12 @@
         <div class="table-row">
             <div class="row-type table-data">
                 <div class="column-name lineheight">
-                    {{localize "Initial"}}
+                    {{localize "Value"}}
                 </div>
             </div>
             {{#each prepare.attrs as |ch|}}
             <div class="table-data">
-                <span class="output">{{getAttr ../actor ch 'initial'}}</span>
+                <span class="output">{{getAttr ../actor ch 'value'}}</span>
             </div>
             {{/each}}
         </div>

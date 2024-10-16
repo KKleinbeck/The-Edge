@@ -18,8 +18,12 @@
 .the_edge .input-restrainer {
   width: 25px;
 }
-.the_edge form {
+.the_edge .form {
   height: 100%;
+}
+.the_edge .advance-fa {
+  font-size: 8pt;
+  color: #888;
 }
 .the_edge .sheet-header {
   flex: 0 0 185px;
@@ -370,6 +374,10 @@
   width: 100%;
 }
 
+.generic-table .center-cell {
+  text-align: center;
+}
+
 .generic-table .tablerow .cell-right-align {
   flex: 2;
   text-align: right;
@@ -448,9 +456,11 @@
   font-weight: bold; /* Optional: Make the title bold */
 }
 
-.the_edge .section .output {
+.the_edge .section .output60 {
   width: 60px;
-  margin-left: 10px;
+}
+.the_edge .section .output80 {
+  width: 80px;
 }
 
 .the_edge .hr {

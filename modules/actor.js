@@ -20,6 +20,9 @@ export class SimpleActor extends Actor {
     for (let ch of Object.values(this.system.characteristics)) {
       ch.value = ch.initial + ch.advances + ch.species + ch.modifier + (ch.gearmodifier || 0);
     }
+    this.system.heartRate["max"] = this.system.heartRate.baseline_max + 
+      this.system.characteristics["End"].value -
+      2 * Math.floor((this.system.age - 21) / 3)
   }
 
   /* -------------------------------------------- */
@@ -274,9 +277,10 @@ export class SimpleActor extends Actor {
     console.log(this.system);
     let preparedData = { system: { characteristics: {} } };
     for (const key of Object.keys(this.system.characteristics)) {
+      let n = this.system.characteristics[key].advances;
       preparedData.system.characteristics[key] = {
-        cost: 0, // Todo: calculate
-        refund: 0
+        cost: this._attrCost(n),
+        refund: n == 0 ? 0 : this._attrCost(n-1)
       }
     }
 
@@ -295,15 +299,11 @@ export class SimpleActor extends Actor {
       canAdvance: true,
       zones: {
         1: {
-          value: this.system.heartRate.max * 60 / 100,
-          tooltip: "60% Max Heart Rate".replace(/[ ]/g, "\u00a0")
-        },
-        2: {
-          value: this.system.heartRate.max * 75 / 100,
+          value: 5 * Math.floor(this.system.heartRate.max * 75 / 500),
           tooltip: "75% Max Heart Rate".replace(/[ ]/g, "\u00a0")
         },
-        3: {
-          value: this.system.heartRate.max * 90 / 100,
+        2: {
+          value: 5 * Math.floor(this.system.heartRate.max * 90 / 500),
           tooltip: "90% Max Heart Rate".replace(/[ ]/g, "\u00a0")
         }
       },
@@ -327,4 +327,24 @@ export class SimpleActor extends Actor {
     // console.log(preparedData)
     return preparedData
   }
+
+  async _advanceAttr(attrName, type) {
+    const attr = this.system.characteristics[attrName]
+    const ph = this.system.PracticeHours
+
+    let update = {}
+    if ((type == "advance") && (ph.max - ph.used >= this._attrCost(attr.advances)) ) {
+      update[`system.characteristics.${attrName}.advances`] = attr.advances + 1
+      update[`system.characteristics.${attrName}.value`] = attr.value + 1
+      update[`system.PracticeHours.used`] = ph.used + this._attrCost(attr.advances)
+    }
+    else if ((type == "refund") && (attr.advances > 0) ) {
+      update[`system.characteristics.${attrName}.advances`] = attr.advances - 1
+      update[`system.characteristics.${attrName}.value`] = attr.value - 1
+      update[`system.PracticeHours.used`] = ph.used + this._attrCost(attr.advances - 1)
+    }
+    this.update(update)
+  }
+
+  _attrCost(n) { return 10 * Math.floor(12 + 8 * Math.pow(1.15, n)); }
 }

@@ -132,24 +132,29 @@
     "templates": ["characteristics", "proficiencies"],
     "biography": "",
     "health": {
-      "value": 10,
+      "value": 20,
       "min": 0,
-      "max": 10
+      "max": 20
     },
+    "age": 21,
     "heartRate": {
       "value": 50,
       "min": 0,
-      "max": 200
+      "baseline_max": 195
     },
     "heroToken": {
       "max": 2,
       "available": 1
     },
     "PracticeHours": {
-      "max": 30000,
-      "used": 0
+      "used": 0,
+      "max": 40000
     },
-    "languages": {},
+    "AdvantagePoints": {
+      "used": 0,
+      "max": 0
+    },
+    "languages": {"Standard": "Native"},
     "attributes": {},
     "groups": {}
   }
