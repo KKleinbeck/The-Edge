@@ -15,3 +15,9 @@
   <b>{{genName "Modificators"}}: </b>
   <span>Perm: {{character_mod}}&#8195;Temp: {{temporary_mod}}</span>
 </div>
+{{#if (checkEqual advantage "Nothing")}}
+{{else}}
+<div class="centered-row">
+  <b>{{genName "with"}} {{genName advantage}}</b>
+</div>
+{{/if}}

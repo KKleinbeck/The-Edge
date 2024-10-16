@@ -8,7 +8,7 @@ export default class LocalisationServer {
     }
 
     static proficiencyLocalisation(id) {
-        return game.i18n.localize(`PROFICIENCY.${id.toUpperCase()}`)
+        return game.i18n.localize(`PROFICIENCY.${id.toUpperCase().replace(/\s/g, "")}`)
     }
     
     static attributeAbbrLocalisation(id) {

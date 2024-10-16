@@ -21,7 +21,7 @@ export default class DiceServer {
     ChatServer.transmitRoll("AbilityCheck", {ability: ability, roll: diceRes, outcome: outcome, threshold: threshold});
   }
 
-  static async proficiencyCheck(check, modificators) {
+  static async proficiencyCheck(check, modificators, transmit = true) {
     console.log(modificators)
     const diceRes = await new Roll("3d20").evaluate({async: true});
     let results = [];
@@ -39,27 +39,43 @@ export default class DiceServer {
     const modificator = modificators.character + modificators.temporary;
     let result = {
       proficiency: check.name, dices: check.dices, thresholds: check.thresholds,
-      results: results, character_mod: modificators.character, temporary_mod: modificators.temporary
+      results: results, character_mod: modificators.character, temporary_mod: modificators.temporary,
+      advantage: modificators.advantage
     };
     if (modificator > 0) {
       // Is the modificator great enough to make the check?
       let reserves = modificator + failedSum 
       if (reserves >= 0) {
-        mergeObject(result, {outcome: "Passed", quality: Math.floor((modificator + sum) / 3)});
+        mergeObject(result, {outcome: "Success", quality: Math.floor((modificator + sum) / 3)});
       }
-      else mergeObject(result, {outcome: "Failed", quality: Math.floor(reserves / 3)});
-      console.log("M1 branch", failedSum, modificator + sum);
+      else mergeObject(result, {outcome: "Failure", quality: Math.floor(reserves / 3)});
     }
     else {
       // Negative modificator requires all checks to pass
       if (failedSum < 0) mergeObject(result, {outcome: "Failure", quality: Math.floor((modificator + failedSum) / 3)});
       else {
-        mergeObject(result, {outcome: sum < -modificator ? "Failure" : "Passed", quality: Math.floor((modificator + sum) / 3)});
+        mergeObject(result, {outcome: sum < -modificator ? "Failure" : "Success", quality: Math.floor((modificator + sum) / 3)});
       }
-      console.log("M2 branch", failedSum, modificator + sum);
     }
-    console.log(result);
-    ChatServer.transmitRoll("ProficiencyCheck", result);
+    console.log("Quality", result.quality)
+    
+    if (modificators.advantage != "Nothing") {
+      let advantage = modificators.advantage;
+      modificators.advantage = "Nothing";
+      let result2 = await this.proficiencyCheck(check, modificators, false);
+
+      switch(advantage) {
+        case "Advantage":
+          result = result2.quality > result.quality ? result2 : result;
+          break;
+
+        case "Disadvantage":
+          result = result2.quality < result.quality ? result2 : result;
+      }
+      console.log("Final Quality", result.quality)
+    }
+    console.log(result)
+    if (transmit) ChatServer.transmitRoll("ProficiencyCheck", result);
     return result;
   }
 

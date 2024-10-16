@@ -1,4 +1,5 @@
 import DiceServer from "../system/dice_server.js";
+import LocalisationServer from "../system/localisation_server.js";
 
 export default class DialogProficiency extends Dialog{
   static get defaultOptions() {
@@ -18,7 +19,7 @@ export default class DialogProficiency extends Dialog{
           let modificators = {
             character: checkData.modificator,
             temporary: parseInt(html.find('[name="Modifier"]').val()),
-            advantage: html.find('[name="Advantage"]').val()
+            advantage: html.find('[name="AdvantageSelector"]').val()
           }
           DiceServer.proficiencyCheck(check, modificators)
         }
@@ -33,7 +34,7 @@ export default class DialogProficiency extends Dialog{
       })
     }
     return new DialogProficiency({
-      title: game.i18n.localize("PROFICIENCY." + checkData.name) + " " + game.i18n.localize("CHECK"),
+      title: LocalisationServer.proficiencyLocalisation(checkData.name) + " " + game.i18n.localize("CHECK"),
       content: html,
       buttons: buttons,
       default: "roll"
