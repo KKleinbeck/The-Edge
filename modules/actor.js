@@ -13,15 +13,13 @@ export class SimpleActor extends Actor {
   /** @inheritdoc */
   prepareDerivedData() {
     super.prepareDerivedData();
-    this.system.groups = this.system.groups || {};
     this.system.attributes = this.system.attributes || {};
-    EntitySheetHelper.clampResourceValues(this.system.attributes);
 
-    for (let ch of Object.values(this.system.characteristics)) {
+    for (let ch of Object.values(this.system.attributes)) {
       ch.value = ch.initial + ch.advances + ch.species + ch.modifier + (ch.gearmodifier || 0);
     }
     this.system.heartRate["max"] = this.system.heartRate.baseline_max + 
-      this.system.characteristics["End"].value -
+      this.system.attributes["End"].value -
       2 * Math.floor((this.system.age - 21) / 3)
   }
 
@@ -69,7 +67,6 @@ export class SimpleActor extends Actor {
 
     // Remove the attributes if necessary.
     if ( !!shorthand ) {
-      delete data.attributes;
       delete data.attr;
       delete data.groups;
     }
@@ -274,13 +271,21 @@ export class SimpleActor extends Actor {
 
   // Generates dict for the charactersheet to parse
   prepareSheet() {
-    console.log(this.system);
-    let preparedData = { system: { characteristics: {} } };
-    for (const key of Object.keys(this.system.characteristics)) {
-      let n = this.system.characteristics[key].advances;
-      preparedData.system.characteristics[key] = {
+    let preparedData = { system: { attr: {}, prof: {} } };
+    for (const key of Object.keys(this.system.attributes)) {
+      let n = this.system.attributes[key].advances;
+      preparedData.system.attr[key] = {
         cost: this._attrCost(n),
         refund: n == 0 ? 0 : this._attrCost(n-1)
+      }
+    }
+    for (const [category, proficiencies] of Object.entries(this.system.proficiencies)) {
+      for (const proficiency of Object.keys(proficiencies)) {
+        let n = this.system.proficiencies[category][proficiency].advances
+        preparedData.system.prof[proficiency] = {
+          cost: this._profCost(n),
+          refund: n == 0 ? 0 : this._profCost(n-1)
+        }
       }
     }
 
@@ -293,58 +298,82 @@ export class SimpleActor extends Actor {
     }
 
     let sys = this.system;
-    let ch = sys.characteristics;
+    let ch = sys.attributes;
     mergeObject(preparedData, {
       attrs: ["End","Str","Spd","Crd","Cha","Emp","Foc","Res","Int"],
       canAdvance: true,
       zones: {
         1: {
-          value: 5 * Math.floor(this.system.heartRate.max * 75 / 500),
+          value: 5 * Math.floor(sys.heartRate.max * 75 / 500),
           tooltip: "75% Max Heart Rate".replace(/[ ]/g, "\u00a0")
         },
         2: {
-          value: 5 * Math.floor(this.system.heartRate.max * 90 / 500),
+          value: 5 * Math.floor(sys.heartRate.max * 90 / 500),
           tooltip: "90% Max Heart Rate".replace(/[ ]/g, "\u00a0")
         }
       },
       speeds: {
         Stride: { 
-          value: Math.min(5 + Math.floor(ch["Spd"].value / 6  ),            ch["Foc"].value),
-          tooltip: "Min(5 + Spd/6, Foc)".replace(/[ ]/g, "\u00a0")
+          value: Math.min(5 + Math.floor(ch["Spd"].value / 6  ), Math.floor(ch["Foc"].value * 0.665)),
+          tooltip: "Min(5 + Spd/6, 66% Foc)".replace(/[ ]/g, "\u00a0")
          },
         Run: { 
-          value: Math.min(7 + Math.floor(ch["Spd"].value / 3  ), Math.floor(ch["Foc"].value * 1.5)),
-          tooltip: "Min(7+ Spd/3, 1.5 Foc)".replace(/[ ]/g, "\u00a0")
+          value: Math.min(7 + Math.floor(ch["Spd"].value / 3  ),            ch["Foc"].value),
+          tooltip: "Min(7+ Spd/3, Foc)".replace(/[ ]/g, "\u00a0")
          },
         Sprint: { 
-          value: Math.min(8 + Math.floor(ch["Spd"].value / 1.5),            ch["Foc"].value * 2),
-          tooltip: "Min(9+ Spd/1.5, 2 Foc)".replace(/[ ]/g, "\u00a0")
+          value: Math.min(8 + Math.floor(ch["Spd"].value / 1.5), Math.floor(ch["Foc"].value * 1.5)),
+          tooltip: "Min(9+ Spd/1.5, 150% Foc)".replace(/[ ]/g, "\u00a0")
          }
       },
       herotoken: Array(sys.heroToken.max).fill(false).fill(true, 0, sys.heroToken.available)
     });
 
-    // console.log(preparedData)
     return preparedData
   }
 
   async _advanceAttr(attrName, type) {
-    const attr = this.system.characteristics[attrName]
+    const attr = this.system.attributes[attrName]
     const ph = this.system.PracticeHours
 
     let update = {}
     if ((type == "advance") && (ph.max - ph.used >= this._attrCost(attr.advances)) ) {
-      update[`system.characteristics.${attrName}.advances`] = attr.advances + 1
-      update[`system.characteristics.${attrName}.value`] = attr.value + 1
+      update[`system.attributes.${attrName}.advances`] = attr.advances + 1
+      update[`system.attributes.${attrName}.value`] = attr.value + 1
       update[`system.PracticeHours.used`] = ph.used + this._attrCost(attr.advances)
     }
     else if ((type == "refund") && (attr.advances > 0) ) {
-      update[`system.characteristics.${attrName}.advances`] = attr.advances - 1
-      update[`system.characteristics.${attrName}.value`] = attr.value - 1
-      update[`system.PracticeHours.used`] = ph.used + this._attrCost(attr.advances - 1)
+      update[`system.attributes.${attrName}.advances`] = attr.advances - 1
+      update[`system.attributes.${attrName}.value`] = attr.value - 1
+      update[`system.PracticeHours.used`] = ph.used - this._attrCost(attr.advances - 1)
+    }
+    this.update(update)
+  }
+
+  async _advanceProf(profName, type) {
+    let profValues = undefined;
+    let cat = undefined;
+    for (const [category, proficiencies] of Object.entries(this.system.proficiencies)) {
+      if (profName in proficiencies) {
+        cat = category
+        profValues = proficiencies[profName]
+      }
+    }
+    const ph = this.system.PracticeHours
+    console.log(profName, cat, profValues);
+
+    let update = {}
+    if ((type == "advance") && (ph.max - ph.used >= this._attrCost(profValues.advances)) ) {
+      update[`system.proficiencies.${cat}.${profName}.advances`] = profValues.advances + 1
+      update[`system.PracticeHours.used`] = ph.used + this._profCost(profValues.advances)
+    }
+    else if ((type == "refund") && (profValues.advances > 0) ) {
+      update[`system.proficiencies.${cat}.${profName}.advances`] = profValues.advances - 1
+      update[`system.PracticeHours.used`] = ph.used - this._profCost(profValues.advances - 1)
     }
     this.update(update)
   }
 
   _attrCost(n) { return 10 * Math.floor(12 + 8 * Math.pow(1.15, n)); }
+  _profCost(n) { return  5 * Math.floor( 5 + 5 * Math.pow(1.1,  n)); }
 }

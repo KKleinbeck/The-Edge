@@ -1,14 +1,13 @@
 {
   "id": "the_edge",
   "version": "0.0.1",
-  "title": "Galaxy's Edge",
+  "title": "The Edge",
   "url": "https://github.com/foundryvtt/worldbuilding/",
-  "description": "A minimalist game system which provides configurable Actor and Item templates to support free-form system agnostic game-play.",
+  "description": "A Sci-Fi centric rule system, heavily inspired by the DSA ruleset.",
   "license": "LICENSE.txt",
   "authors": [
     {
       "name": "Kevin Kleinbeck",
-      "url": "https://foundryvtt.com",
       "flags": {}
     }
   ],

@@ -48,9 +48,9 @@ export class SimpleActorSheet extends ActorSheet {
     if ( !this.isEditable ) return;
 
     // Attribute Management
-    html.find(".attributes").on("click", ".attribute-control", EntitySheetHelper.onClickAttributeControl.bind(this));
-    html.find(".groups").on("click", ".group-control", EntitySheetHelper.onClickAttributeGroupControl.bind(this));
-    html.find(".attributes").on("click", "a.attribute-roll", EntitySheetHelper.onAttributeRoll.bind(this));
+    // html.find(".attributes").on("click", ".attribute-control", EntitySheetHelper.onClickAttributeControl.bind(this));
+    // html.find(".groups").on("click", ".group-control", EntitySheetHelper.onClickAttributeGroupControl.bind(this));
+    // html.find(".attributes").on("click", "a.attribute-roll", EntitySheetHelper.onAttributeRoll.bind(this));
 
     // Item Controls
     html.find(".item-control").click(this._onItemControl.bind(this));
@@ -71,10 +71,11 @@ export class SimpleActorSheet extends ActorSheet {
 
     // Attributes
     html.find(".attr-d20").mousedown(ev => this._rollAttr(ev));
-    html.find(".advance").click(ev => this._advanceAttr(ev));
+    html.find(".advance-attr").click(ev => this._advanceSrv(ev, "attr"));
 
     // Proficiencies
     html.find(".attr-d20-proficiency").click(ev => this._rollProficiency(ev))
+    html.find(".advance-prof").click(ev => this._advanceSrv(ev, "prof"));
   }
 
   async _useHeroToken(ev) {
@@ -94,15 +95,24 @@ export class SimpleActorSheet extends ActorSheet {
   async _rollAttr(ev) {
     const target = ev.currentTarget; // HTMLElement
     const attr = target.className.split("d20-")[1].slice(0, 3);
-    const threshold = this.actor.system.characteristics[attr]["value"];
+    const threshold = this.actor.system.attributes[attr]["value"];
     await DiceServer.attributeCheck(threshold, attr);
   }
 
-  async _advanceAttr(ev) {
+  async _advanceSrv(ev, quantity) {
     const target = ev.currentTarget;
-    let attr = target.getAttribute("data-attr");
-    let type = target.className.split("attribute-")[1];
-    this.actor._advanceAttr(attr, type);
+    let name = target.getAttribute("data-name");
+    let type = target.getAttribute("advance-type");
+    console.log(name, type)
+    switch (quantity){
+      case "attr":
+        this.actor._advanceAttr(name, type);
+        break;
+
+      case "prof":
+        this.actor._advanceProf(name, type);
+        break;
+    }
     this._render();
   }
 
@@ -121,7 +131,7 @@ export class SimpleActorSheet extends ActorSheet {
     }
     const thresholds = []
     for (const dice of dices) {
-      thresholds.push(this.actor.system.characteristics[dice]["value"])
+      thresholds.push(this.actor.system.attributes[dice]["value"])
     }
     let d = DialogProficiency.start({
       name: proficiency,
@@ -174,8 +184,8 @@ export class SimpleActorSheet extends ActorSheet {
   /** @inheritdoc */
   _getSubmitData(updateData) {
     let formData = super._getSubmitData(updateData);
-    formData = EntitySheetHelper.updateAttributes(formData, this.object);
-    formData = EntitySheetHelper.updateGroups(formData, this.object);
+    // formData = EntitySheetHelper.updateAttributes(formData, this.object);
+    // formData = EntitySheetHelper.updateGroups(formData, this.object);
     return formData;
   }
 }

@@ -36,7 +36,7 @@
                 <div class="page-centered">
                     <p class="attribute-title">{{attr}}</p>
                     <a class="attr-d20 d20-{{attr}}">
-                        <span class="d20-overlay">{{getAttr ../actor attr 'value'}}</span>
+                        <span class="d20-overlay">{{getSys ../actor "attributes" attr 'value'}}</span>
                     </a>
                 </div>
                 {{/each}}

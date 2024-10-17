@@ -2,8 +2,8 @@
 "Actor": {
   "types": ["character"],
   "templates": {
-    "characteristics": {
-      "characteristics": {
+    "attributes": {
+      "attributes": {
         "End": {
           "species": 0,
           "initial": 0,
@@ -60,7 +60,7 @@
         }
       }
     },
-    "proficiencies" : {
+    "proficiencies": {
       "proficiencies": {
         "Physical": {
           "Climbing": {"dices": ["End", "Str", "Str"], "advances": 0, "modifier": 0},
@@ -106,7 +106,7 @@
         "Social": {
           "Human cultures": {"dices": ["Cha", "Emp", "Int"], "advances": 0, "modifier": 0},
           "Alien cultures": {"dices": ["Cha", "Int", "Int"], "advances": 0, "modifier": 0},
-          "Customs amongst outlaws": {"dices": ["Cha", "Cha", "Int"], "advances": 0, "modifier": 0},
+          "Outlaws' customs": {"dices": ["Cha", "Cha", "Int"], "advances": 0, "modifier": 0},
           "Barter": {"dices": ["Cha", "Cha", "Cha"], "advances": 0, "modifier": 0},
           "Threaten": {"dices": ["Str", "Cha", "Cha"], "advances": 0, "modifier": 0},
           "Convince": {"dices": ["Cha", "Emp", "Emp"], "advances": 0, "modifier": 0},
@@ -125,11 +125,33 @@
           "Medicine": {"dices": ["Crd", "End", "Foc"], "advances": 0, "modifier": 0}
         }
       }
+    },
+    "weapons": {
+      "weapons": {
+        "Energy Weapons": {
+          "Blaster Pistols":   {"initial": 5, "level": 0},
+          "Assault Blasters":  {"initial": 5, "level": 0},
+          "SABs":              {"initial": 2, "level": 0},
+          "Blaster Shockguns": {"initial": 4, "level": 0},
+          "Blaster Rifles":    {"initial": 0, "level": 0}
+        },
+        "Kinetic Weapons": {
+          "Pistols":          {"initial": 4, "level": 0},
+          "Slug Throwers":    {"initial": 2, "level": 0},
+          "LMGs":             {"initial": 0, "level": 0},
+          "Shotguns":         {"initial": 2, "level": 0},
+          "Projectile Rifle": {"initial": 0, "level": 0}
+        },
+        "Others": {
+          "Combatics": {"initial": 10, "level": 0},
+          "Recoilless Rifles": {"initial": 0, "level": 0}
+        }
+      }
     }
   },
   "htmlFields": ["biography"],
   "character": {
-    "templates": ["characteristics", "proficiencies"],
+    "templates": ["attributes", "proficiencies", "weapons"],
     "biography": "",
     "health": {
       "value": 20,
@@ -154,9 +176,7 @@
       "used": 0,
       "max": 0
     },
-    "languages": {"Standard": "Native"},
-    "attributes": {},
-    "groups": {}
+    "languages": {"Standard": "Native"}
   }
 },
 "Item": {

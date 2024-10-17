@@ -14,9 +14,13 @@
       <div class="proficiency-box">
         <div class="name">
           {{proficiency}}
+          {{#if ../../prepare.canAdvance}}
+            <a data-name="{{proficiency}}" advance-type="refund"  class="advance-prof"><i data-tooltip="{{getSys ../../prepare 'prof' proficiency 'refund'}}" class="fas fa-minus advance-fa"></i></a>
+            <a data-name="{{proficiency}}" advance-type="advance" class="advance-prof"><i data-tooltip="{{getSys ../../prepare 'prof' proficiency 'cost'}}" class="fas fa-plus advance-fa"></i></a>
+          {{/if}}
         </div>
         <div class="proficiency-column">
-          <span class="output">{{getProficiency ../../actor category proficiency 'advances'}}</span>
+          <span class="output" style="width:30px">{{getProficiency ../../actor category proficiency 'advances'}}</span>
         </div>
         <div class="proficiency-column">
           <div class="input-restrainer">
@@ -57,9 +61,13 @@
       <div class="proficiency-box">
         <div class="name">
           {{proficiency}}
+          {{#if ../../prepare.canAdvance}}
+            <a data-name="{{proficiency}}" advance-type="refund"  class="advance-prof"><i data-tooltip="{{getSys ../../prepare 'prof' proficiency 'refund'}}" class="fas fa-minus advance-fa"></i></a>
+            <a data-name="{{proficiency}}" advance-type="advance" class="advance-prof"><i data-tooltip="{{getSys ../../prepare 'prof' proficiency 'cost'}}" class="fas fa-plus advance-fa"></i></a>
+          {{/if}}
         </div>
         <div class="proficiency-column">
-          <span class="output">{{getProficiency ../../actor category proficiency 'advances'}}</span>
+          <span class="output" style="width:30px">{{getProficiency ../../actor category proficiency 'advances'}}</span>
         </div>
         <div class="proficiency-column">
           <div class="input-restrainer">

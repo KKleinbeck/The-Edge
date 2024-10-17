@@ -16,7 +16,7 @@
   overflow-y: hidden;
 }
 .the_edge .input-restrainer {
-  width: 25px;
+  width: 30px;
 }
 .the_edge .form {
   height: 100%;
@@ -135,6 +135,14 @@
 }
 .the_edge .proficiency-column {
   flex: 1;
+}
+.the_edge .proficiency-column .input-restrainer {
+  width: 30px;
+  text-align: right;
+}
+.the_edge .proficiency-column .output {
+  width: 30px;
+  text-align: right;
 }
 .the_edge .proficiency-box {
   align-items: center;
@@ -383,13 +391,13 @@
   text-align: right;
 }
 
-.characteristics-table {
+.attributes-table {
   display: block;
   width: 100%;
   min-width: var(--minColumnWidth70);
 }
   
-.characteristics-table .table-row {
+.attributes-table .table-row {
   text-align: center;
   width: 100%;
   border-bottom: none;
