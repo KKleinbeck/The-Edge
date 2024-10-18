@@ -7,8 +7,8 @@
 import initHooks from "./hooks/init.js";
 import THE_EDGE from "./system/config-the-edge.js"
 import { SimpleActor } from "./actor.js";
-import { SimpleItem } from "./item.js";
-import { SimpleItemSheet } from "./item-sheet.js";
+import { TheEdgeItem } from "./items/item.js";
+import { TheEdgeItemSheet } from "./items/item-sheet.js";
 import { SimpleActorSheet } from "./actor-sheet.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
 import { createWorldbuildingMacro } from "./macro.js";
@@ -41,7 +41,7 @@ Hooks.once("init", async function() {
 
   // Define custom Document classes
   CONFIG.Actor.documentClass = SimpleActor;
-  CONFIG.Item.documentClass = SimpleItem;
+  CONFIG.Item.documentClass = TheEdgeItem;
   CONFIG.Token.documentClass = SimpleTokenDocument;
   CONFIG.Token.objectClass = SimpleToken;
   CONFIG.ChatMessage.template = "systems/the_edge/templates/chat/chat_message.html"
@@ -49,8 +49,9 @@ Hooks.once("init", async function() {
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("the_edge", SimpleActorSheet, { makeDefault: true });
-  Items.unregisterSheet("core", ItemSheet);
-  Items.registerSheet("the_edge", SimpleItemSheet, { makeDefault: true });
+  // Items.unregisterSheet("core", ItemSheet);
+  // Items.registerSheet("the_edge", TheEdgeItemSheet, { makeDefault: true });
+  TheEdgeItemSheet.setupSheets()
 
   // Register system settings
   game.settings.register("the_edge", "macroShorthand", {

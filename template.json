@@ -180,9 +180,40 @@
   }
 },
 "Item": {
-  "types": ["item"],
+  "types": [
+    "weapon",
+    "armour",
+    "ammonition",
+
+    "advantage",
+    "disadvantage",
+
+    "skill",
+    "combatskill",
+    "medicalskill",
+
+    "gear",
+    "clothing",
+    "consumables",
+    "credits",
+
+    "species",
+
+    "effect"
+  ],
+  "templates": {
+    "description": {
+      "description": {"value": ""},
+      "gm_description": {"value": ""}
+    },
+    "stackable": {
+      "quantity": 1,
+      "weight": 0,
+      "value": 0
+    }
+  },
   "htmlFields": ["description"],
-  "item": {
+  "weapon": {
     "description": "",
     "quantity": 1,
     "weight": 0,

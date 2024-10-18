@@ -1,21 +1,38 @@
-import { EntitySheetHelper } from "./helper.js";
-import {ATTRIBUTE_TYPES} from "./constants.js";
+import { EntitySheetHelper } from "../helper.js";
+import {ATTRIBUTE_TYPES} from "../constants.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class SimpleItemSheet extends ItemSheet {
+export class TheEdgeItemSheet extends ItemSheet {
 
   /** @inheritdoc */
   static get defaultOptions() {
+    console.log(game.the_edge)
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["the_edge", "sheet", "item"],
-      template: "systems/the_edge/templates/item-sheet.html",
+      template: "systems/the_edge/templates/items/item-sheet.html",
       width: 520,
       height: 480,
       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}],
       scrollY: [".attributes"],
+    });
+  }
+  
+  static setupSheets() {
+    Items.unregisterSheet("core", ItemSheet);
+    Items.registerSheet("the_edge", TheEdgeItemSheet, { makeDefault: true });
+    Items.registerSheet("the_edge", ItemSheetWeapon, { makeDefault: true, types: ["weapon"] });
+    // Items.registerSheet("dsa5", ItemCareerDSA5, { makeDefault: true, types: ["career"] });
+    // Items.registerSheet("dsa5", ItemCultureDSA5, { makeDefault: true, types: ["culture"] });
+    // Items.registerSheet("dsa5", VantageSheetDSA5, { makeDefault: true, types: ["advantage", "disadvantage"] });
+    // Items.registerSheet("dsa5", SpellSheetDSA5, { makeDefault: true, types: ["ritual", "ceremony", "liturgy", "spell"] });
+
+    Items.unregisterSheet("the_edge", TheEdgeItemSheet, {
+      types: [
+        "weapon"
+      ]
     });
   }
 
@@ -67,4 +84,8 @@ export class SimpleItemSheet extends ItemSheet {
     formData = EntitySheetHelper.updateGroups(formData, this.object);
     return formData;
   }
+}
+
+class ItemSheetWeapon extends TheEdgeItemSheet {
+
 }

@@ -1,10 +1,10 @@
-import {EntitySheetHelper} from "./helper.js";
+import {EntitySheetHelper} from "../helper.js";
 
 /**
  * Extend the base Item document to support attributes and groups with a custom template creation dialog.
  * @extends {Item}
  */
-export class SimpleItem extends Item {
+export class TheEdgeItem extends Item {
 
   /** @inheritdoc */
   prepareDerivedData() {
@@ -30,4 +30,14 @@ export class SimpleItem extends Item {
   get isTemplate() {
     return !!this.getFlag("the_edge", "isTemplate");
   }
+
+  // static setupSubClasses() {
+  //   game.the_edge.config.ItemSubClasses = {
+  //     weapon: WeaponItemTheEdge
+  //   }
+  // }
+}
+
+class WeaponItemTheEdge extends TheEdgeItem {
+
 }

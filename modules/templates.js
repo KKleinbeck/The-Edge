@@ -21,6 +21,11 @@ export const preloadHandlebarsTemplates = async function() {
     //Combat
     "systems/the_edge/templates/actors/combat/layout.html",
     "systems/the_edge/templates/actors/combat/proficiencies.html",
+
+    // Item templates
+    "systems/the_edge/templates/items/item-sheet.html",
+    "systems/the_edge/templates/items/sheet-attributes.html",
+    "systems/the_edge/templates/items/sheet-groups.html",
   ];
 
   // Load the template parts
