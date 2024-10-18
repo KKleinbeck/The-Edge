@@ -9,29 +9,42 @@ export default class DiceServer {
   // - h[n]: take highest n dices
   // - l[n]: take lowest n dices
   // - KOMMA: return mutliple rolls
-  static async attributeCheck(threshold, ability) {
-    const diceRes = await this._basicRoll("1d20", true);
+  static async attributeCheck(check, modificators) {
+    let diceRes = await this._basicRoll("1d20", true);
     if (diceRes === undefined) return undefined;
 
+    console.log(diceRes)
+    if (modificators.advantage != "Nothing") {
+      const diceRes2 = await this._basicRoll("1d20", true);
+      console.log(diceRes2)
+
+      if ( ((modificators.advantage == "Advantage") && (diceRes2 < diceRes)) ||
+           ((modificators.advantage == "Disadvantage") && (diceRes2 > diceRes)) ) {
+        diceRes = diceRes2;
+      }
+    }
+
     let outcome = undefined;
+    let threshold = check.threshold + modificators.temporary;
     if (diceRes == 1)  outcome = "CritSuccess";
     else if (diceRes == 20) outcome = "CritFailure";
     else if (threshold >= diceRes) outcome = "Success";
     else outcome = "Failure";
-    ChatServer.transmitRoll("AbilityCheck", {ability: ability, roll: diceRes, outcome: outcome, threshold: threshold});
+
+    let details = {roll: diceRes, outcome: outcome};
+    mergeObject(details, check)
+    mergeObject(details, modificators)
+    ChatServer.transmitRoll("AbilityCheck", details);
   }
 
   static async proficiencyCheck(check, modificators, transmit = true) {
-    console.log(modificators)
     const diceRes = await new Roll("3d20").evaluate({async: true});
     let results = [];
     let failedSum = 0;
     let sum = 0;
     for (let i = 0; i < 3; i++) {
       results.push(diceRes.dice[0].results[i].result)
-      console.log("Result ", i, ": ", results[i])
       let netOutcome = check.thresholds[i] - results[i]
-      console.log("Threshold ", i, ": ", check.thresholds[i])
       failedSum += Math.min(netOutcome, 0)
       sum += netOutcome
     }
@@ -57,7 +70,6 @@ export default class DiceServer {
         mergeObject(result, {outcome: sum < -modificator ? "Failure" : "Success", quality: Math.floor((modificator + sum) / 3)});
       }
     }
-    console.log("Quality", result.quality)
     
     if (modificators.advantage != "Nothing") {
       let advantage = modificators.advantage;
@@ -72,9 +84,7 @@ export default class DiceServer {
         case "Disadvantage":
           result = result2.quality < result.quality ? result2 : result;
       }
-      console.log("Final Quality", result.quality)
     }
-    console.log(result)
     if (transmit) ChatServer.transmitRoll("ProficiencyCheck", result);
     return result;
   }

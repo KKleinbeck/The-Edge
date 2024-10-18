@@ -1,7 +1,7 @@
 import { EntitySheetHelper } from "./helper.js";
 import {ATTRIBUTE_TYPES} from "./constants.js";
-import DiceServer from "./system/dice_server.js";
 import DialogProficiency from "./dialogs/dialog-proficiency.js";
+import DialogAttribute from "./dialogs/dialog-attribute.js";
 
 export class SimpleActorSheet extends ActorSheet {
 
@@ -91,13 +91,6 @@ export class SimpleActorSheet extends ActorSheet {
     this._render();
   }
 
-  async _rollAttr(ev) {
-    const target = ev.currentTarget; // HTMLElement
-    const attr = target.className.split("d20-")[1].slice(0, 3);
-    const threshold = this.actor.system.attributes[attr]["value"];
-    await DiceServer.attributeCheck(threshold, attr);
-  }
-
   async _advanceSrv(ev, quantity) {
     const target = ev.currentTarget;
     let name = target.getAttribute("data-name");
@@ -113,6 +106,16 @@ export class SimpleActorSheet extends ActorSheet {
         break;
     }
     this._render();
+  }
+
+  async _rollAttr(ev) {
+    const target = ev.currentTarget; // HTMLElement
+    const attribute = target.getAttribute("attr-name");
+    const threshold = this.actor.system.attributes[attribute]["value"];
+    let d = DialogAttribute.start({
+      attribute: attribute,
+      threshold: threshold,
+    })
   }
 
   async _rollProficiency(ev) {

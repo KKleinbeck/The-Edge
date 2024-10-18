@@ -193,7 +193,7 @@
   flex: 7;
   font-weight: bold;
 }
-.proficiency-dialog-box { /* As Dialog, don't add the_edge before  */
+.check-dialog-box { /* As Dialog, don't add the_edge before  */
   display: flex;
   gap: 9px;
   align-items: center;
