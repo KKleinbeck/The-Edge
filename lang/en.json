@@ -1,5 +1,5 @@
 {
-  "CHAR": {
+  "ATTR": {
     "END": "Endurance",
     "STR": "Strength",
     "SPD": "Speed",
@@ -10,7 +10,7 @@
     "RES": "Resilience",
     "INT": "Intelligence"
   },
-  "CHARAbbr": {
+  "ATTR_ABBR": {
     "END": "END",
     "STR": "STR",
     "SPD": "SPD",
@@ -20,6 +20,23 @@
     "FOC": "FOC",
     "RES": "RES",
     "INT": "INT"
+  },
+  "COMBAT": {
+    "BLASTER PISTOLS": "Blaster Pistols",
+    "ASSAULT BLASTERS": "Assault Blasters",
+    "SABS": "SABs",
+    "BLASTER SHOCKGUNS": "Blaster Shockguns",
+    "BLASTER RIFLES": "Blaster Rifles",
+    "PISTOLS": "Pistols",
+    "SLUG THROWERS": "Slug Throwers",
+    "LMGS": "LMGs",
+    "SHOTGUNS": "Shotguns",
+    "PROJECTILE RIFLE": "Projectile Rifle",
+    "COMBATICS": "Combatics",
+    "RECOILLESS RIFLES": "Recoilless Rifles",
+    "WEAPONSENERGY": "Energy Weapons",
+    "WEAPONSKINETIC": "Kinetic Weapons",
+    "WEAPONSOTHER": "Other Weapons"
   },
   "PROFICIENCY": {
     "CLIMBING": "Climbing",

@@ -48,6 +48,7 @@
     <nav class="sheet-tabs tabs" data-group="primary">
         <a class="item" data-tab="attributes">Attributes</a>
         <a class="item" data-tab="proficiencies">Proficiencies</a>
+        <a class="item" data-tab="combat">Combat</a>
         <a class="item" data-tab="items">Items</a>
         <a class="item" data-tab="description">Description</a>
     </nav>
@@ -59,6 +60,9 @@
         </div>
         <div class="tab" data-group="primary" data-tab="proficiencies">
             {{> systems/the_edge/templates/actors/proficiencies/layout.html}}
+        </div>
+        <div class="tab" data-group="primary" data-tab="combat">
+            {{> systems/the_edge/templates/actors/combat/layout.html}}
         </div>
         <div class="tab items" data-group="primary" data-tab="items">
             {{> systems/the_edge/templates/actors/items.html}}

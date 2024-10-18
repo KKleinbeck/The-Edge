@@ -4,7 +4,11 @@ export default class LocalisationServer {
     }
 
     static attributeLocalisation(id) {
-        return game.i18n.localize(`CHAR.${id.toUpperCase()}`)
+        return game.i18n.localize(`ATTR.${id.toUpperCase()}`)
+    }
+
+    static combatLocalisation(id) {
+        return game.i18n.localize(`COMBAT.${id.toUpperCase()}`)
     }
 
     static proficiencyLocalisation(id) {
@@ -12,7 +16,7 @@ export default class LocalisationServer {
     }
     
     static attributeAbbrLocalisation(id) {
-        return game.i18n.localize(`CHARAbbr.${id.toUpperCase()}`)
+        return game.i18n.localize(`ATTR_ABBR.${id.toUpperCase()}`)
     }
 
     static chatLocalisation(id, type) {

@@ -1,6 +1,5 @@
 import { EntitySheetHelper } from "./helper.js";
 import {ATTRIBUTE_TYPES} from "./constants.js";
-import ChatServer from "./system/chat_server.js";
 import DiceServer from "./system/dice_server.js";
 import DialogProficiency from "./dialogs/dialog-proficiency.js";
 
@@ -15,7 +14,7 @@ export class SimpleActorSheet extends ActorSheet {
       width: 700,
       height: 600,
       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "attributes"}],
-      scrollY: [".attributes", ".proficiencies", ".items", ".biography"],
+      scrollY: [".attributes", ".proficiencies", ".combat", ".items", ".biography"],
       dragDrop: [{dragSelector: ".item-list .item", dropSelector: null}]
     });
   }

@@ -123,6 +123,43 @@
 .the_edge .d20-Int {
   background-image: url('../icons/d20b1.png');
 }
+.the_edge .d20-black {
+  background-image: url('../icons/d20black.png');
+}
+.the_edge .weapon-box {
+  align-items: center;
+  display: flex;
+  width: 100%;
+  gap: 6px;
+  line-height: 14px;
+  height: 28px;
+  padding: 0px 8px 0px 8px;
+  margin-bottom: 10px;
+}
+.the_edge .d20-overlay-weapon {
+  white-space: nowrap;
+  position: absolute; /* Position the text absolutely inside the parent */
+  color: #FFF;
+  top: 50%; /* Center the text vertically */
+  left: 50%; /* Center the text horizontally */
+  transform: translate(-50%, -40%); /* Adjust for perfect centering */
+  z-index: 1; /* Ensure the text is above the background */
+  text-transform: uppercase; /* Makes the text all capital letters */
+  font-weight: bold; /* Optional: Make the title bold */
+  font-size: 12px;
+}
+.the_edge .attr-d20-weapon {
+  border: none;
+  margin-left: 0px;
+  margin-right: 0px;
+  padding: 0;
+  width: 25px;
+  height: 30px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: inline-block;
+  position: relative;
+}
 .the_edge .proficiency-header {
   margin-top: 15px;
   margin-bottom: -8px; /* Space between title and the horizontal line */
@@ -424,8 +461,9 @@
 
 .columned-page {
   display: flex;
+  flex-wrap: wrap;
   width: 100%;
-  gap: 20px;
+  gap: 10px 20px;
   padding: 0;
   margin-top: 0;
 }

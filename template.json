@@ -128,14 +128,14 @@
     },
     "weapons": {
       "weapons": {
-        "Energy Weapons": {
+        "Energy": {
           "Blaster Pistols":   {"initial": 5, "level": 0},
           "Assault Blasters":  {"initial": 5, "level": 0},
           "SABs":              {"initial": 2, "level": 0},
           "Blaster Shockguns": {"initial": 4, "level": 0},
           "Blaster Rifles":    {"initial": 0, "level": 0}
         },
-        "Kinetic Weapons": {
+        "Kinetic": {
           "Pistols":          {"initial": 4, "level": 0},
           "Slug Throwers":    {"initial": 2, "level": 0},
           "LMGs":             {"initial": 0, "level": 0},
