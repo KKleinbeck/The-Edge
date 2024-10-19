@@ -1,3 +1,4 @@
+// The purpose of this class is to provide shared communalities between Items and Actors.
 export class EntitySheetHelper {
 
   static getAttributeData(data) {
@@ -437,14 +438,10 @@ export class EntitySheetHelper {
     const title = game.i18n.format("DOCUMENT.Create", {type: label});
 
     // Identify the template Actor types
-    const collection = game.collections.get(this.documentName);
-    const templates = collection.filter(a => a.getFlag("the_edge", "isTemplate"));
-    const defaultType = this.TYPES.filter(t => t !== CONST.BASE_DOCUMENT_TYPE)[0] ?? CONST.BASE_DOCUMENT_TYPE;
-    const types = {
-      [defaultType]: game.i18n.localize("SIMPLE.NoTemplate")
-    }
-    for ( let a of templates ) {
-      types[a.id] = a.name;
+    const templates = game.template[this.documentName]
+    const types = {}
+    for (const template of templates.types) {
+      types[template] = template
     }
 
     // Render the document creation form
@@ -470,14 +467,7 @@ export class EntitySheetHelper {
         const form = html[0].querySelector("form");
         const fd = new FormDataExtended(form);
         let createData = fd.object;
-
-        // Merge with template data
-        const template = collection.get(form.type.value);
-        if ( template ) {
-          createData = foundry.utils.mergeObject(template.toObject(), createData);
-          createData.type = template.type;
-          delete createData.flags.the_edge.isTemplate;
-        }
+        createData.type = form.type.value;
 
         // Merge provided override data
         createData = foundry.utils.mergeObject(createData, data, { inplace: false });

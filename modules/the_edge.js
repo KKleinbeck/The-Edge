@@ -36,7 +36,7 @@ Hooks.once("init", async function() {
   game.the_edge = {
     SimpleActor,
     createWorldbuildingMacro,
-    config: THE_EDGE
+    config: THE_EDGE,
   };
 
   // Define custom Document classes
@@ -49,8 +49,6 @@ Hooks.once("init", async function() {
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("the_edge", SimpleActorSheet, { makeDefault: true });
-  // Items.unregisterSheet("core", ItemSheet);
-  // Items.registerSheet("the_edge", TheEdgeItemSheet, { makeDefault: true });
   TheEdgeItemSheet.setupSheets()
 
   // Register system settings
@@ -103,77 +101,82 @@ Hooks.once("init", async function() {
   await preloadHandlebarsTemplates();
 });
 
+// Hooks.on("ready", async() => {
+//   TheEdgeItem.setupSubClasses()
+// })
+
 /**
  * Macrobar hook.
  */
-Hooks.on("hotbarDrop", (bar, data, slot) => createWorldbuildingMacro(data, slot));
+// Hooks.on("hotbarDrop", (bar, data, slot) => createWorldbuildingMacro(data, slot));
 
 /**
  * Adds the actor template context menu.
  */
-Hooks.on("getActorDirectoryEntryContext", (html, options) => {
+// Hooks.on("getActorDirectoryEntryContext", (html, options) => {
 
-  // Define an actor as a template.
-  options.push({
-    name: game.i18n.localize("SIMPLE.DefineTemplate"),
-    icon: '<i class="fas fa-stamp"></i>',
-    condition: li => {
-      const actor = game.actors.get(li.data("documentId"));
-      return !actor.isTemplate;
-    },
-    callback: li => {
-      const actor = game.actors.get(li.data("documentId"));
-      actor.setFlag("the_edge", "isTemplate", true);
-    }
-  });
+//   // Define an actor as a template.
+//   options.push({
+//     name: game.i18n.localize("SIMPLE.DefineTemplate"),
+//     icon: '<i class="fas fa-stamp"></i>',
+//     condition: li => {
+//       const actor = game.actors.get(li.data("documentId"));
+//       return !actor.isTemplate;
+//     },
+//     callback: li => {
+//       const actor = game.actors.get(li.data("documentId"));
+//       actor.setFlag("the_edge", "isTemplate", true);
+//     }
+//   });
 
-  // Undefine an actor as a template.
-  options.push({
-    name: game.i18n.localize("SIMPLE.UnsetTemplate"),
-    icon: '<i class="fas fa-times"></i>',
-    condition: li => {
-      const actor = game.actors.get(li.data("documentId"));
-      return actor.isTemplate;
-    },
-    callback: li => {
-      const actor = game.actors.get(li.data("documentId"));
-      actor.setFlag("the_edge", "isTemplate", false);
-    }
-  });
-});
+//   // Undefine an actor as a template.
+//   options.push({
+//     name: game.i18n.localize("SIMPLE.UnsetTemplate"),
+//     icon: '<i class="fas fa-times"></i>',
+//     condition: li => {
+//       const actor = game.actors.get(li.data("documentId"));
+//       return actor.isTemplate;
+//     },
+//     callback: li => {
+//       const actor = game.actors.get(li.data("documentId"));
+//       actor.setFlag("the_edge", "isTemplate", false);
+//     }
+//   });
+// });
 
 /**
  * Adds the item template context menu.
  */
-Hooks.on("getItemDirectoryEntryContext", (html, options) => {
+// Hooks.on("getItemDirectoryEntryContext", (html, options) => {
+//   // template.item.type
+//   // data.template
+//   // Define an item as a template.
+//   options.push({
+//     name: game.i18n.localize("SIMPLE.DefineTemplate"),
+//     icon: '<i class="fas fa-stamp"></i>',
+//     condition: li => {
+//       const item = game.items.get(li.data("documentId"));
+//       return !item.isTemplate;
+//     },
+//     callback: li => {
+//       const item = game.items.get(li.data("documentId"));
+//       item.setFlag("the_edge", "isTemplate", true);
+//     }
+//   });
 
-  // Define an item as a template.
-  options.push({
-    name: game.i18n.localize("SIMPLE.DefineTemplate"),
-    icon: '<i class="fas fa-stamp"></i>',
-    condition: li => {
-      const item = game.items.get(li.data("documentId"));
-      return !item.isTemplate;
-    },
-    callback: li => {
-      const item = game.items.get(li.data("documentId"));
-      item.setFlag("the_edge", "isTemplate", true);
-    }
-  });
-
-  // Undefine an item as a template.
-  options.push({
-    name: game.i18n.localize("SIMPLE.UnsetTemplate"),
-    icon: '<i class="fas fa-times"></i>',
-    condition: li => {
-      const item = game.items.get(li.data("documentId"));
-      return item.isTemplate;
-    },
-    callback: li => {
-      const item = game.items.get(li.data("documentId"));
-      item.setFlag("the_edge", "isTemplate", false);
-    }
-  });
-});
+//   // Undefine an item as a template.
+//   options.push({
+//     name: game.i18n.localize("SIMPLE.UnsetTemplate"),
+//     icon: '<i class="fas fa-times"></i>',
+//     condition: li => {
+//       const item = game.items.get(li.data("documentId"));
+//       return item.isTemplate;
+//     },
+//     callback: li => {
+//       const item = game.items.get(li.data("documentId"));
+//       item.setFlag("the_edge", "isTemplate", false);
+//     }
+//   });
+// });
 
 initHooks();

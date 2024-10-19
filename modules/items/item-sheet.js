@@ -9,7 +9,6 @@ export class TheEdgeItemSheet extends ItemSheet {
 
   /** @inheritdoc */
   static get defaultOptions() {
-    console.log(game.the_edge)
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["the_edge", "sheet", "item"],
       template: "systems/the_edge/templates/items/item-sheet.html",

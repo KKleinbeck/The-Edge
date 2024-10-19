@@ -31,11 +31,11 @@ export class TheEdgeItem extends Item {
     return !!this.getFlag("the_edge", "isTemplate");
   }
 
-  // static setupSubClasses() {
-  //   game.the_edge.config.ItemSubClasses = {
-  //     weapon: WeaponItemTheEdge
-  //   }
-  // }
+  static setupSubClasses() {
+    game.the_edge.config.ItemSubClasses = {
+      weapon: WeaponItemTheEdge
+    }
+  }
 }
 
 class WeaponItemTheEdge extends TheEdgeItem {

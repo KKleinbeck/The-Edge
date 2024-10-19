@@ -13,10 +13,8 @@ export default class DiceServer {
     let diceRes = await this._basicRoll("1d20", true);
     if (diceRes === undefined) return undefined;
 
-    console.log(diceRes)
     if (modificators.advantage != "Nothing") {
       const diceRes2 = await this._basicRoll("1d20", true);
-      console.log(diceRes2)
 
       if ( ((modificators.advantage == "Advantage") && (diceRes2 < diceRes)) ||
            ((modificators.advantage == "Disadvantage") && (diceRes2 > diceRes)) ) {
