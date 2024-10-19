@@ -1,0 +1,104 @@
+<form class="flexcol {{cssClass}}" autocomplete="off">
+    <header class="sheet-header">
+        <div class="item-columned-page">
+            <div style="width: 120px;">
+                <img class="profile-img-item" src="{{data.img}}" data-edit="img" title="{{data.name}}" />
+                <h3 class="charname">
+                    <input name="name" type="text" value="{{data.name}}" placeholder="Name" />
+                </h3>
+            </div>
+            <div style="flex: 1">
+                <div class="item-columned-page">
+                    <div class="item-header-fields">
+                        {{genName "Weight"}}<br/>
+                        <input type="number" name="data.weight" value="{{data.system.weight}}" data-dtype="Number"/>
+                    </div>
+                    <div class="item-header-fields">
+                        {{genName "Value"}}<br/>
+                        <input type="number" name="data.value" value="{{data.system.value}}" data-dtype="Number"/>
+                    </div>
+                    <div class="item-header-fields">
+                        <b>{{genName "Locations"}}</b><br/>
+                        <label for="location-body">{{genName "body"}}</label>
+                        <!-- <input type="checkbox" id="location-body" name="location-body" {{#if (checkIn "body" systemData.location)}}{{/if}} /> -->
+                        <br/>
+                        <label for="location-pockets">{{genName "pockets"}}</label>
+                        <!-- <input type="checkbox" id="location-pockets" name="location-pockets" {{#if (checkIn "pockets" systemData.location)}}{{/if}} /> -->
+                        <br/>
+                        <label for="location-bag">{{genName "bag"}}</label>
+                        <!-- <input type="checkbox" id="location-bag" name="location-bag" {{#if (checkIn "bag" systemData.location)}}{{/if}} /> -->
+                        <br/>
+                    </div>
+                    <div class="item-header-fields">
+                        {{#if systemData.userIsGM}}
+                            <select class="advantage-box" name="data.lead_attr_1.name" id="Attr1-Selector">
+                                <option value="End" {{#if (checkEqual "End" data.system.lead_attr_1.name)}}selected{{/if}}>End</option>
+                                <option value="Str" {{#if (checkEqual "Str" data.system.lead_attr_1.name)}}selected{{/if}}>Str</option>
+                                <option value="Spd" {{#if (checkEqual "Spd" data.system.lead_attr_1.name)}}selected{{/if}}>Spd</option>
+                                <option value="Crd" {{#if (checkEqual "Crd" data.system.lead_attr_1.name)}}selected{{/if}}>Crd</option>
+                                <option value="Cha" {{#if (checkEqual "Cha" data.system.lead_attr_1.name)}}selected{{/if}}>Cha</option>
+                                <option value="Emp" {{#if (checkEqual "Emp" data.system.lead_attr_1.name)}}selected{{/if}}>Emp</option>
+                                <option value="Foc" {{#if (checkEqual "Foc" data.system.lead_attr_1.name)}}selected{{/if}}>Foc</option>
+                                <option value="Res" {{#if (checkEqual "Res" data.system.lead_attr_1.name)}}selected{{/if}}>Res</option>
+                                <option value="Int" {{#if (checkEqual "Int" data.system.lead_attr_1.name)}}selected{{/if}}>Int</option>
+                            </select><br/>
+                        {{else}}
+                            <a class="attr-d20-chat d20-{{data.system.lead_attr_1.name}}">
+                                <span class="d20-overlay" data-tooltip="{{attrName data.system.lead_attr_1.name}}">{{data.system.lead_attr_1.name}}</span>
+                            </a>
+                        {{/if}}
+                        <input type="number" name="data.lead_attr_1.value" value="{{data.system.lead_attr_1.value}}"/>
+                    </div>
+                    <div class="item-header-fields">
+                        {{#if systemData.userIsGM}}
+                            <select class="advantage-box" name="data.lead_attr_2.name" id="Attr1-Selector">
+                                <option value="End" {{#if (checkEqual "End" data.system.lead_attr_2.name)}}selected{{/if}}>End</option>
+                                <option value="Str" {{#if (checkEqual "Str" data.system.lead_attr_2.name)}}selected{{/if}}>Str</option>
+                                <option value="Spd" {{#if (checkEqual "Spd" data.system.lead_attr_2.name)}}selected{{/if}}>Spd</option>
+                                <option value="Crd" {{#if (checkEqual "Crd" data.system.lead_attr_2.name)}}selected{{/if}}>Crd</option>
+                                <option value="Cha" {{#if (checkEqual "Cha" data.system.lead_attr_2.name)}}selected{{/if}}>Cha</option>
+                                <option value="Emp" {{#if (checkEqual "Emp" data.system.lead_attr_2.name)}}selected{{/if}}>Emp</option>
+                                <option value="Foc" {{#if (checkEqual "Foc" data.system.lead_attr_2.name)}}selected{{/if}}>Foc</option>
+                                <option value="Res" {{#if (checkEqual "Res" data.system.lead_attr_2.name)}}selected{{/if}}>Res</option>
+                                <option value="Int" {{#if (checkEqual "Int" data.system.lead_attr_2.name)}}selected{{/if}}>Int</option>
+                            </select><br/>
+                        {{else}}
+                            <a class="attr-d20-chat d20-{{data.system.lead_attr_2.name}}">
+                                <span class="d20-overlay" data-tooltip="{{attrName data.system.lead_attr_2.name}}">{{data.system.lead_attr_2.name}}</span>
+                            </a>
+                        {{/if}}
+                        <input type="number" name="data.lead_attr_2.value" value="{{data.system.lead_attr_2.value}}"/>
+                    </div>
+                </div><br/>
+                <div style="margin-top: 15px; margin-bottom: 5px;">
+                    <b>Range chart</b><br/>
+                </div>
+                <div class="item-columned-page">
+                    {{#each data.system.RangeChart as |mods range|}}
+                    <div class="item-header-fields">
+                        {{genRange range}}<br/>
+                        {{#each mods as |mod|}}
+                            <input type="number" name="data.RangeChart.{{range}}" value="{{mod}}" style="width: 40%;"/>
+                        {{/each}}
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    {{!-- Sheet Tab Navigation --}}
+    <nav class="sheet-tabs tabs" data-group="primary">
+        <a class="item" data-tab="description">Description</a>
+    </nav>
+
+    {{!-- Sheet Body --}}
+    <section class="sheet-body">
+
+        {{!-- Description Tab --}}
+        <div class="tab" data-group="primary" data-tab="description">
+            {{editor descriptionHTML target="system.description" button=true editable=editable engine="prosemirror"}}
+        </div>
+
+    </section>
+</form>

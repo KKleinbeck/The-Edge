@@ -95,7 +95,6 @@ export class SimpleActorSheet extends ActorSheet {
     const target = ev.currentTarget;
     let name = target.getAttribute("data-name");
     let type = target.getAttribute("advance-type");
-    console.log(name, type)
     switch (quantity){
       case "attr":
         this.actor._advanceAttr(name, type);
@@ -186,8 +185,6 @@ export class SimpleActorSheet extends ActorSheet {
   /** @inheritdoc */
   _getSubmitData(updateData) {
     let formData = super._getSubmitData(updateData);
-    // formData = EntitySheetHelper.updateAttributes(formData, this.object);
-    // formData = EntitySheetHelper.updateGroups(formData, this.object);
     return formData;
   }
 }

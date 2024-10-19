@@ -203,22 +203,32 @@
   ],
   "templates": {
     "description": {
-      "description": {"value": ""},
-      "gm_description": {"value": ""}
+      "description": "",
+      "gm_description": ""
+    },
+    "specials": {
+      "specials": "",
+      "gm_specials": ""
     },
     "stackable": {
       "quantity": 1,
+      "weight": 0,
+      "value": 0
+    },
+    "non-stackable": {
       "weight": 0,
       "value": 0
     }
   },
   "htmlFields": ["description"],
   "weapon": {
-    "description": "",
-    "quantity": 1,
-    "weight": 0,
-    "attributes": {},
-    "groups": {}
+    "templates": ["non-stackable", "description", "specials"],
+    "location": ["body", "bag"],
+    "munition": "n.A.",
+    "lead_attr_1": {"name": "Str", "value": 10},
+    "lead_attr_2": {"name": "Str", "value": 10},
+    "RangeChart":   {"less_2m": [0, 0], "less_20m": [0, 0], "less_200m": [0, 0], "less_1km": [0, 0], "more_1km": [0, 0]},
+    "attachments": []
   }
 }
 }

@@ -39,6 +39,19 @@
   height: 150px;
   margin-right: 10px;
 }
+.sheet-header .item-columned-page {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+  gap: 10px 5px;
+  padding: 0;
+  margin-top: 0;
+}
+.the_edge .sheet-header .profile-img-item {
+  flex: 0 0 120px;
+  height: 120px;
+  margin-right: 10px;
+}
 .the_edge .sheet-header .token-img {
   border: none;
   margin-left: 5px;
@@ -236,6 +249,11 @@
   flex: 1;
   height: 150px;
 }
+.the_edge .sheet-header .item-header-fields {
+  flex: 1;
+  height: 50px;
+  text-align: center;
+}
 .the_edge .sheet-header h1.charname {
   height: 40px;
   padding: 0px;
@@ -257,11 +275,12 @@
   font-weight: bold; /* Optional: Make the title bold */
 }
 .the_edge .resource {
-  width: 40%;
+  /* width: 20%; */
   height: 40px;
   margin-top: 10px;
-  float: left;
+  /* float: left; */
   text-align: center;
+  vertical-align: middle;
 }
 .the_edge .output {
   display: inline-block;

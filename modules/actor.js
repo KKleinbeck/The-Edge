@@ -6,10 +6,6 @@ import { EntitySheetHelper } from "./helper.js";
  */
 export class SimpleActor extends Actor {
 
-  static async create(data, options) {
-    return await super.create(data, options);
-  }
-
   /** @inheritdoc */
   prepareDerivedData() {
     super.prepareDerivedData();
@@ -360,7 +356,6 @@ export class SimpleActor extends Actor {
       }
     }
     const ph = this.system.PracticeHours
-    console.log(profName, cat, profValues);
 
     let update = {}
     if ((type == "advance") && (ph.max - ph.used >= this._attrCost(profValues.advances)) ) {

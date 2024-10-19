@@ -105,6 +105,7 @@
   "HEARTRATE": "Heart rate",
   "HEROTOKEN": "Hero token",
   "LANGUAGE": "Language",
+  "LOCATIONS": "Locations",
   "MOD": "Mod",
   "NATIVE": "Native speaker",
   "MODIFICATORS": "Modificators",
@@ -116,6 +117,7 @@
   "THRESHOLD": "threshold",
   "USED": "Used",
   "VALUE": "Value",
+  "WEIGHT": "Weight",
   "WITH": "With",
   "ZONE": "Zone",
 
