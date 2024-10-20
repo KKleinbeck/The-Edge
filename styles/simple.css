@@ -139,6 +139,22 @@
 .the_edge .d20-black {
   background-image: url('../icons/d20black.png');
 }
+.the_edge .loadout-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(31%, 1fr));
+  gap: 10px; /* Space between elements */
+  padding: 0 10px; /* Small padding on left and right */
+  width: 100%;
+  box-sizing: border-box;
+}
+.the_edge .loadout-container .loadout-box {
+  background-color: #CCC;
+  height: 35px;
+  padding: 10px;
+
+  display: flex;
+  align-items: center;
+}
 .the_edge .weapon-box {
   align-items: center;
   display: flex;

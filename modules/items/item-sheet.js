@@ -1,4 +1,5 @@
 import { EntitySheetHelper } from "../helper.js";
+import THE_EDGE from "../system/config-the-edge.js";
 import {ATTRIBUTE_TYPES} from "../constants.js";
 
 /**
@@ -50,6 +51,7 @@ export class TheEdgeItemSheet extends ItemSheet {
       async: true
     });
     context.systemData.userIsGM = game.user.isGM;
+    context.helpers = {attrs: THE_EDGE.attrs, weapon_types: THE_EDGE.weapon_types}
     return context;
   }
 

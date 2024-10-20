@@ -129,22 +129,22 @@
     "weapons": {
       "weapons": {
         "Energy": {
-          "Blaster Pistols":   {"initial": 5, "level": 0},
-          "Assault Blasters":  {"initial": 5, "level": 0},
-          "SABs":              {"initial": 2, "level": 0},
-          "Blaster Shockguns": {"initial": 4, "level": 0},
-          "Blaster Rifles":    {"initial": 0, "level": 0}
+          "Blaster Pistols":   0,
+          "Assault Blasters":  0,
+          "SABs":              0,
+          "Blaster Shockguns": 0,
+          "Blaster Rifles":    0
         },
         "Kinetic": {
-          "Pistols":          {"initial": 4, "level": 0},
-          "Slug Throwers":    {"initial": 2, "level": 0},
-          "LMGs":             {"initial": 0, "level": 0},
-          "Shotguns":         {"initial": 2, "level": 0},
-          "Projectile Rifle": {"initial": 0, "level": 0}
+          "Kinetic Pistols":  0,
+          "Slug Throwers":    0,
+          "LMGs":             0,
+          "Shotguns":         0,
+          "Projectile Rifle": 0
         },
         "Others": {
-          "Combatics": {"initial": 10, "level": 0},
-          "Recoilless Rifles": {"initial": 0, "level": 0}
+          "Combatics": 0,
+          "Recoilless Rifles": 0
         }
       }
     }
@@ -224,7 +224,7 @@
   "weapon": {
     "templates": ["non-stackable", "description", "specials"],
     "location": ["body", "bag"],
-    "munition": "n.A.",
+    "type": "Assault Blasters",
     "lead_attr_1": {"name": "Str", "value": 10},
     "lead_attr_2": {"name": "Str", "value": 10},
     "RangeChart":   {"less_2m": [0, 0], "less_20m": [0, 0], "less_200m": [0, 0], "less_1km": [0, 0], "more_1km": [0, 0]},

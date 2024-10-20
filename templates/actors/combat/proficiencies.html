@@ -8,7 +8,6 @@
           <div style="font-weight: bold">
             {{combatName weapon}}
           </div>
-          (baseline: {{getSys5 ../actor "weapons" "Energy" weapon "initial"}})
           {{#if ../prepare.canAdvance}}
             <a data-name="{{weapon}}" advance-type="refund"  class="advance-combat"><i data-tooltip="" class="fas fa-minus advance-fa"></i></a>
             <a data-name="{{weapon}}" advance-type="advance" class="advance-combat"><i data-tooltip="" class="fas fa-plus advance-fa"></i></a>
@@ -31,7 +30,6 @@
           <div style="font-weight: bold">
             {{combatName weapon}}
           </div>
-          (baseline: {{getSys5 ../actor "weapons" "Kinetic" weapon "initial"}})
           {{#if ../prepare.canAdvance}}
             <a data-name="{{weapon}}" advance-type="refund"  class="advance-combat"><i data-tooltip="" class="fas fa-minus advance-fa"></i></a>
             <a data-name="{{weapon}}" advance-type="advance" class="advance-combat"><i data-tooltip="" class="fas fa-plus advance-fa"></i></a>
@@ -54,7 +52,6 @@
           <div style="font-weight: bold">
             {{combatName weapon}}
           </div>
-          (baseline: {{getSys5 ../actor "weapons" "Others" weapon "initial"}})
           {{#if ../prepare.canAdvance}}
             <a data-name="{{weapon}}" advance-type="refund"  class="advance-combat"><i data-tooltip="" class="fas fa-minus advance-fa"></i></a>
             <a data-name="{{weapon}}" advance-type="advance" class="advance-combat"><i data-tooltip="" class="fas fa-plus advance-fa"></i></a>

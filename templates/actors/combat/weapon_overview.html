@@ -1,0 +1,16 @@
+<div class="columned-page">
+  <div class="fixed-page">
+    <p class="section-title">{{combatName "Loadout"}}</p>
+    <hr />
+    <div class="loadout-container">
+      {{#each data.items as |item|}}
+        {{#if (checkEqual item.type 'weapon')}}
+          <div class="loadout-box">
+            {{item.name}}
+            {{calcWeaponPL ../systemData item.system}}
+          </div>
+        {{/if}}
+      {{/each}}
+    </div>
+  </div>
+</div>

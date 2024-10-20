@@ -27,7 +27,7 @@
     "SABS": "SABs",
     "BLASTER SHOCKGUNS": "Blaster Shockguns",
     "BLASTER RIFLES": "Blaster Rifles",
-    "PISTOLS": "Pistols",
+    "KINETIC PISTOLS": "Kinetic Pistols",
     "SLUG THROWERS": "Slug Throwers",
     "LMGS": "LMGs",
     "SHOTGUNS": "Shotguns",
@@ -36,7 +36,9 @@
     "RECOILLESS RIFLES": "Recoilless Rifles",
     "WEAPONSENERGY": "Energy Weapons",
     "WEAPONSKINETIC": "Kinetic Weapons",
-    "WEAPONSOTHER": "Other Weapons"
+    "WEAPONSOTHER": "Other Weapons",
+
+    "LOADOUT": "Loadout"
   },
   "PROFICIENCY": {
     "CLIMBING": "Climbing",
@@ -115,6 +117,7 @@
   "SUCCESS": "Success",
   "SPEED": "Speed",
   "THRESHOLD": "threshold",
+  "TYPE": "Type",
   "USED": "Used",
   "VALUE": "Value",
   "WEIGHT": "Weight",
