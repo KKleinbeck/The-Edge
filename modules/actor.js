@@ -267,7 +267,7 @@ export class SimpleActor extends Actor {
 
   // Generates dict for the charactersheet to parse
   prepareSheet() {
-    let preparedData = { system: { attr: {}, prof: {} } };
+    let preparedData = { system: { attr: {}, prof: {}, weapons: {} } };
     for (const key of Object.keys(this.system.attributes)) {
       let n = this.system.attributes[key].advances;
       preparedData.system.attr[key] = {
@@ -281,6 +281,15 @@ export class SimpleActor extends Actor {
         preparedData.system.prof[proficiency] = {
           cost: this._profCost(n),
           refund: n == 0 ? 0 : this._profCost(n-1)
+        }
+      }
+    }
+    for (const [category, weapons] of Object.entries(this.system.weapons)) {
+      for (const weapon of Object.keys(weapons)) {
+        let n = this.system.weapons[category][weapon]
+        preparedData.system.weapons[weapon] = {
+          cost: this._attrCost(n),
+          refund: n == 0 ? 0 : this._attrCost(n-1)
         }
       }
     }
@@ -358,7 +367,7 @@ export class SimpleActor extends Actor {
     const ph = this.system.PracticeHours
 
     let update = {}
-    if ((type == "advance") && (ph.max - ph.used >= this._attrCost(profValues.advances)) ) {
+    if ((type == "advance") && (ph.max - ph.used >= this._profCost(profValues.advances)) ) {
       update[`system.proficiencies.${cat}.${profName}.advances`] = profValues.advances + 1
       update[`system.PracticeHours.used`] = ph.used + this._profCost(profValues.advances)
     }
@@ -369,6 +378,47 @@ export class SimpleActor extends Actor {
     this.update(update)
   }
 
-  _attrCost(n) { return 10 * Math.floor(12 + 8 * Math.pow(1.15, n)); }
-  _profCost(n) { return  5 * Math.floor( 5 + 5 * Math.pow(1.1,  n)); }
+  async _advanceWeaponProf(profName, type) {
+    let profValue = undefined;
+    let cat = undefined;
+    for (const [category, weapons] of Object.entries(this.system.weapons)) {
+      if (profName in weapons) {
+        cat = category
+        profValue = weapons[profName]
+      }
+    }
+    const ph = this.system.PracticeHours
+
+    let update = {}
+    if ((type == "advance") && (ph.max - ph.used >= this._attrCost(profValue)) ) {
+      update[`system.weapons.${cat}.${profName}`] = profValue + 1
+      update[`system.PracticeHours.used`] = ph.used + this._attrCost(profValue)
+    }
+    else if ((type == "refund") && (profValue > 0) ) {
+      update[`system.weapons.${cat}.${profName}`] = profValue - 1
+      update[`system.PracticeHours.used`] = ph.used - this._attrCost(profValue - 1)
+    }
+    this.update(update)
+  }
+
+  _getWeaponPL(weaponID) {
+    const weapon = this.items.get(weaponID).system
+
+    let level = 0;
+    for (const type of ["Energy", "Kinetic", "Others"]) {
+        if (this.system.weapons[type][weapon.type] === undefined) continue;
+        console.log(this.system.weapons[type])
+        level += this.system.weapons[type][weapon.type];
+    }
+    let attr_mod = Math.floor( (
+        this.system.attributes[weapon.leadAttr1.name].value - weapon.leadAttr1.value +
+        this.system.attributes[weapon.leadAttr2.name].value - weapon.leadAttr2.value
+    ) / 4)
+
+    console.log(level, attr_mod)
+    return Math.max(level + attr_mod, 0)
+  }
+
+  _attrCost(n) { return 10 * Math.floor(14 + 6 * Math.pow(1.2, n)); }
+  _profCost(n) { return  5 * Math.floor( 5 + 5 * Math.pow(1.1, n)); }
 }

@@ -225,9 +225,14 @@
     "templates": ["non-stackable", "description", "specials"],
     "location": ["body", "bag"],
     "type": "Assault Blasters",
-    "lead_attr_1": {"name": "Str", "value": 10},
-    "lead_attr_2": {"name": "Str", "value": 10},
-    "RangeChart":   {"less_2m": [0, 0], "less_20m": [0, 0], "less_200m": [0, 0], "less_1km": [0, 0], "more_1km": [0, 0]},
+    "fireModes": {
+      "Single": {"damage": "1d8", "dices": 1, "mali": [0, 0]},
+      "Burst": {"damage": "3d6", "dices": 3, "mali": [0, 0]},
+      "Automatic": {"damage": "N.A.", "dices": 0, "mali": [0, 0]}
+    },
+    "leadAttr1": {"name": "Str", "value": 10},
+    "leadAttr2": {"name": "Str", "value": 10},
+    "rangeChart":   {"less_2m": [0, 0], "less_20m": [0, 0], "less_200m": [0, 0], "less_1km": [0, 0], "more_1km": [0, 0]},
     "attachments": []
   }
 }

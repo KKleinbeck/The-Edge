@@ -1,7 +1,8 @@
 import { EntitySheetHelper } from "./helper.js";
 import {ATTRIBUTE_TYPES} from "./constants.js";
-import DialogProficiency from "./dialogs/dialog-proficiency.js";
 import DialogAttribute from "./dialogs/dialog-attribute.js";
+import DialogProficiency from "./dialogs/dialog-proficiency.js";
+import DialogWeapon from "./dialogs/dialog-weapon.js";
 
 export class SimpleActorSheet extends ActorSheet {
 
@@ -73,8 +74,12 @@ export class SimpleActorSheet extends ActorSheet {
     html.find(".advance-attr").click(ev => this._advanceSrv(ev, "attr"));
 
     // Proficiencies
-    html.find(".attr-d20-proficiency").click(ev => this._rollProficiency(ev))
+    html.find(".prof-d20").click(ev => this._rollProficiency(ev))
     html.find(".advance-prof").click(ev => this._advanceSrv(ev, "prof"));
+
+    // Weapon Proficiencies
+    html.find(".weapon-d20").click(ev => this._rollAttack(ev))
+    html.find(".advance-combat").click(ev => this._advanceSrv(ev, "combat"));
   }
 
   async _useHeroToken(ev) {
@@ -103,6 +108,10 @@ export class SimpleActorSheet extends ActorSheet {
       case "prof":
         this.actor._advanceProf(name, type);
         break;
+
+      case "combat":
+        this.actor._advanceWeaponProf(name, type);
+        break
     }
     this._render();
   }
@@ -119,7 +128,7 @@ export class SimpleActorSheet extends ActorSheet {
 
   async _rollProficiency(ev) {
     const target = ev.currentTarget; // HTMLElement
-    const proficiency = target.className.split("ProfID-")[1];
+    const proficiency = target.getAttribute("prof-name");
     // await DiceServer.attributeCheck(threshold, attr);
     let modificator = 0;
     let dices = [];
@@ -140,6 +149,21 @@ export class SimpleActorSheet extends ActorSheet {
       thresholds: thresholds,
       modificator: modificator
     })
+  }
+
+  async _rollAttack(ev) {
+    const target = ev.currentTarget; // HTMLElement
+    const weaponID = target.getAttribute("weapon-id");
+
+    const weapon = this.actor.items.get(weaponID)
+    const threshold = this.actor._getWeaponPL(weaponID)
+    let d = DialogWeapon.start({
+      name: weapon.name,
+      threshold: threshold,
+      rangeChart: weapon.system.rangeChart,
+      fireModes: weapon.system.fireModes
+    })
+
   }
 
   _onItemControl(event) {

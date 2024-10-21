@@ -70,8 +70,6 @@ export class TheEdgeItemSheet extends ItemSheet {
   /** @override */
   _getSubmitData(updateData) {
     let formData = super._getSubmitData(updateData);
-    console.log("system", this.item.system)
-    console.log(formData)
     return formData;
   }
 }

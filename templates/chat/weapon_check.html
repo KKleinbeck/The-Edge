@@ -1,0 +1,35 @@
+<h3>{{combatName precision}} {{genName "shot"}} - {{name}}</h3>
+<div class="centered-row">
+  <b>{{genName "Check"}}: </b>
+  {{#each rolls as |roll|}}
+  <a class="attr-d20-chat {{#if roll.hit}}d20-Cha{{else}}d20-End{{/if}}">
+    <span class="d20-overlay" data-tooltip="{{#if roll.hit}}Hit{{else}}Miss{{/if}} - {{genName 'threshold'}}: {{../threshold}}">{{roll.res}}</span>
+  </a>
+  {{/each}}
+</div>
+<div class="centered-row">
+  <b>{{genName "Modificators"}}: </b>
+  <span>{{temporary}}</span>
+</div>
+{{#if (checkEqual advantage "Nothing")}}
+{{else}}
+<div class="centered-row">
+  <b>{{genName "with"}} {{genName advantage}}</b>
+</div>
+{{/if}}
+<div class="centered-row">
+  <b>{{combatName "Range"}}: </b>
+  <span>{{combatName range.selection}} ({{range.modifier}} PL)</span>
+</div>
+<div class="centered-row">
+  <b>{{combatName "size"}}: </b>
+  <span>{{combatName size.selection}} ({{size.modifier}} PL)</span>
+</div>
+<div class="centered-row">
+  <b>{{combatName "movement"}}: </b>
+  <span>{{combatName movement.selection}} ({{movement.modifier}} PL)</span>
+</div>
+<div class="centered-row">
+  <b>{{combatName "fire selection"}}: </b>
+  <span>{{combatName fireMode}} ({{getEntry fireModeModifiers.mali pIndex}} PL)</span>
+</div>

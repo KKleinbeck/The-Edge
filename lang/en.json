@@ -38,6 +38,36 @@
     "WEAPONSKINETIC": "Kinetic Weapons",
     "WEAPONSOTHER": "Other Weapons",
 
+    "RANGE": "Target distance",
+    "LESS_2M": "< 2m",
+    "LESS_20M": "< 20m",
+    "LESS_200M": "< 200m",
+    "LESS_1KM": "< 1km",
+    "MORE_1KM": "> 1km",
+
+    "SIZE": "Target Size",
+    "TINY": "Tiny",
+    "SMALL": "Small",
+    "NORMAL": "Normal",
+    "LARGE": "Large",
+    "GIANT": "Giant",
+
+    "MOVEMENT": "Target speed",
+    "STATIONARY": "Stationary",
+    "MODERATE": "Moderate",
+    "FAST": "Fast",
+    "ERRADIC": "Erradic",
+    
+    "AUTOMATIC": "Automatic",
+    "BURST": "Burst",
+    "SINGLE": "Single Shot",
+
+    "PRECISION": "Precision",
+    "AIMED": "Aimed",
+    "UNAIMED": "Unaimed",
+    
+    "ATTACK": "Roll Attack",
+    "FIRE SELECTION": "Fire selection",
     "LOADOUT": "Loadout"
   },
   "PROFICIENCY": {
@@ -102,6 +132,7 @@
   "CRITSUCCESS": "Critical Success",
   "CONDITIONING": "Conditioning",
   "DISADVANTAGE": "Disadvantage",
+  "DISTANCE": "Distance",
   "FAILURE": "Failure",
   "HEALTH": "Health",
   "HEARTRATE": "Heart rate",
@@ -114,8 +145,10 @@
   "PRACTICEHOURS": "Practice Hours",
   "PROGRESS": "Progress",
   "RESULT": "Result",
-  "SUCCESS": "Success",
+  "SHOT": "Shot",
+  "SIZE": "Size",
   "SPEED": "Speed",
+  "SUCCESS": "Success",
   "THRESHOLD": "threshold",
   "TYPE": "Type",
   "USED": "Used",
@@ -132,6 +165,9 @@
   "SETTINGS.SimpleInitFormulaN": "Initiative Formula",
   "SETTINGS.SimpleInitFormulaL": "Enter an initiative formula, such as d20+@dex",
 
+  "ITEM": {
+    "EDIT": "Edit Item"
+  },
   "SIMPLE.ItemCreate": "Create Item",
   "SIMPLE.ItemEdit": "Edit Item",
   "SIMPLE.ItemDelete": "Delete Item",

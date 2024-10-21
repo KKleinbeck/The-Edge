@@ -19,7 +19,7 @@
                     </div>
                     <div class="item-header-fields">
                         {{genName "Type"}}<br/>
-                        <select class="advantage-box" name="data.type" id="Type Selector">
+                        <select class="selection-box" name="data.type" id="Type Selector">
                             {{#each helpers.weapon_types as |type|}}
                                 <option value="{{type}}" {{#if (checkEqual type ../data.system.type)}}selected{{/if}}>{{type}}</option>
                             {{/each}}
@@ -27,42 +27,42 @@
                     </div>
                     <div class="item-header-fields">
                         {{#if systemData.userIsGM}}
-                            <select class="advantage-box" name="data.lead_attr_1.name" id="Attr1-Selector">
+                            <select class="selection-box" name="data.leadAttr1.name" id="Attr1-Selector">
                                 {{#each helpers.attrs as |attr|}}
-                                    <option value={{attr}} {{#if (checkEqual attr ../data.system.lead_attr_1.name)}}selected{{/if}}>{{attr}}</option>
+                                    <option value={{attr}} {{#if (checkEqual attr ../data.system.leadAttr1.name)}}selected{{/if}}>{{attr}}</option>
                                 {{/each}}
                             </select><br/>
                         {{else}}
-                            <a class="attr-d20-chat d20-{{data.system.lead_attr_1.name}}">
-                                <span class="d20-overlay" data-tooltip="{{attrName data.system.lead_attr_1.name}}">{{data.system.lead_attr_1.name}}</span>
+                            <a class="attr-d20-chat d20-{{data.system.leadAttr1.name}}">
+                                <span class="d20-overlay" data-tooltip="{{attrName data.system.leadAttr1.name}}">{{data.system.leadAttr1.name}}</span>
                             </a>
                         {{/if}}
-                        <input type="number" name="data.lead_attr_1.value" value="{{data.system.lead_attr_1.value}}"/>
+                        <input type="number" name="data.leadAttr1.value" value="{{data.system.leadAttr1.value}}"/>
                     </div>
                     <div class="item-header-fields">
                         {{#if systemData.userIsGM}}
-                            <select class="advantage-box" name="data.lead_attr_2.name" id="Attr2-Selector">
+                            <select class="selection-box" name="data.leadAttr2.name" id="Attr2-Selector">
                                 {{#each helpers.attrs as |attr|}}
-                                    <option value={{attr}} {{#if (checkEqual attr ../data.system.lead_attr_2.name)}}selected{{/if}}>{{attr}}</option>
+                                    <option value={{attr}} {{#if (checkEqual attr ../data.system.leadAttr2.name)}}selected{{/if}}>{{attr}}</option>
                                 {{/each}}
                             </select><br/>
                         {{else}}
-                            <a class="attr-d20-chat d20-{{data.system.lead_attr_2.name}}">
-                                <span class="d20-overlay" data-tooltip="{{attrName data.system.lead_attr_2.name}}">{{data.system.lead_attr_2.name}}</span>
+                            <a class="attr-d20-chat d20-{{data.system.leadAttr2.name}}">
+                                <span class="d20-overlay" data-tooltip="{{attrName data.system.leadAttr2.name}}">{{data.system.leadAttr2.name}}</span>
                             </a>
                         {{/if}}
-                        <input type="number" name="data.lead_attr_2.value" value="{{data.system.lead_attr_2.value}}"/>
+                        <input type="number" name="data.leadAttr2.value" value="{{data.system.leadAttr2.value}}"/>
                     </div>
                 </div><br/>
                 <div style="margin-top: 15px; margin-bottom: 5px;">
                     <b>Range chart</b><br/>
                 </div>
                 <div class="item-columned-page">
-                    {{#each data.system.RangeChart as |mods range|}}
+                    {{#each data.system.rangeChart as |mods range|}}
                     <div class="item-header-fields">
                         {{genRange range}}<br/>
                         {{#each mods as |mod|}}
-                            <input type="number" name="data.RangeChart.{{range}}" value="{{mod}}" style="width: 40%;"/>
+                            <input type="number" name="data.rangeChart.{{range}}" value="{{mod}}" style="width: 40%;"/>
                         {{/each}}
                     </div>
                     {{/each}}

@@ -1,16 +1,19 @@
-<div class="columned-page">
-  <div class="fixed-page">
-    <p class="section-title">{{combatName "Loadout"}}</p>
-    <hr />
-    <div class="loadout-container">
-      {{#each data.items as |item|}}
-        {{#if (checkEqual item.type 'weapon')}}
-          <div class="loadout-box">
-            {{item.name}}
-            {{calcWeaponPL ../systemData item.system}}
+<div class="fixed-page">
+  <p class="section-title">{{combatName "Loadout"}}</p>
+  <hr />
+  <div class="loadout-container">
+    {{#each data.items as |item|}}
+      {{#if (checkEqual item.type 'weapon')}}
+        <div class="loadout-box">
+          <div class="item-control item loadout-name" data-action="edit" data-tooltip="{{itemName 'Edit'}}" data-item-id="{{item._id}}">
+            <img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
+            <div>{{item.name}}</div>
           </div>
-        {{/if}}
-      {{/each}}
-    </div>
+          <a class="weapon-d20 d20-black" weapon-id="{{item._id}}" data-tooltip="{{combatName 'Attack'}}">
+              <span class="d20-overlay-weapon">{{calcWeaponPL ../actor item._id}}</span>
+          </a>
+        </div>
+      {{/if}}
+    {{/each}}
   </div>
 </div>

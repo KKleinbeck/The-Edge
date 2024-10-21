@@ -11,6 +11,10 @@ export default class LocalisationServer {
         return game.i18n.localize(`COMBAT.${id.toUpperCase()}`)
     }
 
+    static itemLocalisation(id) {
+        return game.i18n.localize(`ITEM.${id.toUpperCase()}`)
+    }
+
     static proficiencyLocalisation(id) {
         return game.i18n.localize(`PROFICIENCY.${id.toUpperCase().replace(/\s/g, "")}`)
     }

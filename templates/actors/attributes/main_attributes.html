@@ -5,9 +5,9 @@
             {{#each prepare.attrs as |ch|}}
             <div data-tooltip="{{attrName ch}}" class="table-header">
                 {{#if ../prepare.canAdvance}}
-                    <a data-name="{{ch}}" advance-type="refund"  class="advance-attr"><i data-tooltip="{{getSys ../prepare 'attr' ch 'refund'}}" class="fas fa-minus advance-fa"></i></a>
+                    <a data-name="{{ch}}" advance-type="refund"  class="advance-attr"><i data-tooltip="{{getSys ../prepare 'attr' ch 'refund'}} PH" class="fas fa-minus advance-fa"></i></a>
                     <b>{{attrAbbr ch}}</b>
-                    <a data-name="{{ch}}" advance-type="advance" class="advance-attr"><i data-tooltip="{{getSys ../prepare 'attr' ch 'cost'}}" class="fas fa-plus advance-fa"></i></a>
+                    <a data-name="{{ch}}" advance-type="advance" class="advance-attr"><i data-tooltip="{{getSys ../prepare 'attr' ch 'cost'}} PH" class="fas fa-plus advance-fa"></i></a>
                 {{else}}
                     <b>{{attrAbbr ch}}</b>
                 {{/if}}

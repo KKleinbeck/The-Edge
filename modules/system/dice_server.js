@@ -87,6 +87,58 @@ export default class DiceServer {
     return result;
   }
 
+  static async attackCheck(check, modificators) {
+    let diceRes = []
+    for (let i = 0; i < modificators.fireModeModifiers.dices; ++i) {
+      diceRes.push(await this._basicRoll("1d20", true));
+    }
+    if (diceRes == []) return undefined;
+    let hits = []
+    for (const res of diceRes) hits.push(res <= check.threshold);
+
+    if (modificators.advantage != "Nothing") {
+      let diceRes2 = []
+      for (let i = 0; i < modificators.fireModeModifiers.dices; ++i) {
+        diceRes2.push(await this._basicRoll("1d20", true));
+      }
+      let hits2 = []
+      for (const res of diceRes) hits2.push(res <= check.threshold);
+      
+      let sum1 = hits.reduce((a, b) => a+b, 0);
+      let sum2 = hits2.reduce((a, b) => a+b, 0);
+      if ( ((modificators.advantage == "Advantage") && (sum1 < sum2)) ||
+           ((modificators.advantage == "Disadvantage") && (sum1 > sum2)) ) {
+        hits = hits2
+        diceRes = diceRes2
+      }
+    }
+
+    // let outcome = undefined;
+    // let threshold = check.threshold + modificators.temporary;
+    // if (diceRes == 1)  outcome = "CritSuccess";
+    // else if (diceRes == 20) outcome = "CritFailure";
+    // else if (threshold >= diceRes) outcome = "Success";
+    // else outcome = "Failure";
+
+    let details = {name: check.name, rolls: [], threshold: check.threshold};
+    for (let i = 0; i < modificators.fireModeModifiers.dices; ++i) {
+      details.rolls.push({res: diceRes[i], hit: hits[i]})
+    }
+    // mergeObject(details, check)
+    mergeObject(details, modificators)
+    ChatServer.transmitRoll("WeaponCheck", details);
+  }
+
+  static async _genericRoll(rollDescription, isCheck = false) {
+    let rolls = rollDescription.replace(/\s/g, '').split("+");
+    let results = [];
+
+    for (const roll in rolls) {
+      results.push(this._basicRoll(roll))
+    }
+    return results
+  }
+
   static async _basicRoll(rollDescription, isCheck = false) {
     //just an individual role, i.e., '2d3d20h2'
     const regex = /^(\d*)?([ad])?(\d*)?d(\d+)([hl])?(\d*)?$/;

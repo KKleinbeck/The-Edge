@@ -9,14 +9,12 @@
             {{combatName weapon}}
           </div>
           {{#if ../prepare.canAdvance}}
-            <a data-name="{{weapon}}" advance-type="refund"  class="advance-combat"><i data-tooltip="" class="fas fa-minus advance-fa"></i></a>
-            <a data-name="{{weapon}}" advance-type="advance" class="advance-combat"><i data-tooltip="" class="fas fa-plus advance-fa"></i></a>
+            <a data-name="{{weapon}}" advance-type="refund"  class="advance-combat"><i data-tooltip="{{getSys ../prepare 'weapons' weapon 'refund'}} PH" class="fas fa-minus advance-fa"></i></a>
+            <a data-name="{{weapon}}" advance-type="advance" class="advance-combat"><i data-tooltip="{{getSys ../prepare 'weapons' weapon 'cost'}} PH" class="fas fa-plus advance-fa"></i></a>
           {{/if}}
         </div>
         <div class="proficiency-column">
-          <a class="attr-d20-weapon d20-black" data-tooltip="asd">
-              <span class="d20-overlay-weapon">{{getWeaponProficiency ../actor 'Energy' weapon}}</span>
-          </a>
+          <div class="output">{{getWeaponProficiency ../actor 'Energy' weapon}}</div>
         </div>
       </div>
     {{/each}}
@@ -31,14 +29,12 @@
             {{combatName weapon}}
           </div>
           {{#if ../prepare.canAdvance}}
-            <a data-name="{{weapon}}" advance-type="refund"  class="advance-combat"><i data-tooltip="" class="fas fa-minus advance-fa"></i></a>
-            <a data-name="{{weapon}}" advance-type="advance" class="advance-combat"><i data-tooltip="" class="fas fa-plus advance-fa"></i></a>
+            <a data-name="{{weapon}}" advance-type="refund"  class="advance-combat"><i data-tooltip="{{getSys ../prepare 'weapons' weapon 'refund'}} PH" class="fas fa-minus advance-fa"></i></a>
+            <a data-name="{{weapon}}" advance-type="advance" class="advance-combat"><i data-tooltip="{{getSys ../prepare 'weapons' weapon 'cost'}} PH" class="fas fa-plus advance-fa"></i></a>
           {{/if}}
         </div>
         <div class="proficiency-column">
-          <a class="attr-d20-weapon d20-black" data-tooltip="asd">
-              <span class="d20-overlay-weapon">{{getWeaponProficiency ../actor 'Kinetic' weapon}}</span>
-          </a>
+          <div class="output">{{getWeaponProficiency ../actor 'Kinetic' weapon}}</div>
         </div>
       </div>
     {{/each}}
@@ -53,14 +49,12 @@
             {{combatName weapon}}
           </div>
           {{#if ../prepare.canAdvance}}
-            <a data-name="{{weapon}}" advance-type="refund"  class="advance-combat"><i data-tooltip="" class="fas fa-minus advance-fa"></i></a>
-            <a data-name="{{weapon}}" advance-type="advance" class="advance-combat"><i data-tooltip="" class="fas fa-plus advance-fa"></i></a>
+            <a data-name="{{weapon}}" advance-type="refund"  class="advance-combat"><i data-tooltip="{{getSys ../prepare 'weapons' weapon 'refund'}} PH" class="fas fa-minus advance-fa"></i></a>
+            <a data-name="{{weapon}}" advance-type="advance" class="advance-combat"><i data-tooltip="{{getSys ../prepare 'weapons' weapon 'cost'}} PH" class="fas fa-plus advance-fa"></i></a>
           {{/if}}
         </div>
         <div class="proficiency-column">
-          <a class="attr-d20-weapon d20-black" data-tooltip="asd">
-              <span class="d20-overlay-weapon">{{getWeaponProficiency ../actor 'Others' weapon}}</span>
-          </a>
+          <div class="output">{{getWeaponProficiency ../actor 'Others' weapon}}</div>
         </div>
       </div>
     {{/each}}
