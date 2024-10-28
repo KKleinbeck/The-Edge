@@ -2,14 +2,27 @@
 <div class="centered-row">
   <b>{{genName "Check"}}: </b>
   {{#each rolls as |roll|}}
-  <a class="attr-d20-chat {{#if roll.hit}}d20-Cha{{else}}d20-End{{/if}}">
-    <span class="d20-overlay" data-tooltip="{{#if roll.hit}}Hit{{else}}Miss{{/if}} - {{genName 'threshold'}}: {{../threshold}}">{{roll.res}}</span>
-  </a>
+    <a class="attr-d20-chat {{#if roll.hit}}d20-Cha{{else}}d20-End{{/if}}">
+      <span class="d20-overlay" data-tooltip="{{#if roll.hit}}Hit{{else}}Miss{{/if}} - {{genName 'threshold'}}: {{../threshold}}" style="font-size: 14px;">{{roll.res}}</span>
+    </a>
   {{/each}}
 </div>
-<div>
+<div class="centered-row">
   <b>{{genName "Damage"}}: </b>
-  <!-- Damage Rolls & Apply Damage -->
+  {{#if (checkEqual damage.length 0)}}
+    <a class="attr-d20-chat damage-apply-box">
+      <span class="d20-overlay-weapon">{{genName "No Hit"}}</span>
+    </a>
+  {{else}}
+    {{#each damage as |dmg|}}
+      <a class="attr-d20-chat damage-box">
+        <span class="d20-overlay-weapon" data-tooltip="{{../damageRoll}}">{{dmg}}</span>
+      </a>
+    {{/each}}
+    <a class="attr-d20-chat damage-apply-box {{#each targetIDs as |tgt|}}targetID-{{tgt}}{{/each}} {{#each damage as |dmg|}}dmg-{{dmg}}{{/each}} sceneID-{{sceneID}}" style="background-color: black;">
+      <span class="d20-overlay-weapon" sceneid="scene">{{genName "Apply"}}</span>
+    </a>
+  {{/if}}
 </div>
 <hr>
 <div class="centered-row">

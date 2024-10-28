@@ -37,9 +37,9 @@ export default class DialogWeapon extends Dialog{
           let movement = html.find('[name="MovementSelector"]').val();
           let fireMode = html.find('[name="FireSelector"]').val();
 
-          let threshold = checkData.threshold + tempModificator +
+          let threshold = Math.max(1, checkData.threshold + tempModificator +
             checkData.rangeChart[range][pIndex] + THE_EDGE.sizes[size][pIndex] +
-            THE_EDGE.movements[movement][pIndex] + checkData.fireModes[fireMode].mali[pIndex];
+            THE_EDGE.movements[movement][pIndex] + checkData.fireModes[fireMode].mali[pIndex]);
           
           this.getDistance(checkData.actorID, checkData.targetIDs, checkData.sceneID)
 

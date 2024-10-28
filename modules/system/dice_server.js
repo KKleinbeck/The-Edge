@@ -95,6 +95,7 @@ export default class DiceServer {
     if (diceRes == []) return undefined;
     let hits = []
     for (const res of diceRes) hits.push(res <= check.threshold);
+    let sum = hits.reduce((a, b) => a+b, 0);
 
     if (modificators.advantage != "Nothing") {
       let diceRes2 = []
@@ -104,20 +105,28 @@ export default class DiceServer {
       let hits2 = []
       for (const res of diceRes2) hits2.push(res <= check.threshold);
       
-      let sum1 = hits.reduce((a, b) => a+b, 0);
       let sum2 = hits2.reduce((a, b) => a+b, 0);
-      if ( ((modificators.advantage == "Advantage") && (sum1 < sum2)) ||
-           ((modificators.advantage == "Disadvantage") && (sum1 > sum2)) ) {
+      if ( ((modificators.advantage == "Advantage") && (sum < sum2)) ||
+           ((modificators.advantage == "Disadvantage") && (sum > sum2)) ) {
         hits = hits2
+        sum = sum2
         diceRes = diceRes2
       }
     }
 
-    let details = {name: check.name, rolls: [], threshold: check.threshold};
+    let damage = []
+    for (let i = 0; i < sum; ++i) {
+      damage.push((await this._genericRoll(modificators.fireModeModifiers.damage)).reduce((a,b) => a+b, 0))
+    }
+
+    let details = {
+      name: check.name, rolls: [], threshold: check.threshold, damage: damage,
+      damageRoll: modificators.fireModeModifiers.damage,
+      targetIDs: check.targetIDs, sceneID: check.sceneID
+    };
     for (let i = 0; i < modificators.fireModeModifiers.dices; ++i) {
       details.rolls.push({res: diceRes[i], hit: hits[i]})
     }
-    // mergeObject(details, check)
     mergeObject(details, modificators)
     ChatServer.transmitRoll("WeaponCheck", details);
   }
@@ -126,8 +135,9 @@ export default class DiceServer {
     let rolls = rollDescription.replace(/\s/g, '').split("+");
     let results = [];
 
-    for (const roll in rolls) {
-      results.push(this._basicRoll(roll))
+    for (const roll of rolls) {
+      if (!isNaN(roll)) results.push(+roll);
+      else results.push(await this._basicRoll(roll, isCheck));
     }
     return results
   }

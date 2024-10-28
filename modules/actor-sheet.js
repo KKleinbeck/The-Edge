@@ -66,11 +66,11 @@ export class SimpleActorSheet extends ActorSheet {
     });
 
     // Hero Tokens
-    html.find(".hero-token").mousedown(ev => this._useHeroToken(ev));
-    html.find(".hero-token-spent").mousedown(ev => this._regenerateHeroToken(ev));
+    html.find(".hero-token").click(ev => this._useHeroToken(ev));
+    html.find(".hero-token-spent").click(ev => this._regenerateHeroToken(ev));
 
     // Attributes
-    html.find(".attr-d20").mousedown(ev => this._rollAttr(ev));
+    html.find(".attr-d20").click(ev => this._rollAttr(ev));
     html.find(".advance-attr").click(ev => this._advanceSrv(ev, "attr"));
 
     // Proficiencies

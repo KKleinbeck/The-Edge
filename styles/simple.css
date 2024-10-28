@@ -102,6 +102,7 @@
   z-index: 1; /* Ensure the text is above the background */
   text-transform: uppercase; /* Makes the text all capital letters */
   font-weight: bold; /* Optional: Make the title bold */
+  font-size: 12px;
 }
 .the_edge .centered-row {
   display: flex;
@@ -138,6 +139,18 @@
 }
 .the_edge .d20-black {
   background-image: url('../icons/d20black.png');
+}
+.the_edge .damage-box {
+  width: 28px;
+  height: 28px;
+  background-color: #666;
+  border-radius: 14px;
+}
+.the_edge .damage-apply-box {
+  height: 28px;
+  width: 82px;
+  background-color: #666;
+  border-radius: 14px;
 }
 .the_edge .loadout-container {
   display: grid;
