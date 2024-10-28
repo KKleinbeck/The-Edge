@@ -130,7 +130,7 @@
       "weapons": {
         "Energy": {
           "Blaster Pistols":   0,
-          "Assault Blasters":  0,
+          "Pulse Rifle":  0,
           "SABs":              0,
           "Blaster Shockguns": 0,
           "Blaster Rifles":    0
@@ -159,6 +159,7 @@
       "max": 20
     },
     "age": 21,
+    "size": "normal",
     "heartRate": {
       "value": 50,
       "min": 0,
@@ -224,7 +225,7 @@
   "weapon": {
     "templates": ["non-stackable", "description", "specials"],
     "location": ["body", "bag"],
-    "type": "Assault Blasters",
+    "type": "Pulse Rifle",
     "fireModes": {
       "Single": {"damage": "1d8", "dices": 1, "mali": [0, 0]},
       "Burst": {"damage": "3d6", "dices": 3, "mali": [0, 0]},

@@ -23,7 +23,7 @@
   },
   "COMBAT": {
     "BLASTER PISTOLS": "Blaster Pistols",
-    "ASSAULT BLASTERS": "Assault Blasters",
+    "PULSE RIFLE": "Pulse Rifle",
     "SABS": "SABs",
     "BLASTER SHOCKGUNS": "Blaster Shockguns",
     "BLASTER RIFLES": "Blaster Rifles",
@@ -68,7 +68,8 @@
     
     "ATTACK": "Roll Attack",
     "FIRE SELECTION": "Fire selection",
-    "LOADOUT": "Loadout"
+    "LOADOUT": "Loadout",
+    "MISSING TARGET": "No target selected"
   },
   "PROFICIENCY": {
     "CLIMBING": "Climbing",
@@ -131,6 +132,7 @@
   "CRITFAILURE": "Critical Failure",
   "CRITSUCCESS": "Critical Success",
   "CONDITIONING": "Conditioning",
+  "DAMAGE": "Damage",
   "DISADVANTAGE": "Disadvantage",
   "DISTANCE": "Distance",
   "FAILURE": "Failure",

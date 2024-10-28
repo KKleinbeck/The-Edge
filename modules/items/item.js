@@ -9,12 +9,6 @@ export class TheEdgeItem extends Item {
     weapon: "systems/the_edge/icons/rifle.png"
   }
 
-  /** @inheritdoc */
-  prepareDerivedData() {
-    super.prepareDerivedData();
-    console.log(this.system)
-  }
-
   /* -------------------------------------------- */
 
   /** @override */

@@ -102,7 +102,7 @@ export default class DiceServer {
         diceRes2.push(await this._basicRoll("1d20", true));
       }
       let hits2 = []
-      for (const res of diceRes) hits2.push(res <= check.threshold);
+      for (const res of diceRes2) hits2.push(res <= check.threshold);
       
       let sum1 = hits.reduce((a, b) => a+b, 0);
       let sum2 = hits2.reduce((a, b) => a+b, 0);
@@ -112,13 +112,6 @@ export default class DiceServer {
         diceRes = diceRes2
       }
     }
-
-    // let outcome = undefined;
-    // let threshold = check.threshold + modificators.temporary;
-    // if (diceRes == 1)  outcome = "CritSuccess";
-    // else if (diceRes == 20) outcome = "CritFailure";
-    // else if (threshold >= diceRes) outcome = "Success";
-    // else outcome = "Failure";
 
     let details = {name: check.name, rolls: [], threshold: check.threshold};
     for (let i = 0; i < modificators.fireModeModifiers.dices; ++i) {

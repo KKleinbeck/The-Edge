@@ -407,7 +407,6 @@ export class SimpleActor extends Actor {
     let level = 0;
     for (const type of ["Energy", "Kinetic", "Others"]) {
         if (this.system.weapons[type][weapon.type] === undefined) continue;
-        console.log(this.system.weapons[type])
         level += this.system.weapons[type][weapon.type];
     }
     let attr_mod = Math.floor( (
@@ -415,7 +414,6 @@ export class SimpleActor extends Actor {
         this.system.attributes[weapon.leadAttr2.name].value - weapon.leadAttr2.value
     ) / 4)
 
-    console.log(level, attr_mod)
     return Math.max(level + attr_mod, 0)
   }
 

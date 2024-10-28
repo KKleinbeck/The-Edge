@@ -1,4 +1,7 @@
 <div class="check-dialog-box">
+  {{#if (checkEqual targetIDs.length 0)}}
+    <div style="width: 100%;"><h2>{{combatName "Missing Target"}}</h2></div>
+  {{/if}}
   <table>
     <tr>
       <td>
@@ -15,30 +18,53 @@
         </select>
       </td>
     </tr>
-    <tr>
-      <td>
-        {{genName "Distance"}}:
-      </td>
-      <td>
-        <select class="advantage-box" name="RangeSelector">
-          {{#each rangeChart as |boni range|}}
-            <option value="{{range}}">{{genRange range}} ({{getEntry boni 0}} / {{getEntry boni 1}})</option>
-          {{/each}}
-        </select>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        {{genName "Size"}}:
-      </td>
-      <td>
-        <select class="advantage-box" name="SizeSelector">
-          {{#each sizes as |mali size|}}
-            <option value="{{size}}">{{combatName size}} ({{getEntry mali 0}} / {{getEntry mali 1}})</option>
-          {{/each}}
-        </select>
-      </td>
-    </tr>
+    {{#if (checkEqual targetIDs.length 0)}}
+      <tr>
+        <td>
+          {{genName "Distance"}}:
+        </td>
+        <td>
+          <select class="advantage-box" name="RangeSelector">
+            {{#each rangeChart as |boni range|}}
+              <option value="{{range}}">{{genRange range}} ({{getEntry boni 0}} / {{getEntry boni 1}})</option>
+            {{/each}}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          {{genName "Size"}}:
+        </td>
+        <td>
+          <select class="advantage-box" name="SizeSelector">
+            {{#each sizes as |mali size|}}
+              <option value="{{size}}">{{combatName size}} ({{getEntry mali 0}} / {{getEntry mali 1}})</option>
+            {{/each}}
+          </select>
+        </td>
+      </tr>
+    {{else}}
+      {{#if distance}}
+        <tr>
+          <td>
+            {{genName "Distance"}}:
+          </td>
+          <td>
+            {{round distance 1}} m {{getRangeModifier rangeChart distance}}
+          </td>
+        </tr>
+      {{/if}}
+      {{#if smallestSize}}
+        <tr>
+          <td>
+            {{genName "Size"}}:
+          </td>
+          <td>
+            {{combatName smallestSize}} {{getSizeModifier smallestSize}}
+          </td>
+        </tr>
+      {{/if}}
+    {{/if}}
     <tr>
       <td>
         {{combatName "Movement"}}:

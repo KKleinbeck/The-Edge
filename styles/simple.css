@@ -230,6 +230,7 @@
 }
 .check-dialog-box { /* As Dialog, don't add the_edge before  */
   display: flex;
+  flex-flow: row wrap;
   gap: 9px;
   align-items: center;
 }

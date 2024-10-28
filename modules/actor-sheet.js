@@ -155,13 +155,23 @@ export class SimpleActorSheet extends ActorSheet {
     const target = ev.currentTarget; // HTMLElement
     const weaponID = target.getAttribute("weapon-id");
 
+    let actorID = this.actor.id
+    let sceneID = game.user.viewedScene
+    let targetIDs = []
+    for (const target of game.user.targets) {
+      targetIDs.push(target.id.toUpperCase())
+    }
+
     const weapon = this.actor.items.get(weaponID)
     const threshold = this.actor._getWeaponPL(weaponID)
     let d = DialogWeapon.start({
       name: weapon.name,
       threshold: threshold,
       rangeChart: weapon.system.rangeChart,
-      fireModes: weapon.system.fireModes
+      fireModes: weapon.system.fireModes,
+      actorID: actorID,
+      sceneID: sceneID,
+      targetIDs: targetIDs
     })
 
   }
