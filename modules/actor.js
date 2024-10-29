@@ -416,6 +416,16 @@ export class SimpleActor extends Actor {
 
     return Math.max(level + attr_mod, 0)
   }
+  
+  async applyDamage(damage) {
+    let update = {}
+    update["system.health.value"] = this.system.health.value - damage
+    await this.update(update)
+
+    if(this.sheet.rendered) {
+      this.sheet._render()
+    }
+  }
 
   _attrCost(n) { return 10 * Math.floor(14 + 6 * Math.pow(1.2, n)); }
   _profCost(n) { return  5 * Math.floor( 5 + 5 * Math.pow(1.1, n)); }

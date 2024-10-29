@@ -1,5 +1,6 @@
 import DiceServer from "../system/dice_server.js";
 import THE_EDGE from "../system/config-the-edge.js";
+import Aux from "../system/auxilliaries.js";
 
 export default class DialogWeapon extends Dialog{
   static get defaultOptions() {
@@ -9,7 +10,7 @@ export default class DialogWeapon extends Dialog{
   }
 
   static async start(checkData) {
-    let distance = this.getDistance(checkData.actorID, checkData.targetIDs, checkData.sceneID)
+    let distance = this.getDistance(checkData.actor.id, checkData.targetIDs, checkData.sceneID)
     let smallestSize =  this.getSmallestSize(checkData.targetIDs, checkData.sceneID)
     checkData = mergeObject(checkData, {
       sizes: THE_EDGE.sizes, movements: THE_EDGE.movements,
@@ -20,7 +21,7 @@ export default class DialogWeapon extends Dialog{
     const buttons = {
       roll: {
         label: game.i18n.localize("DIALOG.ROLL"),
-        callback: (html) => {
+        callback: async (html) => {
           let precision =  html.find('[name="PrecisionSelector"]').val();
           let pIndex = precision == "aimed" ? 1 : 0;
           let tempModificator = parseInt(html.find('[name="Modifier"]').val()); 
@@ -40,14 +41,10 @@ export default class DialogWeapon extends Dialog{
           let threshold = Math.max(1, checkData.threshold + tempModificator +
             checkData.rangeChart[range][pIndex] + THE_EDGE.sizes[size][pIndex] +
             THE_EDGE.movements[movement][pIndex] + checkData.fireModes[fireMode].mali[pIndex]);
-          
-          this.getDistance(checkData.actorID, checkData.targetIDs, checkData.sceneID)
 
           let check = {
             name: checkData.name,
-            threshold: threshold,
-            sceneID: checkData.sceneID,
-            targetIDs: checkData.targetIDs
+            threshold: threshold
           };
           let modificators = {
             temporary: tempModificator,
@@ -60,7 +57,13 @@ export default class DialogWeapon extends Dialog{
             precision: precision,
             pIndex: pIndex
           }
-          DiceServer.attackCheck(check, modificators)
+          let damage = await DiceServer.attackCheck(check, modificators);
+
+          let scene = Aux.getScene(checkData.sceneID)
+          let targets = Aux.getTargets(scene, checkData.targetIDs)
+          for (const target of targets) {
+              for (const dmg of damage) await target.applyDamage(dmg)//applyDamage(dmg)//Aux.applyDamage(target, dmg);
+          }
         }
       }
     }

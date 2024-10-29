@@ -19,9 +19,6 @@
         <span class="d20-overlay-weapon" data-tooltip="{{../damageRoll}}">{{dmg}}</span>
       </a>
     {{/each}}
-    <a class="attr-d20-chat damage-apply-box {{#each targetIDs as |tgt|}}targetID-{{tgt}}{{/each}} {{#each damage as |dmg|}}dmg-{{dmg}}{{/each}} sceneID-{{sceneID}}" style="background-color: black;">
-      <span class="d20-overlay-weapon" sceneid="scene">{{genName "Apply"}}</span>
-    </a>
   {{/if}}
 </div>
 <hr>

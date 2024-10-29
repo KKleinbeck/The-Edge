@@ -129,6 +129,7 @@ export default class DiceServer {
     }
     mergeObject(details, modificators)
     ChatServer.transmitRoll("WeaponCheck", details);
+    return damage;
   }
 
   static async _genericRoll(rollDescription, isCheck = false) {

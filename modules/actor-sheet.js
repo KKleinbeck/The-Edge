@@ -155,7 +155,7 @@ export class SimpleActorSheet extends ActorSheet {
     const target = ev.currentTarget; // HTMLElement
     const weaponID = target.getAttribute("weapon-id");
 
-    let actorID = this.actor.id
+    let actor = this.actor
     let sceneID = game.user.viewedScene
     let targetIDs = []
     for (const target of game.user.targets) {
@@ -169,7 +169,7 @@ export class SimpleActorSheet extends ActorSheet {
       threshold: threshold,
       rangeChart: weapon.system.rangeChart,
       fireModes: weapon.system.fireModes,
-      actorID: actorID,
+      actor: actor,
       sceneID: sceneID,
       targetIDs: targetIDs
     })
