@@ -75,6 +75,14 @@ export class TheEdgeItemSheet extends ItemSheet {
 }
 
 class ItemSheetWeapon extends TheEdgeItemSheet {
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      width: 380,
+      height: 480,
+      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "details"}],
+    });
+  }
+
   static _storeState(html) {
     console.log("Derived")
   }

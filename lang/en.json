@@ -38,6 +38,7 @@
     "WEAPONSKINETIC": "Kinetic Weapons",
     "WEAPONSOTHER": "Other Weapons",
 
+    "RANGE CHART": "Range chart",
     "RANGE": "Target distance",
     "LESS_2M": "< 2m",
     "LESS_20M": "< 20m",
@@ -58,6 +59,7 @@
     "FAST": "Fast",
     "ERRADIC": "Erradic",
     
+    "FIRE MODES": "Fire modes",
     "AUTOMATIC": "Automatic",
     "BURST": "Burst",
     "SINGLE": "Single Shot",
@@ -129,6 +131,9 @@
   "ADVANTAGE": "Advantage",
   "ADVANTAGEPOINTS": "Advantage Points",
   "APPLY": "Apply",
+  "_ATTR": "Attr",
+  "BAG": "Bag",
+  "BODY": "Body",
   "CHECK": "Check",
   "CRITFAILURE": "Critical Failure",
   "CRITSUCCESS": "Critical Success",
@@ -146,6 +151,7 @@
   "NATIVE": "Native speaker",
   "NO HIT": "No hits",
   "MODIFICATORS": "Modificators",
+  "POCKETS": "Pockets",
   "PRACTICEHOURS": "Practice Hours",
   "PROGRESS": "Progress",
   "RESULT": "Result",

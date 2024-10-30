@@ -1,13 +1,13 @@
 <form class="flexcol {{cssClass}}" autocomplete="off">
-    <header class="sheet-header">
+    <header class="sheet-header-item">
         <div class="item-columned-page">
-            <div style="width: 120px;">
+            <div style="width: 100px;">
                 <img class="profile-img-item" src="{{data.img}}" data-edit="img" title="{{data.name}}" />
+            </div>
+            <div style="flex: 1">
                 <h3 class="charname">
                     <input name="name" type="text" value="{{data.name}}" placeholder="Name" />
                 </h3>
-            </div>
-            <div style="flex: 1">
                 <div class="item-columned-page">
                     <div class="item-header-fields">
                         {{genName "Weight"}}<br/>
@@ -25,37 +25,90 @@
                             {{/each}}
                         </select>
                     </div>
-                    <div class="item-header-fields">
-                        {{#if systemData.userIsGM}}
-                            <select class="selection-box" name="data.leadAttr1.name" id="Attr1-Selector">
-                                {{#each helpers.attrs as |attr|}}
-                                    <option value={{attr}} {{#if (checkEqual attr ../data.system.leadAttr1.name)}}selected{{/if}}>{{attr}}</option>
-                                {{/each}}
-                            </select><br/>
-                        {{else}}
-                            <a class="attr-d20-chat d20-{{data.system.leadAttr1.name}}">
-                                <span class="d20-overlay" data-tooltip="{{attrName data.system.leadAttr1.name}}">{{data.system.leadAttr1.name}}</span>
-                            </a>
-                        {{/if}}
-                        <input type="number" name="data.leadAttr1.value" value="{{data.system.leadAttr1.value}}"/>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    {{!-- Sheet Tab Navigation --}}
+    <nav class="sheet-tabs tabs" data-group="primary">
+        <a class="item" data-tab="details">Details</a>
+        <a class="item" data-tab="description">Description</a>
+    </nav>
+
+    {{!-- Sheet Body --}}
+    <section class="sheet-body">
+        <div class="tab" data-group="primary" data-tab="details">
+            <div class="item-columned-page">
+                <!-- Locations -->
+                <div class="item-fields" style="flex: 2;">
+                    <b>{{genName "Locations"}}</b><br/>
+                    <div style="text-align: left;">
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="location-body" name="location-body" {{#if (checkInstance "body" systemData.location)}}checked{{/if}} />
+                            <label for="location-body">{{genName "body"}}</label>
+                        </div>
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="location-pockets" name="location-pockets" {{#if (checkInstance "pockets" systemData.location)}}checked{{/if}} />
+                            <label for="location-pockets">{{genName "pockets"}}</label>
+                        </div>
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="location-bag" name="location-bag" {{#if (checkInstance "bag" systemData.location)}}checked{{/if}} />
+                            <label for="location-bag">{{genName "bag"}}</label>
+                        </div>
                     </div>
-                    <div class="item-header-fields">
-                        {{#if systemData.userIsGM}}
-                            <select class="selection-box" name="data.leadAttr2.name" id="Attr2-Selector">
-                                {{#each helpers.attrs as |attr|}}
-                                    <option value={{attr}} {{#if (checkEqual attr ../data.system.leadAttr2.name)}}selected{{/if}}>{{attr}}</option>
-                                {{/each}}
-                            </select><br/>
-                        {{else}}
-                            <a class="attr-d20-chat d20-{{data.system.leadAttr2.name}}">
-                                <span class="d20-overlay" data-tooltip="{{attrName data.system.leadAttr2.name}}">{{data.system.leadAttr2.name}}</span>
-                            </a>
-                        {{/if}}
-                        <input type="number" name="data.leadAttr2.value" value="{{data.system.leadAttr2.value}}"/>
-                    </div>
-                </div><br/>
+                </div>
+                <!-- Fire modes -->
+                <div class="item-fields" style="flex: 3;">
+                    <b>{{combatName "Fire modes"}}</b>
+                    {{log systemData.fireModes}}
+                    {{#each systemData.fireModes as |modifier mode|}}
+                        <div style="text-align: left;">
+                            {{log mode}}
+                            {{combatName mode}}
+                            <input type="text" name="data.fireModes.{{mode}}.damage" value="{{modifier.damage}}" style="width: 60px"/>
+                            {{#each modifier.mali as |mod|}}
+                                <input type="number" name="data.fireModes.{{mode}}.mali" value="{{mod}}" style="width: 60px"/>
+                            {{/each}}
+                        </div>
+                    {{/each}}
+                </div>
+                <!-- Leading Attributes -->
+                <div class="item-fields" style="width: min-content;">
+                    <b>{{genName "_attr"}} 1</b><br />
+                    {{#if systemData.userIsGM}}
+                        <select class="selection-box" name="data.leadAttr1.name" id="Attr1-Selector">
+                            {{#each helpers.attrs as |attr|}}
+                                <option value={{attr}} {{#if (checkEqual attr ../data.system.leadAttr1.name)}}selected{{/if}}>{{attr}}</option>
+                            {{/each}}
+                        </select><br/>
+                    {{else}}
+                        <a class="attr-d20-chat d20-{{data.system.leadAttr1.name}}">
+                            <span class="d20-overlay" data-tooltip="{{attrName data.system.leadAttr1.name}}">{{data.system.leadAttr1.name}}</span>
+                        </a><br />
+                    {{/if}}
+                    <input type="number" name="data.leadAttr1.value" value="{{data.system.leadAttr1.value}}" style="width: 60px;"/>
+                </div>
+                <div class="item-fields" style="width: min-content;">
+                    <b>{{genName "_attr"}} 2</b><br />
+                    {{#if systemData.userIsGM}}
+                        <select class="selection-box" name="data.leadAttr2.name" id="Attr2-Selector">
+                            {{#each helpers.attrs as |attr|}}
+                                <option value={{attr}} {{#if (checkEqual attr ../data.system.leadAttr2.name)}}selected{{/if}}>{{attr}}</option>
+                            {{/each}}
+                        </select><br/>
+                    {{else}}
+                        <a class="attr-d20-chat d20-{{data.system.leadAttr2.name}}">
+                            <span class="d20-overlay" data-tooltip="{{attrName data.system.leadAttr2.name}}">{{data.system.leadAttr2.name}}</span>
+                        </a><br />
+                    {{/if}}
+                    <input type="number" name="data.leadAttr2.value" value="{{data.system.leadAttr2.value}}" style="width: 60px;"/>
+                </div>
+            </div>
+            <!-- Range Chart -->
+            <div class="item-columned-page" style="align-items: baseline;">
                 <div style="margin-top: 15px; margin-bottom: 5px;">
-                    <b>Range chart</b><br/>
+                    <b>{{combatName "Range chart"}}</b><br/>
                 </div>
                 <div class="item-columned-page">
                     {{#each data.system.rangeChart as |mods range|}}
@@ -69,30 +122,6 @@
                 </div>
             </div>
         </div>
-    </header>
-
-    {{!-- Sheet Tab Navigation --}}
-    <nav class="sheet-tabs tabs" data-group="primary">
-        <a class="item" data-tab="description">Description</a>
-    </nav>
-
-    {{!-- Sheet Body --}}
-    <section class="sheet-body">
-
-        {{!-- Description Tab --}}
-        <div class="tab" data-group="primary" data-tab="description">
-            <b>{{genName "Locations"}}</b><br/>
-            <label for="location-body">{{genName "body"}}</label>
-            <!-- <input type="checkbox" id="location-body" name="location-body" {{#if (checkIn "body" systemData.location)}}{{/if}} /> -->
-            <br/>
-            <label for="location-pockets">{{genName "pockets"}}</label>
-            <!-- <input type="checkbox" id="location-pockets" name="location-pockets" {{#if (checkIn "pockets" systemData.location)}}{{/if}} /> -->
-            <br/>
-            <label for="location-bag">{{genName "bag"}}</label>
-            <!-- <input type="checkbox" id="location-bag" name="location-bag" {{#if (checkIn "bag" systemData.location)}}{{/if}} /> -->
-            <br/>
-            {{editor descriptionHTML target="system.description" button=true editable=editable engine="prosemirror"}}
-        </div>
-
+        {{> systems/the_edge/templates/items/meta-description.html}}
     </section>
 </form>
