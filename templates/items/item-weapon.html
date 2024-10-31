@@ -59,17 +59,17 @@
                     </div>
                 </div>
                 <!-- Fire modes -->
-                <div class="item-fields" style="flex: 3;">
+                <div class="item-fields" style="flex: 4;">
                     <b>{{combatName "Fire modes"}}</b>
-                    {{log systemData.fireModes}}
                     {{#each systemData.fireModes as |modifier mode|}}
-                        <div style="text-align: left;">
-                            {{log mode}}
+                        <div style="align-items: center; display: flex; flex-flow: row wrap; justify-content: space-between;">
                             {{combatName mode}}
-                            <input type="text" name="data.fireModes.{{mode}}.damage" value="{{modifier.damage}}" style="width: 60px"/>
-                            {{#each modifier.mali as |mod|}}
-                                <input type="number" name="data.fireModes.{{mode}}.mali" value="{{mod}}" style="width: 60px"/>
-                            {{/each}}
+                            <div>
+                                <input type="text" name="data.fireModes.{{mode}}.damage" value="{{modifier.damage}}" style="width: 60px"/>
+                                {{#each modifier.mali as |mod|}}
+                                    <input type="number" name="data.fireModes.{{mode}}.mali" value="{{mod}}" style="width: 25px"/>
+                                {{/each}}
+                            </div>
                         </div>
                     {{/each}}
                 </div>
@@ -77,7 +77,7 @@
                 <div class="item-fields" style="width: min-content;">
                     <b>{{genName "_attr"}} 1</b><br />
                     {{#if systemData.userIsGM}}
-                        <select class="selection-box" name="data.leadAttr1.name" id="Attr1-Selector">
+                        <select class="selection-box" name="data.leadAttr1.name" id="Attr1-Selector" style="width: 57px;">
                             {{#each helpers.attrs as |attr|}}
                                 <option value={{attr}} {{#if (checkEqual attr ../data.system.leadAttr1.name)}}selected{{/if}}>{{attr}}</option>
                             {{/each}}
@@ -87,12 +87,12 @@
                             <span class="d20-overlay" data-tooltip="{{attrName data.system.leadAttr1.name}}">{{data.system.leadAttr1.name}}</span>
                         </a><br />
                     {{/if}}
-                    <input type="number" name="data.leadAttr1.value" value="{{data.system.leadAttr1.value}}" style="width: 60px;"/>
+                    <input type="number" name="data.leadAttr1.value" value="{{data.system.leadAttr1.value}}" style="width: 57px;"/><br />
                 </div>
                 <div class="item-fields" style="width: min-content;">
                     <b>{{genName "_attr"}} 2</b><br />
                     {{#if systemData.userIsGM}}
-                        <select class="selection-box" name="data.leadAttr2.name" id="Attr2-Selector">
+                        <select class="selection-box" name="data.leadAttr2.name" id="Attr2-Selector" style="width: 57px;">
                             {{#each helpers.attrs as |attr|}}
                                 <option value={{attr}} {{#if (checkEqual attr ../data.system.leadAttr2.name)}}selected{{/if}}>{{attr}}</option>
                             {{/each}}
@@ -102,7 +102,7 @@
                             <span class="d20-overlay" data-tooltip="{{attrName data.system.leadAttr2.name}}">{{data.system.leadAttr2.name}}</span>
                         </a><br />
                     {{/if}}
-                    <input type="number" name="data.leadAttr2.value" value="{{data.system.leadAttr2.value}}" style="width: 60px;"/>
+                    <input type="number" name="data.leadAttr2.value" value="{{data.system.leadAttr2.value}}" style="width: 57px;"/>
                 </div>
             </div>
             <!-- Range Chart -->
@@ -112,11 +112,13 @@
                 </div>
                 <div class="item-columned-page">
                     {{#each data.system.rangeChart as |mods range|}}
-                    <div class="item-header-fields">
+                    <div class="item-fields">
                         {{genRange range}}<br/>
-                        {{#each mods as |mod|}}
-                            <input type="number" name="data.rangeChart.{{range}}" value="{{mod}}" style="width: 40%;"/>
-                        {{/each}}
+                        <div>
+                            {{#each mods as |mod|}}
+                                <input type="number" name="data.rangeChart.{{range}}" value="{{mod}}" style="width: 40%;"/>
+                            {{/each}}
+                        </div>
                     </div>
                     {{/each}}
                 </div>
