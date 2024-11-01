@@ -213,13 +213,8 @@ export class TheEdgeActor extends Actor {
         // TODO: Inner vs outer armour.
         let protectedLoc = armour.system.bodyPart;
         if (protectedLoc === "Entire" || (location === protectedLoc) || (location !== "Head" && protectedLoc === "Below_Neck")) {
-          let [remDamage, destroyed] = await ArmourItemTheEdge.protect.call(armour, damage, damageType)
-          console.log("Hit to:", location, "Absorbed", damage - remDamage, "Remaining", remDamage)
-          damage = remDamage
-          if (destroyed) {
-            armour.system.equipped = false
-            // TODO: notify
-          }
+          damage = await ArmourItemTheEdge.protect.call(armour, damage, damageType)
+          console.log("Hit to:", location, "Remaining", remDamage)
         }
       }
     }

@@ -1,4 +1,5 @@
 import {EntitySheetHelper} from "../helper.js";
+import LocalisationServer from "../system/localisation_server.js";
 
 /**
  * Extend the base Item document to support attributes and groups with a custom template creation dialog.
@@ -51,6 +52,11 @@ export class TheEdgeItem extends Item {
 
   toggleEquipped() {
     if (this.system.equipped === undefined) return undefined;
+    if (this.system.structurePoints <= 0) {
+      let msg = LocalisationServer.notifyLocalisation("EquipBroken", "Notifications")
+      ui.notifications.notify(msg)
+      return undefined;
+    }
     this.update({"system.equipped": !this.system.equipped})
   }
 }
@@ -72,12 +78,18 @@ export class ArmourItemTheEdge extends TheEdgeItem {
       update["system.structurePoints"] = Math.max(0, this.system.structurePoints - protection.threshold)
       damage -= protection.threshold
     }
-    await this.update(update)
 
+    if (update["system.structurePoints"] == 0) {
+      let msg = LocalisationServer.notifyLocalisation("Destroyed", "Notifications", {name: this.name})
+      ui.notifications.notify(msg)
+      update["system.equipped"] = false
+      update["name"] = this.name + " (broken)"
+    }
+    await this.update(update)
     if(this.sheet.rendered) {
       this.sheet._render()
     }
 
-    return [damage, this.system.structurePoints == 0]
+    return damage
   }
 }

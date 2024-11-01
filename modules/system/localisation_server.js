@@ -23,4 +23,8 @@ export default class LocalisationServer {
     static chatLocalisation(id, type) {
         return game.i18n.localize(`CHAT${type.toUpperCase()}.${id.toUpperCase()}`)
     }
+
+    static notifyLocalisation(id, category, dict = undefined) {
+        return game.i18n.format(category.toUpperCase() + "." + id.toUpperCase(), dict)
+    }
 }

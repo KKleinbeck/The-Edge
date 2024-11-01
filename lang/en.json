@@ -214,6 +214,11 @@
     "OTHERS": "Others"
   },
 
+  "NOTIFICATIONS": {
+    "DESTROYED": "Armour piece {name} was destroyed in combat",
+    "EQUIPBROKEN": "Cannot equip broken armour (i.e., no structure points)."
+  },
+
   "SIMPLE.NotifyInitFormulaUpdated": "Initiative formula was updated to",
   "SIMPLE.NotifyInitFormulaInvalid": "Initiative formula was invalid",
   "SIMPLE.NotifyGroupDuplicate": "Attribute group already exists.",
