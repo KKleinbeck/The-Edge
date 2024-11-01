@@ -1,10 +1,10 @@
-import { EntitySheetHelper } from "./helper.js";
-import {ATTRIBUTE_TYPES} from "./constants.js";
-import DialogAttribute from "./dialogs/dialog-attribute.js";
-import DialogProficiency from "./dialogs/dialog-proficiency.js";
-import DialogWeapon from "./dialogs/dialog-weapon.js";
+import { EntitySheetHelper } from "../helper.js";
+import {ATTRIBUTE_TYPES} from "../constants.js";
+import DialogAttribute from "../dialogs/dialog-attribute.js";
+import DialogProficiency from "../dialogs/dialog-proficiency.js";
+import DialogWeapon from "../dialogs/dialog-weapon.js";
 
-export class SimpleActorSheet extends ActorSheet {
+export class TheEdgeActorSheet extends ActorSheet {
 
   /** @inheritdoc */
   static get defaultOptions() {
@@ -38,6 +38,7 @@ export class SimpleActorSheet extends ActorSheet {
       async: true
     });
     context["prepare"] = this.actor.prepareSheet()
+    context.helpers = {locations: ["body", "pockets", "ruck"]}
     return context;
   }
 
@@ -53,7 +54,7 @@ export class SimpleActorSheet extends ActorSheet {
     // html.find(".attributes").on("click", "a.attribute-roll", EntitySheetHelper.onAttributeRoll.bind(this));
 
     // Item Controls
-    html.find(".item-control").click(this._onItemControl.bind(this));
+    html.find(".item-control").click(ev => this._onItemControl(ev));
     html.find(".items .rollable").on("click", this._onItemRoll.bind(this));
 
     // Add draggable for Macro creation
@@ -201,6 +202,10 @@ export class SimpleActorSheet extends ActorSheet {
         return item.sheet.render(true);
       case "delete":
         return item.delete();
+      case "toggle-equip":
+        item.toggleEquipped()
+        this._render();
+        break;
     }
   }
 

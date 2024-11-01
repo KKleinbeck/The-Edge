@@ -48,6 +48,11 @@ export class TheEdgeItem extends Item {
       armour: ArmourItemTheEdge
     }
   }
+
+  toggleEquipped() {
+    if (this.system.equipped === undefined) return undefined;
+    this.update({"system.equipped": !this.system.equipped})
+  }
 }
 
 export class WeaponItemTheEdge extends TheEdgeItem {
@@ -57,7 +62,8 @@ export class WeaponItemTheEdge extends TheEdgeItem {
 export class ArmourItemTheEdge extends TheEdgeItem {
   static async protect(damage, damageType) {
     let protection = this.system.protection[damageType];
-    damage -= protection.absorption;
+    damage = Math.max(0, damage - protection.absorption);
+    console.log(damage)
 
     let update = {}
     if (damage <= protection.threshold) {

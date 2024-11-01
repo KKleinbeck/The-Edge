@@ -7,7 +7,7 @@ export default function() {
         actorName: (a) => LocalisationServer.genericLocalisation(a, "Actor"),
         attrName: (a) => LocalisationServer.attributeLocalisation(a),
         attrAbbr: (a) => LocalisationServer.attributeAbbrLocalisation(a),
-        itemName: (a) => LocalisationServer.itemLocalisation(a),
+        itemName: (a) => LocalisationServer.genericLocalisation(a, "Item"),
         combatName: (a) => LocalisationServer.combatLocalisation(a),
         proficiencyName: (a) => LocalisationServer.proficiencyLocalisation(a),
         genRange: (a) => {

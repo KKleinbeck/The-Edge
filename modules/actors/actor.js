@@ -1,11 +1,11 @@
-import { EntitySheetHelper } from "./helper.js";
-import { ArmourItemTheEdge } from "./items/item.js";
+import { EntitySheetHelper } from "../helper.js";
+import { ArmourItemTheEdge } from "../items/item.js";
 
 /**
  * Extend the base Actor document to support attributes and groups with a custom template creation dialog.
  * @extends {Actor}
  */
-export class SimpleActor extends Actor {
+export class TheEdgeActor extends Actor {
 
   /** @inheritdoc */
   prepareDerivedData() {
@@ -425,7 +425,9 @@ export class SimpleActor extends Actor {
 
     for (const armour of this.items) {
       if (armour.type == "armour") {
-        // TODO: Inner vs outer armour. Check equipped
+        console.log(armour.system)
+        if(!armour.system.equipped) continue;
+        // TODO: Inner vs outer armour.
         let protectedLoc = armour.system.bodyPart;
         if (protectedLoc === "Entire" || (location === protectedLoc) || (location !== "Head" && protectedLoc === "Below_Neck")) {
           let [remDamage, destroyed] = await ArmourItemTheEdge.protect.call(armour, damage, damageType)

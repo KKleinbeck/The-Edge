@@ -203,6 +203,10 @@
     "effect"
   ],
   "templates": {
+    "locations": {
+      "locations": {"body": true, "pockets": false, "ruck": true},
+      "location": "body"
+    },
     "description": {
       "description": "",
       "gm_description": ""
@@ -226,8 +230,7 @@
   },
   "htmlFields": ["description"],
   "weapon": {
-    "templates": ["non-stackable", "description", "specials", "equipable"],
-    "locations": {"body": true, "pockets": false, "bag": true},
+    "templates": ["locations", "non-stackable", "description", "specials"],
     "type": "Pulse Rifle",
     "isElemental": false,
     "fireModes": {
@@ -241,8 +244,7 @@
     "attachments": []
   },
   "armour": {
-    "templates": ["non-stackable", "description", "specials", "equipable"],
-    "location": ["body", "bag"],
+    "templates": ["locations", "non-stackable", "description", "specials", "equipable"],
     "bodyPart": "Torso",
     "layer": "Inner",
     "structurePoints": 10,

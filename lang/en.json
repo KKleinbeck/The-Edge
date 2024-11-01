@@ -156,7 +156,7 @@
   "ADVANTAGEPOINTS": "Advantage Points",
   "APPLY": "Apply",
   "_ATTR": "Attr",
-  "BAG": "Bag",
+  "RUCK": "Ruck",
   "BODY": "Body",
   "CHECK": "Check",
   "CRITFAILURE": "Critical Failure",
@@ -200,12 +200,15 @@
   "SETTINGS.SimpleInitFormulaL": "Enter an initiative formula, such as d20+@dex",
 
   "ITEM": {
-    "EDIT": "Edit Item"
+    "EDIT": "Edit Item",
+    "CREATE": "Create Item",
+    "DELETE": "Delete Item",
+    "NEW": "New Item",
+
+    "EQUIP": "Equip",
+    "TOGGLE EQUIPPED": "Toggle equipped",
+    "UNEQUIP": "Unequip"
   },
-  "SIMPLE.ItemCreate": "Create Item",
-  "SIMPLE.ItemEdit": "Edit Item",
-  "SIMPLE.ItemDelete": "Delete Item",
-  "SIMPLE.ItemNew": "New Item",
 
   "SIMPLE.NotifyInitFormulaUpdated": "Initiative formula was updated to",
   "SIMPLE.NotifyInitFormulaInvalid": "Initiative formula was invalid",

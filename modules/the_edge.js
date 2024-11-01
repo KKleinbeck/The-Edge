@@ -6,10 +6,10 @@
 // Import Modules
 import initHooks from "./hooks/init.js";
 import THE_EDGE from "./system/config-the-edge.js"
-import { SimpleActor } from "./actor.js";
+import { TheEdgeActor } from "./actors/actor.js";
 import { TheEdgeItem } from "./items/item.js";
 import { TheEdgeItemSheet } from "./items/item-sheet.js";
-import { SimpleActorSheet } from "./actor-sheet.js";
+import { TheEdgeActorSheet } from "./actors/actor-sheet.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
 import { createWorldbuildingMacro } from "./macro.js";
 import { SimpleToken, SimpleTokenDocument } from "./token.js";
@@ -39,13 +39,13 @@ Hooks.once("init", async function() {
   };
 
   game.the_edge = {
-    SimpleActor,
+    TheEdgeActor,
     createWorldbuildingMacro,
     config: THE_EDGE,
   };
 
   // Define custom Document classes
-  CONFIG.Actor.documentClass = SimpleActor;
+  CONFIG.Actor.documentClass = TheEdgeActor;
   CONFIG.Item.documentClass = TheEdgeItem;
   CONFIG.Token.documentClass = SimpleTokenDocument;
   CONFIG.Token.objectClass = SimpleToken;
@@ -53,7 +53,7 @@ Hooks.once("init", async function() {
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("the_edge", SimpleActorSheet, { makeDefault: true });
+  Actors.registerSheet("the_edge", TheEdgeActorSheet, { makeDefault: true });
   TheEdgeItemSheet.setupSheets()
 
   // Register system settings
