@@ -48,11 +48,6 @@ export class TheEdgeActorSheet extends ActorSheet {
     // Everything below here is only needed if the sheet is editable
     if ( !this.isEditable ) return;
 
-    // Attribute Management
-    // html.find(".attributes").on("click", ".attribute-control", EntitySheetHelper.onClickAttributeControl.bind(this));
-    // html.find(".groups").on("click", ".group-control", EntitySheetHelper.onClickAttributeGroupControl.bind(this));
-    // html.find(".attributes").on("click", "a.attribute-roll", EntitySheetHelper.onAttributeRoll.bind(this));
-
     // Item Controls
     html.find(".item-control").click(ev => this._onItemControl(ev));
     html.find(".items .rollable").on("click", this._onItemRoll.bind(this));
