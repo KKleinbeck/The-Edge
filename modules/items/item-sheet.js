@@ -78,7 +78,7 @@ class ItemSheetWeapon extends TheEdgeItemSheet {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["the_edge", "sheet", "item-weapon"],
-      width: 420,
+      width: 385,
       height: 480,
       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "details"}],
     });

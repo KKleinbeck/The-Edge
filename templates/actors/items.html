@@ -1,10 +1,10 @@
-{{#each helpers.locations as |loc|}}
-    <h3>{{genName loc}}</h3>
+{{log helpers.types}}
+{{#each helpers.types as |type|}}
+    <h3>{{itemName type}}</h3>
     <hr />
-    <ol class="item-list">
+    <ol class="item-list item-category" data-category="{{loc}}">
         {{#each ../data.items as |item id|}}
-            {{log item}}
-            {{#if (checkEqual loc item.system.location)}}
+            {{#if (checkEqual item.type type)}}
                 <li class="item flexrow" data-item-id="{{item._id}}">
                     <div class="flexrow item-control" data-action="edit" style="cursor: pointer;"">
                         <img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
@@ -26,6 +26,32 @@
         {{/each}}
     </ol>
 {{/each}}
+<h3>{{itemName "Others"}}</h3>
+<hr />
+<ol class="item-list item-category" data-category="{{loc}}">
+    {{#each ../data.items as |item id|}}
+        {{#if (checkInstance item.type types)}}
+        {{else}}
+            <li class="item flexrow" data-item-id="{{item._id}}">
+                <div class="flexrow item-control" data-action="edit" style="cursor: pointer;"">
+                    <img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
+                    <h4 class="item-name">{{item.name}}</h4>
+                </div>
+                <div class="item-controls">
+                    {{#if (checkIn "equipped" item.system)}}
+                        {{#if item.system.equipped}}
+                            <a class="item-control" title="{{ itemName 'Unequip' }}" data-action="toggle-equip"><i class="far fa-check-circle"></i></a>
+                        {{else}}
+                            <a class="item-control" title="{{ itemName 'Equip' }}" data-action="toggle-equip"><i class="far fa-circle"></i></a>
+                        {{/if}}
+                    {{/if}}
+                    <a class="item-control" title="{{ itemName 'Edit' }}" data-action="edit"><i class="fas fa-edit"></i></a>
+                    <a class="item-control" title="{{ itemName 'Delete' }}" data-action="delete"><i class="fas fa-trash"></i></a>
+                </div>
+            </li>
+        {{/if}}
+    {{/each}}
+</ol>
 <p>
     <a class="item-control" title="{{ itemName 'Create' }}" data-action="create"><i class="fas fa-plus"></i> {{ itemName "Create" }}</a>
 </p>

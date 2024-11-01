@@ -4,18 +4,15 @@
   <div class="loadout-container">
     {{#each data.items as |item|}}
       {{#if (checkEqual item.type 'weapon')}}
-        {{#if (checkEqual item.system.location "ruck")}}
-        {{else}}
-          <div class="loadout-box">
-            <div class="item-control item loadout-name" data-action="edit" style="cursor: pointer;" data-item-id="{{item._id}}">
-              <img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
-              <div>{{item.name}}</div>
-            </div>
-            <a class="weapon-d20 d20-black" weapon-id="{{item._id}}" data-tooltip="{{combatName 'Attack'}}">
-                <span class="d20-overlay-weapon">{{calcWeaponPL ../actor item._id}}</span>
-            </a>
+        <div class="loadout-box">
+          <div class="item-control item loadout-name" data-action="edit" style="cursor: pointer;" data-item-id="{{item._id}}">
+            <img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
+            <div>{{item.name}}</div>
           </div>
-        {{/if}}
+          <a class="weapon-d20 d20-black" weapon-id="{{item._id}}" data-tooltip="{{combatName 'Attack'}}">
+              <span class="d20-overlay-weapon">{{calcWeaponPL ../actor item._id}}</span>
+          </a>
+        </div>
       {{/if}}
     {{/each}}
   </div>

@@ -4,7 +4,10 @@
   <div class="columned-page">
     <div class="page-right-aligned">
       {{#each prepare.zones as |dict i|}}
-      <p data-tooltip={{dict.tooltip}}>{{genName "Zone"}} {{i}}&#8195;<span class="output output60">{{dict.value}}</span></p>
+      <p data-tooltip={{dict.tooltip}}>
+        {{genName "Zone"}} {{i}} <i class="fa fa-long-arrow-right" aria-hidden="true"></i> {{add i 1}}&#8195;
+        <span class="output output60">{{dict.value}}</span>
+      </p>
       {{/each}}
     </div>
     <div class="page-right-aligned">

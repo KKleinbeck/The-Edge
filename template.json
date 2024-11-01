@@ -230,7 +230,7 @@
   },
   "htmlFields": ["description"],
   "weapon": {
-    "templates": ["locations", "non-stackable", "description", "specials"],
+    "templates": ["locations", "non-stackable", "description", "specials", "equipable"],
     "type": "Pulse Rifle",
     "isElemental": false,
     "fireModes": {

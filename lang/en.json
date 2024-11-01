@@ -207,7 +207,11 @@
 
     "EQUIP": "Equip",
     "TOGGLE EQUIPPED": "Toggle equipped",
-    "UNEQUIP": "Unequip"
+    "UNEQUIP": "Unequip",
+
+    "ARMOUR": "Armour",
+    "WEAPON": "Weapon",
+    "OTHERS": "Others"
   },
 
   "SIMPLE.NotifyInitFormulaUpdated": "Initiative formula was updated to",

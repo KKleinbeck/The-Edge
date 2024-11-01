@@ -3,6 +3,7 @@ import THE_EDGE from "../system/config-the-edge.js";
 
 export default function() {
     Handlebars.registerHelper({
+        add: (a, b) => {return +a+b; },
         genName: (a) => LocalisationServer.genericLocalisation(a),
         actorName: (a) => LocalisationServer.genericLocalisation(a, "Actor"),
         attrName: (a) => LocalisationServer.attributeLocalisation(a),

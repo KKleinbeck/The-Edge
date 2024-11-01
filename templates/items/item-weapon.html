@@ -40,23 +40,11 @@
     <section class="sheet-body">
         <div class="tab" data-group="primary" data-tab="details">
             <div class="item-columned-page">
-                <!-- Locations -->
-                <div class="item-fields">
-                    <b>{{genName "Locations"}}</b><br/>
-                    <div style="text-align: left;">
-                        {{#each systemData.locations as |val loc|}}
-                            <div class="checkbox-container">
-                                <input type="checkbox" id="location-{{loc}}" name="data.locations.{{loc}}" {{#if val}}checked{{/if}} />
-                                <label for="location-{{loc}}">{{genName loc}}</label>
-                            </div>
-                        {{/each}}
-                    </div>
-                </div>
                 <!-- Fire modes -->
-                <div class="item-fields">
+                <div class="item-fields" style="gap: 10px;">
                     <b>{{combatName "Fire modes"}}</b>
                     {{#each systemData.fireModes as |modifier mode|}}
-                        <div style="align-items: center; display: flex; flex-flow: nowrap; justify-content: space-between;">
+                        <div style="align-items: center; display: flex; flex-flow: nowrap; justify-content: space-between; gap: 5px;">
                             <span style="white-space: nowrap;">{{combatName mode}}</span>
                             <div style="width: 120px;">
                                 <input type="text" name="data.fireModes.{{mode}}.damage" value="{{modifier.damage}}" style="width: 60px"/>
@@ -69,7 +57,7 @@
                 </div>
                 <!-- Leading Attributes -->
                 <div class="item-fields">
-                    <div style="display: flex; flex-flow: nowrap;">
+                    <div style="display: flex; flex-flow: nowrap; gap: 20px">
                         <div style="width: min-content;">
                             <b>{{genName "_attr"}} 1</b><br />
                             {{#if systemData.userIsGM}}
@@ -108,10 +96,12 @@
                 </div>
             </div>
             <!-- Range Chart -->
-            <div class="item-columned-page" style="align-items: baseline;">
+            <div class="item-columned-page">
                 <div style="margin-top: 15px; margin-bottom: 5px;">
                     <b>{{combatName "Range chart"}}</b><br/>
                 </div>
+            </div>
+            <div class="item-columned-page" style="align-items: baseline;">
                 <div class="item-columned-page">
                     {{#each data.system.rangeChart as |mods range|}}
                     <div style="flex: 1; text-align: center;">

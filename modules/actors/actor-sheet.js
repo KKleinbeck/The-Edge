@@ -38,7 +38,7 @@ export class TheEdgeActorSheet extends ActorSheet {
       async: true
     });
     context["prepare"] = this.actor.prepareSheet()
-    context.helpers = {locations: ["body", "pockets", "ruck"]}
+    context.helpers = {types: ["weapon", "armour"]}
     return context;
   }
 
