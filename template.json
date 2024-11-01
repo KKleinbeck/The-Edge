@@ -219,17 +219,20 @@
     "non-stackable": {
       "weight": 0,
       "value": 0
+    },
+    "equipable": {
+      "equipped": false
     }
   },
   "htmlFields": ["description"],
   "weapon": {
-    "templates": ["non-stackable", "description", "specials"],
-    "location": ["body", "bag"],
+    "templates": ["non-stackable", "description", "specials", "equipable"],
+    "locations": {"body": true, "pockets": false, "bag": true},
     "type": "Pulse Rifle",
-    "damageType": "Energy",
+    "isElemental": false,
     "fireModes": {
-      "Single": {"damage": "1d8", "dices": 1, "mali": [0, 0]},
-      "Burst": {"damage": "3d6", "dices": 3, "mali": [0, 0]},
+      "Single": {"damage": "2d4+1", "dices": 1, "mali": [0, 0]},
+      "Burst": {"damage": "1d8", "dices": 3, "mali": [0, 0]},
       "Automatic": {"damage": "N.A.", "dices": 0, "mali": [0, 0]}
     },
     "leadAttr1": {"name": "Str", "value": 10},
@@ -238,7 +241,7 @@
     "attachments": []
   },
   "armour": {
-    "templates": ["non-stackable", "description", "specials"],
+    "templates": ["non-stackable", "description", "specials", "equipable"],
     "location": ["body", "bag"],
     "bodyPart": "Torso",
     "layer": "Inner",

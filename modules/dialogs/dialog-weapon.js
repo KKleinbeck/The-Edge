@@ -57,12 +57,14 @@ export default class DialogWeapon extends Dialog{
             precision: precision,
             pIndex: pIndex
           }
-          let damage = await DiceServer.attackCheck(check, modificators);
+          let [crits, damage] = await DiceServer.attackCheck(check, modificators);
 
           let scene = Aux.getScene(checkData.sceneID)
           let targets = Aux.getTargets(scene, checkData.targetIDs)
           for (const target of targets) {
-              for (const dmg of damage) await target.applyDamage(dmg)//applyDamage(dmg)//Aux.applyDamage(target, dmg);
+              for (let i = 0; i < damage.length; ++i){
+                await target.applyDamage(damage[i], crits[i], checkData.damageType)
+              }
           }
         }
       }

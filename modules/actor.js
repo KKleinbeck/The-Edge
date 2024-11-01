@@ -1,4 +1,5 @@
 import { EntitySheetHelper } from "./helper.js";
+import { ArmourItemTheEdge } from "./items/item.js";
 
 /**
  * Extend the base Actor document to support attributes and groups with a custom template creation dialog.
@@ -17,6 +18,8 @@ export class SimpleActor extends Actor {
     this.system.heartRate["max"] = this.system.heartRate.baseline_max + 
       this.system.attributes["End"].value -
       2 * Math.floor((this.system.age - 21) / 3)
+
+    this.system.wounds = {}
   }
 
   /* -------------------------------------------- */
@@ -417,7 +420,25 @@ export class SimpleActor extends Actor {
     return Math.max(level + attr_mod, 0)
   }
   
-  async applyDamage(damage) {
+  async applyDamage(damage, crit, damageType) {
+    let [location, locationDetail] = this._generateLocation(crit)
+
+    for (const armour of this.items) {
+      if (armour.type == "armour") {
+        // TODO: Inner vs outer armour. Check equipped
+        let protectedLoc = armour.system.bodyPart;
+        if (protectedLoc === "Entire" || (location === protectedLoc) || (location !== "Head" && protectedLoc === "Below_Neck")) {
+          let [remDamage, destroyed] = await ArmourItemTheEdge.protect.call(armour, damage, damageType)
+          console.log("Hit to:", location, "Absorbed", damage - remDamage, "Remaining", remDamage)
+          damage = remDamage
+          if (destroyed) {
+            armour.system.equipped = false
+            // TODO: notify
+          }
+        }
+      }
+    }
+
     let update = {}
     update["system.health.value"] = this.system.health.value - damage
     await this.update(update)
@@ -425,6 +446,17 @@ export class SimpleActor extends Actor {
     if(this.sheet.rendered) {
       this.sheet._render()
     }
+  }
+
+  _generateLocation(crit) {
+    if (crit) return ["Head", ""];
+    let rand = Math.random();
+    if (rand < 0.02) { // 20% legs
+      return ["Legs", ["Left", "Right"].random()]
+    } if (rand < 0.04) { // 20% arms
+      return ["Arms", ["Left", "Right"].random()]
+    }
+    return ["Torso", ""]
   }
 
   _attrCost(n) { return 10 * Math.floor(14 + 6 * Math.pow(1.2, n)); }

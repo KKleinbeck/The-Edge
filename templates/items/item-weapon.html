@@ -44,18 +44,12 @@
                 <div class="item-fields">
                     <b>{{genName "Locations"}}</b><br/>
                     <div style="text-align: left;">
-                        <div class="checkbox-container">
-                            <input type="checkbox" id="location-body" name="location-body" {{#if (checkInstance "body" systemData.location)}}checked{{/if}} />
-                            <label for="location-body">{{genName "body"}}</label>
-                        </div>
-                        <div class="checkbox-container">
-                            <input type="checkbox" id="location-pockets" name="location-pockets" {{#if (checkInstance "pockets" systemData.location)}}checked{{/if}} />
-                            <label for="location-pockets">{{genName "pockets"}}</label>
-                        </div>
-                        <div class="checkbox-container">
-                            <input type="checkbox" id="location-bag" name="location-bag" {{#if (checkInstance "bag" systemData.location)}}checked{{/if}} />
-                            <label for="location-bag">{{genName "bag"}}</label>
-                        </div>
+                        {{#each systemData.locations as |val loc|}}
+                            <div class="checkbox-container">
+                                <input type="checkbox" id="location-{{loc}}" name="data.locations.{{loc}}" {{#if val}}checked{{/if}} />
+                                <label for="location-{{loc}}">{{genName loc}}</label>
+                            </div>
+                        {{/each}}
                     </div>
                 </div>
                 <!-- Fire modes -->
@@ -107,11 +101,10 @@
                             <input type="number" name="data.leadAttr2.value" value="{{data.system.leadAttr2.value}}" style="width: 57px;"/>
                         </div>
                     </div>
-                    <select class="selection-box" name="data.damageType" id="damageType-Selector" style="width: 100%;">
-                        <option value="Energy" {{#if (checkEqual systemData.damageType "Energy")}}selected{{/if}}>{{combatName "Energy"}}</option>
-                        <option value="Kinetic" {{#if (checkEqual systemData.damageType "Kinetic")}}selected{{/if}}>{{combatName "Kinetic"}}</option>
-                        <option value="Elemental" {{#if (checkEqual systemData.damageType "Elemental")}}selected{{/if}}>{{combatName "Elemental"}}</option>
-                    </select><br/>
+                    <div class="checkbox-container">
+                        <label for="is-elemental">{{combatName "Elemental"}}</label>
+                        <input type="checkbox" id="is-elemental" name="data.isElemental" {{#if systemData.isElemental}}checked{{/if}} />
+                    </div>
                 </div>
             </div>
             <!-- Range Chart -->

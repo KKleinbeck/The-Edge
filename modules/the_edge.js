@@ -24,6 +24,11 @@ import { SimpleToken, SimpleTokenDocument } from "./token.js";
 Hooks.once("init", async function() {
   console.log(`Initializing the Galaxy`);
 
+  // Useful helper to get random element from array
+  Array.prototype.random = function () {
+    return this[Math.floor((Math.random()*this.length))];
+  }
+
   /**
    * Set an initiative formula for the system. This will be updated later.
    * @type {String}
@@ -101,9 +106,9 @@ Hooks.once("init", async function() {
   await preloadHandlebarsTemplates();
 });
 
-// Hooks.on("ready", async() => {
-//   TheEdgeItem.setupSubClasses()
-// })
+Hooks.on("ready", async() => {
+  TheEdgeItem.setupSubClasses()
+})
 
 /**
  * Macrobar hook.

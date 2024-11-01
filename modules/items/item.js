@@ -44,11 +44,35 @@ export class TheEdgeItem extends Item {
 
   static setupSubClasses() {
     game.the_edge.config.ItemSubClasses = {
-      weapon: WeaponItemTheEdge
+      weapon: WeaponItemTheEdge,
+      armour: ArmourItemTheEdge
     }
   }
 }
 
-class WeaponItemTheEdge extends TheEdgeItem {
+export class WeaponItemTheEdge extends TheEdgeItem {
 
+}
+
+export class ArmourItemTheEdge extends TheEdgeItem {
+  static async protect(damage, damageType) {
+    let protection = this.system.protection[damageType];
+    damage -= protection.absorption;
+
+    let update = {}
+    if (damage <= protection.threshold) {
+      update["system.structurePoints"] = Math.max(0, this.system.structurePoints - damage)
+      damage = 0;
+    } else {
+      update["system.structurePoints"] = Math.max(0, this.system.structurePoints - protection.threshold)
+      damage -= protection.threshold
+    }
+    await this.update(update)
+
+    if(this.sheet.rendered) {
+      this.sheet._render()
+    }
+
+    return [damage, this.system.structurePoints == 0]
+  }
 }

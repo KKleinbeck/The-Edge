@@ -163,10 +163,18 @@ export class SimpleActorSheet extends ActorSheet {
     }
 
     const weapon = this.actor.items.get(weaponID)
+    let damageType = ""
+    if (weapon.system.isElemental) {
+      damageType = "Elemental"
+    } else if (["Blaster Pistols", "Pulse Rifle", "SABs", "Blaster Shockguns", "Blaster Rifles"].includes(weapon.system.type)) {
+      damageType = "Energy"
+    } else damageType = "Kinetic";
+    
     const threshold = this.actor._getWeaponPL(weaponID)
     let d = DialogWeapon.start({
       name: weapon.name,
       threshold: threshold,
+      damageType: damageType,
       rangeChart: weapon.system.rangeChart,
       fireModes: weapon.system.fireModes,
       actor: actor,

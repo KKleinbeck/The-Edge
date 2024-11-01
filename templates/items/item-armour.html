@@ -67,13 +67,13 @@
                     <td style="text-align: right;">{{combatName "Elemental"}}</td>
                 </tr>
                 <tr>
-                    <td>{{combatName "absorption"}}</td>
+                    <td data-tooltip="Absorbed incoming damage by this amount">{{combatName "absorption"}}</td>
                     {{#each data.system.protection as |modifier type|}}
                         <td style="text-align: right;"><input type="number" name="data.protection.{{type}}.absorption" value="{{modifier.absorption}}" style="width: 80%;"/></td>
                     {{/each}}
                 </tr>
                 <tr>
-                    <td>{{combatName "threshold"}}</td>
+                    <td data-tooltip="Maximum damage before transfering further down">{{combatName "threshold"}}</td>
                     {{#each data.system.protection as |modifier type|}}
                         <td style="text-align: right;"><input type="number" name="data.protection.{{type}}.threshold" value="{{modifier.threshold}}" style="width: 80%"/></td>
                     {{/each}}

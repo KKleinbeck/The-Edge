@@ -95,7 +95,6 @@ export default class DiceServer {
     if (diceRes == []) return undefined;
     let hits = []
     for (const res of diceRes) hits.push(res <= check.threshold);
-    let sum = hits.reduce((a, b) => a+b, 0);
 
     if (modificators.advantage != "Nothing") {
       let diceRes2 = []
@@ -105,18 +104,25 @@ export default class DiceServer {
       let hits2 = []
       for (const res of diceRes2) hits2.push(res <= check.threshold);
       
+      let sum = hits.reduce((a, b) => a+b, 0);
       let sum2 = hits2.reduce((a, b) => a+b, 0);
       if ( ((modificators.advantage == "Advantage") && (sum < sum2)) ||
            ((modificators.advantage == "Disadvantage") && (sum > sum2)) ) {
         hits = hits2
-        sum = sum2
         diceRes = diceRes2
       }
     }
 
     let damage = []
-    for (let i = 0; i < sum; ++i) {
+    let crits = []
+    for (let i = 0; i < diceRes.length; ++i) {
+      if (!hits[i]) continue;
+
       damage.push((await this._genericRoll(modificators.fireModeModifiers.damage)).reduce((a,b) => a+b, 0))
+      if (diceRes[i] == 1) {
+        damage[i] += this._max(modificators.fireModeModifiers.damage);
+        crits.push(true)
+      } else crits.push(false)
     }
 
     let details = {
@@ -129,7 +135,7 @@ export default class DiceServer {
     }
     mergeObject(details, modificators)
     ChatServer.transmitRoll("WeaponCheck", details);
-    return damage;
+    return [crits, damage];
   }
 
   static async _genericRoll(rollDescription, isCheck = false) {
@@ -137,7 +143,7 @@ export default class DiceServer {
     let results = [];
 
     for (const roll of rolls) {
-      if (!isNaN(roll)) results.push(+roll);
+      if (!isNaN(roll)) results.push(+roll); // Plain numbers are added
       else results.push(await this._basicRoll(roll, isCheck));
     }
     return results
@@ -214,5 +220,31 @@ export default class DiceServer {
 
   static async _randInt(min, max) {
     return Math.floor((max * Math.random() - min + 1) + min);
+  }
+  
+  static _max(rollDescription) {
+    let rolls = rollDescription.replace(/\s/g, '').split("+");
+    let result = 0;
+
+    for (const roll of rolls) {
+      if (!isNaN(roll)) {
+        result += +roll; // Plain numbers are added
+        continue;
+      }
+      const regex = /^(\d*)?d(\d+)([hl])?(\d*)?$/;
+      const match = roll.match(regex);
+
+      if (match) {
+        let nDices = 1
+        if (match[4] === undefined && match[1] !== undefined) {
+          nDices = match[1];
+        } else if (match[4] !== undefined) {
+          nDices = match[4]
+        }
+        let nSides = match[2];
+        result += nSides * nDices;
+      }
+    }
+    return result
   }
 }
