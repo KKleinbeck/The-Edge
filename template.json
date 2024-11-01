@@ -226,6 +226,7 @@
     "templates": ["non-stackable", "description", "specials"],
     "location": ["body", "bag"],
     "type": "Pulse Rifle",
+    "damageType": "Energy",
     "fireModes": {
       "Single": {"damage": "1d8", "dices": 1, "mali": [0, 0]},
       "Burst": {"damage": "3d6", "dices": 3, "mali": [0, 0]},
@@ -235,6 +236,19 @@
     "leadAttr2": {"name": "Str", "value": 10},
     "rangeChart":   {"less_2m": [0, 0], "less_20m": [0, 0], "less_200m": [0, 0], "less_1km": [0, 0], "more_1km": [0, 0]},
     "attachments": []
+  },
+  "armour": {
+    "templates": ["non-stackable", "description", "specials"],
+    "location": ["body", "bag"],
+    "bodyPart": "Torso",
+    "layer": "Inner",
+    "structurePoints": 10,
+    "attachmentPoints": 0,
+    "protection": {
+      "Energy": {"absorption": 0, "threshold": 0},
+      "Kinetic": {"absorption": 0, "threshold": 0},
+      "Elemental": {"absorption": 0, "threshold": 0}
+    }
   }
 }
 }

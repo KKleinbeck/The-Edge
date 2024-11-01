@@ -51,13 +51,14 @@
 .item-columned-page {
   display: flex;
   flex-wrap: nowrap;
+  justify-content: space-between;
   width: 100%;
   gap: 10px 5px;
   padding: 0;
   margin-top: 0;
 }
 .the_edge .item-columned-page .item-fields {
-  flex: 1;
+  width: min-content;
   padding: 10px 0px;
   text-align: center;
 }
@@ -442,7 +443,15 @@
   min-height: 1045px;
 }
 .the_edge.sheet.item {
+  min-width: 220px;
+  min-height: 420px;
+}
+.the_edge.sheet.item-weapon {
   min-width: 420px;
+  min-height: 420px;
+}
+.the_edge.sheet.item-armour {
+  min-width: 385px;
   min-height: 420px;
 }
 

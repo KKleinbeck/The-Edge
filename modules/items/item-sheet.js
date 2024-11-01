@@ -23,6 +23,7 @@ export class TheEdgeItemSheet extends ItemSheet {
     Items.unregisterSheet("core", ItemSheet);
     Items.registerSheet("the_edge", TheEdgeItemSheet, { makeDefault: true });
     Items.registerSheet("the_edge", ItemSheetWeapon, { makeDefault: true, types: ["weapon"] });
+    Items.registerSheet("the_edge", ItemSheetArmour, { makeDefault: true, types: ["armour"] });
     // Items.registerSheet("dsa5", ItemCareerDSA5, { makeDefault: true, types: ["career"] });
     // Items.registerSheet("dsa5", ItemCultureDSA5, { makeDefault: true, types: ["culture"] });
     // Items.registerSheet("dsa5", VantageSheetDSA5, { makeDefault: true, types: ["advantage", "disadvantage"] });
@@ -30,7 +31,7 @@ export class TheEdgeItemSheet extends ItemSheet {
 
     Items.unregisterSheet("the_edge", TheEdgeItemSheet, {
       types: [
-        "weapon"
+        "weapon", "armour"
       ]
     });
   }
@@ -51,7 +52,6 @@ export class TheEdgeItemSheet extends ItemSheet {
       async: true
     });
     context.systemData.userIsGM = game.user.isGM;
-    context.helpers = {attrs: THE_EDGE.attrs, weapon_types: THE_EDGE.weapon_types}
     return context;
   }
 
@@ -77,13 +77,33 @@ export class TheEdgeItemSheet extends ItemSheet {
 class ItemSheetWeapon extends TheEdgeItemSheet {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      width: 380,
+      classes: ["the_edge", "sheet", "item-weapon"],
+      width: 420,
       height: 480,
       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "details"}],
     });
   }
 
-  static _storeState(html) {
-    console.log("Derived")
+  async getData(options) {
+    const context = await super.getData(options);
+    context.helpers = {attrs: THE_EDGE.attrs, weapon_types: THE_EDGE.weapon_types};
+    return context;
+  }
+}
+
+class ItemSheetArmour extends TheEdgeItemSheet {
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      classes: ["the_edge", "sheet", "item-armour"],
+      width: 385,
+      height: 480,
+      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "details"}],
+    });
+  }
+
+  async getData(options) {
+    const context = await super.getData(options);
+    context.helpers = {bodyParts: THE_EDGE.body_parts};
+    return context;
   }
 }

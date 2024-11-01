@@ -1,0 +1,85 @@
+<form class="flexcol {{cssClass}}" autocomplete="off">
+    <header class="sheet-header-item">
+        <div class="item-columned-page">
+            <div style="width: 100px;">
+                <img class="profile-img-item" src="{{data.img}}" data-edit="img" title="{{data.name}}" />
+            </div>
+            <div style="flex: 1">
+                <h3 class="charname">
+                    <input name="name" type="text" value="{{data.name}}" placeholder="Name" />
+                </h3>
+                <div class="item-columned-page">
+                    <div class="item-header-fields">
+                        {{genName "Weight"}}<br/>
+                        <input type="number" name="data.weight" value="{{data.system.weight}}" data-dtype="Number"/>
+                    </div>
+                    <div class="item-header-fields">
+                        {{genName "Value"}}<br/>
+                        <input type="number" name="data.value" value="{{data.system.value}}" data-dtype="Number"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    {{!-- Sheet Tab Navigation --}}
+    <nav class="sheet-tabs tabs" data-group="primary">
+        <a class="item" data-tab="details">Details</a>
+        <a class="item" data-tab="description">Description</a>
+    </nav>
+
+    {{!-- Sheet Body --}}
+    <section class="sheet-body">
+        <div class="tab" data-group="primary" data-tab="details">
+            <div class="item-columned-page" style="align-items: baseline;">
+                <div class="item-fields">
+                    {{combatName "Layer"}}<br/>
+                    <select class="selection-box" name="data.layer" id="Type Selector">
+                        <option value="Inner" {{#if (checkEqual data.system.layer "Inner")}}selected{{/if}}>{{combatName "Inner"}}</option>
+                        <option value="Outer" {{#if (checkEqual data.system.layer "Outer")}}selected{{/if}}>{{combatName "Outer"}}</option>
+                    </select>
+                </div>
+                <div class="item-fields">
+                    {{actorName "Body Part"}}
+                    <select class="selection-box" name="data.bodyPart" id="Location Selector">
+                        {{#each helpers.bodyParts as |bPart|}}
+                            <option value={{bPart}} {{#if (checkEqual ../data.system.bodyPart bPart)}}selected{{/if}}>{{actorName bPart}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="item-fields" style="flex: 1;">
+                    {{combatName "Structure points"}}<br/>
+                    <input type="number" name="data.structurePoints" value="{{data.system.structurePoints}}" data-dtype="Number"/>
+                </div>
+                {{#if (checkEqual data.system.layer "Inner")}}
+                    <div class="item-fields" style="flex: 1;">
+                        {{combatName "Attachment Points"}}<br/>
+                        <input type="number" name="data.attachmentPoints" value="{{data.system.attachmentPoints}}" data-dtype="Number"/>
+                    </div>
+                {{/if}}
+            </div>
+            {{combatName "Damage Modifiers"}}
+            <table>
+                <tr>
+                    <td></td>
+                    <td style="text-align: right;">{{combatName "Energy"}}</td>
+                    <td style="text-align: right;">{{combatName "Kinetic"}}</td>
+                    <td style="text-align: right;">{{combatName "Elemental"}}</td>
+                </tr>
+                <tr>
+                    <td>{{combatName "absorption"}}</td>
+                    {{#each data.system.protection as |modifier type|}}
+                        <td style="text-align: right;"><input type="number" name="data.protection.{{type}}.absorption" value="{{modifier.absorption}}" style="width: 80%;"/></td>
+                    {{/each}}
+                </tr>
+                <tr>
+                    <td>{{combatName "threshold"}}</td>
+                    {{#each data.system.protection as |modifier type|}}
+                        <td style="text-align: right;"><input type="number" name="data.protection.{{type}}.threshold" value="{{modifier.threshold}}" style="width: 80%"/></td>
+                    {{/each}}
+                </tr>
+            </table>
+        </div>
+        {{> systems/the_edge/templates/items/meta-description.html}}
+    </section>
+</form>

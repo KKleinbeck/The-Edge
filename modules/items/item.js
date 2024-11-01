@@ -6,7 +6,8 @@ import {EntitySheetHelper} from "../helper.js";
  */
 export class TheEdgeItem extends Item {
   static defaultImages = {
-    weapon: "systems/the_edge/icons/rifle.png"
+    weapon: "systems/the_edge/icons/rifle.png",
+    armour: "systems/the_edge/icons/helmet.png"
   }
 
   /* -------------------------------------------- */

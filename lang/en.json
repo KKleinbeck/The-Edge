@@ -1,4 +1,13 @@
 {
+  "ACTOR": {
+    "BODY PART": "Body part",
+    "TORSO": "Torso",
+    "ARMS": "Arms",
+    "LEGS": "Legs",
+    "BELOW_NECK": "Below neck",
+    "HEAD": "Head",
+    "ENTIRE": "Entire"
+  }, 
   "ATTR": {
     "END": "Endurance",
     "STR": "Strength",
@@ -38,6 +47,14 @@
     "WEAPONSKINETIC": "Kinetic Weapons",
     "WEAPONSOTHER": "Other Weapons",
 
+    "ABSORPTION": "Absorption",
+    "THRESHOLD": "Threshold",
+    
+    "DAMAGE MODIFIERS": "Damage Modifiers",
+    "ENERGY": "Energy",
+    "KINETIC": "Kinetic",
+    "ELEMENTAL": "Elemental",
+
     "RANGE CHART": "Range chart",
     "RANGE": "Target distance",
     "LESS_2M": "< 2m",
@@ -71,7 +88,14 @@
     "ATTACK": "Roll Attack",
     "FIRE SELECTION": "Fire selection",
     "LOADOUT": "Loadout",
-    "MISSING TARGET": "No target selected"
+    "MISSING TARGET": "No target selected",
+
+    "LAYER": "Layer",
+    "INNER": "Inner",
+    "OUTER": "Outer",
+    "ATTACHMENT POINTS": "# Attachments",
+
+    "STRUCTURE POINTS": "Structure Points"
   },
   "PROFICIENCY": {
     "CLIMBING": "Climbing",

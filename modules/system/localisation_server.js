@@ -1,6 +1,7 @@
 export default class LocalisationServer {
-    static genericLocalisation(id) {
-        return game.i18n.localize(id.toUpperCase())
+    static genericLocalisation(id, category = undefined) {
+        category = category === undefined ? '' : category.toUpperCase() + '.'
+        return game.i18n.localize(category + id.toUpperCase())
     }
 
     static attributeLocalisation(id) {
