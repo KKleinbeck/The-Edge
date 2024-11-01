@@ -1,4 +1,3 @@
-import { EntitySheetHelper } from "../helper.js";
 import THE_EDGE from "../system/config-the-edge.js";
 import {ATTRIBUTE_TYPES} from "../constants.js";
 

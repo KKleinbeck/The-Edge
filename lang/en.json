@@ -228,20 +228,6 @@
   "SIMPLE.NotifyAttrDuplicate": "Attribute key already exists as a group.",
   "SIMPLE.NotifyAttrInvalid": "Attribute keys may not contain spaces or periods.",
 
-  "SIMPLE.ResourceMin": "Min",
-  "SIMPLE.ResourceValue": "Value",
-  "SIMPLE.ResourceMax": "Max",
-
-  "SIMPLE.DefineTemplate": "Define as Template",
-  "SIMPLE.UnsetTemplate": "Unset Template",
-  "SIMPLE.NoTemplate": "No Template",
-
-  "SIMPLE.DeleteGroup": "Delete group?",
-  "SIMPLE.DeleteGroupContent": "Do you wish to delete this group? This will delete the following group and all attributes included in it: ",
-
-  "SIMPLE.Create": "Create",
-  "SIMPLE.New": "New",
-
   "CHAT.HEROTOKEN": "_USER_ requested to use a hero token.",
   "CHAT.HEROTOKENSPENT": "_USER_ requestes a hero token.",
 

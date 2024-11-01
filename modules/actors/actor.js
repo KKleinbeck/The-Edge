@@ -1,4 +1,3 @@
-import { EntitySheetHelper } from "../helper.js";
 import { ArmourItemTheEdge } from "../items/item.js";
 
 /**
@@ -21,15 +20,6 @@ export class TheEdgeActor extends Actor {
 
     this.system.wounds = {}
   }
-
-  /* -------------------------------------------- */
-
-  /** @override */
-  static async createDialog(data={}, options={}) {
-    return EntitySheetHelper.createDialog.call(this, data, options);
-  }
-
-  /* -------------------------------------------- */
 
   /**
    * Is this Actor used as a template for other Actors?

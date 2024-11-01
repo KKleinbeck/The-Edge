@@ -1,4 +1,3 @@
-import { EntitySheetHelper } from "../helper.js";
 import {ATTRIBUTE_TYPES} from "../constants.js";
 import DialogAttribute from "../dialogs/dialog-attribute.js";
 import DialogProficiency from "../dialogs/dialog-proficiency.js";
@@ -29,7 +28,6 @@ export class TheEdgeActorSheet extends ActorSheet {
 
   async getData(options) {
     const context = await super.getData(options);
-    EntitySheetHelper.getAttributeData(context.data);
     context.shorthand = !!game.settings.get("the_edge", "macroShorthand");
     context.systemData = context.data.system;
     context.dtypes = ATTRIBUTE_TYPES;

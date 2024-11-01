@@ -1,4 +1,3 @@
-import {EntitySheetHelper} from "../helper.js";
 import LocalisationServer from "../system/localisation_server.js";
 
 /**
@@ -9,13 +8,6 @@ export class TheEdgeItem extends Item {
   static defaultImages = {
     weapon: "systems/the_edge/icons/rifle.png",
     armour: "systems/the_edge/icons/helmet.png"
-  }
-
-  /* -------------------------------------------- */
-
-  /** @override */
-  static async createDialog(data={}, options={}) {
-    return EntitySheetHelper.createDialog.call(this, data, options);
   }
 
   static defaultIcon(data) {
