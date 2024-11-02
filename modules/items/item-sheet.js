@@ -23,14 +23,12 @@ export class TheEdgeItemSheet extends ItemSheet {
     Items.registerSheet("the_edge", TheEdgeItemSheet, { makeDefault: true });
     Items.registerSheet("the_edge", ItemSheetWeapon, { makeDefault: true, types: ["weapon"] });
     Items.registerSheet("the_edge", ItemSheetArmour, { makeDefault: true, types: ["armour"] });
-    // Items.registerSheet("dsa5", ItemCareerDSA5, { makeDefault: true, types: ["career"] });
-    // Items.registerSheet("dsa5", ItemCultureDSA5, { makeDefault: true, types: ["culture"] });
-    // Items.registerSheet("dsa5", VantageSheetDSA5, { makeDefault: true, types: ["advantage", "disadvantage"] });
-    // Items.registerSheet("dsa5", SpellSheetDSA5, { makeDefault: true, types: ["ritual", "ceremony", "liturgy", "spell"] });
+    // Items.registerSheet("the_edge", ItemSheetAmmonition, { makeDefault: true, types: ["ammonition"] });
+    Items.registerSheet("the_edge", ItemSheetVantage, { makeDefault: true, types: ["advantage", "disadvantage"] });
 
     Items.unregisterSheet("the_edge", TheEdgeItemSheet, {
       types: [
-        "weapon", "armour"
+        "weapon", "armour", "ammonition", "avantage", "disadvantage"
       ]
     });
   }
@@ -104,5 +102,20 @@ class ItemSheetArmour extends TheEdgeItemSheet {
     const context = await super.getData(options);
     context.helpers = {bodyParts: THE_EDGE.body_parts};
     return context;
+  }
+}
+
+class ItemSheetVantage extends TheEdgeItemSheet {
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      classes: ["the_edge", "sheet", "item-vantage"],
+      width: 385,
+      height: 480,
+      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}],
+    });
+  }
+
+  get template() {
+    return `systems/the_edge/templates/items/item-vantage.html`;
   }
 }

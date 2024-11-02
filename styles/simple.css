@@ -456,6 +456,10 @@
   min-width: 385px;
   min-height: 420px;
 }
+.the_edge.sheet.item-vantage {
+  min-width: 385px;
+  min-height: 420px;
+}
 
 .main-row {
   display: flex;

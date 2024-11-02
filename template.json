@@ -203,10 +203,6 @@
     "effect"
   ],
   "templates": {
-    "locations": {
-      "locations": {"body": true, "pockets": false, "ruck": true},
-      "location": "body"
-    },
     "description": {
       "description": "",
       "gm_description": ""
@@ -230,21 +226,21 @@
   },
   "htmlFields": ["description"],
   "weapon": {
-    "templates": ["locations", "non-stackable", "description", "specials", "equipable"],
+    "templates": ["non-stackable", "description", "specials", "equipable"],
     "type": "Pulse Rifle",
     "isElemental": false,
     "fireModes": {
-      "Single": {"damage": "2d4+1", "dices": 1, "mali": [0, 0]},
-      "Burst": {"damage": "1d8", "dices": 3, "mali": [0, 0]},
-      "Automatic": {"damage": "N.A.", "dices": 0, "mali": [0, 0]}
+      "Single": {"damage": "2d4+2", "dices": 1, "ammonition": 1, "mali": [0, 0]},
+      "Burst": {"damage": "1d8", "dices": 3, "ammonition": 3, "mali": [0, 0]},
+      "Automatic": {"damage": "N.A.", "dices": 0, "ammonition": 0, "mali": [0, 0]}
     },
     "leadAttr1": {"name": "Str", "value": 10},
     "leadAttr2": {"name": "Str", "value": 10},
-    "rangeChart":   {"less_2m": [0, 0], "less_20m": [0, 0], "less_200m": [0, 0], "less_1km": [0, 0], "more_1km": [0, 0]},
+    "rangeChart": {"less_2m": [0, 0], "less_20m": [0, 0], "less_200m": [0, 0], "less_1km": [0, 0], "more_1km": [0, 0]},
     "attachments": []
   },
   "armour": {
-    "templates": ["locations", "non-stackable", "description", "specials", "equipable"],
+    "templates": ["non-stackable", "description", "specials", "equipable"],
     "bodyPart": "Torso",
     "layer": "Inner",
     "structurePoints": 10,
@@ -254,6 +250,22 @@
       "Kinetic": {"absorption": 0, "threshold": 0},
       "Elemental": {"absorption": 0, "threshold": 0}
     }
-  }
+  },
+  "ammonition": {
+    "templates": ["stackable", "description"],
+    "ammonition": {"max": 30, "used": 0},
+    "type": "Energy",
+    "blacklist": {
+      "Blaster Pistols": false, "Pulse Rifle": false, "SABs": false, "Blaster Shockguns": false, "Blaster Rifles": false,
+      "Kinetic Pistols": false, "Slug Throwers": false, "LMGs": false, "Shotguns": false, "Projectile Rifle": false,
+      "Combatics": false, "Recoilless Rifles": false
+    },
+    "whitelist": "",
+    "damage": {"bonus": 0, "penetration": 0},
+    "modifiers": {"less_2m": [0, 0], "less_20m": [0, 0], "less_200m": [0, 0], "less_1km": [0, 0], "more_1km": [0, 0]},
+    "usedWithID": ""
+  },
+  "advantage": {"templates": ["description"], "AP": 0, "hasLevels": false, "level": 0},
+  "disadvantage": {"templates": ["description"], "AP": 0, "hasLevels": false, "level": 0}
 }
 }

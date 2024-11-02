@@ -53,10 +53,6 @@ export class TheEdgeItem extends Item {
   }
 }
 
-export class WeaponItemTheEdge extends TheEdgeItem {
-
-}
-
 export class ArmourItemTheEdge extends TheEdgeItem {
   static async protect(damage, damageType) {
     let protection = this.system.protection[damageType];

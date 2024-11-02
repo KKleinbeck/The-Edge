@@ -1,23 +1,7 @@
 export default class LocalisationServer {
-    static genericLocalisation(id, category = undefined) {
+    static localise(id, category = undefined) {
         category = category === undefined ? '' : category.toUpperCase() + '.'
         return game.i18n.localize(category + id.toUpperCase())
-    }
-
-    static attributeLocalisation(id) {
-        return game.i18n.localize(`ATTR.${id.toUpperCase()}`)
-    }
-
-    static combatLocalisation(id) {
-        return game.i18n.localize(`COMBAT.${id.toUpperCase()}`)
-    }
-
-    static proficiencyLocalisation(id) {
-        return game.i18n.localize(`PROFICIENCY.${id.toUpperCase().replace(/\s/g, "")}`)
-    }
-    
-    static attributeAbbrLocalisation(id) {
-        return game.i18n.localize(`ATTR_ABBR.${id.toUpperCase()}`)
     }
 
     static chatLocalisation(id, type) {

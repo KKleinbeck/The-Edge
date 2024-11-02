@@ -32,7 +32,7 @@ export default class DialogAttribute extends Dialog{
       })
     }
     return new DialogAttribute({
-      title: LocalisationServer.attributeLocalisation(checkData.attribute) + " " + game.i18n.localize("CHECK"),
+      title: LocalisationServer.localise(checkData.attribute, "attr") + " " + game.i18n.localize("CHECK"),
       content: html,
       buttons: buttons,
       default: "roll"

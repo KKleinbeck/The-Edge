@@ -34,7 +34,7 @@ export default class DialogProficiency extends Dialog{
       })
     }
     return new DialogProficiency({
-      title: LocalisationServer.proficiencyLocalisation(checkData.name) + " " + game.i18n.localize("CHECK"),
+      title: LocalisationServer.localise(checkData.name, "proficiency") + " " + game.i18n.localize("CHECK"),
       content: html,
       buttons: buttons,
       default: "roll"

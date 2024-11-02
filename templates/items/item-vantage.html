@@ -1,0 +1,43 @@
+<form class="flexcol {{cssClass}}" autocomplete="off">
+    <header class="sheet-header-item">
+        <div class="item-columned-page">
+            <div style="width: 100px;">
+                <img class="profile-img-item" src="{{data.img}}" data-edit="img" title="{{data.name}}" />
+            </div>
+            <div style="flex: 1">
+                <h3 class="charname">
+                    <input name="name" type="text" value="{{data.name}}" placeholder="Name" />
+                </h3>
+                <div class="item-columned-page" style="justify-content: start;">
+                    <div class="item-header-fields" style="max-width: 32%;">
+                        <div title="{{genName 'AdvantagePoints'}}">AP</div>
+                        <input type="number" name="data.AP" value="{{data.system.AP}}" data-dtype="Number"/>
+                    </div>
+                    {{#if systemData.userIsGM}}
+                    <!-- <div class="checkbox-container"> -->
+                    <div class="item-header-fields" style="max-width: 32%;">
+                        <label for="hasLevels">{{itemName "has levels"}}</label>
+                        <input type="checkbox" id="hasLevels" name="data.hasLevels" {{#if systemData.hasLevels}}checked{{/if}} />
+                    </div>
+                    {{/if}}
+                    {{#if data.system.hasLevels}}
+                        <div class="item-header-fields" style="max-width: 40%;">
+                            {{genName "Level"}}<br/>
+                            <input type="number" name="data.level" value="{{data.system.level}}" data-dtype="Number"/>
+                        </div>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    {{!-- Sheet Tab Navigation --}}
+    <nav class="sheet-tabs tabs" data-group="primary">
+        <a class="item" data-tab="description">Description</a>
+    </nav>
+
+    {{!-- Sheet Body --}}
+    <section class="sheet-body">
+        {{> systems/the_edge/templates/items/meta-description.html}}
+    </section>
+</form>

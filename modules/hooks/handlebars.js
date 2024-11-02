@@ -4,13 +4,13 @@ import THE_EDGE from "../system/config-the-edge.js";
 export default function() {
     Handlebars.registerHelper({
         add: (a, b) => {return +a+b; },
-        genName: (a) => LocalisationServer.genericLocalisation(a),
-        actorName: (a) => LocalisationServer.genericLocalisation(a, "Actor"),
-        attrName: (a) => LocalisationServer.attributeLocalisation(a),
-        attrAbbr: (a) => LocalisationServer.attributeAbbrLocalisation(a),
-        itemName: (a) => LocalisationServer.genericLocalisation(a, "Item"),
-        combatName: (a) => LocalisationServer.combatLocalisation(a),
-        proficiencyName: (a) => LocalisationServer.proficiencyLocalisation(a),
+        genName: (a) => LocalisationServer.localise(a),
+        actorName: (a) => LocalisationServer.localise(a, "Actor"),
+        attrName: (a) => LocalisationServer.localise(a, "attr"),
+        attrAbbr: (a) => LocalisationServer.localise(a, "attr_abbr"),
+        itemName: (a) => LocalisationServer.localise(a, "Item"),
+        combatName: (a) => LocalisationServer.localise(a, "combat"),
+        proficiencyName: (a) => LocalisationServer.localise(a, "proficiency"),
         genRange: (a) => {
             let preface = a.split("_")[0];
             let distance = a.split("_")[1];
