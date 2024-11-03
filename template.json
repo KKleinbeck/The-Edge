@@ -192,6 +192,7 @@
     "skill",
     "combatskill",
     "medicalskill",
+    "languageskill",
 
     "gear",
     "clothing",
@@ -265,7 +266,7 @@
     "modifiers": {"less_2m": [0, 0], "less_20m": [0, 0], "less_200m": [0, 0], "less_1km": [0, 0], "more_1km": [0, 0]},
     "usedWithID": ""
   },
-  "advantage": {"templates": ["description"], "AP": 0, "hasLevels": false, "level": 0},
-  "disadvantage": {"templates": ["description"], "AP": 0, "hasLevels": false, "level": 0}
+  "advantage": {"templates": ["description"], "AP": 0, "hasLevels": false, "level": 1, "maxLevel": 1},
+  "disadvantage": {"templates": ["description"], "AP": 0, "hasLevels": false, "level": 1, "maxLevel": 1}
 }
 }

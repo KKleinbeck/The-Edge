@@ -1,7 +1,9 @@
 <div class="section">
   <p class="section-title">{{genName "Languages"}}</p>
   <hr />
-  {{#each systemData.languages as |level language|}}
-  <b>{{language}}:</b> {{genName level}}
-  {{/each}}
+  <div class="section-content">
+    {{#each systemData.languages as |level language|}}
+      <b>{{language}}:</b> {{genName level}}
+    {{/each}}
+  </div>
 </div>

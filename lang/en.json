@@ -115,7 +115,9 @@
   },
   "NOTIFICATIONS": {
     "DESTROYED": "Armour piece {name} was destroyed in combat",
-    "EQUIPBROKEN": "Cannot equip broken armour (i.e., no structure points)."
+    "EQUIPBROKEN": "Cannot equip broken armour (i.e., no structure points).",
+
+    "AP MISSING": "Not enough Advantage Points to gain {name}. {need} needed, {available} available."
   },
   "PROFICIENCY": {
     "CLIMBING": "Climbing",

@@ -7,7 +7,9 @@ import LocalisationServer from "../system/localisation_server.js";
 export class TheEdgeItem extends Item {
   static defaultImages = {
     weapon: "systems/the_edge/icons/rifle.png",
-    armour: "systems/the_edge/icons/helmet.png"
+    armour: "systems/the_edge/icons/helmet.png",
+    advantage: "systems/the_edge/icons/advantage.png",
+    disadvantage: "systems/the_edge/icons/disadvantage.png",
   }
 
   static defaultIcon(data) {

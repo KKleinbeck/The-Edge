@@ -22,8 +22,11 @@
                     {{/if}}
                     {{#if data.system.hasLevels}}
                         <div class="item-header-fields" style="max-width: 40%;">
-                            {{genName "Level"}}<br/>
-                            <input type="number" name="data.level" value="{{data.system.level}}" data-dtype="Number"/>
+                            {{genName "Level"}} / max<br/>
+                            <div>
+                                <input type="number" name="data.level" value="{{data.system.level}}" data-dtype="Number" style="width: 45%"/>
+                                <input type="number" name="data.maxLevel" value="{{data.system.maxLevel}}" data-dtype="Number" style="width: 45%"/>
+                            </div>
                         </div>
                     {{/if}}
                 </div>

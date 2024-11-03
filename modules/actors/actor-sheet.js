@@ -2,6 +2,7 @@ import {ATTRIBUTE_TYPES} from "../constants.js";
 import DialogAttribute from "../dialogs/dialog-attribute.js";
 import DialogProficiency from "../dialogs/dialog-proficiency.js";
 import DialogWeapon from "../dialogs/dialog-weapon.js";
+import LocalisationServer from "../system/localisation_server.js";
 
 export class TheEdgeActorSheet extends ActorSheet {
 
@@ -36,7 +37,7 @@ export class TheEdgeActorSheet extends ActorSheet {
       async: true
     });
     context["prepare"] = this.actor.prepareSheet()
-    context.helpers = {types: ["weapon", "armour"]}
+    context.helpers = {types: ["weapon", "armour", "ammonition"]}
     return context;
   }
 
@@ -178,6 +179,57 @@ export class TheEdgeActorSheet extends ActorSheet {
 
   }
 
+  async _onDropItem(event, data) {
+    const item = (await Item.implementation.fromDropData(data)).toObject();
+    switch (item.type) {
+      case "weapon":
+      case "armour":
+      case "ammonition":
+        return super._onDropItem(event, data)
+      
+      case "advantage":
+        let actorAP = this.actor.system.AdvantagePoints
+
+        if (item.system.AP + actorAP.used > actorAP.max) {
+          let msg = LocalisationServer.notifyLocalisation(
+            "AP missing", "Notifications",
+            {name: item.name, need: item.system.AP, available: actorAP.max - actorAP.used}
+          )
+          ui.notifications.notify(msg)
+          return false;
+        } // Now implicitly go into the disadvantage return
+      case "disadvantage":
+        return await this._createVantage(event, data, item)
+    }
+    // return this.actor.createEmbeddedDocuments("Item", itemData);
+  }
+
+  _itemExists(item) {
+    for (const _item of this.actor.items) {
+      if (_item.name == item.name) return _item
+    }
+    return false
+  }
+
+  async _createVantage(event, data, item) {
+    let update = item.type == "advantage" ?
+      {"system.AdvantagePoints.used": this.actor.system.AdvantagePoints.used + item.system.AP} :
+      {"system.AdvantagePoints.max": this.actor.system.AdvantagePoints.max + item.system.AP}
+
+    let _existingCopy = this._itemExists(item)
+    if (_existingCopy) {
+      const sys = _existingCopy.system
+      if (sys.hasLevels && sys.maxLevel > sys.level) {
+        await this.actor.update(update)
+        await _existingCopy.update({"system.level": sys.level + 1})
+      }
+      return false
+    }
+
+    await this.actor.update(update)
+    return super._onDropItem(event, data)
+  }
+
   _onItemControl(event) {
     event.preventDefault();
 
@@ -194,7 +246,29 @@ export class TheEdgeActorSheet extends ActorSheet {
       case "edit":
         return item.sheet.render(true);
       case "delete":
-        return item.delete();
+        if (item.type == "disadvantage") {
+          let actorAP = this.actor.system.AdvantagePoints
+          let itemAP = (item.system.hasLevels ? item.system.level : 1) * item.system.AP
+          if ((actorAP.max - itemAP < actorAP.used)) {
+            let msg = LocalisationServer.notifyLocalisation(
+              "AP missing", "Notifications",
+              {name: item.name, need: itemAP, available: actorAP.max - actorAP.used}
+            )
+            ui.notifications.notify(msg)
+            return undefined;
+          }
+
+          if (item.system.hasLevels) {
+            this.actor.update({"system.AdvantagePoints.max": actorAP.max - itemAP})
+          }
+        }
+        if (item.type == "advantage") {
+          let itemAP = (item.system.hasLevels ? item.system.level : 1) * item.system.AP
+          this.actor.update({"system.AdvantagePoints.used": this.actor.system.AdvantagePoints.used - itemAP})
+        }
+        item.delete();
+        this._render();
+        break
       case "toggle-equip":
         item.toggleEquipped()
         this._render();
