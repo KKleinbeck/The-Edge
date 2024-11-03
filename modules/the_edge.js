@@ -12,7 +12,7 @@ import { TheEdgeItemSheet } from "./items/item-sheet.js";
 import { TheEdgeActorSheet } from "./actors/actor-sheet.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
 import { createWorldbuildingMacro } from "./macro.js";
-import { SimpleToken, SimpleTokenDocument } from "./token.js";
+import { TheEdgeToken, TheEdgeTokenDocument } from "./token.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -47,8 +47,8 @@ Hooks.once("init", async function() {
   // Define custom Document classes
   CONFIG.Actor.documentClass = TheEdgeActor;
   CONFIG.Item.documentClass = TheEdgeItem;
-  CONFIG.Token.documentClass = SimpleTokenDocument;
-  CONFIG.Token.objectClass = SimpleToken;
+  CONFIG.Token.documentClass = TheEdgeTokenDocument;
+  CONFIG.Token.objectClass = TheEdgeToken;
   CONFIG.ChatMessage.template = "systems/the_edge/templates/chat/chat_message.html"
 
   // Register sheet application classes

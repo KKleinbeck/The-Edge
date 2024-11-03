@@ -1,3 +1,4 @@
-# Simple Worldbuilding System
+# The Edge Game system
 
-A simple game system for Foundry VTT which allows for flexible definition of Actors and Items to assist with worldbuilding or for running games which do not have a more complete system implementation available.
+Inspired by the mechanics of *Das schwarze Auge* and *Dungeons & Dragons* and the books and lore of the *Galaxy's edge* universe.
+This is a game system under development for Foundry VTT.
