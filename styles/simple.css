@@ -449,15 +449,19 @@
   min-height: 420px;
 }
 .the_edge.sheet.item-weapon {
-  min-width: 385px;
+  min-width: 390px;
   min-height: 420px;
 }
 .the_edge.sheet.item-armour {
-  min-width: 385px;
+  min-width: 390px;
+  min-height: 420px;
+}
+.the_edge.sheet.item-ammunition {
+  min-width: 390px;
   min-height: 420px;
 }
 .the_edge.sheet.item-vantage {
-  min-width: 385px;
+  min-width: 390px;
   min-height: 420px;
 }
 

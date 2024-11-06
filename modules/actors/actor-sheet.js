@@ -37,7 +37,7 @@ export class TheEdgeActorSheet extends ActorSheet {
       async: true
     });
     context["prepare"] = this.actor.prepareSheet()
-    context.helpers = {types: ["weapon", "armour", "ammonition"]}
+    context.helpers = {types: ["weapon", "armour", "ammunition"]}
     return context;
   }
 
@@ -74,6 +74,7 @@ export class TheEdgeActorSheet extends ActorSheet {
 
     // Weapon Proficiencies
     html.find(".weapon-d20").click(ev => this._rollAttack(ev))
+    html.find(".reload").click(ev => this._reload(ev))
     html.find(".advance-combat").click(ev => this._advanceSrv(ev, "combat"));
   }
 
@@ -148,7 +149,7 @@ export class TheEdgeActorSheet extends ActorSheet {
 
   async _rollAttack(ev) {
     const target = ev.currentTarget; // HTMLElement
-    const weaponID = target.getAttribute("weapon-id");
+    const weaponID = target.closest(".weapon-id").dataset.weaponId
 
     let actor = this.actor
     let sceneID = game.user.viewedScene
@@ -179,13 +180,22 @@ export class TheEdgeActorSheet extends ActorSheet {
 
   }
 
+  async _reload(ev) {
+    const target = ev.currentTarget; // HTMLElement
+    const weaponID = target.closest(".weapon-id").dataset.weaponId
+
+    console.log(weaponID)
+  }
+
   async _onDropItem(event, data) {
     const item = (await Item.implementation.fromDropData(data)).toObject();
     switch (item.type) {
       case "weapon":
       case "armour":
-      case "ammonition":
         return super._onDropItem(event, data)
+
+      case "ammunition":
+        return this._onDropStackableItem(event, data, item)
       
       case "advantage":
         let actorAP = this.actor.system.AdvantagePoints
@@ -205,10 +215,21 @@ export class TheEdgeActorSheet extends ActorSheet {
   }
 
   _itemExists(item) {
+    let _existingCopy = false
     for (const _item of this.actor.items) {
-      if (_item.name == item.name) return _item
+      if (_item.name == item.name) {
+        if (_item.type == "ammunition") {
+          let _cap = _item.system.capacity
+          let cap = item.system.capacity
+          if (_cap.max == cap.max && _cap.used == cap.used) {
+            _existingCopy = _item
+          }
+        } else {
+          _existingCopy = _item
+        }
+      }
     }
-    return false
+    return _existingCopy
   }
 
   async _createVantage(event, data, item) {
@@ -227,6 +248,16 @@ export class TheEdgeActorSheet extends ActorSheet {
     }
 
     await this.actor.update(update)
+    return super._onDropItem(event, data)
+  }
+
+  _onDropStackableItem(event, data, item) {
+    let _existingCopy = this._itemExists(item) 
+    if (_existingCopy) {
+      _existingCopy.system.quantity += 1
+      this._render()
+      return _existingCopy;
+    }
     return super._onDropItem(event, data)
   }
 

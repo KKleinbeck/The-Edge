@@ -9,9 +9,14 @@
             <img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
             <div>{{item.name}}</div>
           </div>
-          <a class="weapon-d20 d20-black" weapon-id="{{item._id}}" data-tooltip="{{combatName 'Attack'}}">
-              <span class="d20-overlay-weapon">{{calcWeaponPL ../actor item._id}}</span>
-          </a>
+          <div class="weapon-id" style="display: flex; flex-wrap: nowrap; gap: 5px; align-items: center;" data-weapon-id="{{item._id}}">
+            <div class="reload" style="background-color: black; font-size: large; font-weight: 500; color: white; width: 25px; height: 25px; text-align: center;">
+              R
+            </div>
+            <a class="weapon-d20 d20-black" data-tooltip="{{combatName 'Attack'}}">
+                <span class="d20-overlay-weapon">{{calcWeaponPL ../actor item._id}}</span>
+            </a>
+          </div>
         </div>
       {{/if}}
     {{/each}}

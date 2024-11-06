@@ -26,8 +26,6 @@ export const preloadHandlebarsTemplates = async function() {
 
     // Item templates
     "systems/the_edge/templates/items/meta-description.html",
-    // "systems/the_edge/templates/items/sheet-attributes.html",
-    // "systems/the_edge/templates/items/sheet-groups.html",
   ];
 
   // Load the template parts

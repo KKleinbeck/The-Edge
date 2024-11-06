@@ -10,6 +10,7 @@ export default function() {
         attrAbbr: (a) => LocalisationServer.localise(a, "attr_abbr"),
         itemName: (a) => LocalisationServer.localise(a, "Item"),
         combatName: (a) => LocalisationServer.localise(a, "combat"),
+        tooltip: (a) => LocalisationServer.localise(a, "tooltip"),
         proficiencyName: (a) => LocalisationServer.localise(a, "proficiency"),
         genRange: (a) => {
             let preface = a.split("_")[0];
@@ -26,6 +27,7 @@ export default function() {
         getSys5: (a, b, c, d, e) => { return a.system[b][c][d][e]; },
         getEntry: (a, b) => { return a[b]; },
         log: (a) => console.log(a),
+        sub: (a, b) => {return a - b;},
 
         getProficiency: (a, b, c, d) => { return a.system.proficiencies[b][c][d]; },
         getProficiencyDice: (a, b, c, d) => { return a.system.proficiencies[b][c].dices[d]; },
@@ -40,6 +42,7 @@ export default function() {
         },
         getSizeModifier: (size) => {
             return `(${THE_EDGE.sizes[size][0]} / ${THE_EDGE.sizes[size][1]})`
-        }
+        },
+        getAmmunitionCount: (a) => {return `(${a.system.capacity.max - a.system.capacity.used} / ${a.system.capacity.max})`}
     })
 }

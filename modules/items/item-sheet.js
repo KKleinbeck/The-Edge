@@ -23,12 +23,12 @@ export class TheEdgeItemSheet extends ItemSheet {
     Items.registerSheet("the_edge", TheEdgeItemSheet, { makeDefault: true });
     Items.registerSheet("the_edge", ItemSheetWeapon, { makeDefault: true, types: ["weapon"] });
     Items.registerSheet("the_edge", ItemSheetArmour, { makeDefault: true, types: ["armour"] });
-    // Items.registerSheet("the_edge", ItemSheetAmmonition, { makeDefault: true, types: ["ammonition"] });
+    Items.registerSheet("the_edge", ItemSheetAmmunition, { makeDefault: true, types: ["ammunition"] });
     Items.registerSheet("the_edge", ItemSheetVantage, { makeDefault: true, types: ["advantage", "disadvantage"] });
 
     Items.unregisterSheet("the_edge", TheEdgeItemSheet, {
       types: [
-        "weapon", "armour", "ammonition", "avantage", "disadvantage"
+        "weapon", "armour", "ammunition", "avantage", "disadvantage"
       ]
     });
   }
@@ -75,7 +75,7 @@ class ItemSheetWeapon extends TheEdgeItemSheet {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["the_edge", "sheet", "item-weapon"],
-      width: 385,
+      width: 390,
       height: 480,
       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "details"}],
     });
@@ -92,7 +92,7 @@ class ItemSheetArmour extends TheEdgeItemSheet {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["the_edge", "sheet", "item-armour"],
-      width: 385,
+      width: 390,
       height: 480,
       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "details"}],
     });
@@ -105,11 +105,32 @@ class ItemSheetArmour extends TheEdgeItemSheet {
   }
 }
 
+class ItemSheetAmmunition extends TheEdgeItemSheet {
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      classes: ["the_edge", "sheet", "item-ammunition"],
+      width: 390,
+      height: 480,
+      title: "Drop the beat",
+      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "details"}],
+    });
+  }
+
+  async getData(options) {
+    const context = await super.getData(options);
+    context.designatedWeaponsHTML = await TextEditor.enrichHTML(context.systemData.designatedWeapons, {
+      secrets: this.document.isOwner,
+      async: true
+    })
+    return context;
+  }
+}
+
 class ItemSheetVantage extends TheEdgeItemSheet {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["the_edge", "sheet", "item-vantage"],
-      width: 385,
+      width: 390,
       height: 480,
       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}],
     });

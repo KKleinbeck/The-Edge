@@ -8,6 +8,7 @@ export class TheEdgeItem extends Item {
   static defaultImages = {
     weapon: "systems/the_edge/icons/rifle.png",
     armour: "systems/the_edge/icons/helmet.png",
+    ammunition: "systems/the_edge/icons/ammunition.png",
     advantage: "systems/the_edge/icons/advantage.png",
     disadvantage: "systems/the_edge/icons/disadvantage.png",
   }
