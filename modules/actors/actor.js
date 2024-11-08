@@ -101,11 +101,11 @@ export class TheEdgeActor extends Actor {
          },
         Run: { 
           value: Math.min(7 + Math.floor(ch["Spd"].value / 3  ),            ch["Foc"].value),
-          tooltip: "Min(7+ Spd/3, Foc)".replace(/[ ]/g, "\u00a0")
+          tooltip: "Min(7 + Spd/3, Foc)".replace(/[ ]/g, "\u00a0")
          },
         Sprint: { 
           value: Math.min(8 + Math.floor(ch["Spd"].value / 1.5), Math.floor(ch["Foc"].value * 1.5)),
-          tooltip: "Min(9+ Spd/1.5, 150% Foc)".replace(/[ ]/g, "\u00a0")
+          tooltip: "Min(9 + Spd/1.5, 150% Foc)".replace(/[ ]/g, "\u00a0")
          }
       },
       herotoken: Array(sys.heroToken.max).fill(false).fill(true, 0, sys.heroToken.available)

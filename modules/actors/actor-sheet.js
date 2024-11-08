@@ -1,6 +1,7 @@
 import {ATTRIBUTE_TYPES} from "../constants.js";
 import DialogAttribute from "../dialogs/dialog-attribute.js";
 import DialogProficiency from "../dialogs/dialog-proficiency.js";
+import DialogReload from "../dialogs/dialog-reload.js";
 import DialogWeapon from "../dialogs/dialog-weapon.js";
 import LocalisationServer from "../system/localisation_server.js";
 
@@ -183,8 +184,18 @@ export class TheEdgeActorSheet extends ActorSheet {
   async _reload(ev) {
     const target = ev.currentTarget; // HTMLElement
     const weaponID = target.closest(".weapon-id").dataset.weaponId
+    const ammunition = []
+    for (const item of this.actor.items) {
+      if (item.type == "ammunition") {
+        ammunition.push(item)
+      }
+    }
 
     console.log(weaponID)
+    DialogReload.start({
+      weaponID: weaponID,
+      ammunition: ammunition
+    })
   }
 
   async _onDropItem(event, data) {
