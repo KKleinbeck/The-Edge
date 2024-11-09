@@ -1,2 +1,9 @@
-<div class="check-dialog-box">
+<div class="check-dialog-box" style="padding-bottom: 15px;">
+  <select id="Ammunition" name="AmmunitionSelector">
+    {{#each ammunition as |ammo|}}
+      {{#if (checkRenderItem ammo "any")}}
+        <option value="{{ammo.id}}">{{ammo.name}} - {{getDmgModifier ammo}} {{getAmmunitionCount ammo}}</option>
+      {{/if}}
+    {{/each}}
+  </select>
 </div>

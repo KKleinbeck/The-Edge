@@ -185,15 +185,22 @@ export class TheEdgeActorSheet extends ActorSheet {
     const target = ev.currentTarget; // HTMLElement
     const weaponID = target.closest(".weapon-id").dataset.weaponId
     const ammunition = []
-    for (const item of this.actor.items) {
-      if (item.type == "ammunition") {
-        ammunition.push(item)
-      }
+    let weapon = this.actor.items.get(weaponID);
+    for (const ammu of this.actor.itemTypes["ammunition"]) {
+      let sys = ammu.system
+      let designatedWeapons = sys.designatedWeapons
+        .replace(/<[^>]*>?/gm, '') // Strip html tags
+        .split(",")
+        .map(x => x.trim())
+      if (designatedWeapons.includes(weapon.name)) {
+        ammunition.push(ammu);
+      } else if (sys.whitelist[sys.type][weapon.system.type]) ammunition.push(ammu);
     }
 
-    console.log(weaponID)
-    DialogReload.start({
+    await DialogReload.start({
       weaponID: weaponID,
+      actor: this.actor,
+      weapon: weapon,
       ammunition: ammunition
     })
   }

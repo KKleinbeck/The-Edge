@@ -3,9 +3,9 @@
     <hr />
     <ol class="item-list item-category" data-category="{{loc}}">
         {{#each ../data.items as |item id|}}
-            {{#if (checkEqual item.type type)}}
+            {{#if (checkRenderItem item type)}}
                 <li class="item flexrow" data-item-id="{{item._id}}">
-                    <div class="flexrow item-control" data-action="edit" style="cursor: pointer;"">
+                    <div class="flexrow item-control" data-action="edit" style="cursor: pointer;">
                         <img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
                         <h4 class="item-name">
                             {{#if (checkIn "quantity" item.system)}}
@@ -41,7 +41,7 @@
         {{#if (checkInstance item.type types)}}
         {{else}}
             <li class="item flexrow" data-item-id="{{item._id}}">
-                <div class="flexrow item-control" data-action="edit" style="cursor: pointer;"">
+                <div class="flexrow item-control" data-action="edit" style="cursor: pointer;">
                     <img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
                     <h4 class="item-name">{{item.name}}</h4>
                 </div>

@@ -32,7 +32,24 @@ export default function() {
         getProficiency: (a, b, c, d) => { return a.system.proficiencies[b][c][d]; },
         getProficiencyDice: (a, b, c, d) => { return a.system.proficiencies[b][c].dices[d]; },
         getWeaponProficiency: (a, b, c) => { return a.system.weapons[b][c]; },
+        getLoadedAmmunition: (actor, weapon) => {
+            for (const ammu of actor.itemTypes["ammunition"]) {
+                if (ammu.id == weapon.system.ammunitionID) {
+                    let asc = ammu.system.capacity;
+                    return `(${asc.max - asc.used} / ${asc.max})`;
+                }
+            }
+            return "(empty)";
+        },
         calcWeaponPL: (actor, weaponID) => { return actor._getWeaponPL(weaponID) },
+        checkRenderItem: (item, type) => {
+            if (type !== "any" && item.type !== type) {
+                return false;
+            } else if (item.type == "ammunition" && item.system.loaded) {
+                return false;
+            }
+            return true;
+        },
         getRangeModifier: (rangeChart, distance) => {
             if (distance < 2) return `(${rangeChart["less_2m"][0]} / ${rangeChart["less_2m"][1]})`;
             else if (distance < 20) return `(${rangeChart["less_20m"][0]} / ${rangeChart["less_20m"][1]})`;
@@ -43,6 +60,7 @@ export default function() {
         getSizeModifier: (size) => {
             return `(${THE_EDGE.sizes[size][0]} / ${THE_EDGE.sizes[size][1]})`
         },
-        getAmmunitionCount: (a) => {return `(${a.system.capacity.max - a.system.capacity.used} / ${a.system.capacity.max})`}
+        getAmmunitionCount: (a) => {return `(${a.system.capacity.max - a.system.capacity.used} / ${a.system.capacity.max})`},
+        getDmgModifier: (a) => {return `dmg: ${a.system.damage.bonus} / ${a.system.damage.penetration}`}
     })
 }
