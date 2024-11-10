@@ -11,6 +11,7 @@ export class TheEdgeItem extends Item {
     ammunition: "systems/the_edge/icons/ammunition.png",
     advantage: "systems/the_edge/icons/advantage.png",
     disadvantage: "systems/the_edge/icons/disadvantage.png",
+    languageskill: "systems/the_edge/icons/speech.png",
   }
 
   static defaultIcon(data) {

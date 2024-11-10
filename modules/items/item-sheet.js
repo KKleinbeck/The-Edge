@@ -25,10 +25,11 @@ export class TheEdgeItemSheet extends ItemSheet {
     Items.registerSheet("the_edge", ItemSheetArmour, { makeDefault: true, types: ["armour"] });
     Items.registerSheet("the_edge", ItemSheetAmmunition, { makeDefault: true, types: ["ammunition"] });
     Items.registerSheet("the_edge", ItemSheetVantage, { makeDefault: true, types: ["advantage", "disadvantage"] });
+    Items.registerSheet("the_edge", ItemSheetSpeech, { makeDefault: true, types: ["languageskill"] });
 
     Items.unregisterSheet("the_edge", TheEdgeItemSheet, {
       types: [
-        "weapon", "armour", "ammunition", "avantage", "disadvantage"
+        "weapon", "armour", "ammunition", "avantage", "disadvantage", "languageskill"
       ]
     });
   }
@@ -138,5 +139,16 @@ class ItemSheetVantage extends TheEdgeItemSheet {
 
   get template() {
     return `systems/the_edge/templates/items/item-vantage.html`;
+  }
+}
+
+class ItemSheetSpeech extends TheEdgeItemSheet {
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      classes: ["the_edge", "sheet", "item-speech"],
+      width: 390,
+      height: 480,
+      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}],
+    });
   }
 }

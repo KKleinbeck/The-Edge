@@ -173,6 +173,17 @@
   background-color: #666;
   border-radius: 14px;
 }
+.the_edge .language-container {
+  columns: 2;
+  gap: 10px;
+}
+.the_edge .language-container .language-box {
+  break-inside: avoid;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .the_edge .loadout-container {
   columns: 2;
   gap: 10px; /* Space between elements */
@@ -458,6 +469,10 @@
   min-height: 420px;
 }
 .the_edge.sheet.item-vantage {
+  min-width: 390px;
+  min-height: 420px;
+}
+.the_edge.sheet.item-speech {
   min-width: 390px;
   min-height: 420px;
 }

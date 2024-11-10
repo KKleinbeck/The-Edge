@@ -178,6 +178,36 @@ export class TheEdgeActor extends Actor {
     this.update(update)
   }
 
+  learnLanguage(newLanguage) {
+    let languages = this.itemTypes["languageskill"]
+    const ph = this.system.PracticeHours
+    let spoken = newLanguage.system.humanSpoken ? "human" : "non-human"
+    const language_cost_table = {
+      "human": [200, 400, 1000, 2000, 3200, 3200],
+      "non-human": [600, 3000, 6400]
+    }
+    for (const lang of languages) {
+      if (lang.name == newLanguage.name) {
+        if (lang.system.level == 6) return false;
+        let cost = language_cost_table[spoken][lang.system.level]
+        if (cost < ph.max - ph.used) {
+          this.update({"system.PracticeHours.used": ph.used + cost})
+          lang.update({"system.level": lang.system.level + 1})
+        }
+        return false;
+      }
+    }
+
+    // Languages doesn't exist yet
+    let cost = language_cost_table[spoken][0]
+    if (cost < ph.max - ph.used) {
+      this.update({"system.PracticeHours.used": ph.used + cost})
+      return true;
+    }
+    
+    return false
+  }
+
   _getWeaponPL(weaponID) {
     const weapon = this.items.get(weaponID).system
 

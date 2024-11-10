@@ -1,4 +1,5 @@
 import {ATTRIBUTE_TYPES} from "../constants.js";
+import THE_EDGE from "../system/config-the-edge.js";
 import DialogAttribute from "../dialogs/dialog-attribute.js";
 import DialogProficiency from "../dialogs/dialog-proficiency.js";
 import DialogReload from "../dialogs/dialog-reload.js";
@@ -38,7 +39,10 @@ export class TheEdgeActorSheet extends ActorSheet {
       async: true
     });
     context["prepare"] = this.actor.prepareSheet()
-    context.helpers = {types: ["weapon", "armour", "ammunition"]}
+    context.helpers = {
+      types: ["weapon", "armour", "ammunition"],
+      languages: THE_EDGE.languages
+    }
     return context;
   }
 
@@ -235,6 +239,10 @@ export class TheEdgeActorSheet extends ActorSheet {
         } // Now implicitly go into the disadvantage return
       case "disadvantage":
         return await this._createVantage(event, data, item)
+      
+      case "languageskill":
+        let createNew = this.actor.learnLanguage(item);
+        return createNew ? super._onDropItem(event, data) : undefined;
     }
     // return this.actor.createEmbeddedDocuments("Item", itemData);
   }

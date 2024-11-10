@@ -2,8 +2,24 @@
   <p class="section-title">{{genName "Languages"}}</p>
   <hr />
   <div class="section-content">
-    {{#each systemData.languages as |level language|}}
-      <b>{{language}}:</b> {{genName level}}
-    {{/each}}
+    <b>{{genName "Native language"}}:</b>
+    <!-- Fix native language selector and the delete button -->
+    <select class="selection-box" name="data.nativeLanguage" id="Native-Language-Selector">
+        {{#each helpers.languages as |language|}}
+            <option value={{language}} {{#if (checkEqual systemData.nativeLanguage language)}}selected{{/if}}>{{language}}</option>
+        {{/each}}
+    </select><br/>
+    <div class="language-container">
+      {{#each data.items as |item|}}
+        {{#if (checkEqual item.type "languageskill")}}
+          <div class="language-box">
+            {{item.name}} ({{item.system.level}} / {{#if item.system.humanSpoken}}6{{else}}3{{/if}})
+            <div class="item-controls">
+              <a class="item-control" title="{{ itemName 'Delete' }}" data-action="delete"><i class="fas fa-trash"></i></a>
+            </div>
+          </div>
+        {{/if}}
+      {{/each}}
+    </div>
   </div>
 </div>

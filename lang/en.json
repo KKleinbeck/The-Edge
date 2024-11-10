@@ -122,7 +122,9 @@
     "WEAPON": "Weapon",
     "OTHERS": "Others",
 
-    "HAS LEVELS": "Has levels"
+    "HAS LEVELS": "Has levels",
+    
+    "HUMAN SPOKEN": "Human's can speak"
   },
   "NOTIFICATIONS": {
     "DESTROYED": "Armour piece {name} was destroyed in combat",
@@ -216,6 +218,7 @@
   "LOCATIONS": "Locations",
   "MAXIMUM": "maximum",
   "MOD": "Mod",
+  "NATIVE LANGUAGE": "Native language",
   "NATIVE": "Native speaker",
   "NO HIT": "No hits",
   "MODIFICATORS": "Modificators",
