@@ -22,49 +22,35 @@ export default class DialogWeapon extends Dialog{
       roll: {
         label: game.i18n.localize("DIALOG.ROLL"),
         callback: async (html) => {
-          let precision =  html.find('[name="PrecisionSelector"]').val();
-          let pIndex = precision == "aimed" ? 1 : 0;
-          let tempModificator = parseInt(html.find('[name="Modifier"]').val()); 
-          let range = html.find('[name="RangeSelector"]').val();
-          if (distance) {
-            if (distance < 2) range = "less_2m";
-            else if (distance < 20) range = "less_20m";
-            else if (distance < 200) range = "less_200m";
-            else if (distance < 1000) range = "less_1km";
-            else range = "more_1km";
-          }
-          let size = html.find('[name="SizeSelector"]').val();
-          if (smallestSize) size = smallestSize;
-          let movement = html.find('[name="MovementSelector"]').val();
-          let fireMode = html.find('[name="FireSelector"]').val();
+          let modificators = this.parseSheet(html, checkData)
 
-          let threshold = Math.max(1, checkData.threshold + tempModificator +
-            checkData.rangeChart[range][pIndex] + THE_EDGE.sizes[size][pIndex] +
-            THE_EDGE.movements[movement][pIndex] + checkData.fireModes[fireMode].mali[pIndex]);
+          // Subtract ammunition and determine effective dices
+          let ammuCapa = checkData.ammunition.system.capacity
+          let dices = Math.min(
+            checkData.fireModes[modificators.fireMode].dices,
+            ammuCapa.max - ammuCapa.used
+          )
+          checkData.ammunition.update({"system.capacity.used": ammuCapa.used + dices})
 
-          let check = {
-            name: checkData.name,
-            threshold: threshold
-          };
-          let modificators = {
-            temporary: tempModificator,
-            advantage: html.find('[name="AdvantageSelector"]').val(),
-            range: {selection: range, modifier: checkData.rangeChart[range][pIndex]},
-            size: {selection: size, modifier: THE_EDGE.sizes[size][pIndex]},
-            movement: {selection: movement, modifier: THE_EDGE.movements[movement][pIndex]},
-            fireMode: fireMode,
-            fireModeModifiers: checkData.fireModes[fireMode],
-            precision: precision,
-            pIndex: pIndex
-          }
-          let [crits, damage] = await DiceServer.attackCheck(check, modificators);
-
+          // Roll the attack
           let scene = Aux.getScene(checkData.sceneID)
           let targets = Aux.getTargets(scene, checkData.targetIDs)
+          let targetNames = targets.map(x => x.name)
+          let check = {name: checkData.name, targets: targetNames}
+          mergeObject(modificators, {
+            rangeModifier: checkData.rangeChart[modificators.range][modificators.pIndex],
+            sizeModifier: THE_EDGE.sizes[modificators.size][modificators.pIndex],
+            movementModifier: THE_EDGE.movements[modificators.movement][modificators.pIndex],
+            fireModeModifier: checkData.fireModes[modificators.fireMode],
+            dicesEff: dices
+          })
+          let [crits, damage] = await DiceServer.attackCheck(check, modificators);
+
+          // Apply the damage
           for (const target of targets) {
-              for (let i = 0; i < damage.length; ++i){
-                await target.applyDamage(damage[i], crits[i], checkData.damageType)
-              }
+            for (let i = 0; i < damage.length; ++i){
+              await target.applyDamage(damage[i], crits[i], checkData.damageType)
+            }
           }
         }
       }
@@ -139,5 +125,34 @@ export default class DialogWeapon extends Dialog{
     }
     if (smallest === Infinity) return undefined;
     return Object.keys(THE_EDGE.sizes).find(key => THE_EDGE.sizes[key][0] === smallest)
+  }
+
+  static parseSheet(html, checkData) {
+    let precision =  html.find('[name="PrecisionSelector"]').val();
+    let pIndex = precision == "aimed" ? 1 : 0;
+    let tempModificator = parseInt(html.find('[name="Modifier"]').val()); 
+    let range = html.find('[name="RangeSelector"]').val();
+    if (checkData.distance) {
+      if (checkData.distance < 2) range = "less_2m";
+      else if (checkData.distance < 20) range = "less_20m";
+      else if (checkData.distance < 200) range = "less_200m";
+      else if (checkData.distance < 1000) range = "less_1km";
+      else range = "more_1km";
+    }
+    let size = html.find('[name="SizeSelector"]').val();
+    if (checkData.smallestSize) size = checkData.smallestSize;
+    let movement = html.find('[name="MovementSelector"]').val();
+    let fireMode = html.find('[name="FireSelector"]').val();
+
+    let threshold = Math.max(1, checkData.threshold + tempModificator +
+      checkData.rangeChart[range][pIndex] + THE_EDGE.sizes[size][pIndex] +
+      THE_EDGE.movements[movement][pIndex] + checkData.fireModes[fireMode].mali[pIndex]);
+    
+    return {
+      threshold: threshold, precision: precision, pIndex: pIndex,
+      tempModificator: tempModificator, range: range, size: size,
+      movement: movement, fireMode: fireMode,
+      advantage: html.find('[name="AdvantageSelector"]').val(),
+    }
   }
 }

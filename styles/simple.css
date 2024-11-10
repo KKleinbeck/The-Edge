@@ -127,6 +127,7 @@
 .the_edge .centered-row {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
 }
@@ -173,17 +174,15 @@
   border-radius: 14px;
 }
 .the_edge .loadout-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(31%, 1fr));
+  columns: 2;
   gap: 10px; /* Space between elements */
   padding: 0 10px; /* Small padding on left and right */
   width: 100%;
-  box-sizing: border-box;
 }
 .the_edge .loadout-container .loadout-box {
-  background-color: #CCC;
   height: 35px;
   padding: 10px;
+  break-inside: avoid;
 
   display: flex;
   justify-content: space-between;
@@ -206,12 +205,11 @@
 }
 .the_edge .d20-overlay-weapon {
   white-space: nowrap;
-  position: absolute; /* Position the text absolutely inside the parent */
+  position: absolute;
   color: #FFF;
-  top: 50%; /* Center the text vertically */
-  left: 50%; /* Center the text horizontally */
-  transform: translate(-50%, -40%); /* Adjust for perfect centering */
-  z-index: 1; /* Ensure the text is above the background */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Center horizontally and vertically */
   text-transform: uppercase; /* Makes the text all capital letters */
   font-weight: bold; /* Optional: Make the title bold */
   font-size: 12px;
@@ -225,7 +223,6 @@
   height: 30px;
   background-size: contain;
   background-repeat: no-repeat;
-  display: inline-block;
   position: relative;
 }
 .the_edge .proficiency-header {
@@ -403,7 +400,7 @@
 }
 .the_edge .item-list {
   list-style: none;
-  columns: 3;
+  columns: 2;
   margin: 7px 0;
   padding: 0;
   overflow-y: auto;

@@ -89,20 +89,20 @@ export default class DiceServer {
 
   static async attackCheck(check, modificators) {
     let diceRes = []
-    for (let i = 0; i < modificators.fireModeModifiers.dices; ++i) {
+    for (let i = 0; i < modificators.dicesEff; ++i) {
       diceRes.push(await this._basicRoll("1d20", true));
     }
     if (diceRes == []) return undefined;
     let hits = []
-    for (const res of diceRes) hits.push(res <= check.threshold);
+    for (const res of diceRes) hits.push(res <= modificators.threshold);
 
     if (modificators.advantage != "Nothing") {
       let diceRes2 = []
-      for (let i = 0; i < modificators.fireModeModifiers.dices; ++i) {
+      for (let i = 0; i < modificators.dicesEff; ++i) {
         diceRes2.push(await this._basicRoll("1d20", true));
       }
       let hits2 = []
-      for (const res of diceRes2) hits2.push(res <= check.threshold);
+      for (const res of diceRes2) hits2.push(res <= modificators.threshold);
       
       let sum = hits.reduce((a, b) => a+b, 0);
       let sum2 = hits2.reduce((a, b) => a+b, 0);
@@ -118,19 +118,18 @@ export default class DiceServer {
     for (let i = 0; i < diceRes.length; ++i) {
       if (!hits[i]) continue;
 
-      damage.push((await this._genericRoll(modificators.fireModeModifiers.damage)).reduce((a,b) => a+b, 0))
+      damage.push((await this._genericRoll(modificators.fireModeModifier.damage)).reduce((a,b) => a+b, 0))
       if (diceRes[i] == 1) {
-        damage[i] += this._max(modificators.fireModeModifiers.damage);
+        damage[damage.length-1] += this._max(modificators.fireModeModifier.damage);
         crits.push(true)
       } else crits.push(false)
     }
 
     let details = {
-      name: check.name, rolls: [], threshold: check.threshold, damage: damage,
-      damageRoll: modificators.fireModeModifiers.damage,
-      targetIDs: check.targetIDs, sceneID: check.sceneID
+      name: check.name, rolls: [], threshold: modificators.threshold, damage: damage,
+      damageRoll: modificators.fireModeModifier.damage, targets: check.targets
     };
-    for (let i = 0; i < modificators.fireModeModifiers.dices; ++i) {
+    for (let i = 0; i < modificators.dicesEff; ++i) {
       details.rolls.push({res: diceRes[i], hit: hits[i]})
     }
     mergeObject(details, modificators)

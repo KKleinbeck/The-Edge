@@ -231,9 +231,9 @@
     "type": "Pulse Rifle",
     "isElemental": false,
     "fireModes": {
-      "Single": {"damage": "2d4+2", "dices": 1, "ammunition": 1, "mali": [0, 0]},
-      "Burst": {"damage": "1d8", "dices": 3, "ammunition": 3, "mali": [0, 0]},
-      "Automatic": {"damage": "N.A.", "dices": 0, "ammunition": 0, "mali": [0, 0]}
+      "Single": {"damage": "2d4+2", "dices": 1, "mali": [0, 0]},
+      "Burst": {"damage": "1d8", "dices": 3, "mali": [0, 0]},
+      "Automatic": {"damage": "N.A.", "dices": 0, "mali": [0, 0]}
     },
     "leadAttr1": {"name": "Str", "value": 10},
     "leadAttr2": {"name": "Str", "value": 10},

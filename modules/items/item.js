@@ -48,7 +48,7 @@ export class TheEdgeItem extends Item {
   toggleEquipped() {
     if (this.system.equipped === undefined) return undefined;
     if (this.system.structurePoints <= 0) {
-      let msg = LocalisationServer.notifyLocalisation("EquipBroken", "Notifications")
+      let msg = LocalisationServer.parsedLocalisation("EquipBroken", "Notifications")
       ui.notifications.notify(msg)
       return undefined;
     }
@@ -71,7 +71,7 @@ export class ArmourItemTheEdge extends TheEdgeItem {
     }
 
     if (update["system.structurePoints"] == 0) {
-      let msg = LocalisationServer.notifyLocalisation("Destroyed", "Notifications", {name: this.name})
+      let msg = LocalisationServer.parsedLocalisation("Destroyed", "Notifications", {name: this.name})
       ui.notifications.notify(msg)
       update["system.equipped"] = false
       update["name"] = this.name + " (broken)"

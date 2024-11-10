@@ -47,10 +47,12 @@
                     {{#each systemData.fireModes as |modifier mode|}}
                         <div style="align-items: center; display: flex; flex-flow: nowrap; justify-content: space-between; gap: 5px;">
                             <span style="white-space: nowrap;">{{combatName mode}}</span>
-                            <div style="width: 120px;">
+                            <div style="width: 160px;">
+                                <input type="text" name="data.fireModes.{{mode}}.dices" value="{{modifier.dices}}" style="width: 25px"/>
+                                x
                                 <input type="text" name="data.fireModes.{{mode}}.damage" value="{{modifier.damage}}" style="width: 60px"/>
                                 {{#each modifier.mali as |mod|}}
-                                    <input type="number" name="data.fireModes.{{mode}}.mali" value="{{mod}}" style="width: 25px"/>
+                                    <input type="number" name="data.fireModes.{{mode}}.mali" value="{{mod}}" style="width: 25px" title="{{combatName 'Precision mali'}}"/>
                                 {{/each}}
                             </div>
                         </div>

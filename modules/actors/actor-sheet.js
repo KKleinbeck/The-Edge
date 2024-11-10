@@ -160,6 +160,12 @@ export class TheEdgeActorSheet extends ActorSheet {
     }
 
     const weapon = this.actor.items.get(weaponID)
+    if (weapon.system.ammunitionID === "") {
+      let msg = LocalisationServer.localise("Ammu missing", "Notifications")
+      ui.notifications.notify(msg)
+      return undefined;
+    }
+
     let damageType = ""
     if (weapon.system.isElemental) {
       damageType = "Elemental"
@@ -167,9 +173,11 @@ export class TheEdgeActorSheet extends ActorSheet {
       damageType = "Energy"
     } else damageType = "Kinetic";
     
+    console.log(this.actor.items, weapon.system.ammunitionID)
     const threshold = this.actor._getWeaponPL(weaponID)
     let d = DialogWeapon.start({
       name: weapon.name,
+      ammunition: this.actor.items.get(weapon.system.ammunitionID),
       threshold: threshold,
       damageType: damageType,
       rangeChart: weapon.system.rangeChart,
@@ -178,7 +186,6 @@ export class TheEdgeActorSheet extends ActorSheet {
       sceneID: sceneID,
       targetIDs: targetIDs
     })
-
   }
 
   async _reload(ev) {
@@ -219,7 +226,7 @@ export class TheEdgeActorSheet extends ActorSheet {
         let actorAP = this.actor.system.AdvantagePoints
 
         if (item.system.AP + actorAP.used > actorAP.max) {
-          let msg = LocalisationServer.notifyLocalisation(
+          let msg = LocalisationServer.parsedLocalisation(
             "AP missing", "Notifications",
             {name: item.name, need: item.system.AP, available: actorAP.max - actorAP.used}
           )
@@ -299,7 +306,7 @@ export class TheEdgeActorSheet extends ActorSheet {
           let actorAP = this.actor.system.AdvantagePoints
           let itemAP = (item.system.hasLevels ? item.system.level : 1) * item.system.AP
           if ((actorAP.max - itemAP < actorAP.used)) {
-            let msg = LocalisationServer.notifyLocalisation(
+            let msg = LocalisationServer.parsedLocalisation(
               "AP missing", "Notifications",
               {name: item.name, need: itemAP, available: actorAP.max - actorAP.used}
             )

@@ -82,6 +82,7 @@
     "SINGLE": "Single Shot",
 
     "PRECISION": "Precision",
+    "PRECISION MALI": "Precision mali",
     "AIMED": "Aimed",
     "UNAIMED": "Unaimed",
     
@@ -127,6 +128,7 @@
     "DESTROYED": "Armour piece {name} was destroyed in combat",
     "EQUIPBROKEN": "Cannot equip broken armour (i.e., no structure points).",
 
+    "AMMU MISSING": "Weapon is not loaded and can't be fired",
     "AP MISSING": "Not enough Advantage Points to gain {name}. {need} needed, {available} available."
   },
   "PROFICIENCY": {
