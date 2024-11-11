@@ -30,8 +30,8 @@ export default class DiceServer {
     else outcome = "Failure";
 
     let details = {roll: diceRes, outcome: outcome};
-    mergeObject(details, check)
-    mergeObject(details, modificators)
+    foundry.utils.mergeObject(details, check)
+    foundry.utils.mergeObject(details, modificators)
     ChatServer.transmitRoll("AbilityCheck", details);
   }
 
@@ -57,15 +57,15 @@ export default class DiceServer {
       // Is the modificator great enough to make the check?
       let reserves = modificator + failedSum 
       if (reserves >= 0) {
-        mergeObject(result, {outcome: "Success", quality: Math.floor((modificator + sum) / 3)});
+        foundry.utils.mergeObject(result, {outcome: "Success", quality: Math.floor((modificator + sum) / 3)});
       }
-      else mergeObject(result, {outcome: "Failure", quality: Math.floor(reserves / 3)});
+      else foundry.utils.mergeObject(result, {outcome: "Failure", quality: Math.floor(reserves / 3)});
     }
     else {
       // Negative modificator requires all checks to pass
-      if (failedSum < 0) mergeObject(result, {outcome: "Failure", quality: Math.floor((modificator + failedSum) / 3)});
+      if (failedSum < 0) foundry.utils.mergeObject(result, {outcome: "Failure", quality: Math.floor((modificator + failedSum) / 3)});
       else {
-        mergeObject(result, {outcome: sum < -modificator ? "Failure" : "Success", quality: Math.floor((modificator + sum) / 3)});
+        foundry.utils.mergeObject(result, {outcome: sum < -modificator ? "Failure" : "Success", quality: Math.floor((modificator + sum) / 3)});
       }
     }
     
@@ -132,7 +132,7 @@ export default class DiceServer {
     for (let i = 0; i < modificators.dicesEff; ++i) {
       details.rolls.push({res: diceRes[i], hit: hits[i]})
     }
-    mergeObject(details, modificators)
+    foundry.utils.mergeObject(details, modificators)
     ChatServer.transmitRoll("WeaponCheck", details);
     return [crits, damage];
   }

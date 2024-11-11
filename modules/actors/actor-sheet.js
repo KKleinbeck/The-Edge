@@ -69,6 +69,9 @@ export class TheEdgeActorSheet extends ActorSheet {
     html.find(".hero-token").click(ev => this._useHeroToken(ev));
     html.find(".hero-token-spent").click(ev => this._regenerateHeroToken(ev));
 
+    // Language skills
+    html.find(".skill-control").click(ev => this._onSkillContorl(ev))
+
     // Attributes
     html.find(".attr-d20").click(ev => this._rollAttr(ev));
     html.find(".advance-attr").click(ev => this._advanceSrv(ev, "attr"));
@@ -339,6 +342,26 @@ export class TheEdgeActorSheet extends ActorSheet {
         break;
     }
   }
+
+  _onSkillContorl(event) {
+    event.preventDefault();
+
+    // Obtain event data
+    const button = event.currentTarget;
+    const li = button.closest(".skill");
+    const skillID = li?.dataset.skillId;
+
+    // Handle different actions
+    switch ( button.dataset.action ) {
+      case "increase":
+        return this.actor.skillLevelIncrease(skillID);
+      case "decrease":
+        return this.actor.skillLevelDecrease(skillID);
+      case "delete":
+        return this.actor.deleteSkill(skillID);
+    }
+  }
+
 
   /* -------------------------------------------- */
 

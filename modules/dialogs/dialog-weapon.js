@@ -37,7 +37,7 @@ export default class DialogWeapon extends Dialog{
           let targets = Aux.getTargets(scene, checkData.targetIDs)
           let targetNames = targets.map(x => x.name)
           let check = {name: checkData.name, targets: targetNames}
-          mergeObject(modificators, {
+          foundry.utils.mergeObject(modificators, {
             rangeModifier: checkData.rangeChart[modificators.range][modificators.pIndex],
             sizeModifier: THE_EDGE.sizes[modificators.size][modificators.pIndex],
             movementModifier: THE_EDGE.movements[modificators.movement][modificators.pIndex],
@@ -56,7 +56,7 @@ export default class DialogWeapon extends Dialog{
       }
     }
     if (game.user.isGM) {
-      mergeObject(buttons, {
+      foundry.utils.mergeObject(buttons, {
         cheat: {
           label: game.i18n.localize("DIALOG.CHEAT"),
           callback: (html) => console.log(html.find('[name="Modifier"]').val())

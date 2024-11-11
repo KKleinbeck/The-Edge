@@ -41,7 +41,6 @@ export class TheEdgeItem extends Item {
 
   static setupSubClasses() {
     game.the_edge.config.ItemSubClasses = {
-      weapon: WeaponItemTheEdge,
       armour: ArmourItemTheEdge
     }
   }

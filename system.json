@@ -26,11 +26,13 @@
     }
   ],
   "compatibility": {
-    "minimum": "10",
+    "minimum": "12",
     "verified": "12"
   },
-  "gridDistance": 1,
-  "gridUnits": "m",
+  "grid": {
+    "distance": 1,
+    "units": "m"
+  },
   "manifest": "https://raw.githubusercontent.com/KKleinbeck/The-Edge/master/system.json",
   "download": ""
 }

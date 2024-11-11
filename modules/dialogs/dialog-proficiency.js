@@ -26,7 +26,7 @@ export default class DialogProficiency extends Dialog{
       }
     }
     if (game.user.isGM) {
-      mergeObject(buttons, {
+      foundry.utils.mergeObject(buttons, {
         cheat: {
           label: game.i18n.localize("DIALOG.CHEAT"),
           callback: (html) => console.log(html.find('[name="Modifier"]').val())

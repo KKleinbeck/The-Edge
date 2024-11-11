@@ -71,7 +71,7 @@ export class TheEdgeActor extends Actor {
       }
     }
 
-    mergeObject(preparedData, {proficienciesLeft: {}, proficienciesRight: {}})
+    foundry.utils.mergeObject(preparedData, {proficienciesLeft: {}, proficienciesRight: {}})
     for (const proficiencyClass of ["Physical", "Environmental", "Mental"]) {
       preparedData.proficienciesLeft[proficiencyClass] = Object.keys(this.system.proficiencies[proficiencyClass]);
     }
@@ -81,7 +81,7 @@ export class TheEdgeActor extends Actor {
 
     let sys = this.system;
     let ch = sys.attributes;
-    mergeObject(preparedData, {
+    foundry.utils.mergeObject(preparedData, {
       attrs: ["End","Str","Spd","Crd","Cha","Emp","Foc","Res","Int"],
       canAdvance: true,
       zones: {
@@ -194,7 +194,7 @@ export class TheEdgeActor extends Actor {
     // Languages doesn't exist yet
     const ph = this.system.PracticeHours
     const spoken = newSkill.system.humanSpoken
-    let cost = this._language_cost_table[spoken][0]
+    let cost = this._language_cost_table(spoken)[0]
     if (cost < ph.max - ph.used) {
       this.update({"system.PracticeHours.used": ph.used + cost})
       return true;
@@ -222,12 +222,23 @@ export class TheEdgeActor extends Actor {
 
   skillLevelDecrease(skillID) {
     let skill = this.items.get(skillID)
-    let level = language.system.level
+    let level = skill.system.level
     let gain = this._language_cost_table(skill.system.humanSpoken)[level-1]
     const ph = this.system.PracticeHours
     this.update({"system.PracticeHours.used": ph.used - gain})
-    if (level > 0) skill.update({"system.level": level + 1});
-    else skill.delete
+    if (level > 1) skill.update({"system.level": level - 1});
+    else skill.delete()
+  }
+
+  deleteSkill(skillID) {
+    const skill = this.items.get(skillID)
+    let gain = 0;
+    for (let i = 0; i < skill.system.level; i++) {
+      gain += this._language_cost_table(skill.system.humanSpoken)[i];
+    }
+    const ph = this.system.PracticeHours
+    this.update({"system.PracticeHours.used": ph.used - gain})
+    skill.delete()
   }
 
   _getWeaponPL(weaponID) {

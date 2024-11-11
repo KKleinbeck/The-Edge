@@ -29,7 +29,7 @@ export class TheEdgeItemSheet extends ItemSheet {
 
     Items.unregisterSheet("the_edge", TheEdgeItemSheet, {
       types: [
-        "weapon", "armour", "ammunition", "avantage", "disadvantage", "languageskill"
+        "weapon", "armour", "ammunition", "advantage", "disadvantage", "languageskill"
       ]
     });
   }

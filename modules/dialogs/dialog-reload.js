@@ -11,7 +11,7 @@ export default class DialogReload extends Dialog{
     let weaponSys = checkData.weapon.system
     const buttons = {}
     if (checkData.ammunition.length > 0) {
-      mergeObject(buttons, {
+      foundry.utils.mergeObject(buttons, {
         select: {
           label: game.i18n.localize("DIALOG.SELECT"),
           callback: async (html) => {
@@ -41,7 +41,7 @@ export default class DialogReload extends Dialog{
       })
     }
     if (weaponSys.ammunitionID !== "") {
-      mergeObject(buttons, {
+      foundry.utils.mergeObject(buttons, {
         empty: {
           label: game.i18n.localize("DIALOG.EMPTY"),
           callback: async (html) => {
@@ -57,7 +57,7 @@ export default class DialogReload extends Dialog{
         },
       })
     }
-    mergeObject(buttons, {
+    foundry.utils.mergeObject(buttons, {
       cancel: {
         label: game.i18n.localize("DIALOG.CANCEL")
       }
