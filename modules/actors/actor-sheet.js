@@ -241,7 +241,7 @@ export class TheEdgeActorSheet extends ActorSheet {
         return await this._createVantage(event, data, item)
       
       case "languageskill":
-        let createNew = this.actor.learnLanguage(item);
+        let createNew = this.actor.learnSkill(item);
         return createNew ? super._onDropItem(event, data) : undefined;
     }
     // return this.actor.createEmbeddedDocuments("Item", itemData);

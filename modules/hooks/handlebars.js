@@ -9,6 +9,7 @@ export default function() {
         attrName: (a) => LocalisationServer.localise(a, "attr"),
         attrAbbr: (a) => LocalisationServer.localise(a, "attr_abbr"),
         itemName: (a) => LocalisationServer.localise(a, "Item"),
+        skillName: (a) => LocalisationServer.localise(a, "Skill"),
         combatName: (a) => LocalisationServer.localise(a, "combat"),
         tooltip: (a) => LocalisationServer.localise(a, "tooltip"),
         proficiencyName: (a) => LocalisationServer.localise(a, "proficiency"),

@@ -186,6 +186,10 @@
     "FIRSTAID": "First Aid",
     "MEDICINE": "Medicine"
   },
+  "SKILL": {
+    "DECREASE": "Decrease skill level",
+    "INCREASE": "Increase skill level"
+  },
   "TOOLTIP": {
     "DESIGNATED WEAPON": "Some types of ammunition are only useable with specific names. Specify these here by their names (comma separated).",
     "PENETRATION": "The penetration value reduces the armour's threshold."

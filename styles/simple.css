@@ -173,6 +173,13 @@
   background-color: #666;
   border-radius: 14px;
 }
+.the_edge .native-language {
+  display: flex;
+  white-space: nowrap;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
 .the_edge .language-container {
   columns: 2;
   gap: 10px;

@@ -178,34 +178,56 @@ export class TheEdgeActor extends Actor {
     this.update(update)
   }
 
-  learnLanguage(newLanguage) {
-    let languages = this.itemTypes["languageskill"]
-    const ph = this.system.PracticeHours
-    let spoken = newLanguage.system.humanSpoken ? "human" : "non-human"
-    const language_cost_table = {
-      "human": [200, 400, 1000, 2000, 3200, 3200],
-      "non-human": [600, 3000, 6400]
-    }
-    for (const lang of languages) {
-      if (lang.name == newLanguage.name) {
-        if (lang.system.level == 6) return false;
-        let cost = language_cost_table[spoken][lang.system.level]
-        if (cost < ph.max - ph.used) {
-          this.update({"system.PracticeHours.used": ph.used + cost})
-          lang.update({"system.level": lang.system.level + 1})
-        }
+  _language_cost_table(humanSpoken) {
+    return humanSpoken ? [200, 400, 1000, 2000, 3200, 3200] : [600, 3000, 6400]
+  }
+
+  learnSkill(newSkill) {
+    for (const skill of this.items) {
+      if (skill.name == newSkill.name && skill.type == newSkill.type && skill.system.level) {
+        // Skill already exists and can be leveled
+        this.skillLevelIncrease(skill.id)
         return false;
       }
     }
 
     // Languages doesn't exist yet
-    let cost = language_cost_table[spoken][0]
+    const ph = this.system.PracticeHours
+    const spoken = newSkill.system.humanSpoken
+    let cost = this._language_cost_table[spoken][0]
     if (cost < ph.max - ph.used) {
       this.update({"system.PracticeHours.used": ph.used + cost})
       return true;
     }
     
     return false
+  }
+
+  skillLevelIncrease(skillID) {
+    let skill = this.items.get(skillID)
+    let level = skill.system.level
+    let cost = 0;
+    if (skill.type == "languageskill") {
+      if ((skill.system.humanSpoken && level == 6) || (!skill.system.humanSpoken && level == 3)) return false;
+      cost = this._language_cost_table(skill.system.humanSpoken)[level];
+    }
+    const ph = this.system.PracticeHours
+    if (cost < ph.max - ph.used) {
+      this.update({"system.PracticeHours.used": ph.used + cost})
+      skill.update({"system.level": level + 1})
+      return true
+    }
+    return false
+  }
+
+  skillLevelDecrease(skillID) {
+    let skill = this.items.get(skillID)
+    let level = language.system.level
+    let gain = this._language_cost_table(skill.system.humanSpoken)[level-1]
+    const ph = this.system.PracticeHours
+    this.update({"system.PracticeHours.used": ph.used - gain})
+    if (level > 0) skill.update({"system.level": level + 1});
+    else skill.delete
   }
 
   _getWeaponPL(weaponID) {
