@@ -9,9 +9,11 @@
                     <input name="name" type="text" value="{{data.name}}" placeholder="Name" />
                 </h3>
                 <div class="item-columned-page" style="justify-content: start;">
-                    <div class="item-header-fields">
-                        <label for="hasLevels">{{itemName "human spoken"}}</label>
-                        <input type="checkbox" id="hasLevels" name="system.humanSpoken" {{#if systemData.humanSpoken}}checked{{/if}} />
+                    <div class="item-header-fields" style="text-wrap: nowrap;">
+                        <label for="value">{{genName "Value"}}</label>
+                        <input type="number" id="value" name="system.value" value="{{data.system.value}}" style="width: 100px;"/>
+                        <label for="isSchid">{{genName "Offline currency"}}</label>
+                        <input type="checkbox" id="isSchid" name="system.isSchid" {{#if systemData.isSchid}}checked{{/if}} />
                     </div>
                 </div>
             </div>

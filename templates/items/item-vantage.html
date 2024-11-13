@@ -11,20 +11,20 @@
                 <div class="item-columned-page" style="justify-content: start;">
                     <div class="item-header-fields" style="max-width: 32%;">
                         <div title="{{genName 'AdvantagePoints'}}">AP</div>
-                        <input type="number" name="data.AP" value="{{data.system.AP}}" data-dtype="Number"/>
+                        <input type="number" name="system.AP" value="{{data.system.AP}}" data-dtype="Number"/>
                     </div>
                     {{#if systemData.userIsGM}}
                     <div class="item-header-fields" style="max-width: 32%;">
                         <label for="hasLevels">{{itemName "has levels"}}</label>
-                        <input type="checkbox" id="hasLevels" name="data.hasLevels" {{#if systemData.hasLevels}}checked{{/if}} />
+                        <input type="checkbox" id="hasLevels" name="system.hasLevels" {{#if systemData.hasLevels}}checked{{/if}} />
                     </div>
                     {{/if}}
                     {{#if data.system.hasLevels}}
                         <div class="item-header-fields" style="max-width: 40%;">
                             {{genName "Level"}} / max<br/>
                             <div>
-                                <input type="number" name="data.level" value="{{data.system.level}}" data-dtype="Number" style="width: 45%"/>
-                                <input type="number" name="data.maxLevel" value="{{data.system.maxLevel}}" data-dtype="Number" style="width: 45%"/>
+                                <input type="number" name="system.level" value="{{data.system.level}}" data-dtype="Number" style="width: 45%"/>
+                                <input type="number" name="system.maxLevel" value="{{data.system.maxLevel}}" data-dtype="Number" style="width: 45%"/>
                             </div>
                         </div>
                     {{/if}}

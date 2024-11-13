@@ -11,21 +11,21 @@
                 <div class="item-columned-page">
                     <div class="item-header-fields">
                         {{genName "Weight"}}<br/>
-                        <input type="number" name="data.weight" value="{{data.system.weight}}" data-dtype="Number"/>
+                        <input type="number" name="system.weight" value="{{data.system.weight}}" data-dtype="Number"/>
                     </div>
                     <div class="item-header-fields">
                         {{genName "Value"}}<br/>
-                        <input type="number" name="data.value" value="{{data.system.value}}" data-dtype="Number"/>
+                        <input type="number" name="system.value" value="{{data.system.value}}" data-dtype="Number"/>
                     </div>
                     <div class="item-header-fields">
                         {{genName "Quantity"}}<br/>
-                        <input type="number" name="data.quantity" value="{{data.system.quantity}}" data-dtype="Number"/>
+                        <input type="number" name="system.quantity" value="{{data.system.quantity}}" data-dtype="Number"/>
                     </div>
                     <div class="item-header-fields" style="min-width: 37%;">
                         {{genName "Capacity"}}<br/>
                         <div class="output" title="{{genName 'available'}}" style="width: 44%; height: 26px; text-align: center;">{{sub data.system.capacity.max data.system.capacity.used}}</div>
                         /
-                        <input type="number" title="{{genName 'maximum'}}" name="data.capacity.max" value="{{data.system.capacity.max}}" data-dtype="Number" style="width: 44%;"/>
+                        <input type="number" title="{{genName 'maximum'}}" name="system.capacity.max" value="{{data.system.capacity.max}}" data-dtype="Number" style="width: 44%;"/>
                     </div>
                 </div>
             </div>
@@ -44,21 +44,21 @@
             <div class="item-columned-page" style="justify-content: start;gap: 10px">
                 <div class="item-field">
                     <b>{{genName "Type"}}</b><br />
-                    <select class="selection-box" name="data.type" id="Type Selector">
+                    <select class="selection-box" name="system.type" id="Type Selector">
                         {{#each data.system.whitelist as |weapons type|}}
                             <option value="{{type}}" {{#if (checkEqual type ../data.system.type)}}selected{{/if}}>{{type}}</option>
                         {{/each}}
                     </select><br />
                     <b>{{genName "Damage modifiers"}}</b><br />
-                    <input type="number" name="data.damage.bonus" value="{{systemData.damage.bonus}}" style="width: 20px;"/>{{genName "Damage"}}<br />
-                    <input type="number" name="data.damage.penetration" value="{{systemData.damage.penetration}}"  style="width: 20px;" title="{{tooltip 'penetration'}}"/>{{genName "Penetration"}}
+                    <input type="number" name="system.damage.bonus" value="{{systemData.damage.bonus}}" style="width: 20px;"/>{{genName "Damage"}}<br />
+                    <input type="number" name="system.damage.penetration" value="{{systemData.damage.penetration}}" style="width: 20px;" title="{{tooltipText 'penetration'}}"/>{{genName "Penetration"}}
                 </div>
                 <div class="item-field">
                     <b>{{genName "Range modifiers"}}</b><br />
                     {{#each systemData.modifiers as |mods range|}}
                         <div style="flex: 1;">
                             {{#each mods as |mod|}}
-                                <input type="number" name="data.modifiers.{{range}}" value="{{mod}}" style="width: 20px;"/>
+                                <input type="number" name="system.modifiers.{{range}}" value="{{mod}}" style="width: 20px;"/>
                             {{/each}}
                             {{genRange range}}
                         </div>
@@ -70,7 +70,7 @@
                         {{#if (checkEqual type ../data.system.type)}}
                             {{#each candidates as |val weapon|}}
                                 <div class="checkbox-container">
-                                    <input type="checkbox" id="is-{{weapon}}" name="data.whitelist.{{type}}.{{weapon}}" {{#if val}}checked{{/if}} />
+                                    <input type="checkbox" id="is-{{weapon}}" name="system.whitelist.{{type}}.{{weapon}}" {{#if val}}checked{{/if}} />
                                     <label for="is-{{weapon}}">{{combatName weapon}}</label>
                                 </div>
                             {{/each}}
@@ -79,7 +79,7 @@
                 </div>
             </div>
             <div style="height: 200px;">
-                <b title="{{tooltip 'designated weapon'}}">{{genName "Designated Weapons"}}:</b>
+                <b title="{{tooltipText 'designated weapon'}}">{{genName "Designated Weapons"}}:</b>
                 {{editor designatedWeaponsHTML target="system.designatedWeapons" button=true editable=editable engine="prosemirror"}}
             </div>
         </div>

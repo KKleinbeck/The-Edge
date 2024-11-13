@@ -39,9 +39,14 @@ export class TheEdgeActorSheet extends ActorSheet {
       async: true
     });
     context["prepare"] = this.actor.prepareSheet()
+
+    let credits = this.actor.itemTypes["credits"]
+    let creditsOffline = credits.find(c => c.system?.isSchid)?.system?.value || 0;
+    let creditsOnline = credits.find(c => !c.system?.isSchid)?.system?.value || 0;
     context.helpers = {
       types: ["weapon", "armour", "ammunition"],
-      languages: THE_EDGE.languages
+      languages: THE_EDGE.languages,
+      credits: {"Schids": creditsOffline, "online": creditsOnline},
     }
     return context;
   }
@@ -246,6 +251,15 @@ export class TheEdgeActorSheet extends ActorSheet {
       case "languageskill":
         let createNew = this.actor.learnSkill(item);
         return createNew ? super._onDropItem(event, data) : undefined;
+      
+      case "credits":
+        let credits = this.actor.itemTypes["credits"].find(c => c.system.isSchid == item.system.isSchid)
+        console.log(credits)
+        if (!credits) {
+          console.log("Creating new credits")
+          return super._onDropItem(event, data)
+        } else credits.update({"system.value": credits.system.value + item.system.value})
+        return credits;
     }
     // return this.actor.createEmbeddedDocuments("Item", itemData);
   }

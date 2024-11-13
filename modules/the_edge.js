@@ -29,15 +29,6 @@ Hooks.once("init", async function() {
     return this[Math.floor((Math.random()*this.length))];
   }
 
-  /**
-   * Set an initiative formula for the system. This will be updated later.
-   * @type {String}
-   */
-  CONFIG.Combat.initiative = {
-    formula: "1d20",
-    decimals: 2
-  };
-
   game.the_edge = {
     TheEdgeActor,
     createWorldbuildingMacro,
@@ -72,7 +63,7 @@ Hooks.once("init", async function() {
     hint: "SETTINGS.SimpleInitFormulaL",
     scope: "world",
     type: String,
-    default: "1d20",
+    default: "1d20+1d12",
     config: true,
     onChange: formula => _simpleUpdateInit(formula, true)
   });
