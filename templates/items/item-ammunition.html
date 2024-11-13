@@ -50,15 +50,15 @@
                         {{/each}}
                     </select><br />
                     <b>{{genName "Damage modifiers"}}</b><br />
-                    <input type="number" name="system.damage.bonus" value="{{systemData.damage.bonus}}" style="width: 20px;"/>{{genName "Damage"}}<br />
-                    <input type="number" name="system.damage.penetration" value="{{systemData.damage.penetration}}" style="width: 20px;" title="{{tooltipText 'penetration'}}"/>{{genName "Penetration"}}
+                    <input type="number" name="system.damage.bonus" value="{{systemData.damage.bonus}}" style="width: 25px;"/>{{genName "Damage"}}<br />
+                    <input type="number" name="system.damage.penetration" value="{{systemData.damage.penetration}}" style="width: 25px;" title="{{tooltipText 'penetration'}}"/>{{genName "Penetration"}}
                 </div>
                 <div class="item-field">
                     <b>{{genName "Range modifiers"}}</b><br />
                     {{#each systemData.modifiers as |mods range|}}
                         <div style="flex: 1;">
                             {{#each mods as |mod|}}
-                                <input type="number" name="system.modifiers.{{range}}" value="{{mod}}" style="width: 20px;"/>
+                                <input type="number" name="system.modifiers.{{range}}" value="{{mod}}" style="width: 25px;"/>
                             {{/each}}
                             {{genRange range}}
                         </div>

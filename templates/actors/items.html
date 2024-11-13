@@ -36,12 +36,21 @@
 {{/each}}
 <h3>{{itemName "Others"}}</h3>
 <hr />
-<p>
-    <h3>Credits:</h3>
-    {{helpers.credits.Schids}} Schids --
-    {{helpers.credits.online}} Online
-</p>
-<hr />
-<p>
+<div style="display: flex; justify-content: space-between;">
+    <div style="display: flex; gap: 20px;">
+        <h3>Credits:</h3>
+        <div>
+            {{helpers.credits.Schids}} Schids
+        </div>
+        <div>
+            {{helpers.credits.digital}} {{genName "digital"}}
+        </div>
+    </div>
+    <div style="display: flex; gap: 20px;">
+        <h3>{{genName "weight"}}:</h3>
+        <div>
+            {{helpers.weight}}
+        </div>
+    </div>
     <a class="item-control" title="{{ itemName 'Create' }}" data-action="create"><i class="fas fa-plus"></i> {{ itemName "Create" }}</a>
-</p>
+</div>
