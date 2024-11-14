@@ -25,7 +25,7 @@
             {{#each systemData.modifiers as |mod|}}
                 <div class="item-columned-page" style="align-items: center;">
                     <input class="effect-modify" data-index="{{@index}}" type="text" value="{{mod.modifier}}"/>
-                    <input class="effect-modify" data-index="{{@index}}" type="number" value="{{mod.value}}" style="width: 30px;"/>
+                    <input class="effect-modify" data-index="{{@index}}" type="number" value="{{mod.value}}" style="width: 45px;"/>
                     <a class="effect-delete" data-index="{{@index}}" title="{{ itemName 'delete' }}"><i class="fas fa-trash"></i></a>
                 </div>
             {{/each}}

@@ -186,7 +186,6 @@ class ItemSheetEffect extends TheEdgeItemSheet {
     let modifiers = this.item.system.modifiers;
     modifiers.push({modifier: "", value: 0});
     this.item.update({"system.modifiers": modifiers});
-    this._render();
   }
 
   _onModify(ev) {
@@ -208,7 +207,8 @@ class ItemSheetEffect extends TheEdgeItemSheet {
     const button = ev.currentTarget;
     let index = button.dataset.index;
     let modifiers = this.item.system.modifiers;
-    this.item.update({"system.modifiers": modifiers.splice(index)});
+    modifiers.splice(index, 1);
+    this.item.update({"system.modifiers": modifiers});
     this._render();
   }
 }
