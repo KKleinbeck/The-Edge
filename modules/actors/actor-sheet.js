@@ -10,7 +10,6 @@ export class TheEdgeActorSheet extends ActorSheet {
 
   /** @inheritdoc */
   static get defaultOptions() {
-    // console.log(super.defaultOptions)
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["the_edge", "sheet", "actor"],
       template: "systems/the_edge/templates/actors/actor-sheet.html",
@@ -189,7 +188,6 @@ export class TheEdgeActorSheet extends ActorSheet {
       damageType = "Energy"
     } else damageType = "Kinetic";
     
-    console.log(this.actor.items, weapon.system.ammunitionID)
     const threshold = this.actor._getWeaponPL(weaponID)
     let d = DialogWeapon.start({
       name: weapon.name,
@@ -257,13 +255,11 @@ export class TheEdgeActorSheet extends ActorSheet {
         return createNew ? super._onDropItem(event, data) : undefined;
       
       case "credits":
-        let credits = this.actor.itemTypes["credits"].find(c => c.system.isSchid == item.system.isSchid)
-        console.log(credits)
-        if (!credits) {
-          console.log("Creating new credits")
-          return super._onDropItem(event, data)
-        } else credits.update({"system.value": credits.system.value + item.system.value})
-        return credits;
+        console.log(item.system)
+        if (item.system.isChid) {
+          this.actor.update({"system.credits.chids": this.actor.system.credits.chids + item.system.value})
+        } else this.actor.update({"system.credits.digital": this.actor.system.credits.digital + item.system.value})
+        return false;
     }
     // return this.actor.createEmbeddedDocuments("Item", itemData);
   }

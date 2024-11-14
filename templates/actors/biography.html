@@ -1,3 +1,17 @@
 <div class="actor-biography groupbox">
+  <h3>Effects</h3>
+  {{#each data.items as |item id|}}
+    {{#if (checkEqual item.type "effect")}}
+      item.name
+    {{/if}}
+  {{/each}}
+  <hr />
+  <h3>Item Effects</h3>
+  {{#each data.items as |item id|}}
+    {{#if (checkInstance "effect" item.system)}}
+      item.name
+    {{/if}}
+  {{/each}}
+  <hr />
   {{editor biographyHTML target="system.biography" button=true editable=editable engine="prosemirror"}}
 </div>

@@ -1,4 +1,5 @@
 <form class="flexcol {{cssClass}}" autocomplete="off">
+    {{log systemData}}
     <header class="sheet-header-item">
         <div class="item-columned-page">
             <div style="width: 100px;">
@@ -8,25 +9,28 @@
                 <h3 class="charname">
                     <input name="name" type="text" value="{{data.name}}" placeholder="Name" />
                 </h3>
-                <div class="item-columned-page" style="justify-content: start;">
-                    <div class="item-header-fields" style="text-wrap: nowrap;">
-                        <label for="value">{{genName "Value"}}</label>
-                        <input type="number" id="value" name="system.value" value="{{data.system.value}}" style="width: 100px;"/>
-                        <label for="isSchid">{{itemName "Offline currency"}}</label>
-                        <input type="checkbox" id="isChid" name="system.isChid" {{#if systemData.isChid}}checked{{/if}} />
-                    </div>
-                </div>
             </div>
         </div>
     </header>
 
     {{!-- Sheet Tab Navigation --}}
     <nav class="sheet-tabs tabs" data-group="primary">
+        <a class="item" data-tab="details">Details</a>
         <a class="item" data-tab="description">Description</a>
     </nav>
 
     {{!-- Sheet Body --}}
     <section class="sheet-body">
+        <div class="tab" data-group="primary" data-tab="details">
+            {{#each systemData.modifiers as |mod|}}
+                <div class="item-columned-page" style="align-items: center;">
+                    <input class="effect-modify" data-index="{{@index}}" type="text" value="{{mod.modifier}}"/>
+                    <input class="effect-modify" data-index="{{@index}}" type="number" value="{{mod.value}}" style="width: 30px;"/>
+                    <a class="effect-delete" data-index="{{@index}}" title="{{ itemName 'delete' }}"><i class="fas fa-trash"></i></a>
+                </div>
+            {{/each}}
+            <a class="effect-add" title="{{ itemName 'Create' }}" data-action="create"><i class="fas fa-plus"></i> {{ itemName "Add" }}</a>
+        </div>
         {{> systems/the_edge/templates/items/meta-description.html}}
     </section>
 </form>

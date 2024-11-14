@@ -483,6 +483,10 @@
   min-width: 390px;
   min-height: 420px;
 }
+.the_edge.sheet.item-effect {
+  min-width: 390px;
+  min-height: 420px;
+}
 
 .main-row {
   display: flex;

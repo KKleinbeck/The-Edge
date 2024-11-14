@@ -27,10 +27,11 @@ export class TheEdgeItemSheet extends ItemSheet {
     Items.registerSheet("the_edge", ItemSheetVantage, { makeDefault: true, types: ["advantage", "disadvantage"] });
     Items.registerSheet("the_edge", ItemSheetLanguage, { makeDefault: true, types: ["languageskill"] });
     Items.registerSheet("the_edge", ItemSheetCredits, { makeDefault: true, types: ["credits"] });
+    Items.registerSheet("the_edge", ItemSheetEffect, { makeDefault: true, types: ["effect"] });
 
     Items.unregisterSheet("the_edge", TheEdgeItemSheet, {
       types: [
-        "weapon", "armour", "ammunition", "advantage", "disadvantage", "languageskill", "credits"
+        "weapon", "armour", "ammunition", "advantage", "disadvantage", "languageskill", "credits", "effect"
       ]
     });
   }
@@ -162,5 +163,52 @@ class ItemSheetCredits extends TheEdgeItemSheet {
       height: 240,
       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}],
     });
+  }
+}
+
+class ItemSheetEffect extends TheEdgeItemSheet {
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      classes: ["the_edge", "sheet", "item-effect"],
+      width: 390,
+      height: 240,
+      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "details"}],
+    });
+  }
+
+  activateListeners(html) {
+    html.find(".effect-add").click(ev => this._onAdd(ev));
+    html.find(".effect-modify").on("change", ev => this._onModify(ev));
+    html.find(".effect-delete").click(ev => this._onDelete(ev));
+  }
+
+  _onAdd(event) {
+    let modifiers = this.item.system.modifiers;
+    modifiers.push({modifier: "", value: 0});
+    this.item.update({"system.modifiers": modifiers});
+    this._render();
+  }
+
+  _onModify(ev) {
+    const button = ev.currentTarget;
+    let index = button.dataset.index;
+    let modifiers = this.item.system.modifiers;
+    switch (button.type ) {
+      case "text":
+        modifiers[index].modifier = button.value;
+        break;
+      case "number":
+        modifiers[index].value = parseInt(button.value);
+        break;
+    }
+    this.item.update({"system.modifiers": modifiers});
+  }
+
+  _onDelete(ev) {
+    const button = ev.currentTarget;
+    let index = button.dataset.index;
+    let modifiers = this.item.system.modifiers;
+    this.item.update({"system.modifiers": modifiers.splice(index)});
+    this._render();
   }
 }
