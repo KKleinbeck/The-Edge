@@ -5,56 +5,47 @@
     "attributes": {
       "attributes": {
         "End": {
-          "species": 0,
-          "initial": 0,
+          "status": 0,
           "modifier": 0,
           "advances": 0
         },
         "Str": {
-          "species": 0,
-          "initial": 0,
+          "status": 0,
           "modifier": 0,
           "advances": 0
         },
         "Spd": {
-          "species": 0,
-          "initial": 0,
+          "status": 0,
           "modifier": 0,
           "advances": 0
         },
         "Crd": {
-          "species": 0,
-          "initial": 0,
+          "status": 0,
           "modifier": 0,
           "advances": 0
         },
         "Cha": {
-          "species": 0,
-          "initial": 0,
+          "status": 0,
           "modifier": 0,
           "advances": 0
         },
         "Emp": {
-          "species": 0,
-          "initial": 0,
+          "status": 0,
           "modifier": 0,
           "advances": 0
         },
         "Foc": {
-          "species": 0,
-          "initial": 0,
+          "status": 0,
           "modifier": 0,
           "advances": 0
         },
         "Res": {
-          "species": 0,
-          "initial": 0,
+          "status": 0,
           "modifier": 0,
           "advances": 0
         },
         "Int": {
-          "species": 0,
-          "initial": 0,
+          "status": 0,
           "modifier": 0,
           "advances": 0
         }

@@ -2,14 +2,18 @@
   <h3>Effects</h3>
   {{#each data.items as |item id|}}
     {{#if (checkEqual item.type "effect")}}
-      item.name
+      <div class="item-control item" data-action="edit" data-item-id="{{item._id}}" style="cursor: pointer;">
+        {{item.name}}
+      </div>
     {{/if}}
   {{/each}}
   <hr />
   <h3>Item Effects</h3>
   {{#each data.items as |item id|}}
-    {{#if (checkInstance "effect" item.system)}}
-      item.name
+    {{#if (checkIn "effect" item.system)}}
+      <div class="item-control item" data-action="edit" data-item-id="{{item._id}}" style="cursor: pointer;">
+        {{item.name}}
+      </div>
     {{/if}}
   {{/each}}
   <hr />

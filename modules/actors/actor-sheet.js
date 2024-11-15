@@ -42,9 +42,7 @@ export class TheEdgeActorSheet extends ActorSheet {
     let credits = this.actor.itemTypes["credits"]
     let creditsOffline = credits.find(c => c.system?.isSchid)?.system?.value || 0;
     let creditsDigital = credits.find(c => !c.system?.isSchid)?.system?.value || 0;
-    let weight =  this.actor.items.reduce(
-      (a, b) => a + ((b.system?.quantity || 1) * b.system?.weight || 0), 0
-    );
+    let weight =  this.actor._determineWeight();
     context.helpers = {
       types: ["weapon", "armour", "ammunition"],
       languages: THE_EDGE.languages,
@@ -260,6 +258,9 @@ export class TheEdgeActorSheet extends ActorSheet {
           this.actor.update({"system.credits.chids": this.actor.system.credits.chids + item.system.value})
         } else this.actor.update({"system.credits.digital": this.actor.system.credits.digital + item.system.value})
         return false;
+
+      case "effect":
+        return super._onDropItem(event, data)
     }
     // return this.actor.createEmbeddedDocuments("Item", itemData);
   }
@@ -323,7 +324,7 @@ export class TheEdgeActorSheet extends ActorSheet {
     switch ( button.dataset.action ) {
       case "create":
         const cls = getDocumentClass("Item");
-        return cls.create({name: game.i18n.localize("SIMPLE.ItemNew"), type: "item"}, {parent: this.actor});
+        return cls.create({name: game.i18n.localize("SIMPLE.ItemNew"), type: "weapon"}, {parent: this.actor});
       case "edit":
         return item.sheet.render(true);
       case "delete":

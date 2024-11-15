@@ -17,19 +17,6 @@
         <div class="table-row">
             <div class="row-type table-data">
                 <div class="column-name lineheight">
-                    {{localize "Value"}}
-                </div>
-            </div>
-            {{#each prepare.attrs as |ch|}}
-            <div class="table-data">
-                <span class="output">{{getSys ../actor 'attributes' ch 'value'}}</span>
-            </div>
-            {{/each}}
-        </div>
-        {{#if prepare.canAdvance}}
-        <div class="table-row">
-            <div class="row-type table-data">
-                <div class="column-name lineheight">
                     {{localize "Advances"}}
                 </div>
             </div>
@@ -39,7 +26,18 @@
             </div>
             {{/each}}
         </div>
-        {{/if}}
+        <div class="table-row">
+            <div class="row-type table-data">
+                <div class="column-name lineheight">
+                    {{localize "Status"}}
+                </div>
+            </div>
+            {{#each prepare.attrs as |ch|}}
+            <div class="table-data">
+                <span class="output">{{getSys ../actor 'attributes' ch 'status'}}</span>
+            </div>
+            {{/each}}
+        </div>
         <div class="actor-main-attr-modifier table-row">
             <div class="row-type table-data">
                 <div class="column-name lineheight">

@@ -11,7 +11,7 @@ export default function() {
         itemName: (a) => LocalisationServer.localise(a, "Item"),
         skillName: (a) => LocalisationServer.localise(a, "Skill"),
         combatName: (a) => LocalisationServer.localise(a, "combat"),
-        tooltipText: (a) => {console.log(a); LocalisationServer.localise(a, "tooltip")},
+        tooltipText: (a) => {LocalisationServer.localise(a, "tooltip")},
         proficiencyName: (a) => LocalisationServer.localise(a, "proficiency"),
         genRange: (a) => {
             let preface = a.split("_")[0];

@@ -12,7 +12,7 @@ export class TheEdgeActor extends Actor {
     this.system.attributes = this.system.attributes || {};
 
     for (let ch of Object.values(this.system.attributes)) {
-      ch.value = ch.initial + ch.advances + ch.species + ch.modifier + (ch.gearmodifier || 0);
+      ch.value = ch.status + ch.advances + ch.modifier;
     }
     this.system.heartRate["max"] = this.system.heartRate.baseline_max + 
       this.system.attributes["End"].value -
@@ -113,6 +113,42 @@ export class TheEdgeActor extends Actor {
 
     return preparedData
   }
+
+  _determineWeight() {
+    return this.items.reduce(
+      (a, b) => a + ((b.system?.quantity || 1) * b.system?.weight || 0), 0
+    );
+  }
+  
+  async _determineEncumbrance() {
+      let weight = this._determineWeight();
+      let str = this.system.attributes.Str.value;
+
+      // Correct for the current encumbrance level
+      let effects = this.itemTypes["effect"]
+      let currentEncumbrance = effects?.find(obj => obj.name == "Encumbrance")
+      str += currentEncumbrance?.modifiers?.reduce((a,b) => a + b.value, 0) || 0
+      
+      let encumbranceLevel = str == 0 ? 100 : Math.ceil((weight - str) / (str/2))
+      let physicalMalus = Math.ceil(encumbranceLevel / 2)
+      let allMalus = Math.floor(encumbranceLevel / 2)
+      console.log(weight, encumbranceLevel, physicalMalus, allMalus, currentEncumbrance)
+
+      if (encumbranceLevel == 0 && currentEncumbrance) {
+        await currentEncumbrance.delete()
+      } else if (encumbranceLevel > 0) {
+        if (currentEncumbrance) {
+          currentEncumbrance.update({"system.modifiers": [
+            {modifier: "Attr.Physical", value: physicalMalus},
+            {modifier: "Attr.All", value: allMalus}
+          ]})
+        } else {
+          const cls = getDocumentClass("Item");
+          encumbrance = cls.create({name: "Encumbrance", type: "effect"}, {parent: this});
+        }
+      }
+      return true
+  };
 
   async _advanceAttr(attrName, type) {
     const attr = this.system.attributes[attrName]
