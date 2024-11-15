@@ -42,7 +42,7 @@ export class TheEdgeActorSheet extends ActorSheet {
     let credits = this.actor.itemTypes["credits"]
     let creditsOffline = credits.find(c => c.system?.isSchid)?.system?.value || 0;
     let creditsDigital = credits.find(c => !c.system?.isSchid)?.system?.value || 0;
-    let weight = this.actor.items.reduce(
+    let weight =  this.actor.items.reduce(
       (a, b) => a + ((b.system?.quantity || 1) * b.system?.weight || 0), 0
     );
     context.helpers = {
