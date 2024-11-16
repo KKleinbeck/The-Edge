@@ -1,4 +1,5 @@
 import { ArmourItemTheEdge } from "../items/item.js";
+import THE_EDGE from "../system/config-the-edge.js";
 
 /**
  * Extend the base Actor document to support attributes and groups with a custom template creation dialog.
@@ -122,33 +123,75 @@ export class TheEdgeActor extends Actor {
   
   async _determineEncumbrance() {
       let weight = this._determineWeight();
-      let str = this.system.attributes.Str.value;
+      // let str = this.system.attributes.Str.value;
+      let str = this.system.attributes.Str.modifier +
+        this.system.attributes.Str.advances + this.system.attributes.Str.status;
+      let strOld = str
 
       // Correct for the current encumbrance level
       let effects = this.itemTypes["effect"]
       let currentEncumbrance = effects?.find(obj => obj.name == "Encumbrance")
-      str += currentEncumbrance?.modifiers?.reduce((a,b) => a + b.value, 0) || 0
+      str += -1 + currentEncumbrance?.system.modifiers?.reduce(
+        (a,b) => a - b.value, 0
+      ) || 0 // -1 for the phyiscal proficiencies
+      if (str == 0) return false; // We can't possibly do sensible things yet
+      else if (weight < str) {
+        if (currentEncumbrance) await currentEncumbrance.delete() ;
+        return true; // exit without being encumbered
+      }
       
-      let encumbranceLevel = str == 0 ? 100 : Math.ceil((weight - str) / (str/2))
-      let physicalMalus = Math.ceil(encumbranceLevel / 2)
-      let allMalus = Math.floor(encumbranceLevel / 2)
-      console.log(weight, encumbranceLevel, physicalMalus, allMalus, currentEncumbrance)
+      let encumbranceLevel = Math.max(Math.ceil((weight - 1.5 * str) / (str / 2)), 0)
+      let physicalMalus = -Math.ceil(encumbranceLevel / 2)
+      let allMalus = -Math.floor(encumbranceLevel / 2)
+      console.log(str, weight, encumbranceLevel, physicalMalus, allMalus)
 
-      if (encumbranceLevel == 0 && currentEncumbrance) {
-        await currentEncumbrance.delete()
-      } else if (encumbranceLevel > 0) {
-        if (currentEncumbrance) {
-          currentEncumbrance.update({"system.modifiers": [
-            {modifier: "Attr.Physical", value: physicalMalus},
-            {modifier: "Attr.All", value: allMalus}
-          ]})
-        } else {
-          const cls = getDocumentClass("Item");
-          encumbrance = cls.create({name: "Encumbrance", type: "effect"}, {parent: this});
-        }
+      if (currentEncumbrance) {
+        currentEncumbrance.update({"system.modifiers": [
+          {modifier: "Proficiencies.Physical", value: -1},
+          {modifier: "Attributes.Physical", value: physicalMalus},
+          {modifier: "Attributes.All", value: allMalus}
+        ]})
+      } else {
+        const cls = getDocumentClass("Item");
+        cls.create({name: "Encumbrance", type: "effect"}, {parent: this});
       }
       return true
   };
+
+  async _updateStatus() {
+    let update = {}
+    let map = THE_EDGE.effect_map
+
+    // Reset to a blank state
+    for (const attr of map["attributes"].All) {
+      update[`system.attributes.${attr}.status`] = 0;
+    }
+
+    for (const item of this.items) {
+      // Todo: make all of this case insensitve
+      if (item.type != "effect" && !item.system.effect) continue;
+
+      let effects = item.type == "effect" ? item.system.modifiers : item.system.effect
+      for (const effect of effects) {
+        let [modifierClass, modifierSubclass] = effect.modifier.split(".")
+        modifierClass = modifierClass.toLowerCase()
+        console.log(effect)
+        if (map[modifierClass]) {
+          if (map[modifierClass].All.includes(modifierSubclass)) {
+            // Individual part
+            update[`system.${modifierClass}.${modifierSubclass}.status`] += effect.value;
+          } else if (map[modifierClass][modifierSubclass]) {
+            // Grouped parts
+            for (const subclass of map[modifierClass][modifierSubclass]) {
+              update[`system.${modifierClass}.${subclass}.status`] += effect.value;
+            }
+          }
+        }
+      }
+    }
+    console.log(update)
+    await this.update(update);
+  }
 
   async _advanceAttr(attrName, type) {
     const attr = this.system.attributes[attrName]

@@ -253,7 +253,6 @@ export class TheEdgeActorSheet extends ActorSheet {
         return createNew ? super._onDropItem(event, data) : undefined;
       
       case "credits":
-        console.log(item.system)
         if (item.system.isChid) {
           this.actor.update({"system.credits.chids": this.actor.system.credits.chids + item.system.value})
         } else this.actor.update({"system.credits.digital": this.actor.system.credits.digital + item.system.value})
