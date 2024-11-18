@@ -1,5 +1,6 @@
 import { ArmourItemTheEdge } from "../items/item.js";
 import THE_EDGE from "../system/config-the-edge.js";
+import Aux from "../system/auxilliaries.js";
 
 /**
  * Extend the base Actor document to support attributes and groups with a custom template creation dialog.
@@ -13,7 +14,7 @@ export class TheEdgeActor extends Actor {
     this.system.attributes = this.system.attributes || {};
 
     for (let ch of Object.values(this.system.attributes)) {
-      ch.value = ch.status + ch.advances + ch.modifier;
+      ch.value = Math.max(ch.status + ch.advances + ch.modifier, 0);
     }
     this.system.heartRate["max"] = this.system.heartRate.baseline_max + 
       this.system.attributes["End"].value -
@@ -64,7 +65,7 @@ export class TheEdgeActor extends Actor {
     }
     for (const [category, weapons] of Object.entries(this.system.weapons)) {
       for (const weapon of Object.keys(weapons)) {
-        let n = this.system.weapons[category][weapon]
+        let n = this.system.weapons[category][weapon].advances
         preparedData.system.weapons[weapon] = {
           cost: this._attrCost(n),
           refund: n == 0 ? 0 : this._attrCost(n-1)
@@ -126,7 +127,6 @@ export class TheEdgeActor extends Actor {
       // let str = this.system.attributes.Str.value;
       let str = this.system.attributes.Str.modifier +
         this.system.attributes.Str.advances + this.system.attributes.Str.status;
-      let strOld = str
 
       // Correct for the current encumbrance level
       let effects = this.itemTypes["effect"]
@@ -135,18 +135,17 @@ export class TheEdgeActor extends Actor {
         (a,b) => a - b.value, 0
       ) || 0 // -1 for the phyiscal proficiencies
       if (str == 0) return false; // We can't possibly do sensible things yet
-      else if (weight < str) {
-        if (currentEncumbrance) await currentEncumbrance.delete() ;
+      else if (weight <= str) {
+        if (currentEncumbrance) await currentEncumbrance.delete();
         return true; // exit without being encumbered
       }
       
       let encumbranceLevel = Math.max(Math.ceil((weight - 1.5 * str) / (str / 2)), 0)
       let physicalMalus = -Math.ceil(encumbranceLevel / 2)
       let allMalus = -Math.floor(encumbranceLevel / 2)
-      console.log(str, weight, encumbranceLevel, physicalMalus, allMalus)
 
       if (currentEncumbrance) {
-        currentEncumbrance.update({"system.modifiers": [
+        currentEncumbrance.update({"system.effects": [
           {modifier: "Proficiencies.Physical", value: -1},
           {modifier: "Attributes.Physical", value: physicalMalus},
           {modifier: "Attributes.All", value: allMalus}
@@ -163,33 +162,50 @@ export class TheEdgeActor extends Actor {
     let map = THE_EDGE.effect_map
 
     // Reset to a blank state
-    for (const attr of map["attributes"].All) {
+    for (const attr of map.attributes.All) {
       update[`system.attributes.${attr}.status`] = 0;
+    }
+    for (const group of Object.keys(map.proficiencies)) {
+      if (group === "All") continue;
+      for (const proficiency of map.proficiencies[group])
+      update[`system.proficiencies.${group}.${proficiency}.status`] = 0;
     }
 
     for (const item of this.items) {
       // Todo: make all of this case insensitve
-      if (item.type != "effect" && !item.system.effect) continue;
+      if (item.type != "effect" && (!item.system.equipped || !item.system.hasEffect)) continue;
 
-      let effects = item.type == "effect" ? item.system.modifiers : item.system.effect
+      let effects = item.system.effects
       for (const effect of effects) {
         let [modifierClass, modifierSubclass] = effect.modifier.split(".")
-        modifierClass = modifierClass.toLowerCase()
-        console.log(effect)
-        if (map[modifierClass]) {
-          if (map[modifierClass].All.includes(modifierSubclass)) {
-            // Individual part
-            update[`system.${modifierClass}.${modifierSubclass}.status`] += effect.value;
-          } else if (map[modifierClass][modifierSubclass]) {
-            // Grouped parts
-            for (const subclass of map[modifierClass][modifierSubclass]) {
-              update[`system.${modifierClass}.${subclass}.status`] += effect.value;
+        switch (modifierClass.toLowerCase()) {
+          case "attributes":
+            if (map["attributes"].All?.includes(modifierSubclass)) {
+              // Individual part
+              update[`system.attributes.${modifierSubclass}.status`] += effect.value;
+            } else if (map["attributes"][modifierSubclass]) {
+              // Grouped parts
+              for (const subclass of map["attributes"][modifierSubclass]) {
+                update[`system.attributes.${subclass}.status`] += effect.value;
+              }
             }
-          }
+            break;
+          
+          case "proficiencies":
+            if (map["proficiencies"].All?.includes(modifierSubclass)) {
+              // Individual part
+              let group = Aux.getProficiencyGroup(modifierSubclass)
+              update[`system.proficiencies.${group}.${modifierSubclass}.status`] += effect.value;
+            } else if (map["proficiencies"][modifierSubclass]) {
+              // Grouped parts
+              for (const subclass of map["proficiencies"][modifierSubclass]) {
+                update[`system.proficiencies.${modifierSubclass}.${subclass}.status`] += effect.value;
+              }
+            }
+            break;
         }
       }
     }
-    console.log(update)
     await this.update(update);
   }
 
@@ -240,18 +256,18 @@ export class TheEdgeActor extends Actor {
     for (const [category, weapons] of Object.entries(this.system.weapons)) {
       if (profName in weapons) {
         cat = category
-        profValue = weapons[profName]
+        profValue = weapons[profName].advances
       }
     }
     const ph = this.system.PracticeHours
 
     let update = {}
     if ((type == "advance") && (ph.max - ph.used >= this._attrCost(profValue)) ) {
-      update[`system.weapons.${cat}.${profName}`] = profValue + 1
+      update[`system.weapons.${cat}.${profName}.advances`] = profValue + 1
       update[`system.PracticeHours.used`] = ph.used + this._attrCost(profValue)
     }
     else if ((type == "refund") && (profValue > 0) ) {
-      update[`system.weapons.${cat}.${profName}`] = profValue - 1
+      update[`system.weapons.${cat}.${profName}.advances`] = profValue - 1
       update[`system.PracticeHours.used`] = ph.used - this._attrCost(profValue - 1)
     }
     this.update(update)
@@ -326,7 +342,8 @@ export class TheEdgeActor extends Actor {
     let level = 0;
     for (const type of ["Energy", "Kinetic", "Others"]) {
         if (this.system.weapons[type][weapon.type] === undefined) continue;
-        level += this.system.weapons[type][weapon.type];
+        level += this.system.weapons[type][weapon.type].advances +
+          this.system.weapons[type][weapon.type][modifier];
     }
     let attr_mod = Math.floor( (
         this.system.attributes[weapon.leadAttr1.name].value - weapon.leadAttr1.value +

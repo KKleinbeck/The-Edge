@@ -144,7 +144,8 @@ export class TheEdgeActorSheet extends ActorSheet {
     let dices = [];
     for (const [_, proficiencies] of Object.entries(this.actor.system.proficiencies)) {
       if (proficiency in proficiencies) {
-        modificator = proficiencies[proficiency]["advances"] + proficiencies[proficiency]["modifier"];
+        modificator = proficiencies[proficiency]["advances"] +
+          proficiencies[proficiency]["modifier"] + proficiencies[proficiency]["status"];
         dices = proficiencies[proficiency].dices;
         break;
       }
@@ -323,7 +324,10 @@ export class TheEdgeActorSheet extends ActorSheet {
     switch ( button.dataset.action ) {
       case "create":
         const cls = getDocumentClass("Item");
-        return cls.create({name: game.i18n.localize("SIMPLE.ItemNew"), type: "weapon"}, {parent: this.actor});
+        return cls.create({name: LocalisationServer.localise("New", "item"), type: "weapon"}, {parent: this.actor});
+      case "create-effect":
+        const clsEffect = getDocumentClass("Item");
+        return clsEffect.create({name: LocalisationServer.localise("New effect", "item"), type: "effect"}, {parent: this.actor});
       case "edit":
         return item.sheet.render(true);
       case "delete":

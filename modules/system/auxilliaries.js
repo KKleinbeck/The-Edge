@@ -1,3 +1,5 @@
+import THE_EDGE from "./config-the-edge.js"
+
 export default class Aux {
   static getScene(sceneID) {
       for (const _scene of game.scenes) {
@@ -14,5 +16,14 @@ export default class Aux {
           }
       }
       return targets
+  }
+
+  static getProficiencyGroup(profName) {
+    let map = THE_EDGE.effect_map["proficiencies"]
+    for (const group of Object.keys(map)) {
+        if (group === "All") continue;
+        if (map[group].includes(profName)) return group;
+    }
+    return undefined;
   }
 }

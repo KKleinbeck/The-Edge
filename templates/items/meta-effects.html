@@ -1,0 +1,10 @@
+<div class="tab" data-group="primary" data-tab="effects">
+  {{#each systemData.effects as |effect|}}
+      <div class="item-columned-page" style="align-items: center;">
+          <input class="effect-modify" data-index="{{@index}}" type="text" value="{{effect.modifier}}"/>
+          <input class="effect-modify" data-index="{{@index}}" type="number" value="{{effect.value}}" style="width: 45px;"/>
+          <a class="effect-delete" data-index="{{@index}}" title="{{ itemName 'delete' }}"><i class="fas fa-trash"></i></a>
+      </div>
+  {{/each}}
+  <a class="effect-add" title="{{ itemName 'Create' }}" data-action="create"><i class="fas fa-plus"></i> {{ itemName "Add" }}</a>
+</div>

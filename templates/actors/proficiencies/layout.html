@@ -4,6 +4,7 @@
       <div class="proficiency-box proficiency-header">
         <div class="proficiency-title">{{category}}</div>
         <div class="proficiency-column">{{genName "Adv"}}</div>
+        <div class="proficiency-column">{{genName "Sta"}}</div>
         <div class="proficiency-column">{{genName "Mod"}}</div>
         <div class="proficiency-column"></div>
         <div class="proficiency-column"></div>
@@ -20,7 +21,10 @@
           {{/if}}
         </div>
         <div class="proficiency-column">
-          <span class="output" style="width:30px">{{getProficiency ../../actor category proficiency 'advances'}}</span>
+          <span class="output" style="width:27px">{{getProficiency ../../actor category proficiency 'advances'}}</span>
+        </div>
+        <div class="proficiency-column">
+          <span class="output" style="width:27px">{{getProficiency ../../actor category proficiency 'status'}}</span>
         </div>
         <div class="proficiency-column">
           <div class="input-restrainer">
@@ -51,6 +55,7 @@
       <div class="proficiency-box proficiency-header">
         <div class="proficiency-title">{{category}}</div>
         <div class="proficiency-column">{{genName "Adv"}}</div>
+        <div class="proficiency-column">{{genName "Sta"}}</div>
         <div class="proficiency-column">{{genName "Mod"}}</div>
         <div class="proficiency-column"></div>
         <div class="proficiency-column"></div>
@@ -67,7 +72,10 @@
           {{/if}}
         </div>
         <div class="proficiency-column">
-          <span class="output" style="width:30px">{{getProficiency ../../actor category proficiency 'advances'}}</span>
+          <span class="output" style="width:27px">{{getProficiency ../../actor category proficiency 'advances'}}</span>
+        </div>
+        <div class="proficiency-column">
+          <span class="output" style="width:27px">{{getProficiency ../../actor category proficiency 'status'}}</span>
         </div>
         <div class="proficiency-column">
           <div class="input-restrainer">

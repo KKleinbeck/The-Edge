@@ -25,6 +25,9 @@
     {{!-- Sheet Tab Navigation --}}
     <nav class="sheet-tabs tabs" data-group="primary">
         <a class="item" data-tab="details">Details</a>
+        {{#if systemData.hasEffect}}
+            <a class="item" data-tab="effects">Effects</a>
+        {{/if}}
         <a class="item" data-tab="description">Description</a>
     </nav>
 
@@ -58,6 +61,10 @@
                     </div>
                 {{/if}}
             </div>
+            <div class="checkbox-container">
+                <input type="checkbox" id="hasEffect" name="system.hasEffect" {{#if systemData.hasEffect}}checked{{/if}} />
+                <label for="hasEffect">{{itemName "toggle effects"}}</label>
+            </div><hr />
             {{combatName "Damage Modifiers"}}
             <table>
                 <tr>
@@ -80,6 +87,9 @@
                 </tr>
             </table>
         </div>
+        {{#if systemData.hasEffect}}
+            {{> systems/the_edge/templates/items/meta-effects.html}}
+        {{/if}}
         {{> systems/the_edge/templates/items/meta-description.html}}
     </section>
 </form>

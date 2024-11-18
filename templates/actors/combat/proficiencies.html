@@ -1,62 +1,80 @@
-<div class="columned-page">
-  <div class="fixed-page">
-    <p class="section-title">{{combatName "WeaponsEnergy"}}</p>
-    <hr />
-    {{#each systemData.weapons.Energy as |modifiers weapon|}}
-      <div class="weapon-box">
-        <div style="flex: 7">
-          <div style="font-weight: bold">
-            {{combatName weapon}}
-          </div>
-          {{#if ../prepare.canAdvance}}
-            <a data-name="{{weapon}}" advance-type="refund"  class="advance-combat"><i data-tooltip="{{getSys ../prepare 'weapons' weapon 'refund'}} PH" class="fas fa-minus advance-fa"></i></a>
-            <a data-name="{{weapon}}" advance-type="advance" class="advance-combat"><i data-tooltip="{{getSys ../prepare 'weapons' weapon 'cost'}} PH" class="fas fa-plus advance-fa"></i></a>
-          {{/if}}
-        </div>
-        <div class="proficiency-column">
-          <div class="output">{{getWeaponProficiency ../actor 'Energy' weapon}}</div>
-        </div>
-      </div>
-    {{/each}}
-  </div>
-  <div class="fixed-page">
-    <p class="section-title">{{combatName "WeaponsKinetic"}}</p>
-    <hr />
-    {{#each systemData.weapons.Kinetic as |modifiers weapon|}}
-      <div class="weapon-box">
-        <div style="flex: 7">
-          <div style="font-weight: bold">
-            {{combatName weapon}}
-          </div>
-          {{#if ../prepare.canAdvance}}
-            <a data-name="{{weapon}}" advance-type="refund"  class="advance-combat"><i data-tooltip="{{getSys ../prepare 'weapons' weapon 'refund'}} PH" class="fas fa-minus advance-fa"></i></a>
-            <a data-name="{{weapon}}" advance-type="advance" class="advance-combat"><i data-tooltip="{{getSys ../prepare 'weapons' weapon 'cost'}} PH" class="fas fa-plus advance-fa"></i></a>
-          {{/if}}
-        </div>
-        <div class="proficiency-column">
-          <div class="output">{{getWeaponProficiency ../actor 'Kinetic' weapon}}</div>
-        </div>
-      </div>
-    {{/each}}
-  </div>
-  <div class="fixed-page">
-    <p class="section-title">{{combatName "WeaponsOther"}}</p>
-    <hr />
-    {{#each systemData.weapons.Others as |modifiers weapon|}}
-      <div class="weapon-box">
-        <div style="flex: 7">
-          <div style="font-weight: bold">
-            {{combatName weapon}}
-          </div>
-          {{#if ../prepare.canAdvance}}
-            <a data-name="{{weapon}}" advance-type="refund"  class="advance-combat"><i data-tooltip="{{getSys ../prepare 'weapons' weapon 'refund'}} PH" class="fas fa-minus advance-fa"></i></a>
-            <a data-name="{{weapon}}" advance-type="advance" class="advance-combat"><i data-tooltip="{{getSys ../prepare 'weapons' weapon 'cost'}} PH" class="fas fa-plus advance-fa"></i></a>
-          {{/if}}
-        </div>
-        <div class="proficiency-column">
-          <div class="output">{{getWeaponProficiency ../actor 'Others' weapon}}</div>
-        </div>
-      </div>
-    {{/each}}
-  </div>
+<div style="display: flex; gap: 5px;">
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 70%"><p class="section-title">{{combatName "WeaponsEnergy"}}</p></th>
+        <th>{{genName "Adv"}}</th>
+        <th>{{genName "Sta"}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each systemData.weapons.Energy as |modifiers weapon|}}
+        <tr>
+          <td>
+            <div style="font-weight: bold">
+              {{combatName weapon}}
+            </div>
+            {{#if ../prepare.canAdvance}}
+              <a data-name="{{weapon}}" advance-type="refund"  class="advance-combat"><i data-tooltip="{{getSys ../prepare 'weapons' weapon 'refund'}} PH" class="fas fa-minus advance-fa"></i></a>
+              <a data-name="{{weapon}}" advance-type="advance" class="advance-combat"><i data-tooltip="{{getSys ../prepare 'weapons' weapon 'cost'}} PH" class="fas fa-plus advance-fa"></i></a>
+            {{/if}}
+          </td>
+          <td><div class="output">{{getWeaponProficiency ../actor 'Energy' weapon 'advances'}}</div></td>
+          <td><div class="output">{{getWeaponProficiency ../actor 'Energy' weapon 'status'}}</div></td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 70%"><p class="section-title">{{combatName "WeaponsKinetic"}}</p></th>
+        <th>{{genName "Adv"}}</th>
+        <th>{{genName "Sta"}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each systemData.weapons.Kinetic as |modifiers weapon|}}
+        <tr>
+          <td>
+            <div style="font-weight: bold">
+              {{combatName weapon}}
+            </div>
+            {{#if ../prepare.canAdvance}}
+              <a data-name="{{weapon}}" advance-type="refund"  class="advance-combat"><i data-tooltip="{{getSys ../prepare 'weapons' weapon 'refund'}} PH" class="fas fa-minus advance-fa"></i></a>
+              <a data-name="{{weapon}}" advance-type="advance" class="advance-combat"><i data-tooltip="{{getSys ../prepare 'weapons' weapon 'cost'}} PH" class="fas fa-plus advance-fa"></i></a>
+            {{/if}}
+          </td>
+          <td><div class="output">{{getWeaponProficiency ../actor 'Kinetic' weapon 'advances'}}</div></td>
+          <td><div class="output">{{getWeaponProficiency ../actor 'Kinetic' weapon 'status'}}</div></td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 70%"><p class="section-title">{{combatName "WeaponsOther"}}</p></th>
+        <th>{{genName "Adv"}}</th>
+        <th>{{genName "Sta"}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each systemData.weapons.Others as |modifiers weapon|}}
+        <tr>
+          <td>
+            <div style="font-weight: bold">
+              {{combatName weapon}}
+            </div>
+            {{#if ../prepare.canAdvance}}
+              <a data-name="{{weapon}}" advance-type="refund"  class="advance-combat"><i data-tooltip="{{getSys ../prepare 'weapons' weapon 'refund'}} PH" class="fas fa-minus advance-fa"></i></a>
+              <a data-name="{{weapon}}" advance-type="advance" class="advance-combat"><i data-tooltip="{{getSys ../prepare 'weapons' weapon 'cost'}} PH" class="fas fa-plus advance-fa"></i></a>
+            {{/if}}
+          </td>
+          <td><div class="output">{{getWeaponProficiency ../actor 'Others' weapon 'advances'}}</div></td>
+          <td><div class="output">{{getWeaponProficiency ../actor 'Others' weapon 'status'}}</div></td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
 </div>

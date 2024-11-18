@@ -32,7 +32,7 @@ export default function() {
 
         getProficiency: (a, b, c, d) => { return a.system.proficiencies[b][c][d]; },
         getProficiencyDice: (a, b, c, d) => { return a.system.proficiencies[b][c].dices[d]; },
-        getWeaponProficiency: (a, b, c) => { return a.system.weapons[b][c]; },
+        getWeaponProficiency: (a, b, c, d) => { return a.system.weapons[b][c][d]; },
         getLoadedAmmunition: (actor, weapon) => {
             for (const ammu of actor.itemTypes["ammunition"]) {
                 if (ammu.id == weapon.system.ammunitionID) {

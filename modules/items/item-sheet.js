@@ -72,6 +72,42 @@ export class TheEdgeItemSheet extends ItemSheet {
     let formData = super._getSubmitData(updateData);
     return formData;
   }
+
+  activateListeners(html) {
+    html.find(".effect-add").click(ev => this._onAdd(ev));
+    html.find(".effect-modify").on("change", ev => this._onModify(ev));
+    html.find(".effect-delete").click(ev => this._onDelete(ev));
+  }
+
+  _onAdd(event) {
+    let effects = this.item.system.effects;
+    effects.push({modifier: "", value: 0});
+    this.item.update({"system.effects": effects});
+  }
+
+  _onModify(ev) {
+    const button = ev.currentTarget;
+    let index = button.dataset.index;
+    let effects = this.item.system.effects;
+    switch (button.type) {
+      case "text":
+        effects[index].modifier = button.value;
+        break;
+      case "number":
+        effects[index].value = parseInt(button.value);
+        break;
+    }
+    this.item.update({"system.effects": effects});
+  }
+
+  _onDelete(ev) {
+    const button = ev.currentTarget;
+    let index = button.dataset.index;
+    let effects = this.item.system.effects;
+    effects.splice(index, 1);
+    this.item.update({"system.effects": effects});
+    this._render();
+  }
 }
 
 class ItemSheetWeapon extends TheEdgeItemSheet {
@@ -172,43 +208,7 @@ class ItemSheetEffect extends TheEdgeItemSheet {
       classes: ["the_edge", "sheet", "item-effect"],
       width: 390,
       height: 240,
-      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "details"}],
+      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "effects"}],
     });
-  }
-
-  activateListeners(html) {
-    html.find(".effect-add").click(ev => this._onAdd(ev));
-    html.find(".effect-modify").on("change", ev => this._onModify(ev));
-    html.find(".effect-delete").click(ev => this._onDelete(ev));
-  }
-
-  _onAdd(event) {
-    let modifiers = this.item.system.modifiers;
-    modifiers.push({modifier: "", value: 0});
-    this.item.update({"system.modifiers": modifiers});
-  }
-
-  _onModify(ev) {
-    const button = ev.currentTarget;
-    let index = button.dataset.index;
-    let modifiers = this.item.system.modifiers;
-    switch (button.type ) {
-      case "text":
-        modifiers[index].modifier = button.value;
-        break;
-      case "number":
-        modifiers[index].value = parseInt(button.value);
-        break;
-    }
-    this.item.update({"system.modifiers": modifiers});
-  }
-
-  _onDelete(ev) {
-    const button = ev.currentTarget;
-    let index = button.dataset.index;
-    let modifiers = this.item.system.modifiers;
-    modifiers.splice(index, 1);
-    this.item.update({"system.modifiers": modifiers});
-    this._render();
   }
 }

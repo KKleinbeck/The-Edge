@@ -33,6 +33,9 @@
     {{!-- Sheet Tab Navigation --}}
     <nav class="sheet-tabs tabs" data-group="primary">
         <a class="item" data-tab="details">Details</a>
+        {{#if systemData.hasEffect}}
+            <a class="item" data-tab="effects">Effects</a>
+        {{/if}}
         <a class="item" data-tab="description">Description</a>
     </nav>
 
@@ -91,12 +94,18 @@
                             <input type="number" name="system.leadAttr2.value" value="{{data.system.leadAttr2.value}}" style="width: 57px;"/>
                         </div>
                     </div>
-                    <div class="checkbox-container">
-                        <label for="is-elemental">{{combatName "Elemental"}}</label>
-                        <input type="checkbox" id="is-elemental" name="system.isElemental" {{#if systemData.isElemental}}checked{{/if}} />
-                    </div>
                 </div>
             </div>
+            <div style="gap: 15px; display: flex; flex-flow: nowrap;">
+                <div class="checkbox-container">
+                    <input type="checkbox" id="hasEffect" name="system.hasEffect" {{#if systemData.hasEffect}}checked{{/if}} />
+                    <label for="hasEffect">{{itemName "toggle effects"}}</label>
+                </div>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="is-elemental" name="system.isElemental" {{#if systemData.isElemental}}checked{{/if}} />
+                    <label for="is-elemental">{{combatName "Elemental"}}</label>
+                </div>
+            </div><hr />
             <!-- Range Chart -->
             <div class="item-columned-page">
                 <div style="margin-top: 15px; margin-bottom: 5px;">
@@ -118,6 +127,9 @@
                 </div>
             </div>
         </div>
+        {{#if systemData.hasEffect}}
+            {{> systems/the_edge/templates/items/meta-effects.html}}
+        {{/if}}
         {{> systems/the_edge/templates/items/meta-description.html}}
     </section>
 </form>
