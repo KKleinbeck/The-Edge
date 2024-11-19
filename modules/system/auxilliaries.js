@@ -21,7 +21,7 @@ export default class Aux {
   static getProficiencyGroup(profName) {
     let map = THE_EDGE.effect_map["proficiencies"]
     for (const group of Object.keys(map)) {
-        if (group === "All") continue;
+        if (group === "all") continue;
         if (map[group].includes(profName)) return group;
     }
     return undefined;

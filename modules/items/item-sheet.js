@@ -208,7 +208,22 @@ class ItemSheetEffect extends TheEdgeItemSheet {
       classes: ["the_edge", "sheet", "item-effect"],
       width: 390,
       height: 240,
+      displayHint: true,
       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "effects"}],
+    });
+  }
+  
+  async getData(options) {
+    const context = await super.getData(options);
+    context.helpers = {displayHint: this.options.displayHint};
+    return context;
+  }
+
+  activateListeners(html) {
+    super.activateListeners(html)
+    html.find(".effect-hint").click(ev => {
+      this.options.displayHint = !this.options.displayHint;
+      this._render()
     });
   }
 }

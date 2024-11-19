@@ -5,8 +5,8 @@ export default function() {
             // Prevent too frequent updates to avoid race conditions
             game.data["lastTokenUpdate"] = Date.now()
             let actor = token.actor;
-            await actor._updateStatus();
             await actor._determineEncumbrance();
+            await actor._updateStatus();
         }
     })
 }

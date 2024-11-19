@@ -1,4 +1,20 @@
 <div class="tab" data-group="primary" data-tab="effects">
+  <div style="margin: 0 10px 0px 10px;">
+    <div class="effect-hint" style="display: flex; flex-wrap: nowrap; padding: 10px; background-color: #777; justify-content: space-between; color: white;">
+      <div>{{genName "Explanations"}}</div>
+      {{#if helpers.displayHint}}
+        <i class="fas fa-chevron-down"></i>
+      {{else}}
+        <i class="fas fa-chevron-up"></i>
+      {{/if}}
+    </div>
+    {{#if helpers.displayHint}}
+    {{else}}
+      <div style="background-color: #AAA; padding: 10px;">
+        {{textLocalisation "Effects"}}
+      </div>
+    {{/if}}
+  </div><br />
   {{#each systemData.effects as |effect|}}
       <div class="item-columned-page" style="align-items: center;">
           <input class="effect-modify" data-index="{{@index}}" type="text" value="{{effect.modifier}}"/>

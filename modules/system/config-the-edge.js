@@ -9,11 +9,11 @@ THE_EDGE.body_parts = ["Torso", "Arms", "Legs", "Below_Neck", "Head", "Entire"]
 
 THE_EDGE.effect_map = {
   attributes: {
-    Physical: ["End", "Str", "Spd", "Crd"],
-    Social: ["Cha", "Emp"],
-    Mental: ["Foc", "Res", "Int"]
+    physical: ["end", "str", "spd", "crd"],
+    social: ["cha", "emp"],
+    mental: ["foc", "res", "int"]
   },
-  proficiencies: {All: []}
+  proficiencies: {all: []}
 }
 
 export default THE_EDGE

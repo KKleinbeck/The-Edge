@@ -11,15 +11,15 @@ import { TheEdgeToken, TheEdgeTokenDocument } from "./token.js";
 Hooks.once("init", async function() {
   console.log(`Initializing the Galaxy`);
   THE_EDGE.attrs = Object.keys(game.model.Actor.character.attributes)
-  THE_EDGE.effect_map.attributes.All = THE_EDGE.attrs
+  THE_EDGE.effect_map.attributes.all = THE_EDGE.attrs
   THE_EDGE.weapon_types = [
     ...Object.keys(game.model.Actor.character.weapons["Energy"]),
     ...Object.keys(game.model.Actor.character.weapons["Kinetic"]),
     ...Object.keys(game.model.Actor.character.weapons["Others"])
   ]
   for (const [category, proficiencies] of Object.entries(game.model.Actor.character.proficiencies)) {
-    THE_EDGE.effect_map.proficiencies[category] = Object.keys(proficiencies)
-    THE_EDGE.effect_map.proficiencies.All.push(...Object.keys(proficiencies))
+    THE_EDGE.effect_map.proficiencies[category.toLowerCase()] = Object.keys(proficiencies)
+    THE_EDGE.effect_map.proficiencies.all.push(...Object.keys(proficiencies))
   }
 
   // Useful helper to get random element from array

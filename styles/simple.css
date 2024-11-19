@@ -131,31 +131,31 @@
   align-items: center;
   gap: 10px;
 }
-.the_edge .d20-End {
+.the_edge .d20-end {
   background-image: url('../icons/d20r1.png');
 }
-.the_edge .d20-Str {
+.the_edge .d20-str {
   background-image: url('../icons/d20r2.png');
 }
-.the_edge .d20-Spd {
+.the_edge .d20-spd {
   background-image: url('../icons/d20r3.png');
 }
-.the_edge .d20-Crd {
+.the_edge .d20-crd {
   background-image: url('../icons/d20p.png');
 }
-.the_edge .d20-Cha {
+.the_edge .d20-cha {
   background-image: url('../icons/d20g2.png');
 }
-.the_edge .d20-Emp {
+.the_edge .d20-emp {
   background-image: url('../icons/d20g1.png');
 }
-.the_edge .d20-Foc {
+.the_edge .d20-foc {
   background-image: url('../icons/d20b2.png');
 }
-.the_edge .d20-Res {
+.the_edge .d20-res {
   background-image: url('../icons/d20b3.png');
 }
-.the_edge .d20-Int {
+.the_edge .d20-int {
   background-image: url('../icons/d20b1.png');
 }
 .the_edge .d20-black {
@@ -351,6 +351,7 @@
 }
 .sheet-header .attribute-title {
   text-align: center;
+  text-transform: capitalize;
   font-size: 14px; /* Adjust font size as needed */
   margin-top: 5px;
   margin-left: 5px; /* Adds a small indent */

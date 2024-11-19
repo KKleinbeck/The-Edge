@@ -17,7 +17,7 @@ export class TheEdgeActor extends Actor {
       ch.value = Math.max(ch.status + ch.advances + ch.modifier, 0);
     }
     this.system.heartRate["max"] = this.system.heartRate.baseline_max + 
-      this.system.attributes["End"].value -
+      this.system.attributes["end"].value -
       2 * Math.floor((this.system.age - 21) / 3)
 
     this.system.wounds = {}
@@ -74,17 +74,17 @@ export class TheEdgeActor extends Actor {
     }
 
     foundry.utils.mergeObject(preparedData, {proficienciesLeft: {}, proficienciesRight: {}})
-    for (const proficiencyClass of ["Physical", "Environmental", "Mental"]) {
+    for (const proficiencyClass of ["physical", "environmental", "mental"]) {
       preparedData.proficienciesLeft[proficiencyClass] = Object.keys(this.system.proficiencies[proficiencyClass]);
     }
-    for (const proficiencyClass of ["Technical", "Social", "Knowledge"]) {
+    for (const proficiencyClass of ["technical", "social", "knowledge"]) {
       preparedData.proficienciesRight[proficiencyClass] = Object.keys(this.system.proficiencies[proficiencyClass]);
     }
 
     let sys = this.system;
     let ch = sys.attributes;
     foundry.utils.mergeObject(preparedData, {
-      attrs: ["End","Str","Spd","Crd","Cha","Emp","Foc","Res","Int"],
+      attrs: THE_EDGE.attrs,
       canAdvance: true,
       zones: {
         1: {
@@ -98,16 +98,16 @@ export class TheEdgeActor extends Actor {
       },
       speeds: {
         Stride: { 
-          value: Math.min(5 + Math.floor(ch["Spd"].value / 6  ), Math.floor(ch["Foc"].value * 0.665)),
-          tooltip: "Min(5 + Spd/6, 66% Foc)".replace(/[ ]/g, "\u00a0")
+          value: Math.min(5 + Math.floor(ch.spd.value / 6  ), Math.floor(ch.foc.value * 0.665)),
+          tooltip: "Min(5 + Spd/6, 66% foc)".replace(/[ ]/g, "\u00a0")
          },
         Run: { 
-          value: Math.min(7 + Math.floor(ch["Spd"].value / 3  ),            ch["Foc"].value),
+          value: Math.min(7 + Math.floor(ch.spd.value / 3  ),            ch.foc.value),
           tooltip: "Min(7 + Spd/3, Foc)".replace(/[ ]/g, "\u00a0")
          },
         Sprint: { 
-          value: Math.min(8 + Math.floor(ch["Spd"].value / 1.5), Math.floor(ch["Foc"].value * 1.5)),
-          tooltip: "Min(9 + Spd/1.5, 150% Foc)".replace(/[ ]/g, "\u00a0")
+          value: Math.min(8 + Math.floor(ch.spd.value / 1.5), Math.floor(ch.foc.value * 1.5)),
+          tooltip: "Min(8 + Spd/1.5, 150% Foc)".replace(/[ ]/g, "\u00a0")
          }
       },
       herotoken: Array(sys.heroToken.max).fill(false).fill(true, 0, sys.heroToken.available)
@@ -125,16 +125,16 @@ export class TheEdgeActor extends Actor {
   async _determineEncumbrance() {
       let weight = this._determineWeight();
       // let str = this.system.attributes.Str.value;
-      let str = this.system.attributes.Str.modifier +
-        this.system.attributes.Str.advances + this.system.attributes.Str.status;
+      let str = this.system.attributes.str.modifier +
+        this.system.attributes.str.advances + this.system.attributes.str.status;
 
       // Correct for the current encumbrance level
       let effects = this.itemTypes["effect"]
       let currentEncumbrance = effects?.find(obj => obj.name == "Encumbrance")
-      str += -1 + currentEncumbrance?.system.modifiers?.reduce(
+      str += -1 + currentEncumbrance?.system.effects?.reduce(
         (a,b) => a - b.value, 0
       ) || 0 // -1 for the phyiscal proficiencies
-      if (str == 0) return false; // We can't possibly do sensible things yet
+      if (str <= 0) return false; // We can't possibly do sensible things yet
       else if (weight <= str) {
         if (currentEncumbrance) await currentEncumbrance.delete();
         return true; // exit without being encumbered
@@ -144,16 +144,15 @@ export class TheEdgeActor extends Actor {
       let physicalMalus = -Math.ceil(encumbranceLevel / 2)
       let allMalus = -Math.floor(encumbranceLevel / 2)
 
-      if (currentEncumbrance) {
-        currentEncumbrance.update({"system.effects": [
-          {modifier: "Proficiencies.Physical", value: -1},
-          {modifier: "Attributes.Physical", value: physicalMalus},
-          {modifier: "Attributes.All", value: allMalus}
-        ]})
-      } else {
+      if (!currentEncumbrance) {
         const cls = getDocumentClass("Item");
-        cls.create({name: "Encumbrance", type: "effect"}, {parent: this});
+        currentEncumbrance = await cls.create({name: "Encumbrance", type: "effect"}, {parent: this});
       }
+      await currentEncumbrance.update({"system.effects": [
+        {modifier: "Proficiencies.Physical", value: -1},
+        {modifier: "Attributes.Physical", value: physicalMalus},
+        {modifier: "Attributes.All", value: allMalus}
+      ]})
       return true
   };
 
@@ -162,13 +161,14 @@ export class TheEdgeActor extends Actor {
     let map = THE_EDGE.effect_map
 
     // Reset to a blank state
-    for (const attr of map.attributes.All) {
+    for (const attr of THE_EDGE.attrs) {
       update[`system.attributes.${attr}.status`] = 0;
     }
     for (const group of Object.keys(map.proficiencies)) {
-      if (group === "All") continue;
-      for (const proficiency of map.proficiencies[group])
-      update[`system.proficiencies.${group}.${proficiency}.status`] = 0;
+      if (group === "all") continue;
+      for (const proficiency of map.proficiencies[group]) {
+        update[`system.proficiencies.${group}.${proficiency}.status`] = 0;
+      }
     }
 
     for (const item of this.items) {
@@ -177,10 +177,11 @@ export class TheEdgeActor extends Actor {
 
       let effects = item.system.effects
       for (const effect of effects) {
-        let [modifierClass, modifierSubclass] = effect.modifier.split(".")
+        let [modifierClass, modifierSubclass] = effect.modifier.split(".");
         switch (modifierClass.toLowerCase()) {
           case "attributes":
-            if (map["attributes"].All?.includes(modifierSubclass)) {
+            modifierSubclass = modifierSubclass.toLowerCase();
+            if (map["attributes"].all?.includes(modifierSubclass)) {
               // Individual part
               update[`system.attributes.${modifierSubclass}.status`] += effect.value;
             } else if (map["attributes"][modifierSubclass]) {
@@ -192,12 +193,20 @@ export class TheEdgeActor extends Actor {
             break;
           
           case "proficiencies":
-            if (map["proficiencies"].All?.includes(modifierSubclass)) {
+            if (map["proficiencies"].all?.includes(modifierSubclass)) {
               // Individual part
               let group = Aux.getProficiencyGroup(modifierSubclass)
               update[`system.proficiencies.${group}.${modifierSubclass}.status`] += effect.value;
-            } else if (map["proficiencies"][modifierSubclass]) {
+            } else if (modifierSubclass.toLowerCase() === "all") {
+              for (const group of Object.keys(map.proficiencies)) {
+                if (group === "all") continue;
+                for (const proficiency of map.proficiencies[group]) {
+                  update[`system.proficiencies.${group}.${proficiency}.status`] += effect.value;
+                }
+              }
+            } else if (map["proficiencies"][modifierSubclass.toLowerCase()]) {
               // Grouped parts
+              modifierSubclass = modifierSubclass.toLowerCase();
               for (const subclass of map["proficiencies"][modifierSubclass]) {
                 update[`system.proficiencies.${modifierSubclass}.${subclass}.status`] += effect.value;
               }
@@ -341,13 +350,13 @@ export class TheEdgeActor extends Actor {
 
     let level = 0;
     for (const type of ["Energy", "Kinetic", "Others"]) {
-        if (this.system.weapons[type][weapon.type] === undefined) continue;
-        level += this.system.weapons[type][weapon.type].advances +
-          this.system.weapons[type][weapon.type][modifier];
+      if (this.system.weapons[type][weapon.type] === undefined) continue;
+      level += this.system.weapons[type][weapon.type].advances +
+        this.system.weapons[type][weapon.type].status;
     }
     let attr_mod = Math.floor( (
-        this.system.attributes[weapon.leadAttr1.name].value - weapon.leadAttr1.value +
-        this.system.attributes[weapon.leadAttr2.name].value - weapon.leadAttr2.value
+      this.system.attributes[weapon.leadAttr1.name].value - weapon.leadAttr1.value +
+      this.system.attributes[weapon.leadAttr2.name].value - weapon.leadAttr2.value
     ) / 4)
 
     return Math.max(level + attr_mod, 0)

@@ -12,6 +12,7 @@ export class TheEdgeItem extends Item {
     advantage: "systems/the_edge/icons/advantage.png",
     disadvantage: "systems/the_edge/icons/disadvantage.png",
     languageskill: "systems/the_edge/icons/speech.png",
+    effect: "systems/the_edge/icons/effect.png",
   }
 
   static defaultIcon(data) {

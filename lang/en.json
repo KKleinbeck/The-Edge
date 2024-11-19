@@ -196,6 +196,9 @@
     "DECREASE": "Decrease skill level",
     "INCREASE": "Increase skill level"
   },
+  "TEXT": {
+    "EFFECTS": "Add a status modifiery to your attributes, proficiencies, weapon proficiencies and other character attributes.\nFor this write 'Attributes.NAME', 'Proficiencies.NAME', 'Combat.NAME'. This is generally case-insensitive, except for proficiency and combat effects. For attributes and proficiencies you can also just write their group names, for example 'attributes.physical'. Furthermore there is an 'all' specifier to affect everything."
+  },
   "TOOLTIP": {
     "DESIGNATED WEAPON": "Some types of ammunition are only useable with specific names. Specify these here by their names (comma separated).",
     "PENETRATION": "The penetration value reduces the armour's threshold."
@@ -220,6 +223,7 @@
   "DIGITAL": "Digital",
   "DISADVANTAGE": "Disadvantage",
   "DISTANCE": "Distance",
+  "EXPLANATIONS": "Explanations",
   "FAILURE": "Failure",
   "HEALTH": "Health",
   "HEARTRATE": "Heart rate",
