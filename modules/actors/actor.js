@@ -182,9 +182,16 @@ export class TheEdgeActor extends Actor {
 
     for (const item of this.items) {
       // Todo: make all of this case insensitve
-      if (item.type != "effect" && (!item.system.equipped || !item.system.hasEffect)) continue;
+      if (item.type != "effect" && item.type != "combatskill" && (!item.system.equipped || !item.system.hasEffect)) continue;
 
-      let effects = item.system.effects
+      let effects = [];
+      if (item.type === "combatskill") {
+        for (let i = 0; i < item.system.level; ++i) {
+          if (!item.system.levelEffects[i]) continue;
+          effects.push(...item.system.levelEffects[i])
+        }
+        console.log(effects)
+      } else effects = item.system.effects;
       for (const effect of effects) {
         let [modifierClass, modifierSubclass] = effect.modifier.split(".");
         switch (modifierClass.toLowerCase()) {

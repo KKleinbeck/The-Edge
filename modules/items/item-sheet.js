@@ -186,7 +186,7 @@ class ItemSheetSkill extends TheEdgeItemSheet {
       width: 390,
       height: 480,
       displayHint: true,
-      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "details"}],
+      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}],
     });
   }
   
@@ -290,5 +290,9 @@ class ItemSheetEffect extends ItemSheetSkill {
       height: 240,
       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "effects"}],
     });
+  }
+
+  get template() {
+    return `systems/the_edge/templates/items/item-effect.html`;
   }
 }

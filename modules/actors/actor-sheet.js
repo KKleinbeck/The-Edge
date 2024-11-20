@@ -366,7 +366,6 @@ export class TheEdgeActorSheet extends ActorSheet {
     // Obtain event data
     const button = event.currentTarget;
     const skillElement = button.closest(".skill");
-    console.log(skillElement, skillElement.dataset)
     const skillID = skillElement?.dataset.itemId;
 
     // Handle different actions

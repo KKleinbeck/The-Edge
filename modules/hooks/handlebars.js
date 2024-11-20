@@ -67,7 +67,7 @@ export default function() {
         getDmgModifier: (a) => {return `dmg: ${a.system.damage.bonus} / ${a.system.damage.penetration}`},
         getWeightClass: (weight, str) => {
             if (str == 0) return "";
-            let encumbrance = Math.ceil((weight - str) / (str/2))
+            let encumbrance = Math.max(Math.ceil((weight - str) / (str/2)), 0);
             return `(${LocalisationServer.localise("encumbrance")}: ${encumbrance})`
         }
     })

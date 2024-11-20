@@ -272,6 +272,6 @@
   "combatskill": {"templates": ["description", "skill"]},
   "languageskill": {"templates": ["description"], "level": 1, "humanSpoken": true},
   "credits": {"isChid": true, "value": 0},
-  "effect": {"templates": ["description"], "effects": []}
+  "effect": {"templates": ["description"], "effects": [{"modifier": "", "value": 0}]}
 }
 }
