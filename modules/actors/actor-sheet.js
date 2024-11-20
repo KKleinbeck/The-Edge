@@ -74,7 +74,7 @@ export class TheEdgeActorSheet extends ActorSheet {
     html.find(".hero-token-spent").click(ev => this._regenerateHeroToken(ev));
 
     // Language skills
-    html.find(".skill-control").click(ev => this._onSkillContorl(ev))
+    html.find(".skill-control").click(ev => this._onSkillControl(ev))
 
     // Attributes
     html.find(".attr-d20").click(ev => this._rollAttr(ev));
@@ -247,6 +247,7 @@ export class TheEdgeActorSheet extends ActorSheet {
       case "disadvantage":
         return await this._createVantage(event, data, item)
       
+      case "combatskill":
       case "languageskill":
         let createNew = this.actor.learnSkill(item);
         return createNew ? super._onDropItem(event, data) : undefined;
@@ -315,8 +316,8 @@ export class TheEdgeActorSheet extends ActorSheet {
 
     // Obtain event data
     const button = event.currentTarget;
-    const li = button.closest(".item");
-    const item = this.actor.items.get(li?.dataset.itemId);
+    const itemElment = button.closest(".item");
+    const item = this.actor.items.get(itemElment?.dataset.itemId);
 
     // Handle different actions
     switch ( button.dataset.action ) {
@@ -359,13 +360,14 @@ export class TheEdgeActorSheet extends ActorSheet {
     }
   }
 
-  _onSkillContorl(event) {
+  _onSkillControl(event) {
     event.preventDefault();
 
     // Obtain event data
     const button = event.currentTarget;
-    const li = button.closest(".skill");
-    const skillID = li?.dataset.skillId;
+    const skillElement = button.closest(".skill");
+    console.log(skillElement, skillElement.dataset)
+    const skillID = skillElement?.dataset.itemId;
 
     // Handle different actions
     switch ( button.dataset.action ) {

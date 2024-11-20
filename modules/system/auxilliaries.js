@@ -35,4 +35,48 @@ export default class Aux {
     }
     return undefined;
   }
+
+  static _language_cost_table(humanSpoken) {
+    return humanSpoken ? [200, 400, 1000, 2000, 3200, 3200] : [600, 3000, 6400]
+  }
+
+  static parseCostStr(costStr, maxLevel = undefined) {
+    let cost = costStr.replace(/\s+/g, '') // w.o. whitespace
+    const regex = /^(\d+\/)*\d+$/; // parse [n_1 / n_2 / ...] n_m
+    if (regex.test(cost)) {
+      const costs = cost.split('/').map(Number)
+      if (maxLevel && costs.length != maxLevel) return undefined;
+      return cost.length == 1 ? costs[0] : costs;
+    }
+    return undefined;
+  }
+
+  static getSkillCost(skill, mode = undefined) {
+    let level = skill.system.level;
+    if (skill.type == "languageskill") {
+      if (mode == "delete") {
+        return this._language_cost_table(skill.system.humanSpoken)
+            .slice(0, level).reduce((a,b) => a+b, 0);
+      }
+      else if (mode == "increase") {
+        if ((skill.system.humanSpoken && level == 6) || (!skill.system.humanSpoken && level == 3)) return undefined;
+        return this._language_cost_table(skill.system.humanSpoken)[level];
+      }
+      return this._language_cost_table(skill.system.humanSpoken)[level - 1];
+    }
+
+    // combatskills, genericskills, medicalskills
+    let cost = this.parseCostStr(skill.system.cost)
+    if (!isNaN(cost)) { // cost is number
+      if (mode == "delete") return level * cost;
+      else if (mode == "increase" && level == skill.system.maxLevel) return undefined;
+      return +cost;
+    }
+    if (mode == "delete") return cost.slice(0,level).reduce((a,b) => a+b, 0);
+    else if (mode == "increase") {
+      if (level == skill.system.maxLevel) return undefined;
+      return cost[level];
+    }
+    return cost[level - 1];
+  }
 }

@@ -93,7 +93,9 @@
     "OUTER": "Outer",
     "ATTACHMENT POINTS": "# Attachments",
 
-    "STRUCTURE POINTS": "Structure Points"
+    "STRUCTURE POINTS": "Structure Points",
+    
+    "COMBAT SKILLS": "Combat skills"
   },
   "DIALOG": {
     "CANCEL": "Cancel",
@@ -240,6 +242,7 @@
   "MODIFICATORS": "Modificators",
   "PENETRATION": "Penetration",
   "POCKETS": "Pockets",
+  "POST TO CHAT": "Post to chat",
   "PRACTICEHOURS": "Practice Hours",
   "PROGRESS": "Progress",
   "QUANTITY": "Quantity",

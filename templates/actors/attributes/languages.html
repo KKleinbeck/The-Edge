@@ -11,9 +11,11 @@
     <div class="language-container">
       {{#each data.items as |item|}}
         {{#if (checkEqual item.type "languageskill")}}
-          <div class="language-box">
-            {{item.name}} ({{item.system.level}} / {{#if item.system.humanSpoken}}6{{else}}3{{/if}})
-            <div class="item-controls skill" data-skill-id="{{item._id}}">
+          <div class="language-box item skill" data-item-id="{{item._id}}">
+            <div class="item-control" data-action="edit" style="cursor: pointer;">
+              {{item.name}} ({{item.system.level}} / {{#if item.system.humanSpoken}}6{{else}}3{{/if}})
+            </div>
+            <div class="item-controls item-control">
               <a class="skill-control" title="{{ skillName 'decrease' }}" data-action="decrease"><i class="fas fa-minus"></i></a>
               <a class="skill-control" title="{{ skillName 'increase' }}" data-action="increase"><i class="fas fa-plus"></i></a>
               <a class="skill-control" title="{{ itemName 'Delete' }}" data-action="delete"><i class="fas fa-trash"></i></a>

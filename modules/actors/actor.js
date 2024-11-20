@@ -311,10 +311,6 @@ export class TheEdgeActor extends Actor {
     this.update(update)
   }
 
-  _language_cost_table(humanSpoken) {
-    return humanSpoken ? [200, 400, 1000, 2000, 3200, 3200] : [600, 3000, 6400]
-  }
-
   learnSkill(newSkill) {
     for (const skill of this.items) {
       if (skill.name == newSkill.name && skill.type == newSkill.type && skill.system.level) {
@@ -327,7 +323,7 @@ export class TheEdgeActor extends Actor {
     // Languages doesn't exist yet
     const ph = this.system.PracticeHours
     const spoken = newSkill.system.humanSpoken
-    let cost = this._language_cost_table(spoken)[0]
+    let cost = Aux.getSkillCost(newSkill)
     if (cost < ph.max - ph.used) {
       this.update({"system.PracticeHours.used": ph.used + cost})
       return true;
@@ -338,16 +334,11 @@ export class TheEdgeActor extends Actor {
 
   skillLevelIncrease(skillID) {
     let skill = this.items.get(skillID)
-    let level = skill.system.level
-    let cost = 0;
-    if (skill.type == "languageskill") {
-      if ((skill.system.humanSpoken && level == 6) || (!skill.system.humanSpoken && level == 3)) return false;
-      cost = this._language_cost_table(skill.system.humanSpoken)[level];
-    }
+    let cost = Aux.getSkillCost(skill, "increase");
     const ph = this.system.PracticeHours
     if (cost < ph.max - ph.used) {
       this.update({"system.PracticeHours.used": ph.used + cost})
-      skill.update({"system.level": level + 1})
+      skill.update({"system.level": skill.system.level + 1})
       return true
     }
     return false
@@ -356,7 +347,7 @@ export class TheEdgeActor extends Actor {
   skillLevelDecrease(skillID) {
     let skill = this.items.get(skillID)
     let level = skill.system.level
-    let gain = this._language_cost_table(skill.system.humanSpoken)[level-1]
+    let gain = Aux.getSkillCost(skill, "decrease")
     const ph = this.system.PracticeHours
     this.update({"system.PracticeHours.used": ph.used - gain})
     if (level > 1) skill.update({"system.level": level - 1});
@@ -365,10 +356,7 @@ export class TheEdgeActor extends Actor {
 
   deleteSkill(skillID) {
     const skill = this.items.get(skillID)
-    let gain = 0;
-    for (let i = 0; i < skill.system.level; i++) {
-      gain += this._language_cost_table(skill.system.humanSpoken)[i];
-    }
+    let gain = Aux.getSkillCost(skill, "delete");
     const ph = this.system.PracticeHours
     this.update({"system.PracticeHours.used": ph.used - gain})
     skill.delete()

@@ -220,8 +220,8 @@
       "effects": []
     },
     "skill": {
-      "levelEffects": [],
-      "level": 0,
+      "levelEffects": [[]],
+      "level": 1,
       "maxLevel": 1,
       "cost": "0"
     }

@@ -191,6 +191,21 @@
   justify-content: space-between;
   align-items: center;
 }
+.the_edge .skill-container {
+  columns: 3;
+  gap: 10px; /* Space between elements */
+  padding: 0 10px; /* Small padding on left and right */
+  width: 100%;
+}
+.the_edge .skill-container .skill-box {
+  height: 24px;
+  padding: 10px;
+  break-inside: avoid;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .the_edge .loadout-container {
   columns: 2;
   gap: 10px; /* Space between elements */
