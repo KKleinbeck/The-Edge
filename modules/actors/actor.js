@@ -223,10 +223,8 @@ export class TheEdgeActor extends Actor {
             break;
 
           case "weapons":
-            console.log(modifierSubclass)
             if (map["weapons"].all?.includes(modifierSubclass)) {
               let group = Aux.getWeaponGroup(modifierSubclass)
-              console.log(group)
               update[`system.weapons.${group}.${modifierSubclass}.status`] += effect.value;
             } else if (modifierSubclass.toLowerCase() === "all") {
               for (const group of Object.keys(map.weapons)) {
@@ -246,7 +244,6 @@ export class TheEdgeActor extends Actor {
         }
       }
     }
-    console.log(update)
     await this.update(update);
   }
 

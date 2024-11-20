@@ -218,6 +218,12 @@
       "equipped": false,
       "hasEffect": false,
       "effects": []
+    },
+    "skill": {
+      "levelEffects": [],
+      "level": 0,
+      "maxLevel": 1,
+      "cost": "0"
     }
   },
   "htmlFields": ["description"],
@@ -263,6 +269,7 @@
   },
   "advantage": {"templates": ["description"], "AP": 0, "hasLevels": false, "level": 1, "maxLevel": 1},
   "disadvantage": {"templates": ["description"], "AP": 0, "hasLevels": false, "level": 1, "maxLevel": 1},
+  "combatskill": {"templates": ["description", "skill"]},
   "languageskill": {"templates": ["description"], "level": 1, "humanSpoken": true},
   "credits": {"isChid": true, "value": 0},
   "effect": {"templates": ["description"], "effects": []}

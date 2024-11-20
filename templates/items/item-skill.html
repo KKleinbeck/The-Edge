@@ -1,0 +1,70 @@
+<form class="flexcol {{cssClass}}" autocomplete="off">
+    <header class="sheet-header-item">
+        <div class="item-columned-page">
+            <div style="width: 100px;">
+                <img class="profile-img-item" src="{{data.img}}" data-edit="img" title="{{data.name}}" />
+            </div>
+            <div style="flex: 1">
+                <h3 class="charname">
+                    <input name="name" type="text" value="{{data.name}}" placeholder="Name" />
+                </h3>
+                <div class="item-columned-page" style="justify-content: start;">
+                    <div class="item-header-fields">
+                        <label for="maxLevel">Max {{genName "Level"}}</label><br />
+                        <input class="max-level" type="number" id="maxLevel" name="system.maxLevel" value="{{systemData.maxLevel}}"/>
+                    </div>
+                    <div class="item-header-fields" style="min-width: 70%;">
+                        <label for="cost">PH {{genName "Cost"}}</label><br />
+                        <input type="text" id="cost" name="system.cost" value="{{systemData.cost}}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    {{!-- Sheet Tab Navigation --}}
+    <nav class="sheet-tabs tabs" data-group="primary">
+        <a class="item" data-tab="details">Details</a>
+        <a class="item" data-tab="description">Description</a>
+    </nav>
+
+    {{!-- Sheet Body --}}
+    <section class="sheet-body">
+        <div class="tab" data-group="primary" data-tab="details">
+            <div style="margin: 0 10px 0px 10px;">
+                <div class="effect-hint" style="display: flex; flex-wrap: nowrap; padding: 10px; background-color: #777; justify-content: space-between; color: white;">
+                <div>{{genName "Explanations"}}</div>
+                {{#if helpers.displayHint}}
+                    <i class="fas fa-chevron-down"></i>
+                {{else}}
+                    <i class="fas fa-chevron-up"></i>
+                {{/if}}
+                </div>
+                {{#if helpers.displayHint}}
+                {{else}}
+                <div style="background-color: #AAA; padding: 10px;">
+                    {{textLocalisation "Effects"}}
+                </div>
+                {{/if}}
+            </div><br />
+            {{#each systemData.levelEffects as |effectList|}}
+                <b>
+                    Level {{add @index 1}} {{genName "Effects"}}
+                </b><br />
+                <div class="effect-level" data-index="{{@index}}">
+                    {{#each effectList as |effect|}}
+                        <div class="item-columned-page" style="align-items: center;">
+                            <input class="effect-level-modify" data-index="{{@index}}" type="text" value="{{effect.modifier}}"/>
+                            <input class="effect-level-modify" data-index="{{@index}}" type="number" value="{{effect.value}}" style="width: 45px;"/>
+                            <a class="effect-level-delete" data-index="{{@index}}" title="{{ itemName 'delete' }}"><i class="fas fa-trash"></i></a>
+                        </div>
+                    {{/each}}
+                    <a class="effect-level-add" title="{{ itemName 'Create' }}" data-action="create"><i class="fas fa-plus"></i> {{ itemName "Add" }}</a>
+                </div>
+                <hr />
+            {{/each}}
+        </div>
+
+        {{> systems/the_edge/templates/items/meta-description.html}}
+    </section>
+</form>

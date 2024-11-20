@@ -24,13 +24,14 @@ export class TheEdgeItemSheet extends ItemSheet {
     Items.registerSheet("the_edge", ItemSheetArmour, { makeDefault: true, types: ["armour"] });
     Items.registerSheet("the_edge", ItemSheetAmmunition, { makeDefault: true, types: ["ammunition"] });
     Items.registerSheet("the_edge", ItemSheetVantage, { makeDefault: true, types: ["advantage", "disadvantage"] });
+    Items.registerSheet("the_edge", ItemSheetSkill, { makeDefault: true, types: ["combatskill"] });
     Items.registerSheet("the_edge", ItemSheetLanguage, { makeDefault: true, types: ["languageskill"] });
     Items.registerSheet("the_edge", ItemSheetCredits, { makeDefault: true, types: ["credits"] });
     Items.registerSheet("the_edge", ItemSheetEffect, { makeDefault: true, types: ["effect"] });
 
     Items.unregisterSheet("the_edge", TheEdgeItemSheet, {
       types: [
-        "weapon", "armour", "ammunition", "advantage", "disadvantage", "languageskill", "credits", "effect"
+        "weapon", "armour", "ammunition", "advantage", "disadvantage", "combatskill", "languageskill", "credits", "effect"
       ]
     });
   }
@@ -178,36 +179,14 @@ class ItemSheetVantage extends TheEdgeItemSheet {
   }
 }
 
-class ItemSheetLanguage extends TheEdgeItemSheet {
+class ItemSheetSkill extends TheEdgeItemSheet {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["the_edge", "sheet", "item-speech"],
+      classes: ["the_edge", "sheet", "item-skill"],
       width: 390,
       height: 480,
-      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}],
-    });
-  }
-}
-
-class ItemSheetCredits extends TheEdgeItemSheet {
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["the_edge", "sheet", "item-speech"],
-      width: 390,
-      height: 240,
-      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}],
-    });
-  }
-}
-
-class ItemSheetEffect extends TheEdgeItemSheet {
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["the_edge", "sheet", "item-effect"],
-      width: 390,
-      height: 240,
       displayHint: true,
-      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "effects"}],
+      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "details"}],
     });
   }
   
@@ -222,6 +201,94 @@ class ItemSheetEffect extends TheEdgeItemSheet {
     html.find(".effect-hint").click(ev => {
       this.options.displayHint = !this.options.displayHint;
       this._render()
+    });
+    html.find(".max-level").on("change", ev => this._onMaxLevelChange(ev));
+    html.find(".effect-level-add").click(ev => this._onLevelAdd(ev));
+    html.find(".effect-level-modify").on("change", ev => this._onLevelModify(ev));
+    html.find(".effect-level-delete").click(ev => this._onLevelDelete(ev));
+  }
+
+  _onMaxLevelChange(ev) {
+    const button = ev.currentTarget;
+    let maxLevel = button.value;
+    let le = this.item.system.levelEffects;
+    if (le.length >= maxLevel) {
+      this.item.update({"system.maxLevel": maxLevel, "system.levelEffects": le.slice(0, maxLevel)})
+    } else {
+      for (let i = le.length; i < maxLevel ; ++i) {
+        le.push([])
+      }
+      this.item.update({"system.maxLevel": maxLevel, "system.levelEffects": le});
+    }
+  }
+
+  _onLevelAdd(ev) {
+    const level = ev.currentTarget.closest(".effect-level").dataset.index;
+    let le = this.item.system.levelEffects;
+    le[level].push({modifier: "", value: 0});
+    this.item.update({"system.levelEffects": le});
+  }
+
+  _onLevelModify(ev) {
+    const button = ev.currentTarget;
+    const level = button.closest(".effect-level").dataset.index;
+    let index = button.dataset.index;
+    let le = this.item.system.levelEffects;
+    switch (button.type) {
+      case "text":
+        le[level][index].modifier = button.value;
+        break;
+      case "number":
+        le[level][index].value = parseInt(button.value);
+        break;
+    }
+    this.item.update({"system.levelEffects": le});
+  }
+
+  _onLevelDelete(ev) {
+    const button = ev.currentTarget;
+    const level = button.closest(".effect-level").dataset.index;
+    let index = button.dataset.index;
+    let le = this.item.system.levelEffects;
+    le[level].splice(index, 1);
+    this.item.update({"system.levelEffects": le});
+    this._render();
+  }
+
+  get template() {
+    return `systems/the_edge/templates/items/item-skill.html`;
+  }
+}
+
+class ItemSheetLanguage extends TheEdgeItemSheet {
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      classes: ["the_edge", "sheet", "item-speech"],
+      width: 390,
+      height: 480,
+      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}],
+    });
+  }
+}
+
+class ItemSheetCredits extends TheEdgeItemSheet {
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      classes: ["the_edge", "sheet", "item-credits"],
+      width: 390,
+      height: 240,
+      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}],
+    });
+  }
+}
+
+class ItemSheetEffect extends ItemSheetSkill {
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      classes: ["the_edge", "sheet", "item-effect"],
+      width: 390,
+      height: 240,
+      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "effects"}],
     });
   }
 }
