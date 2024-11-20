@@ -26,4 +26,13 @@ export default class Aux {
     }
     return undefined;
   }
+
+  static getWeaponGroup(weaponName) {
+    let map = THE_EDGE.effect_map["weapons"]
+    for (const group of Object.keys(map)) {
+        if (group === "all") continue;
+        if (map[group].includes(weaponName)) return group;
+    }
+    return undefined;
+  }
 }

@@ -119,21 +119,21 @@
     },
     "weapons": {
       "weapons": {
-        "Energy": {
+        "energy": {
           "Blaster Pistols":   {"advances": 0, "status": 0},
           "Pulse Rifle":       {"advances": 0, "status": 0},
           "SABs":              {"advances": 0, "status": 0},
           "Blaster Shockguns": {"advances": 0, "status": 0},
           "Blaster Rifles":    {"advances": 0, "status": 0}
         },
-        "Kinetic": {
+        "kinetic": {
           "Kinetic Pistols":  {"advances": 0, "status": 0},
           "Slug Throwers":    {"advances": 0, "status": 0},
           "LMGs":             {"advances": 0, "status": 0},
           "Shotguns":         {"advances": 0, "status": 0},
           "Projectile Rifle": {"advances": 0, "status": 0}
         },
-        "Others": {
+        "others": {
           "Combatics": {"advances": 0, "status": 0},
           "Recoilless Rifles": {"advances": 0, "status": 0}
         }
@@ -243,19 +243,19 @@
     "structurePoints": 10,
     "attachmentPoints": 0,
     "protection": {
-      "Energy": {"absorption": 0, "threshold": 0},
-      "Kinetic": {"absorption": 0, "threshold": 0},
-      "Elemental": {"absorption": 0, "threshold": 0}
+      "energy": {"absorption": 0, "threshold": 0},
+      "kinetic": {"absorption": 0, "threshold": 0},
+      "elemental": {"absorption": 0, "threshold": 0}
     }
   },
   "ammunition": {
     "templates": ["stackable", "description"],
     "capacity": {"max": 30, "used": 0},
-    "type": "Energy",
+    "type": "energy",
     "whitelist": {
-      "Energy": {"Blaster Pistols": true, "Pulse Rifle": true, "SABs": true, "Blaster Shockguns": true, "Blaster Rifles": true},
-      "Kinetic": {"Kinetic Pistols": true, "Slug Throwers": true, "LMGs": true, "Shotguns": true, "Projectile Rifle": true},
-      "Others": {"Recoilless Rifles": true}
+      "energy": {"Blaster Pistols": true, "Pulse Rifle": true, "SABs": true, "Blaster Shockguns": true, "Blaster Rifles": true},
+      "kinetic": {"Kinetic Pistols": true, "Slug Throwers": true, "LMGs": true, "Shotguns": true, "Projectile Rifle": true},
+      "others": {"Recoilless Rifles": true}
     },
     "designatedWeapons": "",
     "damage": {"bonus": 0, "penetration": 0},

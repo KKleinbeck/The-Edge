@@ -1,6 +1,7 @@
 import { ArmourItemTheEdge } from "../items/item.js";
 import THE_EDGE from "../system/config-the-edge.js";
 import Aux from "../system/auxilliaries.js";
+import LocalisationServer from "../system/localisation_server.js";
 
 /**
  * Extend the base Actor document to support attributes and groups with a custom template creation dialog.
@@ -146,7 +147,9 @@ export class TheEdgeActor extends Actor {
 
       if (!currentEncumbrance) {
         const cls = getDocumentClass("Item");
-        currentEncumbrance = await cls.create({name: "Encumbrance", type: "effect"}, {parent: this});
+        currentEncumbrance = await cls.create(
+          {name: LocalisationServer.localise("Encumbrance"), type: "effect"}, {parent: this}
+        );
       }
       await currentEncumbrance.update({"system.effects": [
         {modifier: "Proficiencies.Physical", value: -1},
@@ -168,6 +171,12 @@ export class TheEdgeActor extends Actor {
       if (group === "all") continue;
       for (const proficiency of map.proficiencies[group]) {
         update[`system.proficiencies.${group}.${proficiency}.status`] = 0;
+      }
+    }
+    for (const group of Object.keys(map.weapons)) {
+      if (group === "all") continue;
+      for (const proficiency of map.weapons[group]) {
+        update[`system.weapons.${group}.${proficiency}.status`] = 0;
       }
     }
 
@@ -212,9 +221,32 @@ export class TheEdgeActor extends Actor {
               }
             }
             break;
+
+          case "weapons":
+            console.log(modifierSubclass)
+            if (map["weapons"].all?.includes(modifierSubclass)) {
+              let group = Aux.getWeaponGroup(modifierSubclass)
+              console.log(group)
+              update[`system.weapons.${group}.${modifierSubclass}.status`] += effect.value;
+            } else if (modifierSubclass.toLowerCase() === "all") {
+              for (const group of Object.keys(map.weapons)) {
+                if (group === "all") continue;
+                for (const proficiency of map.weapons[group]) {
+                  update[`system.weapons.${group}.${proficiency}.status`] += effect.value;
+                }
+              }
+            } else if (map["weapons"][modifierSubclass.toLowerCase()]) {
+              // Grouped parts
+              modifierSubclass = modifierSubclass.toLowerCase();
+              for (const subclass of map["weapons"][modifierSubclass]) {
+                update[`system.weapons.${modifierSubclass}.${subclass}.status`] += effect.value;
+              }
+            }
+            break;
         }
       }
     }
+    console.log(update)
     await this.update(update);
   }
 
@@ -349,7 +381,7 @@ export class TheEdgeActor extends Actor {
     const weapon = this.items.get(weaponID).system
 
     let level = 0;
-    for (const type of ["Energy", "Kinetic", "Others"]) {
+    for (const type of ["energy", "kinetic", "others"]) {
       if (this.system.weapons[type][weapon.type] === undefined) continue;
       level += this.system.weapons[type][weapon.type].advances +
         this.system.weapons[type][weapon.type].status;

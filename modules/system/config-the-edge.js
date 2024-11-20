@@ -13,7 +13,8 @@ THE_EDGE.effect_map = {
     social: ["cha", "emp"],
     mental: ["foc", "res", "int"]
   },
-  proficiencies: {all: []}
+  proficiencies: {all: []},
+  weapons: {all: []}
 }
 
 export default THE_EDGE

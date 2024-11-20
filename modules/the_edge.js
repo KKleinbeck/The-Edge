@@ -12,13 +12,12 @@ Hooks.once("init", async function() {
   console.log(`Initializing the Galaxy`);
   THE_EDGE.attrs = Object.keys(game.model.Actor.character.attributes)
   THE_EDGE.effect_map.attributes.all = THE_EDGE.attrs
-  THE_EDGE.weapon_types = [
-    ...Object.keys(game.model.Actor.character.weapons["Energy"]),
-    ...Object.keys(game.model.Actor.character.weapons["Kinetic"]),
-    ...Object.keys(game.model.Actor.character.weapons["Others"])
-  ]
-  for (const [category, proficiencies] of Object.entries(game.model.Actor.character.proficiencies)) {
-    THE_EDGE.effect_map.proficiencies[category.toLowerCase()] = Object.keys(proficiencies)
+  for (const [group, weapon_class] of Object.entries(game.model.Actor.character.weapons)) {
+    THE_EDGE.effect_map.weapons[group.toLowerCase()] = Object.keys(weapon_class)
+    THE_EDGE.effect_map.weapons.all.push(...Object.keys(weapon_class))
+  }
+  for (const [group, proficiencies] of Object.entries(game.model.Actor.character.proficiencies)) {
+    THE_EDGE.effect_map.proficiencies[group.toLowerCase()] = Object.keys(proficiencies)
     THE_EDGE.effect_map.proficiencies.all.push(...Object.keys(proficiencies))
   }
 

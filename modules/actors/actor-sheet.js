@@ -1,4 +1,3 @@
-import {ATTRIBUTE_TYPES} from "../constants.js";
 import THE_EDGE from "../system/config-the-edge.js";
 import DialogAttribute from "../dialogs/dialog-attribute.js";
 import DialogProficiency from "../dialogs/dialog-proficiency.js";
@@ -32,7 +31,6 @@ export class TheEdgeActorSheet extends ActorSheet {
     const context = await super.getData(options);
     context.shorthand = !!game.settings.get("the_edge", "macroShorthand");
     context.systemData = context.data.system;
-    context.dtypes = ATTRIBUTE_TYPES;
     context.biographyHTML = await TextEditor.enrichHTML(context.systemData.biography, {
       secrets: this.document.isOwner,
       async: true
@@ -183,9 +181,9 @@ export class TheEdgeActorSheet extends ActorSheet {
     let damageType = ""
     if (weapon.system.isElemental) {
       damageType = "Elemental"
-    } else if (["Blaster Pistols", "Pulse Rifle", "SABs", "Blaster Shockguns", "Blaster Rifles"].includes(weapon.system.type)) {
-      damageType = "Energy"
-    } else damageType = "Kinetic";
+    } else if (THE_EDGE.effect_map.weapons.energy.includes(weapon.system.type)) {
+      damageType = "energy"
+    } else damageType = "kinetic";
     
     const threshold = this.actor._getWeaponPL(weaponID)
     let d = DialogWeapon.start({

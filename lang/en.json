@@ -43,9 +43,6 @@
     "PROJECTILE RIFLE": "Projectile Rifle",
     "COMBATICS": "Combatics",
     "RECOILLESS RIFLES": "Recoilless Rifles",
-    "WEAPONSENERGY": "Energy Weapons",
-    "WEAPONSKINETIC": "Kinetic Weapons",
-    "WEAPONSOTHER": "Other Weapons",
 
     "ABSORPTION": "Absorption",
     "THRESHOLD": "Threshold",
@@ -108,6 +105,7 @@
   "DIALOG.ROLL": "Roll",
   "DIALOG.CHEAT": "Cheat",
   "ITEM": {
+    "ADD": "Add entry",
     "EDIT": "Edit Item",
     "CREATE": "Create Item",
     "DELETE": "Delete Item",
@@ -124,12 +122,12 @@
     "WEAPON": "Weapon",
     "OTHERS": "Others",
 
+    "ENERGY": "Energy Weapons",
+    "KINETIC": "Kinetic Weapons",
+    "OTHER": "Other Weapons",
+
     "HAS LEVELS": "Has levels",
-
     "OFFLINE CURRENCY": "Offline currency",
-
-    "ADD": "Add entry",
-    
     "HUMAN SPOKEN": "Human's can speak"
   },
   "NOTIFICATIONS": {
@@ -197,7 +195,7 @@
     "INCREASE": "Increase skill level"
   },
   "TEXT": {
-    "EFFECTS": "Add a status modifiery to your attributes, proficiencies, weapon proficiencies and other character attributes.\nFor this write 'Attributes.NAME', 'Proficiencies.NAME', 'Combat.NAME'. This is generally case-insensitive, except for proficiency and combat effects. For attributes and proficiencies you can also just write their group names, for example 'attributes.physical'. Furthermore there is an 'all' specifier to affect everything."
+    "EFFECTS": "Add a status modifiery to your attributes, proficiencies, weapon proficiencies and other character attributes.\nFor this write 'Attributes.NAME', 'Proficiencies.NAME', 'Weapons.NAME'. This is generally case-insensitive, except for specific proficiency and weapon names. You can also use group names, for example 'attributes.physical' or 'weapons.Energy'. Furthermore there is an 'all' specifier to affect everything."
   },
   "TOOLTIP": {
     "DESIGNATED WEAPON": "Some types of ammunition are only useable with specific names. Specify these here by their names (comma separated).",
@@ -223,6 +221,7 @@
   "DIGITAL": "Digital",
   "DISADVANTAGE": "Disadvantage",
   "DISTANCE": "Distance",
+  "ENCUMBRANCE": "Encumbrance",
   "EXPLANATIONS": "Explanations",
   "FAILURE": "Failure",
   "HEALTH": "Health",
@@ -252,6 +251,7 @@
   "STATUS": "Status",
   "SUCCESS": "Success",
   "THRESHOLD": "threshold",
+  "TO NEXT": "to next",
   "TYPE": "Type",
   "USED": "Used",
   "VALUE": "Value",

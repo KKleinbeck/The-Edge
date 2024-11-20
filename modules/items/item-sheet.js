@@ -1,5 +1,4 @@
 import THE_EDGE from "../system/config-the-edge.js";
-import {ATTRIBUTE_TYPES} from "../constants.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -46,7 +45,6 @@ export class TheEdgeItemSheet extends ItemSheet {
   async getData(options) {
     const context = await super.getData(options);
     context.systemData = context.data.system;
-    context.dtypes = ATTRIBUTE_TYPES;
     context.descriptionHTML = await TextEditor.enrichHTML(context.systemData.description, {
       secrets: this.document.isOwner,
       async: true
@@ -122,7 +120,7 @@ class ItemSheetWeapon extends TheEdgeItemSheet {
 
   async getData(options) {
     const context = await super.getData(options);
-    context.helpers = {attrs: THE_EDGE.attrs, weapon_types: THE_EDGE.weapon_types};
+    context.helpers = {attrs: THE_EDGE.attrs, weapon_types: THE_EDGE.effect_map.weapons.all};
     return context;
   }
 }

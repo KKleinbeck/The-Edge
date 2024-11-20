@@ -29,7 +29,8 @@ export default function() {
         getSys5: (a, b, c, d, e) => { return a.system[b][c][d][e]; },
         getEntry: (a, b) => { return a[b]; },
         log: (a) => console.log(a),
-        sub: (a, b) => {return a - b;},
+        sub: (a, b) => { return a - b; },
+        capitalise: (a) => { return a.charAt(0).toUpperCase() + a.slice(1); },
 
         getProficiency: (a, b, c, d) => { return a.system.proficiencies[b][c][d]; },
         getProficiencyDice: (a, b, c, d) => { return a.system.proficiencies[b][c].dices[d]; },
@@ -63,6 +64,11 @@ export default function() {
             return `(${THE_EDGE.sizes[size][0]} / ${THE_EDGE.sizes[size][1]})`
         },
         getAmmunitionCount: (a) => {return `(${a.system.capacity.max - a.system.capacity.used} / ${a.system.capacity.max})`},
-        getDmgModifier: (a) => {return `dmg: ${a.system.damage.bonus} / ${a.system.damage.penetration}`}
+        getDmgModifier: (a) => {return `dmg: ${a.system.damage.bonus} / ${a.system.damage.penetration}`},
+        getWeightClass: (weight, str) => {
+            if (str == 0) return "";
+            let encumbrance = Math.ceil((weight - str) / (str/2))
+            return `(${LocalisationServer.localise("encumbrance")}: ${encumbrance})`
+        }
     })
 }

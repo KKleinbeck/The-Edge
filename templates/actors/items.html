@@ -51,6 +51,9 @@
         <div>
             {{helpers.weight}}
         </div>
+        <div>
+            {{getWeightClass helpers.weight systemData.attributes.str.value}}
+        </div>
     </div>
     <a class="item-control" title="{{ itemName 'Create' }}" data-action="create"><i class="fas fa-plus"></i> {{ itemName "Create" }}</a>
 </div>
