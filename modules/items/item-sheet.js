@@ -73,6 +73,7 @@ export class TheEdgeItemSheet extends ItemSheet {
   }
 
   activateListeners(html) {
+    super.activateListeners(html)
     html.find(".effect-add").click(ev => this._onAdd(ev));
     html.find(".effect-modify").on("change", ev => this._onModify(ev));
     html.find(".effect-delete").click(ev => this._onDelete(ev));

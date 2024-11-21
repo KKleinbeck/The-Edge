@@ -487,7 +487,7 @@
   min-height: 1045px;
 }
 .the_edge.sheet.item {
-  min-width: 220px;
+  min-width: 390px;
   min-height: 420px;
 }
 .the_edge.sheet.item-weapon {
@@ -511,6 +511,10 @@
   min-height: 420px;
 }
 .the_edge.sheet.item-effect {
+  min-width: 390px;
+  min-height: 420px;
+}
+.the_edge.sheet.item-credits {
   min-width: 390px;
   min-height: 420px;
 }
