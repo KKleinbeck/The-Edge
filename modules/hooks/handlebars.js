@@ -69,6 +69,13 @@ export default function() {
             if (str == 0) return "";
             let encumbrance = Math.max(Math.ceil((weight - str) / (str/2)), 0);
             return `(${LocalisationServer.localise("encumbrance")}: ${encumbrance})`
+        },
+        getNextWeightClass: (weight, str) => {
+            if (str == 0) return "";
+            if (weight < str) return `${Math.floor(10 * (str-weight))/10}kg ${LocalisationServer.localise("to next level")}`
+            let encumbrance = Math.ceil((weight - str) / (str/2));
+            let remaining = encumbrance * (str/2) - (weight - str)
+            return `${Math.floor(10 * remaining)/10}kg ${LocalisationServer.localise("to next level")}`
         }
     })
 }
