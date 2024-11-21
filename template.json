@@ -269,6 +269,7 @@
   },
   "Advantage": {"templates": ["description"], "AP": 0, "hasLevels": false, "level": 1, "maxLevel": 1},
   "Disadvantage": {"templates": ["description"], "AP": 0, "hasLevels": false, "level": 1, "maxLevel": 1},
+  "Skill": {"templates": ["description", "skill"]},
   "Combatskill": {"templates": ["description", "skill"]},
   "Languageskill": {"templates": ["description"], "level": 1, "humanSpoken": true},
   "Credits": {"isChid": true, "value": 0},

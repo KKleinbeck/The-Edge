@@ -1,4 +1,5 @@
 import THE_EDGE from "./config-the-edge.js"
+import LocalisationServer from "./localisation_server.js"
 
 export default class Aux {
   static getScene(sceneID) {
@@ -45,9 +46,13 @@ export default class Aux {
     const regex = /^(\d+\/)*\d+$/; // parse [n_1 / n_2 / ...] n_m
     if (regex.test(cost)) {
       const costs = cost.split('/').map(Number)
-      if (maxLevel && costs.length != maxLevel) return undefined;
-      return cost.length == 1 ? costs[0] : costs;
+      if (!maxLevel || costs.length == maxLevel) {
+        return cost.length == 1 ? costs[0] : costs;
+      }
     }
+    let msg = LocalisationServer.parsedLocalisation("Wrong cost string", "Notifications", {str: costStr})
+    ui.notifications.notify(msg)
+    console.log("Hi")
     return undefined;
   }
 
@@ -65,8 +70,11 @@ export default class Aux {
       return this._language_cost_table(skill.system.humanSpoken)[level - 1];
     }
 
-    // combatskills, genericskills, medicalskills
-    let cost = this.parseCostStr(skill.system.cost)
+    // combatskills, skills, medicalskills
+    let maxLevel = skill.system.maxLevel
+    let cost = this.parseCostStr(skill.system.cost, maxLevel)
+    if (typeof cost === "undefined") return undefined;
+
     if (!isNaN(cost)) { // cost is number
       if (mode == "delete") return level * cost;
       else if (mode == "increase" && level == skill.system.maxLevel) return undefined;

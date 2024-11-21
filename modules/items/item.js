@@ -11,6 +11,7 @@ export class TheEdgeItem extends Item {
     Ammunition: "systems/the_edge/icons/ammunition.png",
     Advantage: "systems/the_edge/icons/advantage.png",
     Disadvantage: "systems/the_edge/icons/disadvantage.png",
+    Skill: "systems/the_edge/icons/skill.png",
     Combatskill: "systems/the_edge/icons/combat_skill.png",
     Languageskill: "systems/the_edge/icons/speech.png",
     Credits: "systems/the_edge/icons/credits.png",

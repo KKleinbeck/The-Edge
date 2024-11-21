@@ -247,6 +247,7 @@ export class TheEdgeActorSheet extends ActorSheet {
       case "Disadvantage":
         return await this._createVantage(event, data, item)
       
+      case "Skill":
       case "Combatskill":
       case "Languageskill":
         let createNew = this.actor.learnSkill(item);

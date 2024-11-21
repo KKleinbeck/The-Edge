@@ -24,14 +24,14 @@ export class TheEdgeItemSheet extends ItemSheet {
     Items.registerSheet("the_edge", ItemSheetArmour, { makeDefault: true, types: ["Armour"] });
     Items.registerSheet("the_edge", ItemSheetAmmunition, { makeDefault: true, types: ["Ammunition"] });
     Items.registerSheet("the_edge", ItemSheetVantage, { makeDefault: true, types: ["Advantage", "Disadvantage"] });
-    Items.registerSheet("the_edge", ItemSheetSkill, { makeDefault: true, types: ["Combatskill"] });
+    Items.registerSheet("the_edge", ItemSheetSkill, { makeDefault: true, types: ["Skill", "Combatskill"] });
     Items.registerSheet("the_edge", ItemSheetLanguage, { makeDefault: true, types: ["Languageskill"] });
     Items.registerSheet("the_edge", ItemSheetCredits, { makeDefault: true, types: ["Credits"] });
     Items.registerSheet("the_edge", ItemSheetEffect, { makeDefault: true, types: ["Effect"] });
 
     Items.unregisterSheet("the_edge", TheEdgeItemSheet, {
       types: [
-        "Weapon", "Armour", "Ammunition", "Advantage", "Disadvantage", "Combatskill", "Languageskill", "Credits", "Effect"
+        "Weapon", "Armour", "Ammunition", "Advantage", "Disadvantage", "Skill", "Combatskill", "Languageskill", "Credits", "Effect"
       ]
     });
   }

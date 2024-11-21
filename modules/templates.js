@@ -14,8 +14,9 @@ export const preloadHandlebarsTemplates = async function() {
     "systems/the_edge/templates/actors/attributes/layout.html",
     "systems/the_edge/templates/actors/attributes/main_attributes.html",
     "systems/the_edge/templates/actors/attributes/languages.html",
-    "systems/the_edge/templates/actors/attributes/vantages.html",
     "systems/the_edge/templates/actors/attributes/conditioning.html",
+    "systems/the_edge/templates/actors/attributes/skills.html",
+    "systems/the_edge/templates/actors/attributes/vantages.html",
     "systems/the_edge/templates/actors/attributes/progress.html",
     //Proficiencies
     "systems/the_edge/templates/actors/proficiencies/layout.html",

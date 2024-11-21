@@ -649,7 +649,7 @@
 }
 
 .the_edge .section {
-  margin-bottom: 32px; /* Space between sections */
+  margin-bottom: 10px; /* Space between sections */
 }
 .the_edge .section .section-content {
   padding: 0px 10px;
