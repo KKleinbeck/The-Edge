@@ -53,7 +53,7 @@ export default class Aux {
 
   static getSkillCost(skill, mode = undefined) {
     let level = skill.system.level;
-    if (skill.type == "languageskill") {
+    if (skill.type == "Languageskill") {
       if (mode == "delete") {
         return this._language_cost_table(skill.system.humanSpoken)
             .slice(0, level).reduce((a,b) => a+b, 0);

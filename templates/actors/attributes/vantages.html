@@ -4,7 +4,7 @@
   <div class="section-content">
     <div class="vantage-list">
     {{#each data.items as |item id|}}
-        {{#if (checkEqual item.type "advantage")}}
+        {{#if (checkEqual item.type "Advantage")}}
             <li class="vantage item" data-item-id="{{item._id}}">
                 <h4 class="item-name item-control" data-action="edit" style="cursor: pointer; white-space: nowrap;">
                     {{item.name}}
@@ -24,7 +24,7 @@
   <hr />
   <div class="section-content vantage-list">
     {{#each data.items as |item id|}}
-        {{#if (checkEqual item.type "disadvantage")}}
+        {{#if (checkEqual item.type "Aisadvantage")}}
             <li class="vantage item" data-item-id="{{item._id}}">
                 <h4 class="item-name item-control" data-action="edit" style="cursor: pointer; white-space: nowrap;">
                     {{item.name}}

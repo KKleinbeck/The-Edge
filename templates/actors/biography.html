@@ -2,7 +2,7 @@
   <h3>Effects</h3>
   <div class="effect-list">
     {{#each data.items as |item id|}}
-      {{#if (checkEqual item.type "effect")}}
+      {{#if (checkEqual item.type "Effect")}}
         <div class="item-control item effect-box" data-action="edit" data-item-id="{{item._id}}" style="cursor: pointer;">
           {{item.name}}
           <a class="item-control" title="{{ itemName 'Delete' }}" data-action="delete"><i class="fas fa-trash"></i></a>

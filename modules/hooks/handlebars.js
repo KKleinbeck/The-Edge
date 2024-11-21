@@ -36,7 +36,7 @@ export default function() {
         getProficiencyDice: (a, b, c, d) => { return a.system.proficiencies[b][c].dices[d]; },
         getWeaponProficiency: (a, b, c, d) => { return a.system.weapons[b][c][d]; },
         getLoadedAmmunition: (actor, weapon) => {
-            for (const ammu of actor.itemTypes["ammunition"]) {
+            for (const ammu of actor.itemTypes["Ammunition"]) {
                 if (ammu.id == weapon.system.ammunitionID) {
                     let asc = ammu.system.capacity;
                     return `(${asc.max - asc.used} / ${asc.max})`;
@@ -48,7 +48,7 @@ export default function() {
         checkRenderItem: (item, type) => {
             if (type !== "any" && item.type !== type) {
                 return false;
-            } else if (item.type == "ammunition" && item.system.loaded) {
+            } else if (item.type == "Ammunition" && item.system.loaded) {
                 return false;
             }
             return true;

@@ -20,18 +20,18 @@ export class TheEdgeItemSheet extends ItemSheet {
   static setupSheets() {
     Items.unregisterSheet("core", ItemSheet);
     Items.registerSheet("the_edge", TheEdgeItemSheet, { makeDefault: true });
-    Items.registerSheet("the_edge", ItemSheetWeapon, { makeDefault: true, types: ["weapon"] });
-    Items.registerSheet("the_edge", ItemSheetArmour, { makeDefault: true, types: ["armour"] });
-    Items.registerSheet("the_edge", ItemSheetAmmunition, { makeDefault: true, types: ["ammunition"] });
-    Items.registerSheet("the_edge", ItemSheetVantage, { makeDefault: true, types: ["advantage", "disadvantage"] });
-    Items.registerSheet("the_edge", ItemSheetSkill, { makeDefault: true, types: ["combatskill"] });
-    Items.registerSheet("the_edge", ItemSheetLanguage, { makeDefault: true, types: ["languageskill"] });
-    Items.registerSheet("the_edge", ItemSheetCredits, { makeDefault: true, types: ["credits"] });
-    Items.registerSheet("the_edge", ItemSheetEffect, { makeDefault: true, types: ["effect"] });
+    Items.registerSheet("the_edge", ItemSheetWeapon, { makeDefault: true, types: ["Weapon"] });
+    Items.registerSheet("the_edge", ItemSheetArmour, { makeDefault: true, types: ["Armour"] });
+    Items.registerSheet("the_edge", ItemSheetAmmunition, { makeDefault: true, types: ["Ammunition"] });
+    Items.registerSheet("the_edge", ItemSheetVantage, { makeDefault: true, types: ["Advantage", "Disadvantage"] });
+    Items.registerSheet("the_edge", ItemSheetSkill, { makeDefault: true, types: ["Combatskill"] });
+    Items.registerSheet("the_edge", ItemSheetLanguage, { makeDefault: true, types: ["Languageskill"] });
+    Items.registerSheet("the_edge", ItemSheetCredits, { makeDefault: true, types: ["Credits"] });
+    Items.registerSheet("the_edge", ItemSheetEffect, { makeDefault: true, types: ["Effect"] });
 
     Items.unregisterSheet("the_edge", TheEdgeItemSheet, {
       types: [
-        "weapon", "armour", "ammunition", "advantage", "disadvantage", "combatskill", "languageskill", "credits", "effect"
+        "Weapon", "Armour", "Ammunition", "Advantage", "Disadvantage", "Combatskill", "Languageskill", "Credits", "Effect"
       ]
     });
   }

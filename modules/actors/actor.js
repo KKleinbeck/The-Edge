@@ -130,7 +130,7 @@ export class TheEdgeActor extends Actor {
         this.system.attributes.str.advances + this.system.attributes.str.status;
 
       // Correct for the current encumbrance level
-      let effects = this.itemTypes["effect"]
+      let effects = this.itemTypes["Effect"]
       let currentEncumbrance = effects?.find(obj => obj.name == "Encumbrance")
       str += -1 + currentEncumbrance?.system.effects?.reduce(
         (a,b) => a - b.value, 0
@@ -148,7 +148,7 @@ export class TheEdgeActor extends Actor {
       if (!currentEncumbrance) {
         const cls = getDocumentClass("Item");
         currentEncumbrance = await cls.create(
-          {name: LocalisationServer.localise("Encumbrance"), type: "effect"}, {parent: this}
+          {name: LocalisationServer.localise("Encumbrance"), type: "Effect"}, {parent: this}
         );
       }
       await currentEncumbrance.update({"system.effects": [
@@ -182,15 +182,14 @@ export class TheEdgeActor extends Actor {
 
     for (const item of this.items) {
       // Todo: make all of this case insensitve
-      if (item.type != "effect" && item.type != "combatskill" && (!item.system.equipped || !item.system.hasEffect)) continue;
+      if (item.type != "Effect" && item.type != "Combatskill" && (!item.system.equipped || !item.system.hasEffect)) continue;
 
       let effects = [];
-      if (item.type === "combatskill") {
+      if (item.type === "Combatskill") {
         for (let i = 0; i < item.system.level; ++i) {
           if (!item.system.levelEffects[i]) continue;
           effects.push(...item.system.levelEffects[i])
         }
-        console.log(effects)
       } else effects = item.system.effects;
       for (const effect of effects) {
         let [modifierClass, modifierSubclass] = effect.modifier.split(".");
@@ -389,14 +388,12 @@ export class TheEdgeActor extends Actor {
   async applyDamage(damage, crit, damageType) {
     let [location, locationDetail] = this._generateLocation(crit)
 
-    for (const armour of this.items) {
-      if (armour.type == "armour") {
-        if(!armour.system.equipped) continue;
-        // TODO: Inner vs outer armour.
-        let protectedLoc = armour.system.bodyPart;
-        if (protectedLoc === "Entire" || (location === protectedLoc) || (location !== "Head" && protectedLoc === "Below_Neck")) {
-          damage = await ArmourItemTheEdge.protect.call(armour, damage, damageType)
-        }
+    for (const armour of this.itemsTypes["Armour"]) {
+      if(!armour.system.equipped) continue;
+      // TODO: Inner vs outer armour.
+      let protectedLoc = armour.system.bodyPart;
+      if (protectedLoc === "Entire" || (location === protectedLoc) || (location !== "Head" && protectedLoc === "Below_Neck")) {
+        damage = await ArmourItemTheEdge.protect.call(armour, damage, damageType)
       }
     }
 
