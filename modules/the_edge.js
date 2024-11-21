@@ -60,7 +60,7 @@ Hooks.once("init", async function() {
     hint: "SETTINGS.SimpleInitFormulaL",
     scope: "world",
     type: String,
-    default: "1d20+1d12",
+    default: "1d20 + 1d@attributes.spd.value + 1d@attributes.foc.value - 2",
     config: true,
     onChange: formula => _simpleUpdateInit(formula, true)
   });

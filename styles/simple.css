@@ -681,13 +681,6 @@
   font-weight: bold; /* Optional: Make the title bold */
 }
 
-.the_edge .section .output60 {
-  width: 60px;
-}
-.the_edge .section .output80 {
-  width: 80px;
-}
-
 .the_edge .hr {
     border: none;
     border-top: 1px solid #ccc; /* Style the horizontal line */
