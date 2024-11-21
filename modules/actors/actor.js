@@ -356,7 +356,8 @@ export class TheEdgeActor extends Actor {
     for (const type of ["energy", "kinetic", "others"]) {
       if (this.system.weapons[type][weapon.type] === undefined) continue;
       level += this.system.weapons[type][weapon.type].advances +
-        this.system.weapons[type][weapon.type].status;
+        this.system.weapons[type][weapon.type].status +
+        (this.system.generalCombatAdvances[type] || 0);
     }
     let attr_mod = Math.floor( (
       this.system.attributes[weapon.leadAttr1.name].value - weapon.leadAttr1.value +

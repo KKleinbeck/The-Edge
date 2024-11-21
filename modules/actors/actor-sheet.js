@@ -58,7 +58,6 @@ export class TheEdgeActorSheet extends ActorSheet {
 
     // Item Controls
     html.find(".item-control").click(ev => this._onItemControl(ev));
-    html.find(".items .rollable").on("click", this._onItemRoll.bind(this));
 
     // Add draggable for Macro creation
     html.find(".attributes a.attribute-roll").each((i, a) => {
@@ -386,13 +385,7 @@ export class TheEdgeActorSheet extends ActorSheet {
     }
   }
 
-
-  /* -------------------------------------------- */
-
-  /**
-   * Listen for roll buttons on items.
-   * @param {MouseEvent} event    The originating left click event
-   */
+  // Thrash code which contains a useful template though
   _onItemRoll(event) {
     let button = $(event.currentTarget);
     const li = button.parents(".item");
