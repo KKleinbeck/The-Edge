@@ -32,6 +32,9 @@
                 </li>
             {{/if}}
         {{/each}}
+        <li class="item-control item-create" title="{{ itemName 'Create' }}" data-action="create" data-type="{{type}}">
+            <i class="fas fa-plus"></i> {{ itemName "Create" }}
+        </li>
     </ol>
 {{/each}}
 <h3>{{itemName "Others"}}</h3>
@@ -39,11 +42,13 @@
 <div style="display: flex; justify-content: space-between;">
     <div style="display: flex; gap: 20px;">
         <h3>Credits:</h3>
-        <div>
-            {{systemData.credits.chids}} Chids
+        <div style="max-width: 35%;">
+            <input type="Number" id="Chids" style="width: 70%; text-align: right;" name="system.credits.chids" value="{{systemData.credits.chids}}"/>
+            <lavel for="Chids">Chids</lavel>
         </div>
-        <div>
-            {{systemData.credits.digital}} {{genName "digital"}}
+        <div style="max-width: 35%;">
+            <input type="Number" id="Chids" style="width: 70%; text-align: right;" name="system.credits.digital" value="{{systemData.credits.digital}}"/>
+            <lavel for="Chids">{{genName "digital"}}</lavel>
         </div>
     </div>
     <div style="display: flex; gap: 20px;">
@@ -55,5 +60,4 @@
             {{getWeightClass helpers.weight systemData.attributes.str.value}}
         </div>
     </div>
-    <a class="item-control" title="{{ itemName 'Create' }}" data-action="create"><i class="fas fa-plus"></i> {{ itemName "Create" }}</a>
 </div>

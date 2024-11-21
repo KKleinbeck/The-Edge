@@ -323,8 +323,9 @@ export class TheEdgeActorSheet extends ActorSheet {
     // Handle different actions
     switch ( button.dataset.action ) {
       case "create":
+        const itemType = button.dataset.type;
         const cls = getDocumentClass("Item");
-        return cls.create({name: LocalisationServer.localise("New", "item"), type: "Weapon"}, {parent: this.actor});
+        return cls.create({name: LocalisationServer.localise("New", "item"), type: itemType}, {parent: this.actor});
       case "create-effect":
         const clsEffect = getDocumentClass("Item");
         return clsEffect.create({name: LocalisationServer.localise("New effect", "item"), type: "Effect"}, {parent: this.actor});

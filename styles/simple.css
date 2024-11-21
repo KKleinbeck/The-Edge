@@ -471,6 +471,13 @@
   flex: none;
   width: auto;
 }
+.the_edge .item-list .item-create {
+  height: 31px;
+  gap: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
 .the_edge .effect-list {
   columns: 4;
   margin: 7px 0;
