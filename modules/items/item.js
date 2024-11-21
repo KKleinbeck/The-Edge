@@ -6,15 +6,15 @@ import LocalisationServer from "../system/localisation_server.js";
  */
 export class TheEdgeItem extends Item {
   static defaultImages = {
-    weapon: "systems/the_edge/icons/rifle.png",
-    armour: "systems/the_edge/icons/helmet.png",
-    ammunition: "systems/the_edge/icons/ammunition.png",
-    advantage: "systems/the_edge/icons/advantage.png",
-    disadvantage: "systems/the_edge/icons/disadvantage.png",
-    combatskill: "systems/the_edge/icons/combat_skill.png",
-    languageskill: "systems/the_edge/icons/speech.png",
-    credits: "systems/the_edge/icons/credits.png",
-    effect: "systems/the_edge/icons/effect.png",
+    Weapon: "systems/the_edge/icons/rifle.png",
+    Armour: "systems/the_edge/icons/helmet.png",
+    Ammunition: "systems/the_edge/icons/ammunition.png",
+    Advantage: "systems/the_edge/icons/advantage.png",
+    Disadvantage: "systems/the_edge/icons/disadvantage.png",
+    Combatskill: "systems/the_edge/icons/combat_skill.png",
+    Languageskill: "systems/the_edge/icons/speech.png",
+    Credits: "systems/the_edge/icons/credits.png",
+    Effect: "systems/the_edge/icons/effect.png",
   }
 
   static defaultIcon(data) {

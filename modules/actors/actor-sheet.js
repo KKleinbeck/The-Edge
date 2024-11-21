@@ -37,12 +37,12 @@ export class TheEdgeActorSheet extends ActorSheet {
     });
     context["prepare"] = this.actor.prepareSheet()
 
-    let credits = this.actor.itemTypes["credits"]
+    let credits = this.actor.itemTypes["Credits"]
     let creditsOffline = credits.find(c => c.system?.isSchid)?.system?.value || 0;
     let creditsDigital = credits.find(c => !c.system?.isSchid)?.system?.value || 0;
     let weight =  this.actor._determineWeight();
     context.helpers = {
-      types: ["weapon", "armour", "ammunition"],
+      types: ["Weapon", "Armour", "Ammunition"],
       languages: THE_EDGE.languages,
       credits: {"Schids": creditsOffline, "digital": creditsDigital},
       weight: weight
@@ -204,7 +204,7 @@ export class TheEdgeActorSheet extends ActorSheet {
     const weaponID = target.closest(".weapon-id").dataset.weaponId
     const ammunition = []
     let weapon = this.actor.items.get(weaponID);
-    for (const ammu of this.actor.itemTypes["ammunition"]) {
+    for (const ammu of this.actor.itemTypes["Ammunition"]) {
       let sys = ammu.system
       let designatedWeapons = sys.designatedWeapons
         .replace(/<[^>]*>?/gm, '') // Strip html tags
@@ -226,14 +226,14 @@ export class TheEdgeActorSheet extends ActorSheet {
   async _onDropItem(event, data) {
     const item = (await Item.implementation.fromDropData(data)).toObject();
     switch (item.type) {
-      case "weapon":
-      case "armour":
+      case "Weapon":
+      case "Armour":
         return super._onDropItem(event, data)
 
-      case "ammunition":
+      case "Ammunition":
         return this._onDropStackableItem(event, data, item)
       
-      case "advantage":
+      case "Advantage":
         let actorAP = this.actor.system.AdvantagePoints
 
         if (item.system.AP + actorAP.used > actorAP.max) {
@@ -244,21 +244,21 @@ export class TheEdgeActorSheet extends ActorSheet {
           ui.notifications.notify(msg)
           return false;
         } // Now implicitly go into the disadvantage return
-      case "disadvantage":
+      case "Disadvantage":
         return await this._createVantage(event, data, item)
       
-      case "combatskill":
-      case "languageskill":
+      case "Combatskill":
+      case "Languageskill":
         let createNew = this.actor.learnSkill(item);
         return createNew ? super._onDropItem(event, data) : undefined;
       
-      case "credits":
+      case "Credits":
         if (item.system.isChid) {
           this.actor.update({"system.credits.chids": this.actor.system.credits.chids + item.system.value})
         } else this.actor.update({"system.credits.digital": this.actor.system.credits.digital + item.system.value})
         return false;
 
-      case "effect":
+      case "Effect":
         return super._onDropItem(event, data)
     }
     // return this.actor.createEmbeddedDocuments("Item", itemData);
@@ -268,7 +268,7 @@ export class TheEdgeActorSheet extends ActorSheet {
     let _existingCopy = false
     for (const _item of this.actor.items) {
       if (_item.name == item.name) {
-        if (_item.type == "ammunition") {
+        if (_item.type == "Ammunition") {
           let _cap = _item.system.capacity
           let cap = item.system.capacity
           if (_cap.max == cap.max && _cap.used == cap.used) {
@@ -283,7 +283,7 @@ export class TheEdgeActorSheet extends ActorSheet {
   }
 
   async _createVantage(event, data, item) {
-    let update = item.type == "advantage" ?
+    let update = item.type == "Advantage" ?
       {"system.AdvantagePoints.used": this.actor.system.AdvantagePoints.used + item.system.AP} :
       {"system.AdvantagePoints.max": this.actor.system.AdvantagePoints.max + item.system.AP}
 
@@ -323,14 +323,14 @@ export class TheEdgeActorSheet extends ActorSheet {
     switch ( button.dataset.action ) {
       case "create":
         const cls = getDocumentClass("Item");
-        return cls.create({name: LocalisationServer.localise("New", "item"), type: "weapon"}, {parent: this.actor});
+        return cls.create({name: LocalisationServer.localise("New", "item"), type: "Weapon"}, {parent: this.actor});
       case "create-effect":
         const clsEffect = getDocumentClass("Item");
-        return clsEffect.create({name: LocalisationServer.localise("New effect", "item"), type: "effect"}, {parent: this.actor});
+        return clsEffect.create({name: LocalisationServer.localise("New effect", "item"), type: "Effect"}, {parent: this.actor});
       case "edit":
         return item.sheet.render(true);
       case "delete":
-        if (item.type == "disadvantage") {
+        if (item.type == "Disadvantage") {
           let actorAP = this.actor.system.AdvantagePoints
           let itemAP = (item.system.hasLevels ? item.system.level : 1) * item.system.AP
           if ((actorAP.max - itemAP < actorAP.used)) {
@@ -346,7 +346,7 @@ export class TheEdgeActorSheet extends ActorSheet {
             this.actor.update({"system.AdvantagePoints.max": actorAP.max - itemAP})
           }
         }
-        if (item.type == "advantage") {
+        if (item.type == "Advantage") {
           let itemAP = (item.system.hasLevels ? item.system.level : 1) * item.system.AP
           this.actor.update({"system.AdvantagePoints.used": this.actor.system.AdvantagePoints.used - itemAP})
         }

@@ -11,7 +11,7 @@
                             {{#if (checkIn "quantity" item.system)}}
                                 {{item.system.quantity}} x 
                             {{/if}}
-                            {{#if (checkEqual item.type "ammunition")}}
+                            {{#if (checkEqual item.type "Ammunition")}}
                                 {{item.name}} {{getAmmunitionCount item}}
                             {{else}}
                                 {{item.name}}

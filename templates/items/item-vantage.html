@@ -16,10 +16,10 @@
                     {{#if systemData.userIsGM}}
                     <div class="item-header-fields" style="max-width: 32%;">
                         <label for="hasLevels">{{itemName "has levels"}}</label>
-                        <input type="checkbox" id="hasLevels" name="system.hasLevels" {{#if systemData.hasLevels}}checked{{/if}} />
+                        <input class="has-levels" type="checkbox" id="hasLevels" name="system.hasLevels" {{#if systemData.hasLevels}}checked{{/if}} />
                     </div>
                     {{/if}}
-                    {{#if data.system.hasLevels}}
+                    {{#if systemData.hasLevels}}
                         <div class="item-header-fields" style="max-width: 40%;">
                             {{genName "Level"}} / max<br/>
                             <div>
@@ -42,4 +42,5 @@
     <section class="sheet-body">
         {{> systems/the_edge/templates/items/meta-description.html}}
     </section>
+    {{log systemData}}
 </form>

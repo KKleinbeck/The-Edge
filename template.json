@@ -177,24 +177,24 @@
 },
 "Item": {
   "types": [
-    "weapon",
-    "armour",
-    "ammunition",
+    "Weapon",
+    "Armour",
+    "Ammunition",
 
-    "advantage",
-    "disadvantage",
+    "Advantage",
+    "Disadvantage",
 
-    "skill",
-    "combatskill",
-    "medicalskill",
-    "languageskill",
+    "Skill",
+    "Combatskill",
+    "Medicalskill",
+    "Languageskill",
 
-    "gear",
-    "clothing",
-    "consumables",
-    "credits",
+    "Gear",
+    "Clothing",
+    "Consumables",
+    "Credits",
 
-    "effect"
+    "Effect"
   ],
   "templates": {
     "description": {
@@ -227,7 +227,7 @@
     }
   },
   "htmlFields": ["description"],
-  "weapon": {
+  "Weapon": {
     "templates": ["non-stackable", "description", "specials", "equipable"],
     "type": "Pulse Rifle",
     "isElemental": false,
@@ -242,7 +242,7 @@
     "attachments": [],
     "ammunitionID": ""
   },
-  "armour": {
+  "Armour": {
     "templates": ["non-stackable", "description", "specials", "equipable"],
     "bodyPart": "Torso",
     "layer": "Inner",
@@ -254,7 +254,7 @@
       "elemental": {"absorption": 0, "threshold": 0}
     }
   },
-  "ammunition": {
+  "Ammunition": {
     "templates": ["stackable", "description"],
     "capacity": {"max": 30, "used": 0},
     "type": "energy",
@@ -267,11 +267,11 @@
     "damage": {"bonus": 0, "penetration": 0},
     "modifiers": {"less_2m": [0, 0], "less_20m": [0, 0], "less_200m": [0, 0], "less_1km": [0, 0], "more_1km": [0, 0]}
   },
-  "advantage": {"templates": ["description"], "AP": 0, "hasLevels": false, "level": 1, "maxLevel": 1},
-  "disadvantage": {"templates": ["description"], "AP": 0, "hasLevels": false, "level": 1, "maxLevel": 1},
-  "combatskill": {"templates": ["description", "skill"]},
-  "languageskill": {"templates": ["description"], "level": 1, "humanSpoken": true},
-  "credits": {"isChid": true, "value": 0},
-  "effect": {"templates": ["description"], "effects": []}
+  "Advantage": {"templates": ["description"], "AP": 0, "hasLevels": false, "level": 1, "maxLevel": 1},
+  "Disadvantage": {"templates": ["description"], "AP": 0, "hasLevels": false, "level": 1, "maxLevel": 1},
+  "Combatskill": {"templates": ["description", "skill"]},
+  "Languageskill": {"templates": ["description"], "level": 1, "humanSpoken": true},
+  "Credits": {"isChid": true, "value": 0},
+  "Effect": {"templates": ["description"], "effects": []}
 }
 }
