@@ -2,7 +2,7 @@
 <div class="centered-row">
   <b>{{genName "Check"}}: </b>
   {{#each rolls as |roll|}}
-    <a class="attr-d20-chat {{#if roll.hit}}d20-Cha{{else}}d20-End{{/if}}">
+    <a class="attr-d20-chat {{#if roll.hit}}d20-cha{{else}}d20-end{{/if}}">
       <span class="d20-overlay" data-tooltip="{{#if roll.hit}}Hit{{else}}Miss{{/if}} - {{genName 'threshold'}}: {{../threshold}}" style="font-size: 14px;">{{roll.res}}</span>
     </a>
   {{/each}}
@@ -43,6 +43,10 @@
 <div class="centered-row">
   <b>{{combatName "movement"}}: </b>
   <span>{{combatName movement}} ({{movementModifier}} PL)</span>
+</div>
+<div class="centered-row">
+  <b>{{combatName "cover"}}: </b>
+  <span>{{combatName cover}} ({{coverModifier}} PL)</span>
 </div>
 <div class="centered-row">
   <b>{{combatName "fire selection"}}: </b>

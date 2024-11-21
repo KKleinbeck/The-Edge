@@ -72,6 +72,12 @@
     "MODERATE": "Moderate",
     "FAST": "Fast",
     "ERRADIC": "Erradic",
+
+    "COVER": "Cover",
+    "NO COVER": "no cover",
+    "HALF COVER": "half cover",
+    "THREE QUARTERS": "three quarters",
+    "FULL COVER": "full cover",
     
     "FIRE MODES": "Fire modes",
     "AUTOMATIC": "Automatic",

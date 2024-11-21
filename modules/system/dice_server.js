@@ -126,7 +126,7 @@ export default class DiceServer {
     }
 
     let details = {
-      name: check.name, rolls: [], threshold: modificators.threshold, damage: damage,
+      name: check.name, rolls: [], damage: damage,
       damageRoll: modificators.fireModeModifier.damage, targets: check.targets
     };
     for (let i = 0; i < modificators.dicesEff; ++i) {

@@ -79,6 +79,18 @@
     </tr>
     <tr>
       <td>
+        {{combatName "Cover"}}:
+      </td>
+      <td>
+        <select class="advantage-box" name="CoverSelector">
+          {{#each cover as |mali cover|}}
+            <option value="{{cover}}">{{combatName cover}} ({{mali}})</option>
+          {{/each}}
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>
         {{combatName "Fire Selection"}}:
       </td>
       <td>

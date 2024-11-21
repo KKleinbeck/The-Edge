@@ -14,7 +14,7 @@ export default class DialogWeapon extends Dialog{
     let smallestSize =  this.getSmallestSize(checkData.targetIDs, checkData.sceneID)
     checkData = mergeObject(checkData, {
       sizes: THE_EDGE.sizes, movements: THE_EDGE.movements,
-      distance: distance, smallestSize: smallestSize
+      distance: distance, smallestSize: smallestSize, cover: THE_EDGE.cover
     })
     const template = "systems/the_edge/templates/actors/combat/dialog-weapon.html";
     let html = await renderTemplate(template, checkData);
@@ -37,13 +37,7 @@ export default class DialogWeapon extends Dialog{
           let targets = Aux.getTargets(scene, checkData.targetIDs)
           let targetNames = targets.map(x => x.name)
           let check = {name: checkData.name, targets: targetNames}
-          foundry.utils.mergeObject(modificators, {
-            rangeModifier: checkData.rangeChart[modificators.range][modificators.pIndex],
-            sizeModifier: THE_EDGE.sizes[modificators.size][modificators.pIndex],
-            movementModifier: THE_EDGE.movements[modificators.movement][modificators.pIndex],
-            fireModeModifier: checkData.fireModes[modificators.fireMode],
-            dicesEff: dices
-          })
+          foundry.utils.mergeObject(modificators, {dicesEff: dices})
           let [crits, damage] = await DiceServer.attackCheck(check, modificators);
 
           // Apply the damage
@@ -142,17 +136,24 @@ export default class DialogWeapon extends Dialog{
     let size = html.find('[name="SizeSelector"]').val();
     if (checkData.smallestSize) size = checkData.smallestSize;
     let movement = html.find('[name="MovementSelector"]').val();
+    let cover = html.find('[name="CoverSelector"]').val();
     let fireMode = html.find('[name="FireSelector"]').val();
 
     let threshold = Math.max(1, checkData.threshold + tempModificator +
       checkData.rangeChart[range][pIndex] + THE_EDGE.sizes[size][pIndex] +
-      THE_EDGE.movements[movement][pIndex] + checkData.fireModes[fireMode].mali[pIndex]);
+      THE_EDGE.movements[movement][pIndex] + THE_EDGE.cover[cover] +
+      checkData.fireModes[fireMode].mali[pIndex]);
     
     return {
       threshold: threshold, precision: precision, pIndex: pIndex,
       tempModificator: tempModificator, range: range, size: size,
-      movement: movement, fireMode: fireMode,
+      movement: movement, cover: cover, fireMode: fireMode,
       advantage: html.find('[name="AdvantageSelector"]').val(),
+      rangeModifier: checkData.rangeChart[range][pIndex],
+      sizeModifier: THE_EDGE.sizes[size][pIndex],
+      movementModifier: THE_EDGE.movements[movement][pIndex],
+      coverModifier: THE_EDGE.cover[cover],
+      fireModeModifier: checkData.fireModes[fireMode],
     }
   }
 }
