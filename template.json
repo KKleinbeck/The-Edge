@@ -137,6 +137,10 @@
           "Combatics": {"advances": 0, "status": 0},
           "Recoilless Rifles": {"advances": 0, "status": 0}
         }
+      },
+      "generalCombatAdvances": {
+        "energy": 0,
+        "kinetic": 0
       }
     }
   },

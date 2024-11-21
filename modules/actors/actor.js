@@ -47,7 +47,7 @@ export class TheEdgeActor extends Actor {
 
   // Generates dict for the charactersheet to parse
   prepareSheet() {
-    let preparedData = { system: { attr: {}, prof: {}, weapons: {} } };
+    let preparedData = { system: { attr: {}, prof: {}, weapons: {}, generalCombatAdvances: {}} };
     for (const key of Object.keys(this.system.attributes)) {
       let n = this.system.attributes[key].advances;
       preparedData.system.attr[key] = {
@@ -71,6 +71,12 @@ export class TheEdgeActor extends Actor {
           cost: this._attrCost(n),
           refund: n == 0 ? 0 : this._attrCost(n-1)
         }
+      }
+    }
+    for (const [category, n] of Object.entries(this.system.generalCombatAdvances)) {
+      preparedData.system.generalCombatAdvances[category] = {
+        cost: this._attrCost(n),
+        refund: n == 0 ? 0 : this._attrCost(n-1)
       }
     }
 
@@ -253,65 +259,41 @@ export class TheEdgeActor extends Actor {
   }
 
   async _advanceAttr(attrName, type) {
-    const attr = this.system.attributes[attrName]
-    const ph = this.system.PracticeHours
+    const attrValue = this.system.attributes[attrName].advances;
 
-    let update = {}
-    if ((type == "advance") && (ph.max - ph.used >= this._attrCost(attr.advances)) ) {
-      update[`system.attributes.${attrName}.advances`] = attr.advances + 1
-      update[`system.attributes.${attrName}.value`] = attr.value + 1
-      update[`system.PracticeHours.used`] = ph.used + this._attrCost(attr.advances)
-    }
-    else if ((type == "refund") && (attr.advances > 0) ) {
-      update[`system.attributes.${attrName}.advances`] = attr.advances - 1
-      update[`system.attributes.${attrName}.value`] = attr.value - 1
-      update[`system.PracticeHours.used`] = ph.used - this._attrCost(attr.advances - 1)
-    }
-    this.update(update)
+    this._levelingSrv(`system.attributes.${attrName}.advances`, type, attrValue, this._attrCost)
   }
 
   async _advanceProf(profName, type) {
-    let profValues = undefined;
-    let cat = undefined;
-    for (const [category, proficiencies] of Object.entries(this.system.proficiencies)) {
-      if (profName in proficiencies) {
-        cat = category
-        profValues = proficiencies[profName]
-      }
-    }
-    const ph = this.system.PracticeHours
+    let group = Aux.getProficiencyGroup(profName);
+    let profValue = this.system.proficiencies[group][profName].advances;
 
-    let update = {}
-    if ((type == "advance") && (ph.max - ph.used >= this._profCost(profValues.advances)) ) {
-      update[`system.proficiencies.${cat}.${profName}.advances`] = profValues.advances + 1
-      update[`system.PracticeHours.used`] = ph.used + this._profCost(profValues.advances)
-    }
-    else if ((type == "refund") && (profValues.advances > 0) ) {
-      update[`system.proficiencies.${cat}.${profName}.advances`] = profValues.advances - 1
-      update[`system.PracticeHours.used`] = ph.used - this._profCost(profValues.advances - 1)
-    }
-    this.update(update)
+    this._levelingSrv(`system.proficiencies.${group}.${profName}.advances`, type, profValue, this._profCost)
   }
 
   async _advanceWeaponProf(profName, type) {
-    let profValue = undefined;
-    let cat = undefined;
-    for (const [category, weapons] of Object.entries(this.system.weapons)) {
-      if (profName in weapons) {
-        cat = category
-        profValue = weapons[profName].advances
-      }
-    }
-    const ph = this.system.PracticeHours
+    let group = Aux.getWeaponGroup(profName);
+    let profValue = this.system.weapons[group][profName].advances;
+    if (profValue >= this.system.generalCombatAdvances[group] && type == "advance") return undefined;
 
+    this._levelingSrv(`system.weapons.${group}.${profName}.advances`, type, profValue, this._attrCost)
+  }
+
+  async _advanceCombatGeneral(category, type) {
+    let profValue = this.system.generalCombatAdvances[category];
+    this._levelingSrv(`system.generalCombatAdvances.${category}`, type, profValue, this._attrCost)
+  }
+
+  async _levelingSrv(updateName, type, level, costFunc) {
+    const ph = this.system.PracticeHours;
     let update = {}
-    if ((type == "advance") && (ph.max - ph.used >= this._attrCost(profValue)) ) {
-      update[`system.weapons.${cat}.${profName}.advances`] = profValue + 1
-      update[`system.PracticeHours.used`] = ph.used + this._attrCost(profValue)
+    if ((type == "advance") && (ph.max - ph.used >= costFunc(level)) ) {
+      update[updateName] = level + 1
+      update[`system.PracticeHours.used`] = ph.used + costFunc(level)
     }
-    else if ((type == "refund") && (profValue > 0) ) {
-      update[`system.weapons.${cat}.${profName}.advances`] = profValue - 1
-      update[`system.PracticeHours.used`] = ph.used - this._attrCost(profValue - 1)
+    else if ((type == "refund") && (level > 0) ) {
+      update[updateName] = level - 1
+      update[`system.PracticeHours.used`] = ph.used - costFunc(level - 1)
     }
     this.update(update)
   }

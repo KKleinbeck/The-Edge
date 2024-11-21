@@ -1,14 +1,30 @@
 <div style="display: flex; gap: 5px;">
-  {{#each systemData.weapons as |group groupname|}}
+  {{#each systemData.weapons as |group groupName|}}
     <table>
       <thead>
         <tr>
-          <th style="width: 70%"><p style="font-size: 14; text-transform: uppercase;">{{itemName groupname}}</p></th>
+          <th style="width: 70%"><p style="font-size: 14; text-transform: uppercase;">{{itemName groupName}}</p></th>
           <th>{{genName "Adv"}}</th>
           <th>{{genName "Sta"}}</th>
         </tr>
       </thead>
       <tbody>
+        {{#each ../systemData.generalCombatAdvances as |generalAdvance generalName|}}
+          {{#if (checkEqual groupName generalName)}}
+            <tr>
+              <td>
+                <div style="font-weight: bold">
+                  {{genName "Basic Proficiency"}}
+                </div>
+                {{#if ../../prepare.canAdvance}}
+                  <a data-name="{{generalName}}" advance-type="refund"  class="advance-combat-general"><i data-tooltip="{{getSys ../../prepare 'generalCombatAdvances' generalName 'refund'}} PH" class="fas fa-minus advance-fa"></i></a>
+                  <a data-name="{{generalName}}" advance-type="advance" class="advance-combat-general"><i data-tooltip="{{getSys ../../prepare 'generalCombatAdvances' generalName 'cost'}} PH" class="fas fa-plus advance-fa"></i></a>
+                {{/if}}
+              </td>
+              <td colspan="2"><div class="output">{{generalAdvance}}</div></td>
+            </tr>
+          {{/if}}
+        {{/each}}
         {{#each group as |modifiers weapon|}}
           <tr>
             <td>
@@ -20,8 +36,8 @@
                 <a data-name="{{weapon}}" advance-type="advance" class="advance-combat"><i data-tooltip="{{getSys ../../prepare 'weapons' weapon 'cost'}} PH" class="fas fa-plus advance-fa"></i></a>
               {{/if}}
             </td>
-            <td><div class="output">{{getWeaponProficiency ../../actor groupname weapon 'advances'}}</div></td>
-            <td><div class="output">{{getWeaponProficiency ../../actor groupname weapon 'status'}}</div></td>
+            <td><div class="output">{{getWeaponProficiency ../../actor groupName weapon 'advances'}}</div></td>
+            <td><div class="output">{{getWeaponProficiency ../../actor groupName weapon 'status'}}</div></td>
           </tr>
         {{/each}}
       </tbody>

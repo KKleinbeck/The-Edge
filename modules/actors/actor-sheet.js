@@ -88,6 +88,7 @@ export class TheEdgeActorSheet extends ActorSheet {
     html.find(".weapon-d20").click(ev => this._rollAttack(ev))
     html.find(".reload").click(ev => this._reload(ev))
     html.find(".advance-combat").click(ev => this._advanceSrv(ev, "combat"));
+    html.find(".advance-combat-general").click(ev => this._advanceSrv(ev, "combat-general"));
   }
 
   async _useHeroToken(ev) {
@@ -119,7 +120,11 @@ export class TheEdgeActorSheet extends ActorSheet {
 
       case "combat":
         this.actor._advanceWeaponProf(name, type);
-        break
+        break;
+
+      case "combat-general":
+        this.actor._advanceCombatGeneral(name, type);
+        break;
     }
     this._render();
   }
