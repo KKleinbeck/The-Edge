@@ -128,6 +128,8 @@
     "AMMUNITION": "Ammunition",
     "ARMOUR": "Armour",
     "WEAPON": "Weapon",
+    "GEAR": "Gear",
+    "Consumables": "Consumables",
     "OTHERS": "Others",
 
     "ENERGY": "Energy Weapons",

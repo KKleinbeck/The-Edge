@@ -26,12 +26,15 @@ export class TheEdgeItemSheet extends ItemSheet {
     Items.registerSheet("the_edge", ItemSheetVantage, { makeDefault: true, types: ["Advantage", "Disadvantage"] });
     Items.registerSheet("the_edge", ItemSheetSkill, { makeDefault: true, types: ["Skill", "Combatskill"] });
     Items.registerSheet("the_edge", ItemSheetLanguage, { makeDefault: true, types: ["Languageskill"] });
+    Items.registerSheet("the_edge", ItemSheetGear, { makeDefault: true, types: ["Gear"] });
+    Items.registerSheet("the_edge", ItemSheetConsumables, { makeDefault: true, types: ["Consumables"] });
     Items.registerSheet("the_edge", ItemSheetCredits, { makeDefault: true, types: ["Credits"] });
     Items.registerSheet("the_edge", ItemSheetEffect, { makeDefault: true, types: ["Effect"] });
 
     Items.unregisterSheet("the_edge", TheEdgeItemSheet, {
       types: [
-        "Weapon", "Armour", "Ammunition", "Advantage", "Disadvantage", "Skill", "Combatskill", "Languageskill", "Credits", "Effect"
+        "Weapon", "Armour", "Ammunition", "Advantage", "Disadvantage", "Skill",
+        "Combatskill", "Languageskill", "Gear", "Consumables", "Credits", "Effect"
       ]
     });
   }
@@ -262,6 +265,28 @@ class ItemSheetSkill extends TheEdgeItemSheet {
 }
 
 class ItemSheetLanguage extends TheEdgeItemSheet {
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      classes: ["the_edge", "sheet", "item-speech"],
+      width: 390,
+      height: 480,
+      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}],
+    });
+  }
+}
+
+class ItemSheetGear extends TheEdgeItemSheet {
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      classes: ["the_edge", "sheet", "item-speech"],
+      width: 390,
+      height: 480,
+      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}],
+    });
+  }
+}
+
+class ItemSheetConsumables extends TheEdgeItemSheet {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["the_edge", "sheet", "item-speech"],

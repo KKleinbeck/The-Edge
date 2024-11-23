@@ -42,7 +42,7 @@ export class TheEdgeActorSheet extends ActorSheet {
     let creditsDigital = credits.find(c => !c.system?.isSchid)?.system?.value || 0;
     let weight =  this.actor._determineWeight();
     context.helpers = {
-      types: ["Weapon", "Armour", "Ammunition"],
+      types: ["Weapon", "Armour", "Ammunition", "Gear", "Consumables"],
       languages: THE_EDGE.languages,
       credits: {"Schids": creditsOffline, "digital": creditsDigital},
       weight: weight
@@ -235,6 +235,8 @@ export class TheEdgeActorSheet extends ActorSheet {
         return super._onDropItem(event, data)
 
       case "Ammunition":
+      case "Gear":
+      case "Consumables":
         return this._onDropStackableItem(event, data, item)
       
       case "Advantage":

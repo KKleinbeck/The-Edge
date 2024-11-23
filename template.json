@@ -194,7 +194,6 @@
     "Languageskill",
 
     "Gear",
-    "Clothing",
     "Consumables",
     "Credits",
 
@@ -204,10 +203,6 @@
     "description": {
       "description": "",
       "gm_description": ""
-    },
-    "specials": {
-      "specials": "",
-      "gm_specials": ""
     },
     "stackable": {
       "quantity": 1,
@@ -232,7 +227,7 @@
   },
   "htmlFields": ["description"],
   "Weapon": {
-    "templates": ["non-stackable", "description", "specials", "equipable"],
+    "templates": ["non-stackable", "description", "equipable"],
     "type": "Pulse Rifle",
     "isElemental": false,
     "fireModes": {
@@ -247,7 +242,7 @@
     "ammunitionID": ""
   },
   "Armour": {
-    "templates": ["non-stackable", "description", "specials", "equipable"],
+    "templates": ["non-stackable", "description", "equipable"],
     "bodyPart": "Torso",
     "layer": "Inner",
     "structurePoints": 10,
@@ -276,6 +271,8 @@
   "Skill": {"templates": ["description", "skill"]},
   "Combatskill": {"templates": ["description", "skill"]},
   "Languageskill": {"templates": ["description"], "level": 1, "humanSpoken": true},
+  "Gear": {"templates": ["description", "stackable"]},
+  "Consumables": {"templates": ["description", "stackable"], "effects": [{"modifier": "", "value": ""}]},
   "Credits": {"isChid": true, "value": 0},
   "Effect": {"templates": ["description"], "effects": [{"modifier": "", "value": 0}]}
 }
