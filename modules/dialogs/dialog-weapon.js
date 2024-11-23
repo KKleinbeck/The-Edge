@@ -12,7 +12,7 @@ export default class DialogWeapon extends Dialog{
   static async start(checkData) {
     let distance = this.getDistance(checkData.actor.id, checkData.targetIDs, checkData.sceneID)
     let smallestSize =  this.getSmallestSize(checkData.targetIDs, checkData.sceneID)
-    checkData = mergeObject(checkData, {
+    checkData = foundry.utils.mergeObject(checkData, {
       sizes: THE_EDGE.sizes, movements: THE_EDGE.movements,
       distance: distance, smallestSize: smallestSize, cover: THE_EDGE.cover
     })

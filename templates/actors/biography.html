@@ -1,31 +1,3 @@
 <div class="actor-biography groupbox">
-  <h3>Effects</h3>
-  <div class="effect-list">
-    {{#each data.items as |item id|}}
-      {{#if (checkEqual item.type "Effect")}}
-        <div class="item-control item effect-box" data-action="edit" data-item-id="{{item._id}}" style="cursor: pointer;">
-          {{item.name}}
-          <a class="item-control" title="{{ itemName 'Delete' }}" data-action="delete"><i class="fas fa-trash"></i></a>
-        </div>
-      {{/if}}
-    {{/each}}
-  </div>
-  <div style="justify-content: end;">
-    <a class="item-control" title="{{ itemName 'Create' }}" data-action="create-effect"><i class="fas fa-plus"></i> {{itemName "New Effect"}}</a>
-  </div>
-  <hr />
-  <h3>Item Effects</h3>
-  <div class="effect-list">
-    {{#each data.items as |item id|}}
-      {{#if item.system.equipped}}
-        {{#if item.system.hasEffect}}
-          <div class="item-control item effect-box" data-action="edit" data-item-id="{{item._id}}" style="cursor: pointer;">
-            {{item.name}}
-          </div>
-        {{/if}}
-      {{/if}}
-    {{/each}}
-  </div>
-  <hr />
   {{editor biographyHTML target="system.biography" button=true editable=editable engine="prosemirror"}}
 </div>

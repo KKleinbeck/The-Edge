@@ -370,7 +370,8 @@ export class TheEdgeActor extends Actor {
   async applyDamage(damage, crit, damageType) {
     let [location, locationDetail] = this._generateLocation(crit)
 
-    for (const armour of this.itemsTypes["Armour"]) {
+    console.log(this, this.itemTypes)
+    for (const armour of this.itemTypes["Armour"]) {
       if(!armour.system.equipped) continue;
       // TODO: Inner vs outer armour.
       let protectedLoc = armour.system.bodyPart;
@@ -379,13 +380,19 @@ export class TheEdgeActor extends Actor {
       }
     }
 
-    let update = {}
-    update["system.health.value"] = this.system.health.value - damage
-    await this.update(update)
+    if (damage > 0) {
+      let update = {}
+      update["system.health.value"] = this.system.health.value - damage
+      await this.update(update)
 
-    if(this.sheet.rendered) {
-      this.sheet._render()
+      const cls = getDocumentClass("Item");
+      let wound = await cls.create(
+        {name: LocalisationServer.localise("Wound"), type: "Wounds"}, {parent: this}
+      );
+      wound.update({"system.bodyPart": [location, locationDetail]});
     }
+
+    if(this.sheet.rendered) this.sheet._render();
   }
 
   _generateLocation(crit) {
