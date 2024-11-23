@@ -129,7 +129,7 @@
     "ARMOUR": "Armour",
     "WEAPON": "Weapon",
     "GEAR": "Gear",
-    "Consumables": "Consumables",
+    "CONSUMABLES": "Consumables",
     "OTHERS": "Others",
 
     "ENERGY": "Energy Weapons",
@@ -138,7 +138,14 @@
 
     "HAS LEVELS": "Has levels",
     "OFFLINE CURRENCY": "Offline currency",
-    "HUMAN SPOKEN": "Human's can speak"
+    "HUMAN SPOKEN": "Human's can speak",
+
+    "FOOD": "Food",
+    "GRENADE": "Grenade",
+    "SKINPACK": "Skin pack",
+    "FLESHPACK": "Flesh pack",
+    "DRUGS": "Drugs",
+    "GENERIC": "Generic"
   },
   "NOTIFICATIONS": {
     "DESTROYED": "Armour piece {name} was destroyed in combat",

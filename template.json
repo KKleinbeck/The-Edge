@@ -197,6 +197,7 @@
     "Consumables",
     "Credits",
 
+    "Wounds",
     "Effect"
   ],
   "templates": {
@@ -272,7 +273,21 @@
   "Combatskill": {"templates": ["description", "skill"]},
   "Languageskill": {"templates": ["description"], "level": 1, "humanSpoken": true},
   "Gear": {"templates": ["description", "stackable"]},
-  "Consumables": {"templates": ["description", "stackable"], "effects": [{"modifier": "", "value": ""}]},
+  "Consumables": {
+    "templates": ["description", "stackable"],
+    "subtype": "food",
+    "subtypes": {
+      "food": {},
+      "grenade": {
+        "parameters": {"blastDistance": 0, "Damage": "0"},
+        "effects": {"blind": false, "deafen": false, "emp": false, "smoke": false, "shellShock": false}
+      },
+      "skinPack": { "healing": "0", "bleading": "0" },
+      "fleshPack": { "healing": "0", "bleading": "0" },
+      "drugs": {},
+      "generic": {}
+    }
+  },
   "Credits": {"isChid": true, "value": 0},
   "Effect": {"templates": ["description"], "effects": [{"modifier": "", "value": 0}]}
 }

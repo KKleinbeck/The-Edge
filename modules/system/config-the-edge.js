@@ -7,6 +7,7 @@ THE_EDGE.sizes = {"tiny": [-8, -4], "small": [-4, -2], "normal": [0, 0], "large"
 THE_EDGE.movements = {"stationary": [0, 0], "moderate": [-1, -1], "fast": [-2, -2], "erradic": [-4, -4]}
 THE_EDGE.cover = {"no cover": 0, "half cover": -2, "three quarters": -4, "full cover": -20}
 THE_EDGE.body_parts = ["Torso", "Arms", "Legs", "Below_Neck", "Head", "Entire"]
+THE_EDGE.consumables_subtypes = ["Food", "Grenade", "SkinPack", "FleshPack", "Drugs", "Generic"]
 
 THE_EDGE.effect_map = {
   attributes: {

@@ -21,6 +21,14 @@
                         {{genName "Quantity"}}<br/>
                         <input type="number" name="system.quantity" value="{{data.system.quantity}}" data-dtype="Number"/>
                     </div>
+                    <div class="item-header-fields">
+                        {{genName "Type"}}<br/>
+                        <select class="selection-box" name="system.subtype" id="Type Selector">
+                            {{#each systemData.subtypes as |details typeName|}}
+                                <option value="{{typeName}}" {{#if (checkEqual ../systemData.subtype typeName)}}selected{{/if}}>{{itemName typeName}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
