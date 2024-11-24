@@ -1,5 +1,5 @@
 <div class="actor-health groupbox">
-  <h3>Effects</h3>
+  <h3>{{genName "Effects"}}</h3>
   <div class="effect-list">
     {{#each data.items as |item id|}}
       {{#if (checkEqual item.type "Effect")}}
@@ -14,7 +14,7 @@
     <a class="item-control" title="{{ itemName 'Create' }}" data-action="create-effect"><i class="fas fa-plus"></i> {{itemName "New Effect"}}</a>
   </div>
   <hr />
-  <h3>Item Effects</h3>
+  <h3>{{genName "Item Effects"}}</h3>
   <div class="effect-list">
     {{#each data.items as |item id|}}
       {{#if item.system.equipped}}
@@ -27,27 +27,31 @@
     {{/each}}
   </div>
   <hr />
-  <div class="wound-overview">
-    <img src="systems/the_edge/icons/body_female.png" alt="Background" class="background-image">
-    <div class="overlay">
-      <!-- Red dot with blur -->
-      <div class="red-dot" style="top: 100px; left: 150px;"></div>
-      <!-- Text next to the dot -->
-      <div class="dot-label" style="top: 100px; left: 180px;">Dot 1</div>
-      
-      <!-- Another red dot -->
-      <div class="red-dot" style="top: 200px; left: 250px;"></div>
-      <div class="dot-label" style="top: 200px; left: 280px;">Dot 2</div>
+  <h3>{{genName "Injuries"}}</h3>
+  <div style="display: flex; justify-content: flex-start; gap: 20px; padding: 10px;">
+    <div class="wound-overview">
+      <img src="systems/the_edge/icons/body_female.png" alt="Background" class="background-image">
+      <div class="overlay">
+        {{#each data.items as |item id|}}
+          {{#if (checkEqual item.type "Wounds")}}
+            <div class="item-control item" data-action="edit" data-item-id="{{item._id}}" style="cursor: pointer;">
+              {{{getWoundCoords item.system.coordinates}}}
+            </div>
+          {{/if}}
+        {{/each}}
+      </div>
+    </div>
+    <div style="columns: 3;">
+    {{#each data.items as |item id|}}
+      {{#if (checkEqual item.type "Wounds")}}
+        <div class="flexrow item-control item" data-action="edit" data-item-id="{{item._id}}" style="cursor: pointer;">
+          <img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
+          <h4 class="item-name">
+            {{item.name}}
+          </h4>
+        </div>
+      {{/if}}
+    {{/each}}
     </div>
   </div>
-  {{#each data.items as |item id|}}
-    {{#if (checkEqual item.type "Wounds")}}
-      <div class="flexrow item-control item" data-action="edit" data-item-id="{{item._id}}" style="cursor: pointer;">
-        <img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
-        <h4 class="item-name">
-          {{item.name}}
-        </h4>
-      </div>
-    {{/if}}
-  {{/each}}
 </div>

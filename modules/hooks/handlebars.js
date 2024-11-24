@@ -76,6 +76,10 @@ export default function() {
             let encumbrance = Math.ceil((weight - str) / (str/2));
             let remaining = encumbrance * (str/2) - (weight - str)
             return `${Math.floor(10 * remaining)/10}kg ${LocalisationServer.localise("to next level")}`
+        },
+        getWoundCoords: (coords) => {
+            return `<div class="red-dot" style="left: ${coords[0]}%; top: ${coords[1]}%;"></div>` +
+            `<div class="dot-label" style="left: ${coords[0]+5}%; top: ${coords[1]}%;">Dot 1</div>`
         }
     })
 }

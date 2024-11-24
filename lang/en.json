@@ -254,6 +254,8 @@
   "HEARTRATE": "Heart rate",
   "HEROTOKEN": "Hero token",
   "INITIATIVE": "Initiative",
+  "INJURIES": "Injuries & Wounds",
+  "ITEM EFFECTS": "Item effects",
   "ITEMS TAB": "Items",
   "LANGUAGE": "Language",
   "LEVEL": "Level",
@@ -287,6 +289,7 @@
   "USED": "Used",
   "VALUE": "Value",
   "WEIGHT": "Weight",
+  "WOUND": "Wound",
   "WITH": "With",
   "ZONE": "Zone",
 

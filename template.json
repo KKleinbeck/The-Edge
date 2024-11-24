@@ -154,6 +154,10 @@
       "max": 20
     },
     "age": 21,
+    "sex": "female",
+    "height": 0,
+    "bloodType": "",
+    "handedness": "",
     "size": "normal",
     "heartRate": {
       "value": 50,
@@ -289,7 +293,7 @@
     }
   },
   "Credits": {"isChid": true, "value": 0},
-  "Wounds": {"damage": [0, 0], "bleeding": [0, 0], "bodyPart": ["", ""], "coordinates": [0, 0]},
+  "Wounds": {"damage": [0, 0], "bleeding": [0, 0], "bodyPart": "", "coordinates": [0, 0]},
   "Effect": {"templates": ["description"], "effects": [{"modifier": "", "value": 0}]}
 }
 }

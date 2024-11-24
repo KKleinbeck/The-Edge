@@ -368,7 +368,7 @@ export class TheEdgeActor extends Actor {
   }
   
   async applyDamage(damage, crit, damageType) {
-    let [location, locationDetail] = this._generateLocation(crit)
+    let [location, locationCoord] = this._generateLocation(crit)
 
     console.log(this, this.itemTypes)
     for (const armour of this.itemTypes["Armour"]) {
@@ -389,21 +389,29 @@ export class TheEdgeActor extends Actor {
       let wound = await cls.create(
         {name: LocalisationServer.localise("Wound"), type: "Wounds"}, {parent: this}
       );
-      wound.update({"system.bodyPart": [location, locationDetail]});
+      wound.update({"system.bodyPart": location, "system.coordinates": locationCoord});
     }
 
     if(this.sheet.rendered) this.sheet._render();
   }
 
   _generateLocation(crit) {
-    if (crit) return ["Head", ""];
-    let rand = Math.random();
-    if (rand < 0.02) { // 20% legs
-      return ["Legs", ["Left", "Right"].random()]
-    } if (rand < 0.04) { // 20% arms
-      return ["Arms", ["Left", "Right"].random()]
+    let locationDescription = "";
+    if (crit) locationDescription = "Head";
+    else {
+      let rand = Math.random();
+      if (rand < 0.15) locationDescription = "Legs" + ["Left", "Right"].random(); // 15%
+      else if (rand < 0.30) locationDescription = "Arms" + ["Left", "Right"].random(); // 30%
+      else locationDescription = "Torso"; // 65%, as p(crit) == 5%
     }
-    return ["Torso", ""]
+    let cordDescription = THE_EDGE.wounds_pixel_coords[this.system.sex][locationDescription]
+    let [x0, y0] = cordDescription.coords[0];
+    let [x1, y1] = cordDescription.coords[1];
+    let r = cordDescription.radius * Math.random();
+    let [t, phi] = [Math.random(), 2 * Math.PI * Math.random()];
+    let x = (1-t)*x0 + t*x1 + r * Math.cos(phi);
+    let y = (1-t)*y0 + t*y1 + r * Math.sin(phi);
+    return [locationDescription, [x,y]];
   }
 
   _attrCost(n) { return 10 * Math.floor(14 + 6 * Math.pow(1.2, n)); }
