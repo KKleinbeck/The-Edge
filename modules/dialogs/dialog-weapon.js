@@ -43,7 +43,7 @@ export default class DialogWeapon extends Dialog{
           // Apply the damage
           for (const target of targets) {
             for (let i = 0; i < damage.length; ++i){
-              await target.applyDamage(damage[i], crits[i], checkData.damageType)
+              await target.applyDamage(damage[i], crits[i], checkData.damageType, checkData.name)
             }
           }
         }

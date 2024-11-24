@@ -45,7 +45,8 @@ export class TheEdgeActorSheet extends ActorSheet {
       types: ["Weapon", "Armour", "Ammunition", "Gear", "Consumables"],
       languages: THE_EDGE.languages,
       credits: {"Schids": creditsOffline, "digital": creditsDigital},
-      weight: weight
+      weight: weight,
+      bodyParts: ["Torso", "Head", "Arms", "Legs"]
     }
     return context;
   }

@@ -41,17 +41,26 @@
         {{/each}}
       </div>
     </div>
-    <div style="columns: 3;">
-    {{#each data.items as |item id|}}
-      {{#if (checkEqual item.type "Wounds")}}
-        <div class="flexrow item-control item" data-action="edit" data-item-id="{{item._id}}" style="cursor: pointer;">
-          <img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
-          <h4 class="item-name">
-            {{item.name}}
-          </h4>
+    <div style="columns: 2;">
+      {{#each helpers.bodyParts as |bPart|}}
+        <div style="padding-bottom: 10px; break-inside: avoid-column; min-width: 200px;">
+          <b>{{genName bPart}}</b><hr />
+          {{#each ../data.items as |item id|}}
+            {{#if (checkEqual item.type "Wounds")}}
+              {{#if (checkInstance bPart item.system.bodyPart)}}
+                <div class="item-control item" data-action="edit" data-item-id="{{item._id}}" style="cursor: pointer; min-width: 200px;">
+                  <h4 class="item-name">{{item.name}}</h4>
+                  <div class="item-controls" style="display: flex; justify-content: space-between; white-space: no-wrap; padding-left: 10px;">
+                      <div>{{genName "Damage"}} {{item.system.damage}}</div>
+                      <div>{{genName "Bleeding"}} {{item.system.bleeding}}</div>
+                      <a class="item-control" title="{{ itemName 'Delete' }}" data-action="delete"><i class="fas fa-trash"></i></a>
+                  </div>
+                </div>
+              {{/if}}
+            {{/if}}
+          {{/each}}
         </div>
-      {{/if}}
-    {{/each}}
+      {{/each}}
     </div>
   </div>
 </div>

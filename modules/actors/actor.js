@@ -367,7 +367,7 @@ export class TheEdgeActor extends Actor {
     return Math.max(level + attr_mod, 0)
   }
   
-  async applyDamage(damage, crit, damageType) {
+  async applyDamage(damage, crit, damageType, name) {
     let [location, locationCoord] = this._generateLocation(crit)
 
     console.log(this, this.itemTypes)
@@ -386,10 +386,11 @@ export class TheEdgeActor extends Actor {
       await this.update(update)
 
       const cls = getDocumentClass("Item");
-      let wound = await cls.create(
-        {name: LocalisationServer.localise("Wound"), type: "Wounds"}, {parent: this}
-      );
-      wound.update({"system.bodyPart": location, "system.coordinates": locationCoord});
+      let wound = await cls.create({name: name, type: "Wounds"}, {parent: this});
+      wound.update({
+        "system.bodyPart": location, "system.coordinates": locationCoord,
+        "system.damage": damage, "system.bleeding": 0
+      });
     }
 
     if(this.sheet.rendered) this.sheet._render();

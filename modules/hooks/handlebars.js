@@ -78,8 +78,8 @@ export default function() {
             return `${Math.floor(10 * remaining)/10}kg ${LocalisationServer.localise("to next level")}`
         },
         getWoundCoords: (coords) => {
-            return `<div class="red-dot" style="left: ${coords[0]}%; top: ${coords[1]}%;"></div>` +
-            `<div class="dot-label" style="left: ${coords[0]+5}%; top: ${coords[1]}%;">Dot 1</div>`
+            return `<div class="red-dot" style="left: ${coords[0]}%; top: ${coords[1]}%;"></div>`;
+            // `<div class="dot-label" style="left: ${coords[0]+5}%; top: ${coords[1]}%;">Dot 1</div>`
         }
     })
 }
