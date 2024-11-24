@@ -145,7 +145,15 @@
     "SKINPACK": "Skin pack",
     "FLESHPACK": "Flesh pack",
     "DRUGS": "Drugs",
-    "GENERIC": "Generic"
+    "GENERIC": "Generic",
+
+    "BODY PART": "Body part",
+    "ARMSLEFT": "Left arm",
+    "ARMSRIGHT": "Right arm",
+    "HEAD": "Head",
+    "LEGSLEFT": "Left leg",
+    "LEGSRIGHT": "Right leg",
+    "TORSO": "Torso"
   },
   "NOTIFICATIONS": {
     "DESTROYED": "Armour piece {name} was destroyed in combat",

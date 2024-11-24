@@ -13,11 +13,20 @@ THE_EDGE.wounds_pixel_coords = {
     "Head":      {"coords": [[47.0, 8.0], [47.0, 8.0]], "radius": 5},
     "Torso":     {"coords": [[47.0,22.0], [47.0,45.0]], "radius": 7},
     "ArmsLeft":  {"coords": [[23.5,23.0], [14.5,46.0]], "radius": 1},
-    "ArmsRight": {"coords": [[23.5,71.5], [80.0,46.0]], "radius": 1},
+    "ArmsRight": {"coords": [[71.0,23.0], [80.0,46.0]], "radius": 1},
+    "LegsLeft":  {"coords": [[33.5,57.0], [32.5,84.0]], "radius": 1},
+    "LegsRight": {"coords": [[62.0,57.0], [63.0,84.0]], "radius": 1}
+  },
+  "male": {
+    "Head":      {"coords": [[47.0, 8.0], [47.0, 8.0]], "radius": 5},
+    "Torso":     {"coords": [[47.0,22.0], [47.0,45.0]], "radius": 7},
+    "ArmsLeft":  {"coords": [[23.5,23.0], [14.5,46.0]], "radius": 1},
+    "ArmsRight": {"coords": [[71.0,23.0], [80.0,46.0]], "radius": 1},
     "LegsLeft":  {"coords": [[33.5,57.0], [32.5,84.0]], "radius": 1},
     "LegsRight": {"coords": [[62.0,57.0], [63.0,84.0]], "radius": 1}
   }
 }
+THE_EDGE.bleeding_threshold = {"energy": 4, "kinetic": 2, "elemental": 10}
 
 THE_EDGE.effect_map = {
   attributes: {

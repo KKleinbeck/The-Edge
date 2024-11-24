@@ -49,8 +49,8 @@
             {{#if (checkEqual item.type "Wounds")}}
               {{#if (checkInstance bPart item.system.bodyPart)}}
                 <div class="item-control item" data-action="edit" data-item-id="{{item._id}}" style="cursor: pointer; min-width: 200px;">
-                  <h4 class="item-name">{{item.name}}</h4>
-                  <div class="item-controls" style="display: flex; justify-content: space-between; white-space: no-wrap; padding-left: 10px;">
+                  <h4 class="item-name" style="margin: 0px;">{{item.name}}</h4>
+                  <div class="item-controls" style="display: flex; justify-content: space-between; white-space: no-wrap; padding: 0 0 5px 10px;">
                       <div>{{genName "Damage"}} {{item.system.damage}}</div>
                       <div>{{genName "Bleeding"}} {{item.system.bleeding}}</div>
                       <a class="item-control" title="{{ itemName 'Delete' }}" data-action="delete"><i class="fas fa-trash"></i></a>

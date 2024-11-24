@@ -385,11 +385,14 @@ export class TheEdgeActor extends Actor {
       update["system.health.value"] = this.system.health.value - damage
       await this.update(update)
 
+      let bt = THE_EDGE.bleeding_threshold[damageType]
+      let bleeding = Math.floor(damage / bt) + ((damage % bt) / bt < Math.random())
+
       const cls = getDocumentClass("Item");
       let wound = await cls.create({name: name, type: "Wounds"}, {parent: this});
       wound.update({
         "system.bodyPart": location, "system.coordinates": locationCoord,
-        "system.damage": damage, "system.bleeding": 0
+        "system.damage": damage, "system.bleeding": bleeding
       });
     }
 
