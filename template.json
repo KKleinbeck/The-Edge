@@ -156,8 +156,8 @@
     "age": 21,
     "sex": "female",
     "height": 0,
-    "bloodType": "",
-    "handedness": "",
+    "bloodType": "AB",
+    "handedness": "right",
     "size": "normal",
     "heartRate": {
       "value": 50,
