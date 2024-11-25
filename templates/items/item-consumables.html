@@ -36,11 +36,41 @@
 
     {{!-- Sheet Tab Navigation --}}
     <nav class="sheet-tabs tabs" data-group="primary">
+        <a class="item" data-tab="effects">Effects</a>
         <a class="item" data-tab="description">Description</a>
     </nav>
 
     {{!-- Sheet Body --}}
     <section class="sheet-body">
+        {{#if (checkEqual systemData.subtype "grenade")}}
+        {{else}}
+            {{#if (checkEqual systemData.subtype "medicine")}}
+                <div class="item-columned-page" style="align-items: baseline;">
+                    <div class="item-fields">
+                        <label for="Healing">{{genName "Healing"}}</label><br/>
+                        <input type="text" id="Healing" name="system.subtypes.medicine.healing" value="{{systemData.subtypes.medicine.healing}}"/>
+                    </div>
+                    <div class="item-fields">
+                        <label for="Coagulation">{{genName "Coagulation"}}</label><br/>
+                        <input type="text" id="Coagulation" name="system.subtypes.medicine.coagulation" value="{{systemData.subtypes.medicine.coagulation}}"/>
+                    </div>
+                    <div class="item-fields" style="white-space: nowrap;">
+                        <label for="ActionCost">{{genName "Action Cost"}}</label><br/>
+                        <input type="number" id="ActionCost" name="system.subtypes.medicine.actionCost" value="{{systemData.subtypes.medicine.actionCost}}"/>
+                    </div>
+                    <div class="item-fields">
+                        <label for="Medicine Effect Selector">{{genName "Effect"}}</label><br/>
+                        <select class="selection-box" name="system.subtypes.medicine.effect" id="Medicine Effect Selector">
+                            {{#each helpers.medicineEffects as |effect|}}
+                                <option value="{{effect}}" {{#if (checkEqual ../systemData.subtypes.medicine.effect effect)}}selected{{/if}}>{{itemName effect}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                </div> 
+            {{else}}
+                {{> systems/the_edge/templates/items/meta-effects.html}}
+            {{/if}}
+        {{/if}}
         {{> systems/the_edge/templates/items/meta-description.html}}
     </section>
 </form>

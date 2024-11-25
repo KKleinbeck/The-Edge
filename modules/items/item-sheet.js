@@ -190,7 +190,7 @@ class ItemSheetSkill extends TheEdgeItemSheet {
       classes: ["the_edge", "sheet", "item-skill"],
       width: 390,
       height: 480,
-      displayHint: true,
+      displayHint: false,
       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}],
     });
   }
@@ -287,14 +287,27 @@ class ItemSheetGear extends TheEdgeItemSheet {
   }
 }
 
-class ItemSheetConsumables extends TheEdgeItemSheet {
+class ItemSheetConsumables extends ItemSheetSkill {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["the_edge", "sheet", "item-speech"],
       width: 390,
       height: 480,
-      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}],
+      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "effects"}],
     });
+  }
+
+  async getData(options) {
+    const context = await super.getData(options);
+    context.helpers = {
+      medicineEffects: THE_EDGE.medicine_effects,
+      displayHint: this.options.displayHint
+    };
+    return context;
+  }
+
+  get template() {
+    return `systems/the_edge/templates/items/item-consumables.html`;
   }
 }
 
@@ -315,7 +328,7 @@ class ItemSheetWounds extends TheEdgeItemSheet {
       classes: ["the_edge", "sheet", "item-wounds"],
       width: 390,
       height: 240,
-      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "effects"}],
+      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}],
     });
   }
 

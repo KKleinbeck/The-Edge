@@ -1,0 +1,7 @@
+<div class="check-dialog-box" style="padding-bottom: 15px;">
+  <select name="WoundSelector">
+    {{#each wounds as |wound|}}
+        <option value="{{wound.id}}">{{itemName wound.system.bodyPart}} - D{{wound.system.damage}} B{{wound.system.bleeding}}</option>
+    {{/each}}
+  </select>
+</div>

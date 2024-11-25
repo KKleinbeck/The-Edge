@@ -2,6 +2,7 @@ import THE_EDGE from "../system/config-the-edge.js";
 import DialogAttribute from "../dialogs/dialog-attribute.js";
 import DialogProficiency from "../dialogs/dialog-proficiency.js";
 import DialogReload from "../dialogs/dialog-reload.js";
+import DialogMedicine from "../dialogs/dialog-medicine.js";
 import DialogWeapon from "../dialogs/dialog-weapon.js";
 import LocalisationServer from "../system/localisation_server.js";
 
@@ -365,6 +366,14 @@ export class TheEdgeActorSheet extends ActorSheet {
       case "toggle-equip":
         item.toggleEquipped()
         this._render();
+        break;
+      case "consume":
+        switch (item.system.subtype) {
+          case "medicine":
+            let wounds = this.actor.itemTypes["Wounds"];
+            DialogMedicine.start({medicine: item.system.subtypes.medicine, wounds: wounds, actor: this.actor});
+            break;
+        }
         break;
     }
   }

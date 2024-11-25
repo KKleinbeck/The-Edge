@@ -281,19 +281,17 @@
     "templates": ["description", "stackable"],
     "subtype": "food",
     "subtypes": {
-      "food": {},
+      "medicine": { "healing": "0", "coagulation": "0", "effect": "heals", "actionCost": "1" },
       "grenade": {
         "parameters": {"blastDistance": 0, "Damage": "0"},
         "effects": {"blind": false, "deafen": false, "emp": false, "smoke": false, "shellShock": false}
       },
-      "skinPack": { "healing": "0", "bleading": "0" },
-      "fleshPack": { "healing": "0", "bleading": "0" },
-      "drugs": {},
-      "generic": {}
-    }
+      "food": {}, "drugs": {}, "generic": {}
+    },
+    "effects": []
   },
   "Credits": {"isChid": true, "value": 0},
-  "Wounds": {"damage": 0, "bleeding": 0, "bodyPart": "", "coordinates": [0, 0]},
+  "Wounds": {"damage": 0, "bleeding": 0, "bodyPart": "", "coordinates": [0, 0], "status": "open"},
   "Effect": {"templates": ["description"], "effects": [{"modifier": "", "value": 0}]}
 }
 }

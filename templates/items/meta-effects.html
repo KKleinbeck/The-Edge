@@ -3,16 +3,16 @@
     <div class="effect-hint" style="display: flex; flex-wrap: nowrap; padding: 10px; background-color: #777; justify-content: space-between; color: white;">
       <div>{{genName "Explanations"}}</div>
       {{#if helpers.displayHint}}
-        <i class="fas fa-chevron-down"></i>
-      {{else}}
         <i class="fas fa-chevron-up"></i>
+      {{else}}
+        <i class="fas fa-chevron-down"></i>
       {{/if}}
     </div>
     {{#if helpers.displayHint}}
-    {{else}}
       <div style="background-color: #AAA; padding: 10px;">
         {{textLocalisation "Effects"}}
       </div>
+    {{else}}
     {{/if}}
   </div><br />
   {{#each systemData.effects as |effect|}}

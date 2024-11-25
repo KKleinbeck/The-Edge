@@ -27,6 +27,8 @@ THE_EDGE.wounds_pixel_coords = {
   }
 }
 THE_EDGE.bleeding_threshold = {"energy": 4, "kinetic": 2, "elemental": 10}
+THE_EDGE.medicine_effects = ["heals", "coagulates", "seals"]
+THE_EDGE.wound_status = ["open", "coagulated", "sealed"]
 
 THE_EDGE.effect_map = {
   attributes: {
