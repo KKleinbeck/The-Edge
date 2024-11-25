@@ -30,7 +30,11 @@
   <h3>{{genName "Injuries"}}</h3>
   <div style="display: flex; justify-content: flex-start; gap: 20px; padding: 10px;">
     <div class="wound-overview">
-      <img src="systems/the_edge/icons/body_female.png" alt="Background" class="background-image">
+      {{#if (checkEqual systemData.sex "female")}}
+        <img src="systems/the_edge/icons/body_female.png" alt="Background" class="background-image">
+      {{else}}
+        <img src="systems/the_edge/icons/body_male.png" alt="Background" class="background-image">
+      {{/if}}
       <div class="overlay">
         {{#each data.items as |item id|}}
           {{#if (checkEqual item.type "Wounds")}}

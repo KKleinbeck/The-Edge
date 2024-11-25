@@ -10,20 +10,20 @@ THE_EDGE.body_parts = ["Torso", "Arms", "Legs", "Below_Neck", "Head", "Entire"]
 THE_EDGE.consumables_subtypes = ["Food", "Grenade", "SkinPack", "FleshPack", "Drugs", "Generic"]
 THE_EDGE.wounds_pixel_coords = {
   "female": {
-    "Head":      {"coords": [[47.0, 8.0], [47.0, 8.0]], "radius": 5},
-    "Torso":     {"coords": [[47.0,22.0], [47.0,45.0]], "radius": 7},
-    "ArmsLeft":  {"coords": [[23.5,23.0], [14.5,46.0]], "radius": 1},
-    "ArmsRight": {"coords": [[71.0,23.0], [80.0,46.0]], "radius": 1},
-    "LegsLeft":  {"coords": [[33.5,57.0], [32.5,84.0]], "radius": 1},
-    "LegsRight": {"coords": [[62.0,57.0], [63.0,84.0]], "radius": 1}
+    "Head":      {"coords": [[47.0, 8.0], [47.0, 8.0]], "radius":  5},
+    "Torso":     {"coords": [[47.0,22.0], [47.0,45.0]], "radius": 10},
+    "ArmsLeft":  {"coords": [[23.5,23.0], [14.5,46.0]], "radius":  1},
+    "ArmsRight": {"coords": [[71.0,23.0], [80.0,46.0]], "radius":  1},
+    "LegsLeft":  {"coords": [[33.5,57.0], [32.5,84.0]], "radius":  1},
+    "LegsRight": {"coords": [[62.0,57.0], [63.0,84.0]], "radius":  1}
   },
   "male": {
-    "Head":      {"coords": [[47.0, 8.0], [47.0, 8.0]], "radius": 5},
-    "Torso":     {"coords": [[47.0,22.0], [47.0,45.0]], "radius": 7},
-    "ArmsLeft":  {"coords": [[23.5,23.0], [14.5,46.0]], "radius": 1},
-    "ArmsRight": {"coords": [[71.0,23.0], [80.0,46.0]], "radius": 1},
-    "LegsLeft":  {"coords": [[33.5,57.0], [32.5,84.0]], "radius": 1},
-    "LegsRight": {"coords": [[62.0,57.0], [63.0,84.0]], "radius": 1}
+    "Head":      {"coords": [[47.0, 8.0], [47.0, 8.0]], "radius":  5},
+    "Torso":     {"coords": [[47.0,22.0], [47.0,45.0]], "radius": 15},
+    "ArmsLeft":  {"coords": [[21.5,23.0], [12.5,46.0]], "radius":  1},
+    "ArmsRight": {"coords": [[73.0,23.0], [82.0,46.0]], "radius":  1},
+    "LegsLeft":  {"coords": [[30.5,57.0], [28.5,84.0]], "radius":  1},
+    "LegsRight": {"coords": [[65.0,57.0], [67.0,84.0]], "radius":  1}
   }
 }
 THE_EDGE.bleeding_threshold = {"energy": 4, "kinetic": 2, "elemental": 10}
