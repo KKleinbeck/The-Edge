@@ -711,6 +711,14 @@
   border-radius: 50%;
   filter: blur(3px); /* Gaussian blur effect */
 }
+.the_edge .wound-overview .orange-dot {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: orange;
+  border-radius: 50%;
+  filter: blur(3px); /* Gaussian blur effect */
+}
 .the_edge .wound-overview .dot-label {
   position: absolute;
   font-size: 14px;

@@ -35,7 +35,7 @@
         {{#each data.items as |item id|}}
           {{#if (checkEqual item.type "Wounds")}}
             <div class="item-control item" data-action="edit" data-item-id="{{item._id}}" style="cursor: pointer;">
-              {{{getWoundCoords item.system.coordinates}}}
+              {{{getWoundCoords item.system}}}
             </div>
           {{/if}}
         {{/each}}
