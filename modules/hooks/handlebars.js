@@ -80,8 +80,32 @@ export default function() {
         getWoundCoords: (details) => {
             let colour = details.bleeding > 0 ? "red" : "orange";
             let coords = details.coordinates;
-            return `<div class="${colour}-dot" style="left: ${coords[0]}%; top: ${coords[1]}%;"></div>`;
-            // `<div class="dot-label" style="left: ${coords[0]+5}%; top: ${coords[1]}%;">Dot 1</div>`
+            let icon = undefined
+            switch (details.status) {
+                case "open":
+                    icon = "fa-regular fa-droplet";
+                    break;
+                case "coagulated":
+                    icon = "fa-regular fa-droplet-slash";
+                    break;
+                case "sealed":
+                    icon = "fa-light fa-bandage";
+                    break;
+            }
+            return `<div class="${colour}-dot" style="left: ${coords[0]}%; top: ${coords[1]}%;"></div>` +
+            `<div class="dot-label" title="${LocalisationServer.localise(details.status, "item")}" style="left: ${coords[0]}%; top: ${coords[1]}%;">` +
+            `<i class="${icon}"></i>` +
+            `</div>`
+        },
+        getWoundIcon: (status) => {
+            switch (status) {
+                case "open":
+                    return "fa-droplet";
+                case "coagulated":
+                    return "fa-droplet-slash";
+                case "sealed":
+                    return "fa-bandage";
+            }
         }
     })
 }

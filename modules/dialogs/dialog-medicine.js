@@ -8,7 +8,8 @@ export default class DialogMedicine extends Dialog{
   }
 
   static async start(checkData) {
-    let effect = checkData.medicine.effect;
+    let medicine = checkData.medicineItem.system.subtypes.medicine;
+    let effect = medicine.effect;
     let wounds = checkData.wounds.filter(x => x.system.status != "sealed")
     if (effect === "heals") wounds = wounds.filter(x => x.system.status == "open");
 
@@ -18,8 +19,8 @@ export default class DialogMedicine extends Dialog{
       select: {
         label: game.i18n.localize("DIALOG.SELECT"),
         callback: async (html) => {
-          let healing = (await DiceServer._genericRoll(checkData.medicine.healing)).reduce((a,b) => a+b, 0);
-          let coagulation = (await DiceServer._genericRoll(checkData.medicine.coagulation)).reduce((a,b) => a+b, 0);
+          let healing = (await DiceServer._genericRoll(medicine.healing)).reduce((a,b) => a+b, 0);
+          let coagulation = (await DiceServer._genericRoll(medicine.coagulation)).reduce((a,b) => a+b, 0);
           
           let selectedID =  html.find('[name="WoundSelector"]').val();
           let wound = wounds.find(x => x.id == selectedID)
@@ -44,6 +45,10 @@ export default class DialogMedicine extends Dialog{
               checkData.actor.system.health.max, checkData.actor.system.health.value + healing
             )
           })
+
+          if (checkData.medicineItem.system.quantity == 1) {
+            await checkData.medicineItem.delete()
+          } else checkData.medicineItem.update({"system.quantity": checkData.medicineItem.system.quantity - 1});
         }
       },
       cancel: {

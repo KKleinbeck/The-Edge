@@ -371,7 +371,7 @@ export class TheEdgeActorSheet extends ActorSheet {
         switch (item.system.subtype) {
           case "medicine":
             let wounds = this.actor.itemTypes["Wounds"];
-            DialogMedicine.start({medicine: item.system.subtypes.medicine, wounds: wounds, actor: this.actor});
+            DialogMedicine.start({medicineItem: item, wounds: wounds, actor: this.actor});
             break;
         }
         break;
