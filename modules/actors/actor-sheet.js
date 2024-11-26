@@ -3,6 +3,7 @@ import DialogAttribute from "../dialogs/dialog-attribute.js";
 import DialogProficiency from "../dialogs/dialog-proficiency.js";
 import DialogReload from "../dialogs/dialog-reload.js";
 import DialogMedicine from "../dialogs/dialog-medicine.js";
+import DialogRest from "../dialogs/dialog-rest.js";
 import DialogWeapon from "../dialogs/dialog-weapon.js";
 import LocalisationServer from "../system/localisation_server.js";
 
@@ -92,8 +93,8 @@ export class TheEdgeActorSheet extends ActorSheet {
     html.find(".advance-combat-general").click(ev => this._advanceSrv(ev, "combat-general"));
 
     // Health
-    html.find(".short-rest").click(_ => this.actor._shortRest())
-    // html.find(".long-rest").click(ev => this._reload(ev))
+    html.find(".short-rest").click(_ => DialogRest.start({actor: this.actor, type: "short rest"}))
+    html.find(".long-rest").click(_ => DialogRest.start({actor: this.actor, type: "long rest"}))
   }
 
   async _useHeroToken(ev) {

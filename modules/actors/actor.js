@@ -3,6 +3,7 @@ import THE_EDGE from "../system/config-the-edge.js";
 import Aux from "../system/auxilliaries.js";
 import LocalisationServer from "../system/localisation_server.js";
 import ChatServer from "../system/chat_server.js";
+import DiceServer from "../system/dice_server.js";
 
 /**
  * Extend the base Actor document to support attributes and groups with a custom template creation dialog.
@@ -422,30 +423,38 @@ export class TheEdgeActor extends Actor {
     return [locationDescription, [x,y]];
   }
 
-  _shortRest() {
+  shortRest() {this._rest("1d2-1", "1d3-2", "short rest")}
+  longRest() {this._rest("1d5+1", "2d6kl", "long rest")}
+
+  async _rest(coagulationDice, healingDice, type) {
     let wounds = this.itemTypes["Wounds"];
     let accHealing = 0;
     let accCoagulation = 0;
     for (const wound of wounds) {
       if (wound.system.bleeding > 0) {
-        if (wound.system.damage == 0 && wound.system.bleeding == 1) {
+        let coagulationRoll = await new Roll(coagulationDice).evaluate()
+        let coagulation = coagulationRoll.total
+        console.log(coagulation)
+        if (wound.system.damage == 0 && wound.system.bleeding <= coagulation) {
           wound.delete();
-          accCoagulation += 1;
-        } else {
-          wound.update({"system.bleeding": wound.system.bleeding - 1});
-          accCoagulation += 1;
+          accCoagulation += wound.system.bleeding;
+        } else if (coagulation > 0) {
+          wound.update({"system.bleeding": Math.max(wound.system.bleeding - coagulation, 0)});
+          accCoagulation += Math.max(wound.system.bleeding - coagulation, 0);
         }
       } else {
-        let healing = Math.random() > 0.5;
-        if (healing == wound.system.damage) { // shortcut: wound healed afterwards
+        let healingRoll = await new Roll(healingDice).evaluate()
+        let healing = healingRoll.total
+        if (wound.system.damage <= healing) { // shortcut: wound healed afterwards
           wound.delete();
-          accHealing += 1;
+          accHealing += wound.system.damage;
         } else if (healing > 0) {
-          wound.update({"system.damage": wound.system.damage - 1});
-          accHealing += 1
+          wound.update({"system.damage": wound.system.damage - healing});
+          accHealing += healing
         }
       }
     }
-    ChatServer.transmitEvent("ShortRest", {healing: accHealing, coagulation: accCoagulation})
+    this.update({"system.health.value": Math.min(this.system.health.max, this.system.health.value + accHealing)});
+    ChatServer.transmitEvent(type, {healing: accHealing, coagulation: accCoagulation})
   }
 }

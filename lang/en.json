@@ -107,6 +107,7 @@
     "CANCEL": "Cancel",
     "CHEAT": "Cheat",
     "EMPTY": "Empty",
+    "REST": "Rest",
     "ROLL": "Roll",
     "SELECT": "Select"
   },
@@ -313,7 +314,7 @@
   "RIGHT": "Right",
   "SEX": "Sex",
   "SHORT REST": "Short rest",
-  "SHORT REST CHAT": "Spent 30 min to take a short rest.",
+  "SHORT REST CHAT": "Spent 30min to take a short rest.",
   "SHORT REST DURATION": "Takes 30min",
   "SHOT": "Shot",
   "SIZE": "Size",

@@ -393,17 +393,6 @@
   box-sizing: border-box;
   text-align: center;
 }
-.the_edge .output-fixed {
-  display: inline-block;
-  background-color: #e0e0e0; /* Grey background */
-  border: 1px solid #000; /* Black border */
-  border-radius: 5px; /* Rounded corners */
-  padding: 2px 8px; /* Padding inside the box */
-  font-size: 14px; /* Adjust font size as needed */
-  width: 54px;
-  box-sizing: border-box;
-  text-align: center;
-}
 .the_edge .resource input {
   width: 100px;
   height: 28px;

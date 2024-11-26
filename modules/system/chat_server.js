@@ -43,8 +43,12 @@ export default class ChatServer {
         html = await renderTemplate("systems/the_edge/templates/chat/medicine.html", details);
         break;
       
-      case "SHORTREST":
-        html = await renderTemplate("systems/the_edge/templates/chat/short-rest.html", details);
+      case "SHORT REST":
+      case "LONG REST":
+        html = await renderTemplate(
+          "systems/the_edge/templates/chat/long-or-short-rest.html",
+          foundry.utils.mergeObject(details, {restType: id})
+        );
         break;
     }
     ChatMessage.create(this._chatDataSetup(html, "roll"))
