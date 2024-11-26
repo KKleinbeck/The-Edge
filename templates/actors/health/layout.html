@@ -45,29 +45,41 @@
         {{/each}}
       </div>
     </div>
-    <div style="columns: 2;">
-      {{#each helpers.bodyParts as |bPart|}}
-        <div style="padding-bottom: 10px; break-inside: avoid-column; min-width: 200px;">
-          <b>{{genName bPart}}</b><hr />
-          {{#each ../data.items as |item id|}}
-            {{#if (checkEqual item.type "Wounds")}}
-              {{#if (checkInstance bPart item.system.bodyPart)}}
-                <div class="item-control item" data-action="edit" data-item-id="{{item._id}}" style="cursor: pointer; min-width: 200px;">
-                  <div style="display: flex; gap: 5px;">
-                    <h4 class="item-name" style="margin: 0px;">{{item.name}} - {{itemName item.system.status}}</h4>
-                    <i class="fa-regular {{getWoundIcon item.system.status}}" style="font-size: 12px; transform: translateY(2px);"></i>
-                  </div>
-                  <div class="item-controls" style="display: flex; justify-content: space-between; white-space: no-wrap; padding: 0 0 5px 10px;">
-                      <div>{{genName "Damage"}} {{item.system.damage}}</div>
-                      <div>{{genName "Bleeding"}} {{item.system.bleeding}}</div>
-                      <a class="item-control" title="{{ itemName 'Delete' }}" data-action="delete"><i class="fas fa-trash"></i></a>
-                  </div>
-                </div>
-              {{/if}}
-            {{/if}}
-          {{/each}}
+    <div>
+      <div style="display: flex; gap: 20px; padding-bottom: 20px;">
+        <div style="display: flex; white-space: nowrap; gap: 5px;" title="{{genName 'Short rest duration'}}">
+          <b>{{genName "Short rest"}}</b>
+          <a class="short-rest"><i class="fas fa-campground"></i></a>
         </div>
-      {{/each}}
+        <div style="display: flex; white-space: nowrap; gap: 5px;" title="{{genName 'Long rest duration'}}">
+          <b>{{genName "Long rest"}}</b>
+          <a class="long-rest"><i class="fas fa-bed"></i></a>
+        </div>
+      </div>
+      <div style="columns: 2;">
+        {{#each helpers.bodyParts as |bPart|}}
+          <div style="padding-bottom: 10px; break-inside: avoid-column; min-width: 200px;">
+            <b>{{genName bPart}}</b><hr />
+            {{#each ../data.items as |item id|}}
+              {{#if (checkEqual item.type "Wounds")}}
+                {{#if (checkInstance bPart item.system.bodyPart)}}
+                  <div class="item-control item" data-action="edit" data-item-id="{{item._id}}" style="cursor: pointer; min-width: 200px;">
+                    <div style="display: flex; gap: 5px;">
+                      <h4 class="item-name" style="margin: 0px;">{{item.name}} - {{itemName item.system.status}}</h4>
+                      <i class="fa-regular {{getWoundIcon item.system.status}}" style="font-size: 12px; transform: translateY(2px);"></i>
+                    </div>
+                    <div class="item-controls" style="display: flex; justify-content: space-between; white-space: no-wrap; padding: 0 0 5px 10px;">
+                        <div>{{genName "Damage"}} {{item.system.damage}}</div>
+                        <div>{{genName "Bleeding"}} {{item.system.bleeding}}</div>
+                        <a class="item-control" title="{{ itemName 'Delete' }}" data-action="delete"><i class="fas fa-trash"></i></a>
+                    </div>
+                  </div>
+                {{/if}}
+              {{/if}}
+            {{/each}}
+          </div>
+        {{/each}}
+      </div>
     </div>
   </div>
 </div>

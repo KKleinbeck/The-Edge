@@ -51,7 +51,7 @@ export default class DialogMedicine extends Dialog{
             await checkData.medicineItem.delete()
           } else checkData.medicineItem.update({"system.quantity": checkData.medicineItem.system.quantity - 1});
 
-          ChatServer.transmitRoll("Medicine", {
+          ChatServer.transmitEvent("Medicine", {
             healing: healing, healingDice: medicine.healing,
             coagulation: coagulation, coagulationDice: medicine.coagulation,
             actor: checkData.actor.name, medicineName: checkData.medicineItem.name

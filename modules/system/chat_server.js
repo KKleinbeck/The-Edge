@@ -24,7 +24,7 @@ export default class ChatServer {
     ChatMessage.create(this._chatDataSetup(msg, "roll"))
   }
 
-  static async transmitRoll(id, details) {
+  static async transmitEvent(id, details) {
     let html = undefined;
     switch (id.toUpperCase()) {
       case "ABILITYCHECK":
@@ -41,6 +41,10 @@ export default class ChatServer {
       
       case "MEDICINE":
         html = await renderTemplate("systems/the_edge/templates/chat/medicine.html", details);
+        break;
+      
+      case "SHORTREST":
+        html = await renderTemplate("systems/the_edge/templates/chat/short-rest.html", details);
         break;
     }
     ChatMessage.create(this._chatDataSetup(html, "roll"))

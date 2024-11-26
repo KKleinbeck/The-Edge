@@ -32,7 +32,7 @@ export default class DiceServer {
     let details = {roll: diceRes, outcome: outcome};
     foundry.utils.mergeObject(details, check)
     foundry.utils.mergeObject(details, modificators)
-    ChatServer.transmitRoll("AbilityCheck", details);
+    ChatServer.transmitEvent("AbilityCheck", details);
   }
 
   static async proficiencyCheck(check, modificators, transmit = true) {
@@ -83,7 +83,7 @@ export default class DiceServer {
           result = result2.quality < result.quality ? result2 : result;
       }
     }
-    if (transmit) ChatServer.transmitRoll("ProficiencyCheck", result);
+    if (transmit) ChatServer.transmitEvent("ProficiencyCheck", result);
     return result;
   }
 
@@ -133,7 +133,7 @@ export default class DiceServer {
       details.rolls.push({res: diceRes[i], hit: hits[i]})
     }
     foundry.utils.mergeObject(details, modificators)
-    ChatServer.transmitRoll("WeaponCheck", details);
+    ChatServer.transmitEvent("WeaponCheck", details);
     return [crits, damage];
   }
 

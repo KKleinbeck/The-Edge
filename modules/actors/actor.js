@@ -2,6 +2,7 @@ import { ArmourItemTheEdge } from "../items/item.js";
 import THE_EDGE from "../system/config-the-edge.js";
 import Aux from "../system/auxilliaries.js";
 import LocalisationServer from "../system/localisation_server.js";
+import ChatServer from "../system/chat_server.js";
 
 /**
  * Extend the base Actor document to support attributes and groups with a custom template creation dialog.
@@ -319,6 +320,9 @@ export class TheEdgeActor extends Actor {
     return false
   }
 
+  _attrCost(n) { return 10 * Math.floor(14 + 6 * Math.pow(1.2, n)); }
+  _profCost(n) { return  5 * Math.floor( 5 + 5 * Math.pow(1.1, n)); }
+
   skillLevelIncrease(skillID) {
     let skill = this.items.get(skillID)
     let cost = Aux.getSkillCost(skill, "increase");
@@ -418,6 +422,30 @@ export class TheEdgeActor extends Actor {
     return [locationDescription, [x,y]];
   }
 
-  _attrCost(n) { return 10 * Math.floor(14 + 6 * Math.pow(1.2, n)); }
-  _profCost(n) { return  5 * Math.floor( 5 + 5 * Math.pow(1.1, n)); }
+  _shortRest() {
+    let wounds = this.itemTypes["Wounds"];
+    let accHealing = 0;
+    let accCoagulation = 0;
+    for (const wound of wounds) {
+      if (wound.system.bleeding > 0) {
+        if (wound.system.damage == 0 && wound.system.bleeding == 1) {
+          wound.delete();
+          accCoagulation += 1;
+        } else {
+          wound.update({"system.bleeding": wound.system.bleeding - 1});
+          accCoagulation += 1;
+        }
+      } else {
+        let healing = Math.random() > 0.5;
+        if (healing == wound.system.damage) { // shortcut: wound healed afterwards
+          wound.delete();
+          accHealing += 1;
+        } else if (healing > 0) {
+          wound.update({"system.damage": wound.system.damage - 1});
+          accHealing += 1
+        }
+      }
+    }
+    ChatServer.transmitEvent("ShortRest", {healing: accHealing, coagulation: accCoagulation})
+  }
 }

@@ -90,6 +90,10 @@ export class TheEdgeActorSheet extends ActorSheet {
     html.find(".reload").click(ev => this._reload(ev))
     html.find(".advance-combat").click(ev => this._advanceSrv(ev, "combat"));
     html.find(".advance-combat-general").click(ev => this._advanceSrv(ev, "combat-general"));
+
+    // Health
+    html.find(".short-rest").click(_ => this.actor._shortRest())
+    // html.find(".long-rest").click(ev => this._reload(ev))
   }
 
   async _useHeroToken(ev) {
