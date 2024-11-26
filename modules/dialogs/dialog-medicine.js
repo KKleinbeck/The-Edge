@@ -1,4 +1,5 @@
 import DiceServer from "../system/dice_server.js";
+import ChatServer from "../system/chat_server.js";
 
 export default class DialogMedicine extends Dialog{
   static get defaultOptions() {
@@ -49,6 +50,12 @@ export default class DialogMedicine extends Dialog{
           if (checkData.medicineItem.system.quantity == 1) {
             await checkData.medicineItem.delete()
           } else checkData.medicineItem.update({"system.quantity": checkData.medicineItem.system.quantity - 1});
+
+          ChatServer.transmitRoll("Medicine", {
+            healing: healing, healingDice: medicine.healing,
+            coagulation: coagulation, coagulationDice: medicine.coagulation,
+            actor: checkData.actor.name, medicineName: checkData.medicineItem.name
+          })
         }
       },
       cancel: {

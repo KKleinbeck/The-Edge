@@ -38,6 +38,10 @@ export default class ChatServer {
       case "WEAPONCHECK":
         html = await renderTemplate("systems/the_edge/templates/chat/weapon_check.html", details);
         break;
+      
+      case "MEDICINE":
+        html = await renderTemplate("systems/the_edge/templates/chat/medicine.html", details);
+        break;
     }
     ChatMessage.create(this._chatDataSetup(html, "roll"))
   }
