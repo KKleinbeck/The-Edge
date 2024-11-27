@@ -436,21 +436,21 @@ export class TheEdgeActor extends Actor {
         let coagulation = coagulationRoll.total
         console.log(coagulation)
         if (wound.system.damage == 0 && wound.system.bleeding <= coagulation) {
-          wound.delete();
           accCoagulation += wound.system.bleeding;
+          wound.delete();
         } else if (coagulation > 0) {
+          accCoagulation += Math.min(coagulation, wound.system.bleeding);
           wound.update({"system.bleeding": Math.max(wound.system.bleeding - coagulation, 0)});
-          accCoagulation += Math.max(wound.system.bleeding - coagulation, 0);
         }
       } else {
         let healingRoll = await new Roll(healingDice).evaluate()
         let healing = healingRoll.total
         if (wound.system.damage <= healing) { // shortcut: wound healed afterwards
-          wound.delete();
           accHealing += wound.system.damage;
+          wound.delete();
         } else if (healing > 0) {
-          wound.update({"system.damage": wound.system.damage - healing});
-          accHealing += healing
+          accHealing += Math.min(healing, wound.system.damage)
+          wound.update({"system.damage": Math.max(wound.system.damage - healing, 0)});
         }
       }
     }
