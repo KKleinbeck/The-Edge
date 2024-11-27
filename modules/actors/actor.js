@@ -125,6 +125,21 @@ export class TheEdgeActor extends Actor {
     return preparedData
   }
 
+  rollProficiencyCheck(proficiency, tempModifier = 0, advantage = false) {
+    let proficiencyData = Object.values(this.system.proficiencies)
+      .find(profClass => proficiency in profClass)[proficiency]
+
+    let check = {
+      name: proficiency,
+      dices: proficiencyData.dices,
+      thresholds: proficiencyData.dices.map(dice => this.system.attributes[dice]["value"])
+    }
+
+    let modificator = proficiencyData["advances"] + proficiencyData["modifier"] + proficiencyData["status"];
+    let modificators = {character: modificator, temporary: tempModifier, advantage: advantage}
+    DiceServer.proficiencyCheck(check, modificators)
+  }
+
   _determineWeight() {
     return this.items.reduce(
       (a, b) => a + ((b.system?.quantity || 1) * b.system?.weight || 0), 0

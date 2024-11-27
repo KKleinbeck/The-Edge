@@ -6,6 +6,7 @@ import DialogMedicine from "../dialogs/dialog-medicine.js";
 import DialogRest from "../dialogs/dialog-rest.js";
 import DialogWeapon from "../dialogs/dialog-weapon.js";
 import LocalisationServer from "../system/localisation_server.js";
+import ChatServer from "../system/chat_server.js";
 
 export class TheEdgeActorSheet extends ActorSheet {
 
@@ -148,27 +149,7 @@ export class TheEdgeActorSheet extends ActorSheet {
   async _rollProficiency(ev) {
     const target = ev.currentTarget; // HTMLElement
     const proficiency = target.getAttribute("prof-name");
-    // await DiceServer.attributeCheck(threshold, attr);
-    let modificator = 0;
-    let dices = [];
-    for (const [_, proficiencies] of Object.entries(this.actor.system.proficiencies)) {
-      if (proficiency in proficiencies) {
-        modificator = proficiencies[proficiency]["advances"] +
-          proficiencies[proficiency]["modifier"] + proficiencies[proficiency]["status"];
-        dices = proficiencies[proficiency].dices;
-        break;
-      }
-    }
-    const thresholds = []
-    for (const dice of dices) {
-      thresholds.push(this.actor.system.attributes[dice]["value"])
-    }
-    let d = DialogProficiency.start({
-      name: proficiency,
-      dices: dices,
-      thresholds: thresholds,
-      modificator: modificator
-    })
+    DialogProficiency.start({proficiency: proficiency, actor: this.actor})
   }
 
   async _rollAttack(ev) {
@@ -378,6 +359,11 @@ export class TheEdgeActorSheet extends ActorSheet {
             let wounds = this.actor.itemTypes["Wounds"];
             DialogMedicine.start({medicineItem: item, wounds: wounds, actor: this.actor});
             break;
+
+          case "grenade":
+            ChatServer.transmitEvent("grenade", {
+              actor: this.actor, grenade: item, details: item.system.subtypes.grenade
+            })
         }
         break;
     }

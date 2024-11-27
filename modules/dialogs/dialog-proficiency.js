@@ -15,13 +15,9 @@ export default class DialogProficiency extends Dialog{
       roll: {
         label: game.i18n.localize("DIALOG.ROLL"),
         callback: (html) => {
-          let check = {name: checkData.name, dices: checkData.dices, thresholds: checkData.thresholds};
-          let modificators = {
-            character: checkData.modificator,
-            temporary: parseInt(html.find('[name="Modifier"]').val()),
-            advantage: html.find('[name="AdvantageSelector"]').val()
-          }
-          DiceServer.proficiencyCheck(check, modificators)
+          let temporaryMod = parseInt(html.find('[name="Modifier"]').val());
+          let advantage = html.find('[name="AdvantageSelector"]').val();
+          checkData.actor.rollProficiencyCheck(checkData.proficiency, temporaryMod, advantage)
         }
       }
     }
@@ -34,7 +30,7 @@ export default class DialogProficiency extends Dialog{
       })
     }
     return new DialogProficiency({
-      title: LocalisationServer.localise(checkData.name, "proficiency") + " " + game.i18n.localize("CHECK"),
+      title: LocalisationServer.localise(checkData.proficiency, "proficiency") + " " + game.i18n.localize("CHECK"),
       content: html,
       buttons: buttons,
       default: "roll"

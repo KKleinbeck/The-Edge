@@ -36,7 +36,7 @@ export default class DiceServer {
   }
 
   static async proficiencyCheck(check, modificators, transmit = true) {
-    const diceRes = await new Roll("3d20").evaluate({async: true});
+    const diceRes = await new Roll("3d20").evaluate();
     let results = [];
     let failedSum = 0;
     let sum = 0;

@@ -7,7 +7,3 @@ export default function() {
   chatHooks.default();
   actorHooks.default();
 }
-
-Hooks.once("init", () => {
-
-})

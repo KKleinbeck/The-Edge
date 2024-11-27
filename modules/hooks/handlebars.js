@@ -106,6 +106,14 @@ export default function() {
                 case "sealed":
                     return "fa-bandage";
             }
+        },
+        restDescription: (restType) => {
+            switch (restType) {
+                case "short rest":
+                    return LocalisationServer.localise("short rest chat");
+                case "long rest":
+                    return LocalisationServer.localise("long rest chat");
+            }
         }
     })
 }
