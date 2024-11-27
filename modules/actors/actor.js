@@ -423,8 +423,8 @@ export class TheEdgeActor extends Actor {
     return [locationDescription, [x,y]];
   }
 
-  shortRest() {this._rest("1d2-1", "1d3-2", "short rest")}
-  longRest() {this._rest("1d5+1", "2d6kl", "long rest")}
+  shortRest() {this._rest("1d3 % 2", "1d3-2", "short rest")} // 2/3, 1/3 chances
+  longRest() {this._rest("2d3kh", "2d3kl", "long rest")}
 
   async _rest(coagulationDice, healingDice, type) {
     let wounds = this.itemTypes["Wounds"];
