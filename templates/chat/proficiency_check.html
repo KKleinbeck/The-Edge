@@ -3,7 +3,7 @@
   <b>{{genName "Check"}}: </b>
   {{#each dices as |dice|}}
   <a class="attr-d20-chat d20-{{dice}}">
-    <span class="d20-overlay" data-tooltip="{{attrName dice}} {{genName 'threshold'}}: {{getEntry ../thresholds @index}}">{{getEntry ../results @index}}</span>
+    <span class="d20-overlay" data-tooltip="{{attrName dice}} {{genName 'threshold'}}: {{getEntry ../thresholds @index}}">{{getEntry ../diceResults @index}}</span>
   </a>
   {{/each}}
 </div>

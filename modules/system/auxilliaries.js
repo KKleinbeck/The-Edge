@@ -9,6 +9,17 @@ export default class Aux {
       return undefined
   }
 
+  static getActor(actorID, tokenID) {
+    let actor = undefined
+    if (tokenID) {
+      let sceneID = game.canvas.id;
+      let scene = game.scenes.get(sceneID);
+      actor = scene.tokens.get(tokenID).actor;
+      if (actor) return actor;
+    }
+    return game.actors.get(actorID);
+  }
+
   static getTargets(scene, targetIDs) {
       const targets = []
       for (const token of scene.tokens) {

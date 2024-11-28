@@ -35,56 +35,46 @@ export default class DiceServer {
     ChatServer.transmitEvent("AbilityCheck", details);
   }
 
-  static async proficiencyCheck(check, modificators, transmit = true) {
+  static async proficiencyCheck(check, modificators) {
     const diceRes = await new Roll("3d20").evaluate();
-    let results = [];
+    let diceResults = [];
     let failedSum = 0;
     let sum = 0;
     for (let i = 0; i < 3; i++) {
-      results.push(diceRes.dice[0].results[i].result)
-      let netOutcome = check.thresholds[i] - results[i]
+      diceResults.push(diceRes.dice[0].results[i].result)
+      let netOutcome = check.thresholds[i] - diceResults[i]
       failedSum += Math.min(netOutcome, 0)
       sum += netOutcome
     }
 
-    const modificator = modificators.character + modificators.temporary;
-    let result = {
-      proficiency: check.name, dices: check.dices, thresholds: check.thresholds,
-      results: results, character_mod: modificators.character, temporary_mod: modificators.temporary,
-      advantage: modificators.advantage
-    };
+    const modificator = modificators.modificator;
+    let results = undefined;
     if (modificator > 0) {
       // Is the modificator great enough to make the check?
       let reserves = modificator + failedSum 
       if (reserves >= 0) {
-        foundry.utils.mergeObject(result, {outcome: "Success", quality: Math.floor((modificator + sum) / 3)});
+        results = {outcome: "Success", quality: Math.floor((modificator + sum) / 3)};
       }
-      else foundry.utils.mergeObject(result, {outcome: "Failure", quality: Math.floor(reserves / 3)});
+      else results = {outcome: "Failure", quality: Math.floor(reserves / 3)};
     }
     else {
       // Negative modificator requires all checks to pass
-      if (failedSum < 0) foundry.utils.mergeObject(result, {outcome: "Failure", quality: Math.floor((modificator + failedSum) / 3)});
-      else {
-        foundry.utils.mergeObject(result, {outcome: sum < -modificator ? "Failure" : "Success", quality: Math.floor((modificator + sum) / 3)});
-      }
+      if (failedSum < 0) results = {outcome: "Failure", quality: Math.floor((modificator + failedSum) / 3)};
+      else results = {outcome: sum < -modificator ? "Failure" : "Success", quality: Math.floor((modificator + sum) / 3)};
     }
+    foundry.utils.mergeObject(results, {diceResults: diceResults})
     
     if (modificators.advantage != "Nothing") {
       let advantage = modificators.advantage;
       modificators.advantage = "Nothing";
-      let result2 = await this.proficiencyCheck(check, modificators, false);
+      let results2 = await this.proficiencyCheck(check, modificators);
 
-      switch(advantage) {
-        case "Advantage":
-          result = result2.quality > result.quality ? result2 : result;
-          break;
-
-        case "Disadvantage":
-          result = result2.quality < result.quality ? result2 : result;
+      if ( (advantage == "Advantage" && results2.quality > results.quality) ||
+           (advantage == "Disadvantage" && results2.quality < results.quality) ) {
+        return results2;
       }
     }
-    if (transmit) ChatServer.transmitEvent("ProficiencyCheck", result);
-    return result;
+    return results;
   }
 
   static async attackCheck(check, modificators) {

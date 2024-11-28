@@ -1,14 +1,22 @@
+import Aux from "../system/auxilliaries.js";
+
 export default function() {
     // const canApplyDefaultRolls = li => {
     //     return true
     // };
   Hooks.on("renderChatMessage", (chatMsgCls, html, message) => {
-    html.find(".proficiency-roll").click(ev => {
+    html.find(".proficiency-roll").click(async ev => {
         const target = ev.currentTarget;
         let actorID = target.dataset.actorId;
-        console.log(actorID)
+        let tokenID = target.dataset.tokenId;
+
+        let actor = Aux.getActor(actorID, tokenID);
+
+        let proficiency = target.dataset.proficiency;
+        let proficiencyRoll = await actor.rollProficiencyCheck(proficiency, 0, false, false)
+        console.log(proficiencyRoll)
         let elem = $(target)
-        elem.find(".roll").remove()
+        // elem.find(".roll").remove()
         // elem.append("<div>Lorem Ipsum</div>")
     })
       // html.find(".damage-apply-box").click(ev => {

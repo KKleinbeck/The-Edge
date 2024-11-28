@@ -125,7 +125,7 @@ export class TheEdgeActor extends Actor {
     return preparedData
   }
 
-  rollProficiencyCheck(proficiency, tempModifier = 0, advantage = false) {
+  async rollProficiencyCheck(proficiency, tempModifier = 0, advantage = false, transmit = true) {
     let proficiencyData = Object.values(this.system.proficiencies)
       .find(profClass => proficiency in profClass)[proficiency]
 
@@ -136,8 +136,18 @@ export class TheEdgeActor extends Actor {
     }
 
     let modificator = proficiencyData["advances"] + proficiencyData["modifier"] + proficiencyData["status"];
-    let modificators = {character: modificator, temporary: tempModifier, advantage: advantage}
-    DiceServer.proficiencyCheck(check, modificators)
+    let modificators = {modificator: modificator + tempModifier, advantage: advantage}
+    let results = await DiceServer.proficiencyCheck(check, modificators);
+
+    if (transmit) {
+      let chatDetails = {
+        proficiency: proficiency, dices: check.dices, thresholds: check.thresholds,
+        character_mod: modificator, temporary_mod: tempModifier, advantage: advantage
+      };
+      foundry.utils.mergeObject(chatDetails, results)
+      ChatServer.transmitEvent("ProficiencyCheck", chatDetails);
+    }
+    return results;
   }
 
   _determineWeight() {

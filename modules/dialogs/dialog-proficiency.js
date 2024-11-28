@@ -1,4 +1,3 @@
-import DiceServer from "../system/dice_server.js";
 import LocalisationServer from "../system/localisation_server.js";
 
 export default class DialogProficiency extends Dialog{
