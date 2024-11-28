@@ -8,6 +8,16 @@ export default class Aux {
       }
       return undefined
   }
+  
+  static hasRaceCondDanger(id) {
+    let lastUpdate = game.data[id]
+    if (lastUpdate === undefined || Date.now() - lastUpdate > 100) {
+      // Prevent too frequent updates to avoid race conditions
+      game.data[id] = Date.now();
+      return false;
+    }
+    return true;
+  }
 
   static getActor(actorID, tokenID) {
     let actor = undefined

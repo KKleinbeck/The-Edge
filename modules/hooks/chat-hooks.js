@@ -6,28 +6,39 @@ export default function() {
     // };
   Hooks.on("renderChatMessage", (chatMsgCls, html, message) => {
     html.find(".proficiency-roll").click(async ev => {
-      let lastUpdate = game.data["lastTokenUpdate"]
-      if (lastUpdate === undefined || Date.now() - lastUpdate > 100) {
-          // Prevent too frequent updates to avoid race conditions
-          game.data["lastTokenUpdate"] = Date.now()
-        const target = ev.currentTarget;
-        let actorID = target.dataset.actorId;
-        let tokenID = target.dataset.tokenId;
+      if (Aux.hasRaceCondDanger("proficiency-roll")) return undefined;
 
-        let actor = Aux.getActor(actorID, tokenID);
+      const target = ev.currentTarget;
+      let actorID = target.dataset.actorId;
+      let tokenID = target.dataset.tokenId;
 
-        let proficiency = target.dataset.proficiency;
-        let proficiencyRoll = await actor.rollProficiencyCheck(proficiency, 0, false, false)
-        let elem = $(target)
-        elem.find(".roll").remove()
-        switch (proficiencyRoll.outcome) {
-          case "Success":
-            elem.append(`<div>${proficiencyRoll.quality} QL</div>`)
-            break;
-          case "Failure":
-            elem.append(`<div>${-proficiencyRoll.quality} FL</div>`)
-        }
+      let actor = Aux.getActor(actorID, tokenID);
+
+      let proficiency = target.dataset.proficiency;
+      let proficiencyRoll = await actor.rollProficiencyCheck(proficiency, 0, false, false)
+      let elem = $(target)
+      elem.find(".roll").remove()
+      switch (proficiencyRoll.outcome) {
+        case "Success":
+          elem.append(`<div style="${proficiencyRoll.diceResults}">${proficiencyRoll.quality} QL</div>`)
+          break;
+        case "Failure":
+          elem.append(`<div style="${proficiencyRoll.diceResults}">${-proficiencyRoll.quality} FL</div>`)
       }
+    })
+
+    html.find(".generic-roll").click(async ev => {
+      if (Aux.hasRaceCondDanger("generic-roll")) return undefined;
+
+      const target = ev.currentTarget;
+      let elem = $(target)
+      let rollElems = elem.find(".roll")
+      for (const rollElem of rollElems) {
+        let roll = await new Roll(rollElem.dataset.roll).evaluate()
+        // rollElem.replaceWith(`<div class="output" style="width: 25px;">${roll.total}</div>`)
+        rollElem.replaceWith(`<div>${roll.total}</div>`)
+      }
+      elem.find(".roll").remove()
     })
   })
 }

@@ -43,6 +43,42 @@
     {{!-- Sheet Body --}}
     <section class="sheet-body">
         {{#if (checkEqual systemData.subtype "grenade")}}
+            <div class="item-columned-page" style="gap: 15px;">
+                <table>
+                    <tr>
+                        <td></td>
+                        <td style="width: 18%; text-align: center;">{{genName "close"}}</td>
+                        <td style="width: 18%; text-align: center;">{{genName "far"}}</td>
+                    </tr>
+                    <tr>
+                        <td>{{itemName "Blast distance"}}</td>
+                        {{#each systemData.subtypes.grenade.blastDistance as |distance|}}
+                            <td><input type="number" style="text-align: right;" name="system.subtypes.grenade.blastDistance" value="{{distance}}"/></td>
+                        {{/each}}
+                    </tr>
+                    <tr>
+                        <td>{{genName "Damage"}}</td>
+                        {{#each systemData.subtypes.grenade.damage as |damage|}}
+                            <td><input type="text" style="text-align: right;" name="system.subtypes.grenade.damage" value="{{damage}}"/></td>
+                        {{/each}}
+                    </tr>
+                    <tr>
+                        <td>{{genName "Damage type"}}</td>
+                        <td colspan="2">
+
+                        </td>
+                    </tr>
+                </table>
+                <div class="item-fields">
+                    {{#each systemData.subtypes.grenade.effects as |value effect|}}
+                        <div style="display: flex; gap: 5px; align-items: center;">
+                            <input type="checkbox" name="system.subtypes.grenade.effects.{{effect}}" id="has-effect-{{effect}}" {{#if value}}checked{{/if}}/>
+                            <label for="has-effect-{{effect}}">{{genName effect}}</label>
+                        </div>
+                    {{/each}}
+                    </select>
+                </div>
+            </div> 
         {{else}}
             {{#if (checkEqual systemData.subtype "medicine")}}
                 <div class="item-columned-page" style="align-items: baseline;">
