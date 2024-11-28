@@ -6,6 +6,10 @@ export default function() {
     // };
   Hooks.on("renderChatMessage", (chatMsgCls, html, message) => {
     html.find(".proficiency-roll").click(async ev => {
+      let lastUpdate = game.data["lastTokenUpdate"]
+      if (lastUpdate === undefined || Date.now() - lastUpdate > 100) {
+          // Prevent too frequent updates to avoid race conditions
+          game.data["lastTokenUpdate"] = Date.now()
         const target = ev.currentTarget;
         let actorID = target.dataset.actorId;
         let tokenID = target.dataset.tokenId;
@@ -14,10 +18,16 @@ export default function() {
 
         let proficiency = target.dataset.proficiency;
         let proficiencyRoll = await actor.rollProficiencyCheck(proficiency, 0, false, false)
-        console.log(proficiencyRoll)
         let elem = $(target)
-        // elem.find(".roll").remove()
-        // elem.append("<div>Lorem Ipsum</div>")
+        elem.find(".roll").remove()
+        switch (proficiencyRoll.outcome) {
+          case "Success":
+            elem.append(`<div>${proficiencyRoll.quality} QL</div>`)
+            break;
+          case "Failure":
+            elem.append(`<div>${proficiencyRoll.quality} FL</div>`)
+        }
+      }
     })
       // html.find(".damage-apply-box").click(ev => {
       //     // because for some stupid reasons we cannot use data tags here, in chat messages

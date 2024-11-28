@@ -1,7 +1,10 @@
 <h3>{{grenade.actor.name}} &ndash; {{grenade.name}} {{genName "check"}}</h3>
-<div class="centered-row proficiency-roll" data-actor-id="{{actorID}}" data-token-id="{{tokenID}}" data-proficiency="Jumping">
-  <b>{{proficiencyName "throwing"}}</b>&mdash;
-  <div class="roll">{{genName "roll check"}}</div>
+<div class="centered-row proficiency-roll" data-actor-id="{{actorID}}" data-token-id="{{tokenID}}" data-proficiency="Throwing">
+  <b>{{proficiencyName "Throwing"}} {{genName "Check"}}:</b>
+  <div class="roll" style="display: flex; gap: 5px; align-items: center;">
+    <div class="weapon-d20 d20-black"></div>
+    {{genName "roll"}}
+  </div>
 </div>
 <div class="centered-row">
   <b>{{itemName "Blast distance"}}: </b>
