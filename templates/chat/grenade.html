@@ -8,9 +8,13 @@
 </div>
 <div class="centered-row">
   <b>{{itemName "Blast distance"}}: </b>
-  {{details.blastDistance}}
+  {{getEntry details.blastDistance 0}}m / {{getEntry details.blastDistance 1}}m
 </div>
 <div class="centered-row">
   <b>{{genName "Damage"}}: </b>
-  <div>{{genName "roll check"}} {{details.damage}}</div>
+  <div class="roll" style="display: flex; gap: 5px; align-items: center;">
+    <div class="weapon-d20 d20-black" title="{{getEntry details.damage 0}}"></div>
+    <div class="weapon-d20 d20-black" title="{{getEntry details.damage 1}}"></div>
+    {{genName "roll"}}
+  </div>
 </div>
