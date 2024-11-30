@@ -1,4 +1,6 @@
 import Aux from "../system/auxilliaries.js";
+import ProficiencyConfig from "../system/config-proficiencies.js";
+import LocalisationServer from "../system/localisation_server.js";
 
 export default function() {
     // const canApplyDefaultRolls = li => {
@@ -25,18 +27,29 @@ export default function() {
         case "Failure":
           elem.append(`<div style="${proficiencyRoll.diceResults}">${-proficiencyRoll.quality} FL</div>`)
       }
+      let rollDescription = elem.parent().find(".roll-description")
+      if (rollDescription) {
+        console.log(rollDescription)
+        rollDescription.append(`<b>${LocalisationServer.localise("Description")}: </b>`)
+        rollDescription.append(ProficiencyConfig.rollOutcome(proficiency, proficiencyRoll.quality))
+      }
+
+      let followUps = await elem.parent().find(".roll-offline");
+      followUps.removeClass("roll-offline")
     })
 
     html.find(".generic-roll").click(async ev => {
       if (Aux.hasRaceCondDanger("generic-roll")) return undefined;
 
       const target = ev.currentTarget;
+      if (target.className.includes("roll-offline")) return undefined;
+
       let elem = $(target)
       let rollElems = elem.find(".roll")
       for (const rollElem of rollElems) {
         let roll = await new Roll(rollElem.dataset.roll).evaluate()
-        // rollElem.replaceWith(`<div class="output" style="width: 25px;">${roll.total}</div>`)
-        rollElem.replaceWith(`<div>${roll.total}</div>`)
+        rollElem.remove()
+        elem.append(`<div class="output" style="width: 25px;">${roll.total}</div>`)
       }
       elem.find(".roll").remove()
     })

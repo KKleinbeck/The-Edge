@@ -718,6 +718,9 @@
   transform: translate(-50%, 0); 
   font-size: 11px;
 }
+.the_edge .roll-offline {
+  opacity: 70%;
+}
 .the_edge .hr {
     border: none;
     border-top: 1px solid #ccc; /* Style the horizontal line */
