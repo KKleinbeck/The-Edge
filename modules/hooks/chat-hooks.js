@@ -3,14 +3,30 @@ import ProficiencyConfig from "../system/config-proficiencies.js";
 import LocalisationServer from "../system/localisation_server.js";
 
 export default function() {
-    // const canApplyDefaultRolls = li => {
-    //     return true
-    // };
+  const rollIsReady = (id, target) => {
+      if (Aux.hasRaceCondDanger(id)) return false;
+      if (target.className.includes("roll-offline")) return false;
+      return true;
+  };
+
+  const rollFollowUps = elem => {
+    let followUps = elem.parent().find(".roll-offline");
+    followUps.removeClass("roll-offline")
+  }
+
+  const addRollDescription = (elem, msg) => {
+    let rollDescription = elem.parent().find(".roll-description")
+    if (rollDescription) {
+      rollDescription.append(`<b>${LocalisationServer.localise("Description")}: </b>`)
+      rollDescription.append(msg)
+    }
+  }
+
   Hooks.on("renderChatMessage", (chatMsgCls, html, message) => {
     html.find(".proficiency-roll").click(async ev => {
-      if (Aux.hasRaceCondDanger("proficiency-roll")) return undefined;
-
       const target = ev.currentTarget;
+      if (!rollIsReady("proficiency-roll", target)) return undefined;
+
       let actorID = target.dataset.actorId;
       let tokenID = target.dataset.tokenId;
 
@@ -27,22 +43,16 @@ export default function() {
         case "Failure":
           elem.append(`<div style="${proficiencyRoll.diceResults}">${-proficiencyRoll.quality} FL</div>`)
       }
-      let rollDescription = elem.parent().find(".roll-description")
-      if (rollDescription) {
-        console.log(rollDescription)
-        rollDescription.append(`<b>${LocalisationServer.localise("Description")}: </b>`)
-        rollDescription.append(ProficiencyConfig.rollOutcome(proficiency, proficiencyRoll.quality))
-      }
 
-      let followUps = await elem.parent().find(".roll-offline");
-      followUps.removeClass("roll-offline")
+      let rollDescription = ProficiencyConfig.rollOutcome(proficiency, proficiencyRoll.quality);
+      addRollDescription(elem, rollDescription)
+
+      rollFollowUps(elem);
     })
 
     html.find(".generic-roll").click(async ev => {
-      if (Aux.hasRaceCondDanger("generic-roll")) return undefined;
-
       const target = ev.currentTarget;
-      if (target.className.includes("roll-offline")) return undefined;
+      if (!rollIsReady("generic-roll", target)) return undefined;
 
       let elem = $(target)
       let rollElems = elem.find(".roll")
@@ -52,6 +62,8 @@ export default function() {
         elem.append(`<div class="output" style="width: 25px;">${roll.total}</div>`)
       }
       elem.find(".roll").remove()
+
+      rollFollowUps(elem);
     })
   })
 }
