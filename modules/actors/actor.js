@@ -22,6 +22,8 @@ export class TheEdgeActor extends Actor {
     this.system.heartRate["max"] = this.system.heartRate.baseline_max + 
       this.system.attributes["end"].value -
       2 * Math.floor((this.system.age - 21) / 3)
+    this.system.heartRate["min"] = this.system.heartRate.baseline_min -
+      this.system.attributes["end"].value
 
     this.system.wounds = {}
   }

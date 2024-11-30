@@ -147,7 +147,7 @@
   "htmlFields": ["biography"],
   "character": {
     "templates": ["attributes", "proficiencies", "weapons"],
-    "biography": "",
+    "biography": "", "notes": "",
     "health": {
       "value": 20,
       "min": 0,
@@ -161,7 +161,7 @@
     "size": "normal",
     "heartRate": {
       "value": 50,
-      "min": 0,
+      "baseline_min": 50,
       "baseline_max": 195
     },
     "heroToken": {

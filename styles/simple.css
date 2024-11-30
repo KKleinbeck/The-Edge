@@ -21,6 +21,20 @@
 .the_edge .form {
   height: 100%;
 }
+.the_edge .tab-scroll {
+ position: absolute;
+ overflow-y: auto;
+ width: 100%;
+}
+.the_edge .character-editor-wrap {
+  height: 15vh;
+}
+.the_edge .editor,
+.the_edge .editor-content {
+  min-height: 50px;
+  height: 100%;
+}
+.the_edge .editor-wrap
 .the_edge .advance-fa {
   font-size: 8pt;
   color: #888;
@@ -417,10 +431,6 @@
   height: 100%;
   overflow-y: auto;
 }
-.the_edge .editor,
-.the_edge .editor-content {
-  height: 100%;
-}
 .the_edge .item-list {
   list-style: none;
   columns: 2;
@@ -480,7 +490,7 @@
 
 .the_edge.sheet.actor {
   min-width: 650px;
-  min-height: 1045px;
+  min-height: 800px;
 }
 .the_edge.sheet.item {
   min-width: 390px;

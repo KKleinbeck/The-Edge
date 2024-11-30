@@ -35,5 +35,13 @@
     </div>
   </div>
   <hr />
-  {{editor biographyHTML target="system.biography" button=true editable=editable engine="prosemirror"}}
+  <h3>{{genName "Biography"}}</h3>
+  <div class="character-editor-wrap">
+    {{editor biographyHTML target="system.biography" button=true editable=editable engine="prosemirror"}}
+  </div>
+  <hr />
+  <h3>{{genName "Notes"}}</h3>
+  <div class="character-editor-wrap">
+    {{editor notesHTML target="system.notes" button=true editable=editable engine="prosemirror"}}
+  </div>
 </div>
