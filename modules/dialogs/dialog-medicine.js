@@ -14,7 +14,7 @@ export default class DialogMedicine extends Dialog{
     let wounds = checkData.wounds.filter(x => x.system.status != "sealed")
     if (effect === "heals") wounds = wounds.filter(x => x.system.status == "open");
 
-    const template = "systems/the_edge/templates/actors/health/dialog-medicine.html";
+    const template = "systems/the_edge/templates/dialogs/medicine.html";
     let html = await renderTemplate(template, {"wounds": wounds});
     let buttons = {
       select: {
@@ -25,6 +25,7 @@ export default class DialogMedicine extends Dialog{
           
           let selectedID =  html.find('[name="WoundSelector"]').val();
           let wound = wounds.find(x => x.id == selectedID)
+          if (!wound) return undefined;
           let damage = wound.system.damage;
           healing = Math.min(healing, damage);
           let bleeding = wound.system.bleeding;

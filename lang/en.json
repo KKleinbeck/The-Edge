@@ -101,18 +101,29 @@
 
     "STRUCTURE POINTS": "Structure Points",
     
-    "COMBAT SKILLS": "Combat skills"
+    "COMBAT SKILLS": "Combat skills",
+
+    "COMBAT ACTIONS": "Combat actions",
+    "FIRST ACTION": "First action",
+    "SECOND ACTION": "Second action",
+    "THIRD ACTION": "Third action",
+    "FOURTH ACTION": "Fourth action",
+
+    "NO STRAIN": "No strain actions",
+    "STRAIN L1": "Strain level 1 actions",
+    "STRAIN L2": "Strain level 2 actions",
+    "STRAIN L3": "Strain level 3 actions"
   },
   "DIALOG": {
     "CANCEL": "Cancel",
     "CHEAT": "Cheat",
+    "COMBAT ACTIONS": "Combat Actions",
     "EMPTY": "Empty",
     "REST": "Rest",
     "ROLL": "Roll",
-    "SELECT": "Select"
+    "SELECT": "Select",
+    "SUBMIT": "Submit"
   },
-  "DIALOG.ROLL": "Roll",
-  "DIALOG.CHEAT": "Cheat",
   "ITEM": {
     "ADD": "Add entry",
     "EDIT": "Edit Item",
@@ -235,7 +246,11 @@
     "INCREASE": "Increase skill level"
   },
   "TEXT": {
-    "EFFECTS": "Add a status modifiery to your attributes, proficiencies, weapon proficiencies and other character attributes.\nFor this write 'Attributes.NAME', 'Proficiencies.NAME', 'Weapons.NAME'. This is generally case-insensitive, except for specific proficiency and weapon names. You can also use group names, for example 'attributes.physical' or 'weapons.Energy'. Furthermore there is an 'all' specifier to affect everything."
+    "EFFECTS": "Add a status modifiery to your attributes, proficiencies, weapon proficiencies and other character attributes.\nFor this write 'Attributes.NAME', 'Proficiencies.NAME', 'Weapons.NAME'. This is generally case-insensitive, except for specific proficiency and weapon names. You can also use group names, for example 'attributes.physical' or 'weapons.Energy'. Furthermore there is an 'all' specifier to affect everything.",
+    "NO STRAIN": "Examples: Standing, sitting, lying, using a weapon",
+    "STRAIN L1": "Examples: Walking, striding, throwing, normal swimming",
+    "STRAIN L2": "Examples: Running, jumping, climbing, fast swimming",
+    "STRAIN L3": "Examples: Sprinting, maximal physical efforts, melee combat"
   },
   "TOOLTIP": {
     "DESIGNATED WEAPON": "Some types of ammunition are only useable with specific names. Specify these here by their names (comma separated).",

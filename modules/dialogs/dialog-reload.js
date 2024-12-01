@@ -6,7 +6,7 @@ export default class DialogReload extends Dialog{
   }
 
   static async start(checkData) {
-    const template = "systems/the_edge/templates/actors/combat/dialog-reload.html";
+    const template = "systems/the_edge/templates/dialogs/reload.html";
     let html = await renderTemplate(template, checkData);
     let weaponSys = checkData.weapon.system
     const buttons = {}

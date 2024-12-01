@@ -8,7 +8,7 @@ export default class DialogProficiency extends Dialog{
   }
 
   static async start(checkData) {
-    const template = "systems/the_edge/templates/actors/proficiencies/dialog.html";
+    const template = "systems/the_edge/templates/dialogs/proficinecy.html";
     let html = await renderTemplate(template, {});
     const buttons = {
       roll: {

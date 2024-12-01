@@ -16,7 +16,7 @@ export default class DialogWeapon extends Dialog{
       sizes: THE_EDGE.sizes, movements: THE_EDGE.movements,
       distance: distance, smallestSize: smallestSize, cover: THE_EDGE.cover
     })
-    const template = "systems/the_edge/templates/actors/combat/dialog-weapon.html";
+    const template = "systems/the_edge/templates/dialogs/weapon.html";
     let html = await renderTemplate(template, checkData);
     const buttons = {
       roll: {

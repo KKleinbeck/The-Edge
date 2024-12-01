@@ -8,7 +8,7 @@ export default class DialogRest extends Dialog{
   }
 
   static async start(checkData) {
-    const template = "systems/the_edge/templates/actors/health/dialog-rest.html";
+    const template = "systems/the_edge/templates/dialogs/rest.html";
     let html = await renderTemplate(template, checkData);
     let buttons = {
       select: {

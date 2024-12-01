@@ -9,7 +9,7 @@ export default class DialogAttribute extends Dialog{
   }
 
   static async start(checkData) {
-    const template = "systems/the_edge/templates/actors/attributes/dialog.html";
+    const template = "systems/the_edge/templates/dialogs/attributes.html";
     let html = await renderTemplate(template, {});
     const buttons = {
       roll: {

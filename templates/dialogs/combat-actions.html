@@ -1,0 +1,23 @@
+<div class="check-dialog-box" style="padding-bottom: 15px;">
+  {{#each actions as |action|}}
+    <div style="display: flex; gap: 5px; justify-content: space-between; align-items: center;">
+      <b>{{combatName action}}</b>
+      <select class="advantage-box" name="StrainSelector" data-id="@index">
+        {{#each strainLevel as |strain|}}
+          <option value="{{strain}}"></option>
+        {{/each}}
+      </select>
+    </div>
+  {{/each}}
+  <hr />
+  <details>
+    <summary>{{genName "Description"}}</summary>
+    <div>
+      {{#each strainLevel as |strain|}}
+        <div>
+          {{combatName strain}}: {{textLocalisation strain}}
+        </div>
+      {{/each}}
+    </div>
+  </details>
+</div>

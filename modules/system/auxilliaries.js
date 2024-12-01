@@ -24,7 +24,7 @@ export default class Aux {
     if (tokenID) {
       let sceneID = game.canvas.id;
       let scene = game.scenes.get(sceneID);
-      actor = scene.tokens.get(tokenID).actor;
+      actor = scene.tokens.get(tokenID)?.actor;
       if (actor) return actor;
     }
     return game.actors.get(actorID);
