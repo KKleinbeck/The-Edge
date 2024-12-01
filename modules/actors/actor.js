@@ -98,14 +98,8 @@ export class TheEdgeActor extends Actor {
       attrs: THE_EDGE.attrs,
       canAdvance: true,
       zones: {
-        1: {
-          value: 5 * Math.floor(sys.heartRate.max * 75 / 500),
-          tooltip: "75% Max Heart Rate".replace(/[ ]/g, "\u00a0")
-        },
-        2: {
-          value: 5 * Math.floor(sys.heartRate.max * 90 / 500),
-          tooltip: "90% Max Heart Rate".replace(/[ ]/g, "\u00a0")
-        }
+        1: {value: this.hrZone1(), tooltip: "75% Max Heart Rate".replace(/[ ]/g, "\u00a0")},
+        2: {value: this.hrZone2(), tooltip: "90% Max Heart Rate".replace(/[ ]/g, "\u00a0")}
       },
       speeds: {
         Stride: { 
@@ -449,6 +443,35 @@ export class TheEdgeActor extends Actor {
     let y = (1-t)*y0 + t*y1 + r * Math.sin(phi);
     return [locationDescription, [x,y]];
   }
+
+  async applyCombatStrain(strains) {
+    let zone = this.getHRZone();
+    let maxStrain = Math.max(...strains);
+    let isRest = maxStrain < zone;
+    let hrChange = 0;
+    if (isRest) {
+      hrChange = 2 * strains.map(x => x - zone).reduce((a, b) => a+b, 0)
+    } else {
+      hrChange = 4 * strains.map(x => Math.max(x - zone + 1, 0)).reduce((a,b) => a+b, 0)
+    }
+    let hr = this.system.heartRate;
+    let threshold = [hr.min, this.hrZone1(), this.hrZone2(), hr.max][maxStrain]
+    let clamper = isRest ? Math.max : Math.min;
+    this.update({"system.heartRate.value": clamper(hr.value + hrChange, threshold)});
+    
+    let newZone = this.getHRZone();
+    if (newZone != zone) {}
+  }
+
+  getHRZone() {
+    let hr = this.system.heartRate.value;
+    if (hr < this.hrZone1()) return 1;
+    if (hr < this.hrZone2()) return 2;
+    return 3;
+  }
+
+  hrZone1() {return 5 * Math.floor(this.system.heartRate.max * 75 / 500)}
+  hrZone2() {return 5 * Math.floor(this.system.heartRate.max * 90 / 500)}
 
   shortRest() {this._rest("1d3 % 2", "1d3-2", "short rest")} // 2/3, 1/3 chances
   longRest() {this._rest("2d3kh", "2d3kl", "long rest")}

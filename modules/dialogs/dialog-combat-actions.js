@@ -3,7 +3,7 @@ import LocalisationServer from "../system/localisation_server.js";
 export default class DialogCombatActions extends Dialog{
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      width: 400
+      width: 400,
     })
   }
 
@@ -18,6 +18,10 @@ export default class DialogCombatActions extends Dialog{
       select: {
         label: LocalisationServer.localise("submit", "dialog"),
         callback: async (html) => {
+          let selections = html.find('[name="StrainSelector"]');
+          let strains = []
+          for (const selection of selections) { strains.push(+$(selection).val()) }
+          checkData.actor.applyCombatStrain(strains)
         }
       },
       cancel: {label: LocalisationServer.localise("cancel", "dialog")}

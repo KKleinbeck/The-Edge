@@ -15,7 +15,7 @@ export default class DialogReload extends Dialog{
         select: {
           label: game.i18n.localize("DIALOG.SELECT"),
           callback: async (html) => {
-            let selectedID =  html.find('[name="AmmunitionSelector"]').val();
+            let selectedID = html.find('[name="AmmunitionSelector"]').val();
             let loadedID = weaponSys.ammunitionID
 
             for (const ammu of checkData.ammunition) {
