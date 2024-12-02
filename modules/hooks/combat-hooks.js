@@ -11,7 +11,6 @@ export default function() {
       let actorID = details.combat.combatant.actorId
       let tokenID = details.combat.combatant.tokenId
       let actor = Aux.getActor(actorID, tokenID)
-      console.log("tracker", actorID, actor)
       DialogCombatActions.start({actor: actor})
     })
   })

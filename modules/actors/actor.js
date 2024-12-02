@@ -160,7 +160,8 @@ export class TheEdgeActor extends Actor {
 
       // Correct for the current encumbrance level
       let effects = this.itemTypes["Effect"]
-      let currentEncumbrance = effects?.find(obj => obj.name == "Encumbrance")
+      let currentEncumbrance = effects?.find(
+        obj => obj.name == LocalisationServer.localise("Encumbrance"))
       str += -1 + currentEncumbrance?.system.effects?.reduce(
         (a,b) => a - b.value, 0
       ) || 0 // -1 for the phyiscal proficiencies
@@ -396,7 +397,6 @@ export class TheEdgeActor extends Actor {
   async applyDamage(damage, crit, damageType, name) {
     let [location, locationCoord] = this._generateLocation(crit)
 
-    console.log(this, this.itemTypes)
     for (const armour of this.itemTypes["Armour"]) {
       if(!armour.system.equipped) continue;
       // TODO: Inner vs outer armour.
@@ -457,10 +457,43 @@ export class TheEdgeActor extends Actor {
     let hr = this.system.heartRate;
     let threshold = [hr.min, this.hrZone1(), this.hrZone2(), hr.max][maxStrain]
     let clamper = isRest ? Math.max : Math.min;
-    this.update({"system.heartRate.value": clamper(hr.value + hrChange, threshold)});
+    await this.update({"system.heartRate.value": clamper(hr.value + hrChange, threshold)});
     
     let newZone = this.getHRZone();
-    if (newZone != zone) {}
+    if (newZone != zone) {this._updateStrain()}
+  }
+
+  async _updateStrain() {
+    let effects = this.itemTypes["Effect"]
+    let currentStrain = effects?.find(
+      obj => obj.name == LocalisationServer.localise("Strain"))
+    let zone = this.getHRZone();
+    if (zone == 1) {
+      currentStrain?.delete()
+      return;
+    }
+
+    if (!currentStrain) {
+      const cls = getDocumentClass("Item");
+      currentStrain = await cls.create(
+        {name: LocalisationServer.localise("Strain"), type: "Effect"}, {parent: this}
+      );
+    }
+
+    if (zone == 2) {
+      await currentStrain.update({"system.effects": [
+        {modifier: "Weapons.All", value: -1},
+        {modifier: "Attributes.Crd", value: -1},
+        {modifier: "Attributes.Spd", value: 1}
+      ]})
+    } else {
+      await currentStrain.update({"system.effects": [
+        {modifier: "Weapons.All", value: -3},
+        {modifier: "Attributes.Crd", value: -2},
+        {modifier: "Attributes.Social", value: -1},
+        {modifier: "Attributes.Mental", value: -1}
+      ]})
+    }
   }
 
   getHRZone() {
@@ -484,7 +517,6 @@ export class TheEdgeActor extends Actor {
       if (wound.system.bleeding > 0) {
         let coagulationRoll = await new Roll(coagulationDice).evaluate()
         let coagulation = coagulationRoll.total
-        console.log(coagulation)
         if (wound.system.damage == 0 && wound.system.bleeding <= coagulation) {
           accCoagulation += wound.system.bleeding;
           wound.delete();

@@ -73,7 +73,6 @@ export default class Aux {
     }
     let msg = LocalisationServer.parsedLocalisation("Wrong cost string", "Notifications", {str: costStr})
     ui.notifications.notify(msg)
-    console.log("Hi")
     return undefined;
   }
 

@@ -7,5 +7,6 @@ export default function() {
     let actor = token.actor;
     await actor._determineEncumbrance();
     await actor._updateStatus();
+    await actor._updateStrain();
   })
 }
