@@ -9,6 +9,14 @@
       </select>
     </div>
   {{/each}}
+  <div style="display: flex; gap: 5px; width: 100%; justify-content: space-between; align-items: center;">
+    <b>{{combatName "Communication"}}</b>
+    <select class="advantage-box" name="CommunicationSelector" style="width: 60%;">
+      {{#each communicationOptions as |communication|}}
+        <option value="{{@index}}">{{combatName communication}}</option>
+      {{/each}}
+    </select>
+  </div>
   <details>
     <summary>{{genName "Description"}}</summary>
     <div>

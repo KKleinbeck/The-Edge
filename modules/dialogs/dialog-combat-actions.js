@@ -11,7 +11,8 @@ export default class DialogCombatActions extends Dialog{
     const template = "systems/the_edge/templates/dialogs/combat-actions.html";
     const dialogHelpers = {
       strainLevel: ["No strain", "Strain L1", "Strain L2", "Strain L3"],
-      actions: ["First action", "Second action", "Third action"]
+      actions: ["First action", "Second action", "Third action"],
+      communicationOptions: ["mute", "whisper", "talk", "shout"]
     }
     let html = await renderTemplate(template, dialogHelpers);
     let buttons = {
@@ -21,7 +22,8 @@ export default class DialogCombatActions extends Dialog{
           let selections = html.find('[name="StrainSelector"]');
           let strains = []
           for (const selection of selections) { strains.push(+$(selection).val()) }
-          checkData.actor.applyCombatStrain(strains)
+          let communication = html.find('[name="CommunicationSelector"]').val();
+          checkData.actor.applyCombatStrain(strains, communication)
         }
       },
       cancel: {label: LocalisationServer.localise("cancel", "dialog")}

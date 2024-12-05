@@ -113,7 +113,21 @@
     "NO STRAIN": "No strain actions",
     "STRAIN L1": "Strain level 1 actions",
     "STRAIN L2": "Strain level 2 actions",
-    "STRAIN L3": "Strain level 3 actions"
+    "STRAIN L3": "Strain level 3 actions",
+
+    "COMMUNICATION": "Communication",
+    "MUTE": "Mute",
+    "SHOUT": "Shout",
+    "TALK": "Talk",
+    "WHISPER": "Whisper",
+
+    "HEART RATE CHANGE": "Heart rate change",
+    "STRAIN ACTIONS": "Performed actions at strain level",
+    "0": "while not/ silently communicating,",
+    "1": "while whispering,",
+    "2": "while talking,",
+    "3": "while shouting,",
+    "CHANGING HEART RATE": "changing heart rate by"
   },
   "DIALOG": {
     "CANCEL": "Cancel",

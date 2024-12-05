@@ -47,6 +47,10 @@ export default class ChatServer {
         html = await renderTemplate("systems/the_edge/templates/chat/grenade.html", details);
         break;
       
+      case "STRAINUPDATE":
+        html = await renderTemplate("systems/the_edge/templates/chat/strain_update.html", details);
+        break
+      
       case "SHORT REST":
       case "LONG REST":
         html = await renderTemplate(

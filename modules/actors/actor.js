@@ -444,7 +444,7 @@ export class TheEdgeActor extends Actor {
     return [locationDescription, [x,y]];
   }
 
-  async applyCombatStrain(strains) {
+  async applyCombatStrain(strains, communication) {
     let zone = this.getHRZone();
     let maxStrain = Math.max(...strains);
     let isRest = maxStrain < zone;
@@ -454,6 +454,9 @@ export class TheEdgeActor extends Actor {
     } else {
       hrChange = 4 * strains.map(x => Math.max(x - zone + 1, 0)).reduce((a,b) => a+b, 0)
     }
+
+    hrChange += (maxStrain - zone + 1) * [0, 1, 2, 4][communication]
+    
     let hr = this.system.heartRate;
     let threshold = [hr.min, this.hrZone1(), this.hrZone2(), hr.max][maxStrain]
     let clamper = isRest ? Math.max : Math.min;
@@ -461,6 +464,9 @@ export class TheEdgeActor extends Actor {
     
     let newZone = this.getHRZone();
     if (newZone != zone) {this._updateStrain()}
+    
+    ChatServer.transmitEvent("strainUpdate",
+      {strains: strains, communication: communication, hrChange: hrChange})
   }
 
   async _updateStrain() {
