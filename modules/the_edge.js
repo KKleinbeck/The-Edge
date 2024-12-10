@@ -25,6 +25,9 @@ Hooks.once("init", async function() {
   Array.prototype.random = function () {
     return this[Math.floor((Math.random()*this.length))];
   }
+  Array.prototype.sum = function () {
+    return this.reduce((a,b) => a+b,0);
+  }
 
   game.the_edge = {
     TheEdgeActor,

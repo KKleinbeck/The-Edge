@@ -1,4 +1,5 @@
 import DiceServer from "../system/dice_server.js";
+import ChatServer from "../system/chat_server.js";
 import THE_EDGE from "../system/config-the-edge.js";
 import Aux from "../system/auxilliaries.js";
 
@@ -35,13 +36,20 @@ export default class DialogWeapon extends Dialog{
           // Roll the attack
           let scene = Aux.getScene(checkData.sceneID)
           let targets = Aux.getTargets(scene, checkData.targetIDs)
-          let targetNames = targets.map(x => x.name)
-          let check = {name: checkData.name, targets: targetNames}
           foundry.utils.mergeObject(modificators, {dicesEff: dices})
-          let [crits, damage] = await DiceServer.attackCheck(check, modificators);
+          let [crits, damage, diceRes, hits] = await DiceServer.attackCheck(modificators);
 
           // Apply the damage
           for (const target of targets) {
+            let details = {
+              name: checkData.name, rolls: [], damage: damage,
+              damageRoll: modificators.fireModeModifier.damage
+            };
+            for (let i = 0; i < modificators.dicesEff; ++i) {
+              details.rolls.push({res: diceRes[i], hit: hits[i]})
+            }
+            foundry.utils.mergeObject(details, modificators)
+            ChatServer.transmitEvent("WeaponCheck", details);
             for (let i = 0; i < damage.length; ++i){
               await target.applyDamage(damage[i], crits[i], checkData.damageType, checkData.name)
             }

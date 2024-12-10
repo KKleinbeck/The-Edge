@@ -1,4 +1,5 @@
 import ChatServer from "./chat_server.js";
+import LocalisationServer from "./localisation_server.js";
 
 export default class DiceServer {
   // [2]a1d20 + 3d3d10h2 + 5d6l3, [1]d20+60
@@ -77,7 +78,7 @@ export default class DiceServer {
     return results;
   }
 
-  static async attackCheck(check, modificators) {
+  static async attackCheck(modificators) {
     let diceRes = []
     for (let i = 0; i < modificators.dicesEff; ++i) {
       diceRes.push(await this._basicRoll("1d20", true));
@@ -94,8 +95,8 @@ export default class DiceServer {
       let hits2 = []
       for (const res of diceRes2) hits2.push(res <= modificators.threshold);
       
-      let sum = hits.reduce((a, b) => a+b, 0);
-      let sum2 = hits2.reduce((a, b) => a+b, 0);
+      let sum = hits.sum();
+      let sum2 = hits2.sum();
       if ( ((modificators.advantage == "Advantage") && (sum < sum2)) ||
            ((modificators.advantage == "Disadvantage") && (sum > sum2)) ) {
         hits = hits2
@@ -115,16 +116,7 @@ export default class DiceServer {
       } else crits.push(false)
     }
 
-    let details = {
-      name: check.name, rolls: [], damage: damage,
-      damageRoll: modificators.fireModeModifier.damage, targets: check.targets
-    };
-    for (let i = 0; i < modificators.dicesEff; ++i) {
-      details.rolls.push({res: diceRes[i], hit: hits[i]})
-    }
-    foundry.utils.mergeObject(details, modificators)
-    ChatServer.transmitEvent("WeaponCheck", details);
-    return [crits, damage];
+    return [crits, damage, diceRes, hits];
   }
 
   static async _genericRoll(rollDescription, isCheck = false) {
@@ -203,7 +195,8 @@ export default class DiceServer {
     }
 
     // If no match
-    ChatServer.transmit("IllicitRole", {"_ROLE_": rollDescription}, "error")
+    let msg = LocalisationServer.parsedLocalisation("IllicitRole", "CHATERROR", {"_ROLE_": rollDescription})
+    ui.notifications.notify(msg)
     return undefined;
   }
 

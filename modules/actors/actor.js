@@ -407,8 +407,17 @@ export class TheEdgeActor extends Actor {
     }
 
     if (damage > 0) {
+      let health = this.system.health.value;
+      let heartRate = this.system.heartRate;
       let update = {}
-      update["system.health.value"] = this.system.health.value - damage
+      update["system.health.value"] = Math.max(health - damage, 0)
+      if (health > damage) { // increase heartrate upon damage
+        update["system.heartRate.value"] = Math.min(heartRate.value + 5*damage, heartRate.max)
+      } else if (health > 0) { // Dying damage
+        update["system.heartRate.value"] = Math.max(heartRate.max - 5*(damage - health), 0)
+      } else { // bleeding out
+        update["system.heartRate.value"] = Math.max(heartRate.value - 5*damage, 0)
+      }
       await this.update(update)
 
       let bt = THE_EDGE.bleeding_threshold[damageType]
