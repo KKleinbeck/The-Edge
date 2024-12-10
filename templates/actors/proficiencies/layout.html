@@ -3,6 +3,7 @@
     {{#each prepare.proficienciesLeft as |proficiencies category|}}
       <div class="proficiency-box proficiency-header">
         <div class="proficiency-title">{{category}}</div>
+        <div class="proficiency-column"></div>
         <div class="proficiency-column">{{genName "Adv"}}</div>
         <div class="proficiency-column">{{genName "Sta"}}</div>
         <div class="proficiency-column">{{genName "Mod"}}</div>
@@ -15,6 +16,8 @@
       <div class="proficiency-box">
         <div class="name">
           {{proficiency}}
+        </div>
+        <div>
           {{#if ../../prepare.canAdvance}}
             <a data-name="{{proficiency}}" advance-type="refund"  class="advance-prof"><i data-tooltip="{{getSys ../../prepare 'prof' proficiency 'refund'}} PH" class="fas fa-minus advance-fa"></i></a>
             <a data-name="{{proficiency}}" advance-type="advance" class="advance-prof"><i data-tooltip="{{getSys ../../prepare 'prof' proficiency 'cost'}} PH" class="fas fa-plus advance-fa"></i></a>
@@ -54,6 +57,7 @@
     {{#each prepare.proficienciesRight as |proficiencies category|}}
       <div class="proficiency-box proficiency-header">
         <div class="proficiency-title">{{category}}</div>
+        <div class="proficiency-column"></div>
         <div class="proficiency-column">{{genName "Adv"}}</div>
         <div class="proficiency-column">{{genName "Sta"}}</div>
         <div class="proficiency-column">{{genName "Mod"}}</div>
@@ -66,6 +70,8 @@
       <div class="proficiency-box">
         <div class="name">
           {{proficiency}}
+        </div>
+        <div>
           {{#if ../../prepare.canAdvance}}
             <a data-name="{{proficiency}}" advance-type="refund"  class="advance-prof"><i data-tooltip="{{getSys ../../prepare 'prof' proficiency 'refund'}} PH" class="fas fa-minus advance-fa"></i></a>
             <a data-name="{{proficiency}}" advance-type="advance" class="advance-prof"><i data-tooltip="{{getSys ../../prepare 'prof' proficiency 'cost'}} PH" class="fas fa-plus advance-fa"></i></a>

@@ -81,7 +81,7 @@
           "Driving": {"dices": ["spd", "crd", "emp"], "advances" : 0, "modifier": 0, "status": 0},
           "Piloting": {"dices": ["crd", "foc", "int"], "advances" : 0, "modifier": 0, "status": 0},
           "Mental Fortitude": {"dices": ["foc", "res", "res"], "advances" : 0, "modifier": 0, "status": 0},
-          "Logic & Mathematics": {"dices": ["int", "int", "int"], "advances" : 0, "modifier": 0, "status": 0},
+          "Logic & Maths": {"dices": ["int", "int", "int"], "advances" : 0, "modifier": 0, "status": 0},
           "Memory": {"dices": ["foc", "foc", "int"], "advances" : 0, "modifier": 0, "status": 0}
         },
         "technical": {
