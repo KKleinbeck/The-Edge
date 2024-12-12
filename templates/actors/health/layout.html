@@ -55,6 +55,12 @@
           <b>{{genName "Long rest"}}</b>
           <a class="long-rest"><i class="fas fa-bed"></i></a>
         </div>
+        <div>
+          {{genName "Total Damage"}}: {{helpers.damage}}
+        </div>
+        <div>
+          {{genName "Total Bleeding"}}: {{helpers.bleeding}}
+        </div>
       </div>
       <div style="columns: 2;">
         {{#each helpers.bodyParts as |bPart|}}

@@ -8,9 +8,10 @@ export default function() {
       const target = ev.currentTarget;
       if (target.dataset.control != "nextTurn") return undefined;
 
-      let actorID = details.combat.combatant.actorId
-      let tokenID = details.combat.combatant.tokenId
-      let actor = Aux.getActor(actorID, tokenID)
+      let actorID = details.combat.combatant.actorId;
+      let tokenID = details.combat.combatant.tokenId;
+      let actor = Aux.getActor(actorID, tokenID);
+      actor.applyBloodLoss();
       DialogCombatActions.start({actor: actor})
     })
   })

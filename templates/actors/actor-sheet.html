@@ -8,7 +8,7 @@
             </h1>
             <div class="columned-page">
                 <div class="page-centered">
-                    <p class="attribute-title">{{genName "HEALTH"}}</p>
+                    <p class="attribute-title">{{genName "health"}}</p>
                     <input 
                         name="system.health.value" type="number" value="{{systemData.health.value}}"
                         style="width: 54px; max-height: 23px; text-align: center;" max="{{systemData.health.max}}"
@@ -17,12 +17,21 @@
                     <span class="output" style="width: 54px;">{{systemData.health.max}}</span>
                 </div>
                 <div class="page-centered">
-                    <p class="attribute-title">{{genName "HEARTRATE"}}</p>
+                    <p class="attribute-title">{{genName "Heartrate"}}</p>
                     <input
                         name="system.heartRate.value" type="number" value="{{systemData.heartRate.value}}"
                         style="width: 54px; max-height: 23px; text-align: center;" min="{{systemData.heartRate.min}}" max="{{systemData.heartRate.max}}"
                     />
                     <span class="output" style="width: 74px;">{{systemData.heartRate.min}} &ndash; {{systemData.heartRate.max}}</span>
+                </div>
+                <div class="page-centered">
+                    <p class="attribute-title">{{genName "Blood Volumn"}}</p>
+                    <input
+                        name="system.bloodVolumn.value" type="number" value="{{systemData.bloodVolumn.value}}"
+                        style="width: 54px; max-height: 23px; text-align: center;" min="0"
+                    />
+                    <span> / </span>
+                    <span class="output" style="width: 54px;">{{systemData.bloodVolumn.max}}</span>
                 </div>
                 <div class="page-centered">
                     <!-- <p class="attribute-title">{{genName "herotoken"}}</p> -->

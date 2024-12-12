@@ -453,6 +453,15 @@ export class TheEdgeActor extends Actor {
     return [locationDescription, [x,y]];
   }
 
+  async applyBloodLoss() {
+    let wounds = this.itemTypes["Wounds"];
+    let bleeding = wounds.map(x => x.system.bleeding).sum();
+    let sys = this.system;
+    let lossRate = Math.floor(20 * sys.heartRate.value / sys.heartRate.max);
+    let bloodLoss = lossRate * bleeding;
+    this.update({"system.bloodVolumn.value": Math.max(sys.bloodVolumn.value - bloodLoss, 0)});
+  }
+
   async applyCombatStrain(strains, communication) {
     let zone = this.getHRZone();
     let maxStrain = Math.max(...strains);

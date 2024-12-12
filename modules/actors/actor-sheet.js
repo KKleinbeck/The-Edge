@@ -44,12 +44,15 @@ export class TheEdgeActorSheet extends ActorSheet {
     let creditsOffline = credits.find(c => c.system?.isSchid)?.system?.value || 0;
     let creditsDigital = credits.find(c => !c.system?.isSchid)?.system?.value || 0;
     let weight =  this.actor._determineWeight();
+    let wounds = this.actor.itemTypes["Wounds"];
     context.helpers = {
       types: ["Weapon", "Armour", "Ammunition", "Gear", "Consumables"],
       languages: THE_EDGE.languages,
       credits: {"Schids": creditsOffline, "digital": creditsDigital},
       weight: weight,
-      bodyParts: ["Torso", "Head", "Arms", "Legs"]
+      bodyParts: ["Torso", "Head", "Arms", "Legs"],
+      damage: wounds.map(x => x.system.damage).sum(),
+      bleeding: wounds.map(x => x.system.bleeding).sum(),
     }
     return context;
   }
