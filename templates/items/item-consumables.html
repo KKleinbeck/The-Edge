@@ -47,11 +47,11 @@
                 <table>
                     <tr>
                         <td></td>
-                        <td style="width: 18%; text-align: center;">{{genName "close"}}</td>
-                        <td style="width: 18%; text-align: center;">{{genName "far"}}</td>
+                        <td style="width: 18%; text-align: center;">{{combatName "close"}}</td>
+                        <td style="width: 18%; text-align: center;">{{combatName "far"}}</td>
                     </tr>
                     <tr>
-                        <td>{{itemName "Blast distance"}}</td>
+                        <td>{{combatName "Blast distance"}}</td>
                         {{#each systemData.subtypes.grenade.blastDistance as |distance|}}
                             <td><input type="number" style="text-align: right;" name="system.subtypes.grenade.blastDistance" value="{{distance}}"/></td>
                         {{/each}}
@@ -65,7 +65,11 @@
                     <tr>
                         <td>{{genName "Damage type"}}</td>
                         <td colspan="2">
-
+                            <select class="selection-box" name="system.subtypes.grenade.type" id="Grenade Damage Type Selector">
+                                {{#each helpers.damageTypes as |type|}}
+                                    <option value="{{type}}" {{#if (checkEqual ../systemData.subtypes.grenade.type type)}}selected{{/if}}>{{combatName type}}</option>
+                                {{/each}}
+                            </select>
                         </td>
                     </tr>
                 </table>
@@ -73,7 +77,7 @@
                     {{#each systemData.subtypes.grenade.effects as |value effect|}}
                         <div style="display: flex; gap: 5px; align-items: center;">
                             <input type="checkbox" name="system.subtypes.grenade.effects.{{effect}}" id="has-effect-{{effect}}" {{#if value}}checked{{/if}}/>
-                            <label for="has-effect-{{effect}}">{{genName effect}}</label>
+                            <label for="has-effect-{{effect}}">{{combatName effect}}</label>
                         </div>
                     {{/each}}
                     </select>

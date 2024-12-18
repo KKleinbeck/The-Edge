@@ -73,6 +73,15 @@
     "FAST": "Fast",
     "ERRADIC": "Erradic",
 
+    "BLAST DISTANCE": "Blast distance",
+    "CLOSE": "Close",
+    "FAR": "Far",
+    "BLIND": "Blind",
+    "DEAFEN": "Deafen",
+    "EMP": "EMP",
+    "SMOKE": "Smoke",
+    "SHELLSHOCK": "Shellshock",
+
     "COVER": "Cover",
     "NO COVER": "no cover",
     "HALF COVER": "half cover",
@@ -183,7 +192,6 @@
     "SEALED": "Sealed",
     "STOPPED BLEEDING": "Stopped bleeding",
 
-    "BLAST DISTANCE": "Blast distance",
     "ROLL DAMAGE": "Roll damage",
 
     "BODY PART": "Body part",

@@ -301,7 +301,8 @@ class ItemSheetConsumables extends ItemSheetSkill {
     const context = await super.getData(options);
     context.helpers = {
       medicineEffects: THE_EDGE.medicine_effects,
-      displayHint: this.options.displayHint
+      displayHint: this.options.displayHint,
+      damageTypes: Object.keys(THE_EDGE.bleeding_threshold)
     };
     return context;
   }
