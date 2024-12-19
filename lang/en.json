@@ -30,6 +30,10 @@
     "RES": "RES",
     "INT": "INT"
   },
+  "CHATNOTIFICATION": {
+    "BlindRoll": "Blind roll",
+    "whisper": "whisper"
+  },
   "COMBAT": {
     "BLASTER PISTOLS": "Blaster Pistols",
     "PULSE RIFLE": "Pulse Rifle",

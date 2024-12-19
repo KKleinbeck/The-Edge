@@ -102,17 +102,11 @@ export class TheEdgeActorSheet extends ActorSheet {
   }
 
   async _useHeroToken(ev) {
-    let name = super.getData().data.name;
-    // ChatServer.transmit("herotoken", {"_USER_": name})
-    this.actor.system.heroToken.available -= 1;
-    this._render();
+    this.actor.update({"system.heroToken.available": this.actor.system.heroToken.available - 1});
   }
 
   async _regenerateHeroToken(ev){
-    let name = super.getData().data.name;
-    // ChatServer.transmit("herotokenspent", {"_USER_": name})
-    this.actor.system.heroToken.available += 1;
-    this._render();
+    this.actor.update({"system.heroToken.available": this.actor.system.heroToken.available + 1});
   }
 
   async _advanceSrv(ev, quantity) {
@@ -302,8 +296,7 @@ export class TheEdgeActorSheet extends ActorSheet {
   _onDropStackableItem(event, data, item) {
     let _existingCopy = this._itemExists(item) 
     if (_existingCopy) {
-      _existingCopy.system.quantity += 1
-      this._render()
+      _existingCopy.update({"system.quantity": _existingCopy.system.quantity + 1});
       return _existingCopy;
     }
     return super._onDropItem(event, data)
