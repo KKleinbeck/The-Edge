@@ -60,6 +60,12 @@ export class TheEdgeItem extends Item {
     }
     this.update({"system.equipped": !this.system.equipped})
   }
+
+  useOne() {
+    if (this.system.quantity > 1) {
+      this.update({"system.quantity": this.system.quantity - 1});
+    } else this.delete();
+  }
 }
 
 export class ArmourItemTheEdge extends TheEdgeItem {
