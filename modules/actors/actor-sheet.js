@@ -302,7 +302,7 @@ export class TheEdgeActorSheet extends ActorSheet {
     return super._onDropItem(event, data)
   }
 
-  _onItemControl(event) {
+  async _onItemControl(event) {
     event.preventDefault();
 
     // Obtain event data
@@ -362,6 +362,26 @@ export class TheEdgeActorSheet extends ActorSheet {
               actorID: this.actor?.id, tokenID: this.token?.id, grenade: item, details: item.system.subtypes.grenade
             })
             item.useOne();
+            break;
+          
+          default:
+            let effectNames = this.actor.itemTypes["Effect"].map(x => x.name)
+            if (effectNames.includes(item.name)) {
+              let msg = LocalisationServer.localise("Effect already exists", "Notifications")
+              ui.notifications.notify(msg)
+            } else {
+              const clsEffect = getDocumentClass("Item");
+              let newEffect = await clsEffect.create(
+                {name: item.name, type: "Effect"}, 
+                {parent: this.actor, "system.effects": item.system.effects}
+              );
+              newEffect.update({
+                "system.effects": item.system.effects, "system.description": item.system.description,
+                "system.gm_description": item.system.gm_description
+              })
+              this._render();
+              item.useOne();
+            }
         }
         break;
     }

@@ -291,7 +291,6 @@ export class TheEdgeActor extends Actor {
             break;
           
           case "heartrate":
-            console.log(modifierSubclass)
             if (modifierSubclass.toLowerCase() == "min") {
               update["system.heartRate.status_min"] += effect.value;
             } else if (modifierSubclass.toLowerCase() == "max") {
