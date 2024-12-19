@@ -150,8 +150,9 @@
     "biography": "", "notes": "",
     "health": {
       "value": 20,
-      "min": 0,
-      "max": 20
+      "baseline_max": 20,
+      "max": 0,
+      "status": 0
     },
     "age": 21,
     "sex": "female",
@@ -162,11 +163,17 @@
     "heartRate": {
       "value": 50,
       "baseline_min": 50,
-      "baseline_max": 195
+      "baseline_max": 195,
+      "min": 0,
+      "max": 0,
+      "status_min": 0,
+      "status_max": 0
     },
     "bloodVolumn": {
       "value": 6000,
-      "max": 6000
+      "baseline_max": 6000,
+      "max": 0,
+      "status": 0
     },
     "heroToken": {
       "max": 2,

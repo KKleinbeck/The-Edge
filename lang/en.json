@@ -273,7 +273,7 @@
     "INCREASE": "Increase skill level"
   },
   "TEXT": {
-    "EFFECTS": "Add a status modifiery to your attributes, proficiencies, weapon proficiencies and other character attributes.\nFor this write 'Attributes.NAME', 'Proficiencies.NAME', 'Weapons.NAME'. This is generally case-insensitive, except for specific proficiency and weapon names. You can also use group names, for example 'attributes.physical' or 'weapons.Energy'. Furthermore there is an 'all' specifier to affect everything.",
+    "EFFECTS": "Add a status modifiery to your attributes, proficiencies, weapon proficiencies and other character attributes.\nFor this write 'Attributes.NAME', 'Proficiencies.NAME', 'Weapons.NAME'. This is generally case-insensitive, except for specific proficiency and weapon names. You can also use group names, for example 'attributes.physical' or 'weapons.Energy'. Furthermore there is an 'all' specifier to affect everything.\nOther modifiers: 'health', 'heartRate.[min,max]', 'bloodVolumn'.",
     "NO STRAIN": "Examples: Standing, sitting, lying, using a weapon",
     "STRAIN L1": "Examples: Walking, striding, throwing, normal swimming",
     "STRAIN L2": "Examples: Running, jumping, climbing, fast swimming",

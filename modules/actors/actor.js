@@ -14,18 +14,20 @@ export class TheEdgeActor extends Actor {
   /** @inheritdoc */
   prepareDerivedData() {
     super.prepareDerivedData();
-    this.system.attributes = this.system.attributes || {};
 
-    for (let ch of Object.values(this.system.attributes)) {
+    const sys = this.system;
+    for (let ch of Object.values(sys.attributes)) {
       ch.value = Math.max(ch.status + ch.advances + ch.modifier, 0);
     }
-    this.system.heartRate["max"] = this.system.heartRate.baseline_max + 
-      this.system.attributes["end"].value -
-      2 * Math.floor((this.system.age - 21) / 3)
-    this.system.heartRate["min"] = this.system.heartRate.baseline_min -
-      this.system.attributes["end"].value
+    sys.health["max"] = sys.health.baseline_max + sys.health.status
+    sys.heartRate["max"] = sys.heartRate.baseline_max + 
+      sys.heartRate.status_max + sys.attributes["end"].value -
+      2 * Math.floor((sys.age - 21) / 3)
+    sys.heartRate["min"] = sys.heartRate.baseline_min + sys.heartRate.status_min -
+      sys.attributes["end"].value
+    sys.bloodVolumn["max"] = sys.bloodVolumn.baseline_max + sys.bloodVolumn.status
 
-    this.system.wounds = {}
+    sys.wounds = {}
   }
 
   /**
@@ -190,10 +192,13 @@ export class TheEdgeActor extends Actor {
   };
 
   async _updateStatus() {
-    let update = {}
     let map = THE_EDGE.effect_map
 
     // Reset to a blank state
+    let update = {
+      "system.health.status": 0, "system.heartRate.status_min": 0,
+      "system.heartRate.status_max": 0, "system.bloodVolumn.status": 0
+    }
     for (const attr of THE_EDGE.attrs) {
       update[`system.attributes.${attr}.status`] = 0;
     }
@@ -210,9 +215,11 @@ export class TheEdgeActor extends Actor {
       }
     }
 
+    // Iterate through items and apply their effects
     for (const item of this.items) {
       if (!["Effect", "Skill", "Combatskill"].includes(item.type) && (!item.system.equipped || !item.system.hasEffect)) continue;
 
+      // Fetch item effect list
       let effects = [];
       if (["Skill", "Combatskill"].includes(item.type)) {
         for (let i = 0; i < item.system.level; ++i) {
@@ -220,6 +227,8 @@ export class TheEdgeActor extends Actor {
           effects.push(...item.system.levelEffects[i])
         }
       } else effects = item.system.effects;
+
+      // Iterate effects
       for (const effect of effects) {
         let [modifierClass, modifierSubclass] = effect.modifier.split(".");
         switch (modifierClass.toLowerCase()) {
@@ -275,6 +284,23 @@ export class TheEdgeActor extends Actor {
                 update[`system.weapons.${modifierSubclass}.${subclass}.status`] += effect.value;
               }
             }
+            break;
+          
+          case "health":
+            update["system.health.status"] += effect.value;
+            break;
+          
+          case "heartrate":
+            console.log(modifierSubclass)
+            if (modifierSubclass.toLowerCase() == "min") {
+              update["system.heartRate.status_min"] += effect.value;
+            } else if (modifierSubclass.toLowerCase() == "max") {
+              update["system.heartRate.status_max"] += effect.value;
+            }
+            break;
+          
+          case "bloodvolumn":
+            update["system.bloodVolumn.status"] += effect.value;
             break;
         }
       }
