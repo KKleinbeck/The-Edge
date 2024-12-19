@@ -38,16 +38,17 @@ export default function() {
       elem.find(".roll").remove()
       switch (proficiencyRoll.outcome) {
         case "Success":
-          elem.append(`<div style="${proficiencyRoll.diceResults}">${proficiencyRoll.quality} QL</div>`)
+          elem.append(`<div title="${proficiencyRoll.diceResults}">${proficiencyRoll.quality} QL</div>`)
           break;
         case "Failure":
-          elem.append(`<div style="${proficiencyRoll.diceResults}">${-proficiencyRoll.quality} FL</div>`)
+          elem.append(`<div title="${proficiencyRoll.diceResults}">${-proficiencyRoll.quality} FL</div>`)
       }
 
       let rollDescription = ProficiencyConfig.rollOutcome(proficiency, proficiencyRoll.quality);
       addRollDescription(elem, rollDescription)
 
       rollFollowUps(elem);
+      chatMsgCls.update({"content": html.find(".message-content").html()})
     })
 
     html.find(".generic-roll").click(async ev => {
@@ -64,6 +65,7 @@ export default function() {
       elem.find(".roll").remove()
 
       rollFollowUps(elem);
+      chatMsgCls.update({"content": html.find(".message-content").html()})
     })
   })
 }
