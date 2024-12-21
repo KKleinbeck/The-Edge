@@ -3,10 +3,10 @@
       <h4 class="message-sender">{{alias}}</h4>
       <span class="message-metadata">
           <time class="message-timestamp">{{timeSince message.timestamp}}</time>
-          <span class="chatIndicator"><i data-tooltip="CHATNOTIFICATION.BlindRoll" class="fas fa-eye-slash"></i></span>
-      <span class="privateMessageIndicator"><i data-tooltip="CHATNOTIFICATION.whisper" class="fas fa-mask"></i></span>
+          <span class="chatIndicator"><i data-tooltip="CHATNOTIFICATION.BLIND ROLL" class="fas fa-eye-slash"></i></span>
+      <span class="privateMessageIndicator"><i data-tooltip="CHATNOTIFICATION.WHISPER" class="fas fa-mask"></i></span>
       {{#if user.isGM}}
-        <a class="button message-delete"><i class="fas fa-trash"></i></a>
+        <a class="button message-delete" data-tooltip="CHATNOTIFICATION.DELETE"><i class="fas fa-trash"></i></a>
       {{/if}}
       </span>
     </header>

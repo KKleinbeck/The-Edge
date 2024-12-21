@@ -1,12 +1,12 @@
 <div class="centered-row">
   <h3>{{attrName attribute}} {{genName "Check"}}: </h3>
   <a class="attr-d20-chat d20-{{attribute}}">
-    <span class="d20-overlay" data-tooltip="{{attrName attribute}} {{genName 'threshold'}}: {{threshold}}">{{roll}}</span>
+    <span class="d20-overlay" title="{{attrName attribute}} {{genName 'threshold'}}: {{threshold}}" data-threshold="{{threshold}}">{{roll}}</span>
   </a>
 </div>
 <div class="centered-row">
   <b>{{genName "result"}}:</b>
-  <span>{{genName outcome}}</span>
+  <span class="attr-outcome">{{genName outcome}}</span>
 </div>
 <div class="centered-row">
   <b>{{genName "Modificators"}}: </b>

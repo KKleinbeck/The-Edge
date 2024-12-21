@@ -23,6 +23,33 @@ export default function() {
   }
 
   Hooks.on("renderChatMessage", (chatMsgCls, html, message) => {
+    // Hero token listeners
+    new ContextMenu(html, ".attr-d20-chat", [{
+      name: LocalisationServer.localise("Use hero token"),
+      classes: "attr-context-menu",
+      icon: "",
+      callback: () => {
+        let roll = html.find(".d20-overlay")[0];
+        let threshold = parseInt(roll.dataset.threshold);
+        let prevOutcome = parseInt(roll.innerText);
+        console.log(chatMsgCls, html.find(".message-content").html())
+        if (prevOutcome == 1) {return undefined;}
+        else if (prevOutcome > threshold && threshold != 0) {
+          $(roll).html(threshold)
+          let outcomeText = html.find(".attr-outcome");
+          html.find("#context-menu").remove();
+          $(outcomeText).html(LocalisationServer.localise("Success"))
+        } else {
+          $(roll).html(1)
+          let outcomeText = html.find(".attr-outcome");
+          html.find("#context-menu").remove();
+          $(outcomeText).html(LocalisationServer.localise("CritSuccess"))
+        }
+        chatMsgCls.update({"content": html.find(".message-content").html()})
+      }
+    }])
+
+    // Dynamic rolls listeners
     html.find(".proficiency-roll").click(async ev => {
       const target = ev.currentTarget;
       if (!rollIsReady("proficiency-roll", target)) return undefined;

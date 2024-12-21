@@ -31,8 +31,9 @@
     "INT": "INT"
   },
   "CHATNOTIFICATION": {
-    "BlindRoll": "Blind roll",
-    "whisper": "whisper"
+    "BLIND ROLL": "Blind roll",
+    "DELETE": "Delete",
+    "WHISPER": "whisper"
   },
   "COMBAT": {
     "BLASTER PISTOLS": "Blaster Pistols",
@@ -385,6 +386,7 @@
   "TOTAL BLEEDING": "Total Bleeding",
   "TYPE": "Type",
   "USED": "Used",
+  "USE HERO TOKEN": "Use Hero Token",
   "VALUE": "Value",
   "WEIGHT": "Weight",
   "WOUND": "Wound",

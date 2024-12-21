@@ -25,7 +25,7 @@ export default class DiceServer {
 
     let outcome = undefined;
     let threshold = check.threshold + modificators.temporary;
-    if (diceRes == 1)  outcome = "CritSuccess";
+    if (diceRes == 1) outcome = "CritSuccess";
     else if (diceRes == 20) outcome = "CritFailure";
     else if (threshold >= diceRes) outcome = "Success";
     else outcome = "Failure";
