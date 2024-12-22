@@ -2,7 +2,6 @@ import Aux from "../system/auxilliaries.js";
 
 export default function() {
   Hooks.on("renderActorSheet", async (sheet, html, actorData) => {
-    console.log("Hello")
     if (Aux.hasRaceCondDanger("refreshToken")) return undefined;
 
     let actor = actorData.actor;

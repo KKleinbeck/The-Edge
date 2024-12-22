@@ -76,8 +76,8 @@ export class TheEdgeActorSheet extends ActorSheet {
     });
 
     // Hero Tokens
-    html.find(".hero-token").click(ev => this._useHeroToken(ev));
-    html.find(".hero-token-spent").click(ev => this._regenerateHeroToken(ev));
+    html.find(".hero-token").click(_ => this.actor.useHeroToken());
+    html.find(".hero-token-spent").click(_ => this.actor.regenerateHeroToken());
 
     // Language skills
     html.find(".skill-control").click(ev => this._onSkillControl(ev))
@@ -99,14 +99,6 @@ export class TheEdgeActorSheet extends ActorSheet {
     // Health
     html.find(".short-rest").click(_ => DialogRest.start({actor: this.actor, type: "short rest"}))
     html.find(".long-rest").click(_ => DialogRest.start({actor: this.actor, type: "long rest"}))
-  }
-
-  async _useHeroToken(ev) {
-    this.actor.update({"system.heroToken.available": this.actor.system.heroToken.available - 1});
-  }
-
-  async _regenerateHeroToken(ev){
-    this.actor.update({"system.heroToken.available": this.actor.system.heroToken.available + 1});
   }
 
   async _advanceSrv(ev, quantity) {
@@ -136,11 +128,7 @@ export class TheEdgeActorSheet extends ActorSheet {
   async _rollAttr(ev) {
     const target = ev.currentTarget; // HTMLElement
     const attribute = target.getAttribute("attr-name");
-    const threshold = this.actor.system.attributes[attribute]["value"];
-    let d = DialogAttribute.start({
-      attribute: attribute,
-      threshold: threshold,
-    })
+    DialogAttribute.start({attribute: attribute, actor: this.actor})
   }
 
   async _rollProficiency(ev) {

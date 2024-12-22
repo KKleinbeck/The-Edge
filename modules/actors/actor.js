@@ -123,6 +123,27 @@ export class TheEdgeActor extends Actor {
     return preparedData
   }
 
+  useHeroToken() {
+    this.update({"system.heroToken.available": this.system.heroToken.available - 1});
+  }
+
+  regenerateHeroToken() {
+    this.update({"system.heroToken.available": this.system.heroToken.available + 1});
+  }
+
+  async rollAttributeCheck(attribute, tempModifier = 0, advantage = false, transmit = true) {
+    const threshold = this.system.attributes[attribute]["value"];
+    let modificators = {temporary: tempModifier, advantage: advantage}
+    let result = await DiceServer.attributeCheck({threshold: threshold}, modificators)
+
+    if (transmit) {
+      let chatDetails = result
+      foundry.utils.mergeObject(chatDetails, {attribute: attribute, threshold: threshold, actorId: this.id})
+      foundry.utils.mergeObject(chatDetails, modificators)
+      ChatServer.transmitEvent("AbilityCheck", chatDetails);
+    }
+  }
+
   async rollProficiencyCheck(proficiency, tempModifier = 0, advantage = false, transmit = true) {
     let proficiencyData = Object.values(this.system.proficiencies)
       .find(profClass => proficiency in profClass)[proficiency]

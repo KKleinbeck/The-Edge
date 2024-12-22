@@ -1,5 +1,4 @@
-import DiceServer from "../system/dice_server.js";
-import LocalisationServer from "../system/localisation_server.js";
+import DiceServer from "../system/dice_server.js";import LocalisationServer from "../system/localisation_server.js";
 
 export default class DialogAttribute extends Dialog{
   static get defaultOptions() {
@@ -15,11 +14,9 @@ export default class DialogAttribute extends Dialog{
       roll: {
         label: game.i18n.localize("DIALOG.ROLL"),
         callback: (html) => {
-          let modificators = {
-            temporary: parseInt(html.find('[name="Modifier"]').val()),
-            advantage: html.find('[name="AdvantageSelector"]').val()
-          }
-          DiceServer.attributeCheck(checkData, modificators)
+          let temporaryMod = parseInt(html.find('[name="Modifier"]').val());
+          let advantage = html.find('[name="AdvantageSelector"]').val();
+          checkData.actor.rollAttributeCheck(checkData.attribute, temporaryMod, advantage);
         }
       }
     }

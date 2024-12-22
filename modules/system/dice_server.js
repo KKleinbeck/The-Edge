@@ -1,4 +1,3 @@
-import ChatServer from "./chat_server.js";
 import LocalisationServer from "./localisation_server.js";
 
 export default class DiceServer {
@@ -23,17 +22,11 @@ export default class DiceServer {
       }
     }
 
-    let outcome = undefined;
     let threshold = check.threshold + modificators.temporary;
-    if (diceRes == 1) outcome = "CritSuccess";
-    else if (diceRes == 20) outcome = "CritFailure";
-    else if (threshold >= diceRes) outcome = "Success";
-    else outcome = "Failure";
-
-    let details = {roll: diceRes, outcome: outcome};
-    foundry.utils.mergeObject(details, check)
-    foundry.utils.mergeObject(details, modificators)
-    ChatServer.transmitEvent("AbilityCheck", details);
+    let basicQuality = Math.floor((threshold - diceRes) / 2)
+    if (diceRes == 1) return {outcome: "CritSuccess", roll: diceRes, quality: Math.max(basicQuality + 2, 2)};
+    else if (diceRes == 20) return {outcome: "CritFailure", roll: diceRes, quality: Math.min(basicQuality - 2, -2)};
+    return {outcome: (threshold >= diceRes) ? "Success" : "Failure", roll: diceRes, quality: basicQuality};
   }
 
   static async proficiencyCheck(check, modificators) {

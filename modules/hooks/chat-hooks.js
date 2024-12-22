@@ -32,9 +32,8 @@ export default function() {
         let roll = html.find(".d20-overlay")[0];
         let threshold = parseInt(roll.dataset.threshold);
         let prevOutcome = parseInt(roll.innerText);
-        console.log(chatMsgCls, html.find(".message-content").html())
         if (prevOutcome == 1) {return undefined;}
-        else if (prevOutcome > threshold && threshold != 0) {
+        else if (prevOutcome > threshold && threshold > 1) {
           $(roll).html(threshold)
           let outcomeText = html.find(".attr-outcome");
           html.find("#context-menu").remove();
@@ -46,6 +45,10 @@ export default function() {
           $(outcomeText).html(LocalisationServer.localise("CritSuccess"))
         }
         chatMsgCls.update({"content": html.find(".message-content").html()})
+
+        let actorId = roll.dataset.actorId;
+        let actor = game.actors.get(actorId);
+        actor.useHeroToken();
       }
     }])
 
