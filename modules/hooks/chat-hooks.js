@@ -28,27 +28,39 @@ export default function() {
       name: LocalisationServer.localise("Use hero token"),
       classes: "attr-context-menu",
       icon: "",
+      condition: () => {
+        let roll = html.find(".d20-overlay")[0];
+        let actorId = roll.dataset.actorId;
+        let actor = game.actors.get(actorId);
+        let prevOutcome = parseInt(roll.innerText);
+        return actor.system.heroToken.available > 0 && prevOutcome != 1;
+      },
       callback: () => {
         let roll = html.find(".d20-overlay")[0];
         let threshold = parseInt(roll.dataset.threshold);
         let prevOutcome = parseInt(roll.innerText);
         if (prevOutcome == 1) {return undefined;}
-        else if (prevOutcome > threshold && threshold > 1) {
-          $(roll).html(threshold)
-          let outcomeText = html.find(".attr-outcome");
-          html.find("#context-menu").remove();
-          $(outcomeText).html(LocalisationServer.localise("Success"))
+
+        let outcome = ""
+        let quality = 0
+        if (prevOutcome > threshold && threshold > 1) {
+          $(roll).html(threshold);
+          outcome = LocalisationServer.localise("Success");
         } else {
           $(roll).html(1)
-          let outcomeText = html.find(".attr-outcome");
-          html.find("#context-menu").remove();
-          $(outcomeText).html(LocalisationServer.localise("CritSuccess"))
+          outcome = LocalisationServer.localise("CritSuccess");
+          quality = Math.floor((threshold - 1) / 2) + 2;
         }
+        let outcomeText = html.find(".attr-outcome");
+        $(outcomeText).html(outcome)
+        let qualityText = html.find(".attr-quality")
+        $(qualityText).html(`${quality}&thinsp;QL`)
+        html.find("#context-menu").remove();
         chatMsgCls.update({"content": html.find(".message-content").html()})
 
         let actorId = roll.dataset.actorId;
         let actor = game.actors.get(actorId);
-        actor.useHeroToken();
+        actor.useHeroToken("attribute");
       }
     }])
 

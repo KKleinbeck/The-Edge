@@ -10,19 +10,6 @@ export default class ChatServer {
   static transmitPlain(msg) {
     ChatMessage.create(this._chatDataSetup(`<h2>${msg}</h2>`, "roll"))
   }
-  
-  static transmit(id, details, type = "") {
-    const parts = LocalisationServer.chatLocalisation(id, type).split("<PART>");
-    const colour = type.toUpperCase() == "ERROR" ? "red" : "black";
-    let msg = `<h2 style="color:${colour};">${parts[0]}</h2>`;
-    if (parts.length > 1) {
-        for (let i = 1; i < parts.length; ++i) {
-            msg += `<p>${parts[i]}</p>`;
-        }
-    }
-    msg = this.fillInDetails(msg, details)
-    ChatMessage.create(this._chatDataSetup(msg, "roll"))
-  }
 
   static async transmitEvent(id, details) {
     let html = undefined;
@@ -58,6 +45,13 @@ export default class ChatServer {
           foundry.utils.mergeObject(details, {restType: id})
         );
         break;
+      
+      case "HERO TOKEN":
+        let text = LocalisationServer.parsedLocalisation(details.reason, "Hero Token", details)
+        html = await renderTemplate(
+          "systems/the_edge/templates/chat/hero_token.html",
+          {name: details.name, text: text}
+        );
     }
     ChatMessage.create(this._chatDataSetup(html, "roll"))
   }

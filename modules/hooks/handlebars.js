@@ -14,7 +14,6 @@ export default function() {
         tooltipText: (a) => LocalisationServer.localise(a, "tooltip"),
         proficiencyName: (a) => LocalisationServer.localise(a, "proficiency"),
         textLocalisation: (a) => LocalisationServer.localise(a, "text"),
-        chatLocalisation: (a) => LocalisationServer.localise(a, "ChatNotification"),
         genRange: (a) => {
             let preface = a.split("_")[0];
             let distance = a.split("_")[1];

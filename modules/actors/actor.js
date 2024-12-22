@@ -123,8 +123,9 @@ export class TheEdgeActor extends Actor {
     return preparedData
   }
 
-  useHeroToken() {
+  useHeroToken(reason = "generic") {
     this.update({"system.heroToken.available": this.system.heroToken.available - 1});
+    ChatServer.transmitEvent("Hero Token", {name: this.name, reason: reason})
   }
 
   regenerateHeroToken() {
