@@ -2,14 +2,15 @@
 <div class="centered-row">
   <b>{{genName "Check"}}: </b>
   {{#each dices as |dice|}}
-  <a class="attr-d20-chat d20-{{dice}}">
-    <span class="d20-overlay" data-tooltip="{{attrName dice}} {{genName 'threshold'}}: {{getEntry ../thresholds @index}}">{{getEntry ../diceResults @index}}</span>
+  <a class="attr-d20-chat d20-{{dice}} rerollable" data-index={{@index}} data-prev-roll="{{getEntry ../diceResults @index}}" data-actor-id={{../actorId}} data-type="proficiency">
+    <span class="d20-overlay" data-tooltip="{{attrName dice}} {{genName 'threshold'}}: {{getEntry ../thresholds @index}}" data-threshold="{{getEntry ../thresholds @index}}">{{getEntry ../diceResults @index}}</span>
   </a>
   {{/each}}
 </div>
 <div class="centered-row">
   <b>{{genName "result"}}:</b>
-  <span>{{genName outcome}}&#8195;{{quality}}&thinsp;{{#if (checkEqual outcome "Success")}}QL{{else}}FL{{/if}}</span>
+  <span class="prof-outcome">{{genName outcome}}</span>
+  <span class="prof-quality" data-quality={{quality}}>{{quality}}&thinsp;{{#if (checkEqual outcome "Success")}}QL{{else}}FL{{/if}}</span>
 </div>
 <div class="centered-row">
   <b>{{genName "Modificators"}}: </b>

@@ -161,7 +161,7 @@ export class TheEdgeActor extends Actor {
 
     if (transmit) {
       let chatDetails = {
-        proficiency: proficiency, dices: check.dices, thresholds: check.thresholds,
+        actorId: this.id, proficiency: proficiency, dices: check.dices, thresholds: check.thresholds,
         character_mod: modificator, temporary_mod: tempModifier, advantage: advantage
       };
       foundry.utils.mergeObject(chatDetails, results)

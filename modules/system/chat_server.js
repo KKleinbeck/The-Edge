@@ -1,11 +1,5 @@
 import LocalisationServer from "./localisation_server.js";
 
-// Architecture idea:
-// abstract ChatServer class
-// multiple specialised subclasses (Dicerolls, communication...)
-// enum instead of dicts with names for replacement
-// Subclasses come with an required method
-
 export default class ChatServer {
   static transmitPlain(msg) {
     ChatMessage.create(this._chatDataSetup(`<h2>${msg}</h2>`, "roll"))

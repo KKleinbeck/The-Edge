@@ -2,7 +2,7 @@
 <div class="centered-row">
   <b>{{genName "Check"}}: </b>
   {{#each rolls as |roll|}}
-    <a class="attr-d20-chat {{#if roll.hit}}d20-cha{{else}}d20-end{{/if}}">
+    <a class="attr-d20-chat {{#if roll.hit}}d20-cha{{else}}d20-end{{/if}} rerollable" data-index={{@index}} data-prev-roll={{roll.res}} data-actor-id={{actorId}} data-type="weapon">
       <span class="d20-overlay" data-tooltip="{{#if roll.hit}}Hit{{else}}Miss{{/if}} - {{genName 'threshold'}}: {{../threshold}}" style="font-size: 14px;">{{roll.res}}</span>
     </a>
   {{/each}}
