@@ -165,6 +165,7 @@ export class TheEdgeActorSheet extends ActorSheet {
     const threshold = this.actor._getWeaponPL(weaponID)
     let d = DialogWeapon.start({
       name: weapon.name,
+      actorId: this.actor.id,
       ammunition: this.actor.items.get(weapon.system.ammunitionID),
       threshold: threshold,
       damageType: damageType,

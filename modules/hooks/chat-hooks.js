@@ -72,6 +72,12 @@ export default function() {
     return html;
   }
 
+  const rerollWeaponCheck = (html, contextHtml) => {
+    let damageType = contextHtml[0].dataset
+    console.log(damageType)
+    return html
+  }
+
   Hooks.on("renderChatMessage", (chatMsgCls, html, message) => {
     // Hero token listeners
     new ContextMenu(html, ".rerollable", [{
@@ -93,13 +99,16 @@ export default function() {
           case "proficiency":
             html = rerollProficiencyCheck(html, contextHtml)
             break;
+          case "weapon":
+            html = rerollWeaponCheck(html, contextHtml)
+            break;
         }
         html.find("#context-menu").remove();
-        chatMsgCls.update({"content": html.find(".message-content").html()})
+        // chatMsgCls.update({"content": html.find(".message-content").html()})
 
         let actorId = contextHtml[0].dataset.actorId;
         let actor = game.actors.get(actorId);
-        actor.useHeroToken("attribute");
+        // actor.useHeroToken("attribute");
       }
     }])
 

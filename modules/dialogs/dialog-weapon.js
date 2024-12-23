@@ -40,20 +40,21 @@ export default class DialogWeapon extends Dialog{
           let [crits, damage, diceRes, hits] = await DiceServer.attackCheck(modificators);
 
           // Apply the damage
+          let details = {
+            name: checkData.name, rolls: [], damage: damage, actorId: checkData.actorId,
+            damageRoll: modificators.fireModeModifier.damage, damageType: checkData.damageType
+          };
+          for (let i = 0; i < modificators.dicesEff; ++i) {
+            details.rolls.push({res: diceRes[i], hit: hits[i]})
+          }
+          foundry.utils.mergeObject(details, modificators)
           for (const target of targets) {
-            let details = {
-              name: checkData.name, rolls: [], damage: damage,
-              damageRoll: modificators.fireModeModifier.damage
-            };
-            for (let i = 0; i < modificators.dicesEff; ++i) {
-              details.rolls.push({res: diceRes[i], hit: hits[i]})
-            }
-            foundry.utils.mergeObject(details, modificators)
-            ChatServer.transmitEvent("WeaponCheck", details);
+            details["targetId"] = target.id
             for (let i = 0; i < damage.length; ++i){
               await target.applyDamage(damage[i], crits[i], checkData.damageType, checkData.name)
             }
           }
+          ChatServer.transmitEvent("WeaponCheck", details);
         }
       }
     }
