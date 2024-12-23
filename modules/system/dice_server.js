@@ -102,7 +102,7 @@ export default class DiceServer {
     for (let i = 0; i < diceRes.length; ++i) {
       if (!hits[i]) continue;
 
-      damage.push((await this._genericRoll(modificators.fireModeModifier.damage)).reduce((a,b) => a+b, 0))
+      damage.push((await this._genericRoll(modificators.fireModeModifier.damage)).sum())
       if (diceRes[i] == 1) {
         damage[damage.length-1] += this._max(modificators.fireModeModifier.damage);
         crits.push(true)

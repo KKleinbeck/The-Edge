@@ -1,4 +1,5 @@
 import Aux from "../system/auxilliaries.js";
+import DiceServer from "../system/dice_server.js";
 import ProficiencyConfig from "../system/config-proficiencies.js";
 import LocalisationServer from "../system/localisation_server.js";
 
@@ -72,7 +73,47 @@ export default function() {
     return html;
   }
 
-  const rerollWeaponCheck = (html, contextHtml) => {
+  const rerollWeaponCheck = async (html, contextHtml) => {
+    let roll = contextHtml.find(".d20-overlay");
+    let threshold = parseInt(roll[0].dataset.threshold);
+    let hitIndex = 0;
+    let index = contextHtml[0].dataset.index;
+    for (const _roll of html.find(".d20-overlay")) {
+      if ($(_roll).parent()[0].dataset.index >= index) break;
+      if (parseInt(_roll.innerText) <= threshold) hitIndex += 1;
+    }
+
+    let prevRoll = parseInt(roll[0].innerText);
+    if (prevRoll > threshold && threshold > 1) {
+      $(roll).html(threshold);
+      contextHtml.removeClass("d20-end").addClass("d20-cha");
+    } else {
+      $(roll).html(1)
+    }
+
+    let damageList = html.find(".damage-list");
+    let damageRoll = contextHtml[0].dataset.damageRoll;
+    let newDamage = (await DiceServer._genericRoll(damageRoll)).sum();
+    if (prevRoll > threshold) { // Add new damage box
+      if (threshold <= 1) newDamage +=  DiceServer._max(damageRoll);
+
+      let noDamageBox = damageList.find(".no-damage-box");
+      if (noDamageBox.length > 0) {
+        noDamageBox.removeClass("no-damage-box").addClass(["damage-box", "hit-index-0"]);
+        $(noDamageBox.find(".d20-overlay-weapon")).html(`${newDamage}`);
+      } else {
+        let damageBox = damageList.find(".damage-box");
+        damageList.append($(damageBox)[0].outerHTML);
+        let newEntry = $(damageList.children()[damageList.children().length - 1]);
+        $(newEntry.children()[0]).html(`${newDamage}`)
+      }
+    } else { // convert to crit
+      let newDamage = DiceServer._max(damageRoll);
+      let target = html.find(`.hit-index-${hitIndex}`).children()[0];
+      let oldDamage = parseInt(target.innerText);
+      $(target).html(`${oldDamage + newDamage}`);
+    }
+
     let damageType = contextHtml[0].dataset
     console.log(damageType)
     return html
@@ -91,7 +132,7 @@ export default function() {
         let type = contextHtml[0].dataset.type;
         return actor.system.heroToken.available > 0 && (prevRoll != 1 || type == "proficiency");
       },
-      callback: (contextHtml) => {
+      callback: async (contextHtml) => {
         switch (contextHtml[0].dataset.type) {
           case "attribute":
             html = rerollAttributeCheck(html, contextHtml)
@@ -100,15 +141,15 @@ export default function() {
             html = rerollProficiencyCheck(html, contextHtml)
             break;
           case "weapon":
-            html = rerollWeaponCheck(html, contextHtml)
+            html = await rerollWeaponCheck(html, contextHtml)
             break;
         }
         html.find("#context-menu").remove();
-        // chatMsgCls.update({"content": html.find(".message-content").html()})
+        chatMsgCls.update({"content": html.find(".message-content").html()})
 
         let actorId = contextHtml[0].dataset.actorId;
         let actor = game.actors.get(actorId);
-        // actor.useHeroToken("attribute");
+        actor.useHeroToken("attribute");
       }
     }])
 
