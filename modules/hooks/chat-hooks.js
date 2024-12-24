@@ -133,23 +133,24 @@ export default function() {
         return actor.system.heroToken.available > 0 && (prevRoll != 1 || type == "proficiency");
       },
       callback: async (contextHtml) => {
+        let actorId = contextHtml[0].dataset.actorId;
+        let actor = game.actors.get(actorId);
         switch (contextHtml[0].dataset.type) {
           case "attribute":
             html = rerollAttributeCheck(html, contextHtml)
+            actor.useHeroToken("attribute");
             break;
           case "proficiency":
             html = rerollProficiencyCheck(html, contextHtml)
+            actor.useHeroToken("proficiency");
             break;
           case "weapon":
             html = await rerollWeaponCheck(html, contextHtml)
+            actor.useHeroToken("weapon");
             break;
         }
         html.find("#context-menu").remove();
         chatMsgCls.update({"content": html.find(".message-content").html()})
-
-        let actorId = contextHtml[0].dataset.actorId;
-        let actor = game.actors.get(actorId);
-        actor.useHeroToken("attribute");
       }
     }])
 

@@ -209,7 +209,9 @@
   },
   "HERO TOKEN": {
     "ATTRIBUTE": "{name} used a hero token to improve an ability check.",
-    "GENERIC": "{name} used a hero token."
+    "GENERIC": "{name} used a hero token.",
+    "PROFICIENCY": "{name} used a hero token to improve a proficiency check.",
+    "WEAPON": "{name} used a hero token to improve a combat check."
   },
   "NOTIFICATIONS": {
     "DESTROYED": "Armour piece {name} was destroyed in combat",
