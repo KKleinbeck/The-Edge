@@ -482,6 +482,20 @@ export class TheEdgeActor extends Actor {
     if(this.sheet.rendered) this.sheet._render();
   }
 
+  async applyFallDamage(height) {
+    let n = Math.floor(height / 2);
+    let damageRoll = `${n*n}d4+${n*n+n}`;
+    let damage = (await DiceServer._genericRoll(damageRoll)).sum();
+    this.applyDamage(damage, false, "fall", LocalisationServer.localise("falling") + ` ${height}m`);
+  }
+
+  async applyImpactDamage(speed) {
+    let n = Math.floor(speed / 3);
+    let damageRoll = `${n}d8+${n*n}`;
+    let damage = (await DiceServer._genericRoll(damageRoll)).sum();
+    this.applyDamage(damage, false, "impact", LocalisationServer.localise("impacting at") + ` ${speed}m`);
+  }
+
   _generateLocation(crit) {
     let locationDescription = "";
     if (crit) locationDescription = "Head";

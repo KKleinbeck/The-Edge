@@ -46,20 +46,28 @@
       </div>
     </div>
     <div>
-      <div style="display: flex; gap: 20px; padding-bottom: 20px;">
-        <div style="display: flex; white-space: nowrap; gap: 5px;" title="{{genName 'Short rest duration'}}">
-          <b>{{genName "Short rest"}}</b>
-          <a class="short-rest"><i class="fas fa-campground"></i></a>
+      <div style="gap: 20px;">
+        <div style="display: flex; gap: 20px; padding-bottom: 10px;">
+          <div class="short-rest" style="display: flex; white-space: nowrap; gap: 5px; cursor: pointer;" title="{{genName 'Short rest duration'}}">
+            <b>{{genName "Short rest"}}</b>
+            <a><i class="fas fa-campground"></i></a>
+          </div>
+          <div class="long-rest" style="display: flex; white-space: nowrap; gap: 5px; cursor: pointer;" title="{{genName 'Long rest duration'}}">
+            <b>{{genName "Long rest"}}</b>
+            <a><i class="fas fa-bed"></i></a>
+          </div>
+          <div class="apply-damage" style="display: flex; white-space: nowrap; gap: 5px; cursor: pointer;">
+            <b>{{genName "Apply Damage"}}</b>
+            <a><i class="fas fa-heart-circle-minus"></i></a>
+          </div>
         </div>
-        <div style="display: flex; white-space: nowrap; gap: 5px;" title="{{genName 'Long rest duration'}}">
-          <b>{{genName "Long rest"}}</b>
-          <a class="long-rest"><i class="fas fa-bed"></i></a>
-        </div>
-        <div>
-          {{genName "Total Damage"}}: {{helpers.damage}}
-        </div>
-        <div>
-          {{genName "Total Bleeding"}}: {{helpers.bleeding}}
+        <div style="display: flex; gap: 20px; padding-bottom: 20px;">
+          <div>
+            {{genName "Total Damage"}}: {{helpers.damage}}
+          </div>
+          <div>
+            {{genName "Total Bleeding"}}: {{helpers.bleeding}}
+          </div>
         </div>
       </div>
       <div style="columns: 2;">

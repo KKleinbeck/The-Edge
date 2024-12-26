@@ -4,6 +4,7 @@ import DialogProficiency from "../dialogs/dialog-proficiency.js";
 import DialogReload from "../dialogs/dialog-reload.js";
 import DialogMedicine from "../dialogs/dialog-medicine.js";
 import DialogRest from "../dialogs/dialog-rest.js";
+import DialogDamage from "../dialogs/dialog-damage.js";
 import DialogWeapon from "../dialogs/dialog-weapon.js";
 import LocalisationServer from "../system/localisation_server.js";
 import ChatServer from "../system/chat_server.js";
@@ -99,6 +100,7 @@ export class TheEdgeActorSheet extends ActorSheet {
     // Health
     html.find(".short-rest").click(_ => DialogRest.start({actor: this.actor, type: "short rest"}))
     html.find(".long-rest").click(_ => DialogRest.start({actor: this.actor, type: "long rest"}))
+    html.find(".apply-damage").click(_ => DialogDamage.start({actor: this.actor}))
   }
 
   async _advanceSrv(ev, quantity) {
