@@ -487,13 +487,15 @@ export class TheEdgeActor extends Actor {
     let damageRoll = `${n*n}d4+${n*n+n}`;
     let damage = (await DiceServer._genericRoll(damageRoll)).sum();
     this.applyDamage(damage, false, "fall", LocalisationServer.localise("falling") + ` ${height}m`);
+    ChatServer.transmitEvent("fall", {actor: this.name, height: height, damage: damage, damageRoll: damageRoll});
   }
 
   async applyImpactDamage(speed) {
     let n = Math.floor(speed / 3);
     let damageRoll = `${n}d8+${n*n}`;
     let damage = (await DiceServer._genericRoll(damageRoll)).sum();
-    this.applyDamage(damage, false, "impact", LocalisationServer.localise("impacting at") + ` ${speed}m`);
+    this.applyDamage(damage, false, "impact", LocalisationServer.localise("impacting at") + ` ${speed}m/s`);
+    ChatServer.transmitEvent("impact", {actor: this.name, speed: speed, damage: damage, damageRoll: damageRoll});
   }
 
   _generateLocation(crit) {

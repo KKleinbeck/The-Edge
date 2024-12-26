@@ -30,7 +30,7 @@ export default class ChatServer {
       
       case "STRAINUPDATE":
         html = await renderTemplate("systems/the_edge/templates/chat/strain_update.html", details);
-        break
+        break;
       
       case "SHORT REST":
       case "LONG REST":
@@ -46,6 +46,15 @@ export default class ChatServer {
           "systems/the_edge/templates/chat/hero_token.html",
           {name: details.name, text: text}
         );
+        break;
+      
+      case "FALL":
+        html = await renderTemplate("systems/the_edge/templates/chat/fall.html", details);
+        break;
+      
+      case "IMPACT":
+        html = await renderTemplate("systems/the_edge/templates/chat/impact.html", details);
+        break;
     }
     ChatMessage.create(this._chatDataSetup(html, "roll"))
   }
