@@ -2,13 +2,6 @@ import THE_EDGE from "./config-the-edge.js"
 import LocalisationServer from "./localisation_server.js"
 
 export default class Aux {
-  static getScene(sceneID) {
-      for (const _scene of game.scenes) {
-          if (_scene._id === sceneID) return _scene
-      }
-      return undefined
-  }
-  
   static hasRaceCondDanger(id) {
     let lastUpdate = game.data[id]
     if (lastUpdate === undefined || Date.now() - lastUpdate > 100) {
@@ -22,22 +15,12 @@ export default class Aux {
   static getActor(actorID, tokenID) {
     let actor = undefined
     if (tokenID) {
-      let sceneID = game.canvas.id;
-      let scene = game.scenes.get(sceneID);
+      const sceneID = game.canvas.id;
+      const scene = game.scenes.get(sceneID);
       actor = scene.tokens.get(tokenID)?.actor;
       if (actor) return actor;
     }
     return game.actors.get(actorID);
-  }
-
-  static getTargets(scene, targetIDs) {
-      const targets = []
-      for (const token of scene.tokens) {
-          if (targetIDs.includes(token.id.toUpperCase())) {
-              targets.push(token.actor)
-          }
-      }
-      return targets
   }
 
   static getProficiencyGroup(profName) {

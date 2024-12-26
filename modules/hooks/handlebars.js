@@ -21,7 +21,7 @@ export default function() {
             return "> " + distance;
         },
         round: (a, b) => { return a.toFixed(b); },
-        strCombine: (a, b) => { console.log(a, b, a + b); return a + " " + b; },
+        strCombine: (a, b) => { return a + " " + b; },
 
         checkEqual: (a, b) => { return a === b; },
         checkIn: (a, b) => { return b[a] !== undefined; },

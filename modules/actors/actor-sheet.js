@@ -141,12 +141,9 @@ export class TheEdgeActorSheet extends ActorSheet {
     const target = ev.currentTarget; // HTMLElement
     const weaponID = target.closest(".weapon-id").dataset.weaponId
 
-    let actor = this.actor
-    let sceneID = game.user.viewedScene
-    let targetIDs = []
-    for (const target of game.user.targets) {
-      targetIDs.push(target.id.toUpperCase())
-    }
+    let actor = this.actor;
+    let sceneID = game.user.viewedScene;
+    let targetIDs = game.user.targets.map(x => x.id);
 
     const weapon = this.actor.items.get(weaponID)
     if (weapon.system.ammunitionID === "") {

@@ -34,8 +34,6 @@ export default class DialogWeapon extends Dialog{
           checkData.ammunition.update({"system.capacity.used": ammuCapa.used + dices})
 
           // Roll the attack
-          let scene = Aux.getScene(checkData.sceneID)
-          let targets = Aux.getTargets(scene, checkData.targetIDs)
           foundry.utils.mergeObject(modificators, {dicesEff: dices})
           let [crits, damage, diceRes, hits] = await DiceServer.attackCheck(modificators);
 
@@ -48,8 +46,9 @@ export default class DialogWeapon extends Dialog{
             details.rolls.push({res: diceRes[i], hit: hits[i]})
           }
           foundry.utils.mergeObject(details, modificators)
-          for (const target of targets) {
-            details["targetId"] = target.id
+          for (const id of checkData.targetIDs) {
+            details["targetId"] = id;
+            let target = Aux.getActor(undefined, id);
             for (let i = 0; i < damage.length; ++i){
               await target.applyDamage(damage[i], crits[i], checkData.damageType, checkData.name)
             }
@@ -76,26 +75,16 @@ export default class DialogWeapon extends Dialog{
 
   static getDistance(actorID, targetIDs, sceneID) {
     // get the scene
-    let scene = undefined;
-    for (const _scene of game.scenes) {
-      if (_scene.id == sceneID) {
-        scene = _scene;
-        break;
-      }
-    }
+    let scene = game.scenes.get(sceneID)
     if (scene === undefined) return undefined;
 
     // get the involved actors
-    const actorPos = []
-    const targetPos = []
-    for (const token of scene.tokens) {
-      if (token.actorId == actorID) {
-        actorPos.push(token.x, token.y)
-      }
-      if (targetIDs.includes(token._id.toUpperCase())) {
-        targetPos.push([token.x, token.y])
-      }
-    }
+    let actor = scene.tokens.find(x => x.actorId == actorID)
+    const targetPos = targetIDs.map(id => {
+      let token = scene.tokens.get(id);
+      return [token.x, token.y];
+    })
+    const actorPos = [actor.x, actor.y]
     if (actorPos.length == 0 || targetPos.length == 0) return undefined;
 
     // determine distance
@@ -121,10 +110,9 @@ export default class DialogWeapon extends Dialog{
 
     // get the involved actors
     let smallest = Infinity
-    for (const token of scene.tokens) {
-      if (targetIDs.includes(token._id.toUpperCase())) {
-        smallest = Math.min(smallest, THE_EDGE.sizes[token.actor.system.size][0])
-      }
+    let targets = targetIDs.map(id => scene.tokens.get(id));
+    for (const target of targets) {
+      smallest = Math.min(smallest, THE_EDGE.sizes[target.actor.system.size][0])
     }
     if (smallest === Infinity) return undefined;
     return Object.keys(THE_EDGE.sizes).find(key => THE_EDGE.sizes[key][0] === smallest)

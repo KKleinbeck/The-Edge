@@ -84,11 +84,12 @@ export default function() {
     }
 
     let prevRoll = parseInt(roll[0].innerText);
-    if (prevRoll > threshold && threshold > 1) {
+    let crit = !(prevRoll > threshold && threshold > 1)
+    if (crit) {
+      $(roll).html(1)
+    } else {
       $(roll).html(threshold);
       contextHtml.removeClass("d20-end").addClass("d20-cha");
-    } else {
-      $(roll).html(1)
     }
 
     let damageList = html.find(".damage-list");
@@ -101,22 +102,25 @@ export default function() {
       if (noDamageBox.length > 0) {
         noDamageBox.removeClass("no-damage-box").addClass(["damage-box", "hit-index-0"]);
         $(noDamageBox.find(".d20-overlay-weapon")).html(`${newDamage}`);
-      } else {
-        let damageBox = damageList.find(".damage-box");
-        damageList.append($(damageBox)[0].outerHTML);
-        let newEntry = $(damageList.children()[damageList.children().length - 1]);
+        $(noDamageBox.find(".d20-overlay-weapon"))[0].dataset["tooltip"] = damageRoll;
+      } else { // Add a new element to the end, then shuffle it to the correct location
+        damageList.append(damageList.children()[1].outerHTML);
+        let newEntry = $(damageList.children().last());
         $(newEntry.children()[0]).html(`${newDamage}`)
+        damageList.children().eq(hitIndex + 1).before(damageList.children().last())
       }
     } else { // convert to crit
-      let newDamage = DiceServer._max(damageRoll);
-      let target = html.find(`.hit-index-${hitIndex}`).children()[0];
+      newDamage = DiceServer._max(damageRoll);
+      let target = $(damageList.children()[hitIndex + 1]).children()[0];
       let oldDamage = parseInt(target.innerText);
       $(target).html(`${oldDamage + newDamage}`);
     }
 
-    let damageType = contextHtml[0].dataset
-    console.log(damageType)
-    return html
+    let targetId = contextHtml[0].dataset.targetId;
+    let target = Aux.getActor(undefined, targetId);
+    let damageType = contextHtml[0].dataset.damageType;
+    target.applyDamage(newDamage, crit, damageType, LocalisationServer.localise("HeroToken"));
+    return [html, newDamage]
   }
 
   Hooks.on("renderChatMessage", (chatMsgCls, html, message) => {
@@ -145,8 +149,9 @@ export default function() {
             actor.useHeroToken("proficiency");
             break;
           case "weapon":
-            html = await rerollWeaponCheck(html, contextHtml)
-            actor.useHeroToken("weapon");
+            let damage = undefined;
+            [html, damage] = await rerollWeaponCheck(html, contextHtml)
+            actor.useHeroToken("weapon", {damage: damage});
             break;
         }
         html.find("#context-menu").remove();
