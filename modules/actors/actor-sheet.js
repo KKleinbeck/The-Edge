@@ -160,7 +160,7 @@ export class TheEdgeActorSheet extends ActorSheet {
     } else damageType = "kinetic";
     
     const threshold = this.actor._getWeaponPL(weaponID)
-    let d = DialogWeapon.start({
+    DialogWeapon.start({
       name: weapon.name,
       actorId: this.actor.id,
       ammunition: this.actor.items.get(weapon.system.ammunitionID),

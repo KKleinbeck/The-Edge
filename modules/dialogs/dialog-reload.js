@@ -7,10 +7,14 @@ export default class DialogReload extends Dialog{
 
   static async start(checkData) {
     const template = "systems/the_edge/templates/dialogs/reload.html";
-    let html = await renderTemplate(template, checkData);
     let weaponSys = checkData.weapon.system
+    let html = await renderTemplate(template,
+      {ammunition: checkData.ammunition.filter(x => x.id !== weaponSys.ammunitionID)}
+    );
+
     const buttons = {}
-    if (checkData.ammunition.length > 0) {
+    if (checkData.ammunition.length > 0 &&
+        !(checkData.ammunition.length == 1 && weaponSys.ammunitionID !== "")) {
       foundry.utils.mergeObject(buttons, {
         select: {
           label: game.i18n.localize("DIALOG.SELECT"),

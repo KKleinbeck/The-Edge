@@ -26,6 +26,7 @@ export default function() {
         checkEqual: (a, b) => { return a === b; },
         checkIn: (a, b) => { return b[a] !== undefined; },
         checkInstance: (a, b) => { return b.includes(a); },
+        checkNotEmpty: (a) => { return !(a.length === 0); },
         getSys: (a, b, c, d) => { return a.system[b][c][d]; },
         getSys5: (a, b, c, d, e) => { return a.system[b][c][d][e]; },
         getEntry: (a, b) => { return a[b]; },
