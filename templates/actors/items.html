@@ -8,6 +8,9 @@
                     <div class="flexrow item-control" data-action="edit" style="cursor: pointer;">
                         <img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
                         <h4 class="item-name">
+                            {{#if (checkAttachment item)}}
+                                ({{genName "Attachment"}})
+                            {{/if}}
                             {{#if (checkIn "quantity" item.system)}}
                                 {{item.system.quantity}} x 
                             {{/if}}

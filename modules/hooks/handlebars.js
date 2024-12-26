@@ -28,6 +28,7 @@ export default function() {
         checkIn: (a, b) => { return b[a] !== undefined; },
         checkInstance: (a, b) => { return b.includes(a); },
         checkNotEmpty: (a) => { return !(a.length === 0); },
+        checkAttachment: (a) => { return a.system?.layer === "Outer"; },
         getSys: (a, b, c, d) => { return a.system[b][c][d]; },
         getSys5: (a, b, c, d, e) => { return a.system[b][c][d][e]; },
         getEntry: (a, b) => { return a[b]; },

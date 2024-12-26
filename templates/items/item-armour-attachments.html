@@ -54,12 +54,14 @@
                     {{combatName "Structure points"}}<br/>
                     <input type="number" name="system.structurePoints" value="{{data.system.structurePoints}}" data-dtype="Number"/>
                 </div>
-                {{#if (checkEqual data.system.layer "Inner")}}
-                    <div class="item-fields" style="flex: 1;">
+                <div class="item-fields" style="flex: 1;">
+                    {{#if (checkEqual data.system.layer "Inner")}}
                         {{combatName "Attachment Points"}}<br/>
-                        <input type="number" name="system.attachmentPoints" value="{{data.system.attachmentPoints}}" data-dtype="Number"/>
-                    </div>
-                {{/if}}
+                    {{else}}
+                        {{combatName "Attachment Size"}}<br/>
+                    {{/if}}
+                    <input type="number" name="system.attachmentPoints" value="{{data.system.attachmentPoints}}" data-dtype="Number"/>
+                </div>
             </div>
             <div class="checkbox-container">
                 <input type="checkbox" id="hasEffect" name="system.hasEffect" {{#if systemData.hasEffect}}checked{{/if}} />

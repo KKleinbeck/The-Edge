@@ -6,6 +6,7 @@ import DialogMedicine from "../dialogs/dialog-medicine.js";
 import DialogRest from "../dialogs/dialog-rest.js";
 import DialogDamage from "../dialogs/dialog-damage.js";
 import DialogWeapon from "../dialogs/dialog-weapon.js";
+import DialogArmourAttachment from "../dialogs/dialog-attachOuterArmour.js";
 import LocalisationServer from "../system/localisation_server.js";
 import ChatServer from "../system/chat_server.js";
 
@@ -334,6 +335,17 @@ export class TheEdgeActorSheet extends ActorSheet {
         this._render();
         break
       case "toggle-equip":
+        if (item.type == "Armour" && item.system.layer == "Outer") {
+          const attachableArmour = this._findAttachableArmour(item);
+          console.log(attachableArmour)
+          if (attachableArmour.length == 0) {
+            let msg = LocalisationServer.localise("No attachable armour", "Notifications")
+            ui.notifications.notify(msg)
+            break;
+          }
+          DialogArmourAttachment.start({attachable: attachableArmour})
+          break;
+        }
         item.toggleEquipped()
         this._render();
         break;
@@ -413,5 +425,19 @@ export class TheEdgeActorSheet extends ActorSheet {
   _getSubmitData(updateData) {
     let formData = super._getSubmitData(updateData);
     return formData;
+  }
+  
+  _findAttachableArmour(outerShell) {
+    const bodyTarget = outerShell.system.bodyPart;
+    const size = outerShell.system.attachmentPoints;
+    return this.actor.itemTypes["Armour"].filter(armour => {
+      if (armour.system.layer == "Inner") return false;
+      if (armour.system.attachmentPoints < size) return false;
+
+      else if (armour.system.bodyPart == bodyTarget) return true
+      else if (armour.system.bodyPart == "Entire") return true
+      else if (armour.system.bodyPart == "Below_Neck" && bodyTarget != "Head") return true;
+      return false
+    })
   }
 }

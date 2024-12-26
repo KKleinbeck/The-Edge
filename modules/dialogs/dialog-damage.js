@@ -13,7 +13,7 @@ export default class DialogDamage extends Dialog{
     
     let buttons = {
       select: {
-        label: LocalisationServer.localise("rest", "dialog"),
+        label: LocalisationServer.localise("apply"),
         callback: async (html) => {
           let damageType = html.find('[name="DamageSelector"]').val();
           let value = parseInt(html.find('[name="value"]').val());
