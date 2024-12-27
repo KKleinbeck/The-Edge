@@ -263,6 +263,7 @@
     "layer": "Inner",
     "structurePoints": 10,
     "attachmentPoints": 0,
+    "attachments": [],
     "protection": {
       "energy": {"absorption": 0, "threshold": 0},
       "kinetic": {"absorption": 0, "threshold": 0},

@@ -337,13 +337,14 @@ export class TheEdgeActorSheet extends ActorSheet {
       case "toggle-equip":
         if (item.type == "Armour" && item.system.layer == "Outer") {
           const attachableArmour = this._findAttachableArmour(item);
-          console.log(attachableArmour)
           if (attachableArmour.length == 0) {
             let msg = LocalisationServer.localise("No attachable armour", "Notifications")
             ui.notifications.notify(msg)
             break;
           }
-          DialogArmourAttachment.start({attachable: attachableArmour})
+          DialogArmourAttachment.start(
+            {actor: this.actor, tokenId: this.token?.id, shellId: item.id, attachable: attachableArmour}
+          )
           break;
         }
         item.toggleEquipped()
@@ -431,7 +432,7 @@ export class TheEdgeActorSheet extends ActorSheet {
     const bodyTarget = outerShell.system.bodyPart;
     const size = outerShell.system.attachmentPoints;
     return this.actor.itemTypes["Armour"].filter(armour => {
-      if (armour.system.layer == "Inner") return false;
+      if (armour.system.layer == "Outer") return false;
       if (armour.system.attachmentPoints < size) return false;
 
       else if (armour.system.bodyPart == bodyTarget) return true

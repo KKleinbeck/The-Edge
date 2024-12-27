@@ -498,6 +498,22 @@ export class TheEdgeActor extends Actor {
     ChatServer.transmitEvent("impact", {actor: this.name, speed: speed, damage: damage, damageRoll: damageRoll});
   }
 
+  attachOuterArmour(armourId, shellId, tokenId) {
+    const armour = this.items.get(armourId);
+    const shell = this.items.get(shellId);
+    if (shell.system.attachmentPoints > armour.system.attachmentPoints) {
+      let msg = LocalisationServer.parsedLocalisation(
+        "Missing Attachment points", "Notifications",
+        {available: armour.system.attachmentPoints, needed: shell.system.attachmentPoints}
+      )
+      ui.notifications.notify(msg)
+    }
+    shell.update({"system.equipped": true});
+    const attachments = armour.system.attachments;
+    attachments.push({actorId: this.id, tokenId, shell: shell});
+    armour.update({"system.attachments": attachments});
+  }
+
   _generateLocation(crit) {
     let locationDescription = "";
     if (crit) locationDescription = "Head";

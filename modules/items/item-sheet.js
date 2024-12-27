@@ -1,4 +1,5 @@
 import THE_EDGE from "../system/config-the-edge.js";
+import Aux from "../system/auxilliaries.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -145,6 +146,40 @@ class ItemSheetArmour extends TheEdgeItemSheet {
     const context = await super.getData(options);
     context.helpers = {bodyParts: THE_EDGE.body_parts};
     return context;
+  }
+
+  activateListeners(html) {
+    super.activateListeners(html)
+    html.find(".attachment-edit").click(ev => this._onAttachmentEdit(ev));
+    html.find(".attachment-detach").click(ev => this._onAttachmentDetach(ev));
+  }
+
+  _fetchAttachment(event) {
+    const dataElement = $(event.currentTarget).parent()[0];
+
+    const actorId = dataElement.dataset.actorId;
+    const tokenId = dataElement.dataset.tokenId;
+    const actor = Aux.getActor(actorId, tokenId)
+
+    const attachmentId = dataElement.dataset.attachmentId;
+    return actor.items.get(attachmentId);
+  }
+
+  _onAttachmentEdit(event) {
+    const attachment = this._fetchAttachment(event);
+    attachment.sheet.render(true);
+  }
+
+  _onAttachmentDetach(event) {
+    const attachment = this._fetchAttachment(event);
+    attachment.update({"system.equipped": false});
+
+    const dataElement = $(event.currentTarget).parent()[0];
+    const index = dataElement.dataset.index;
+    const newAttachments = this.item.system.attachments;
+    newAttachments.splice(index, 1);
+    this.item.update({"system.attachments": newAttachments});
+    this.render()
   }
 }
 

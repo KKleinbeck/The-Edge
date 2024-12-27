@@ -54,6 +54,8 @@ export default function() {
                 return false;
             } else if (item.type == "Ammunition" && item.system.loaded) {
                 return false;
+            } else if (item.type == "Armour" && item.system.layer == "Outer" && item.system.equipped == true) {
+                return false;
             }
             return true;
         },

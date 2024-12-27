@@ -15,6 +15,8 @@ export default class DialogArmourAttachment extends Dialog{
       select: {
         label: LocalisationServer.localise("select", "dialog"),
         callback: async (html) => {
+          let armourId = html.find('[name="ArmourSelector"]').val();
+          checkData.actor.attachOuterArmour(armourId, checkData.shellId, checkData.tokenId)
         }
       },
       cancel: {

@@ -17,6 +17,10 @@
                         {{genName "Value"}}<br/>
                         <input type="number" name="system.value" value="{{data.system.value}}" data-dtype="Number"/>
                     </div>
+                    <div class="item-header-fields" style="white-space: nowrap;">
+                        {{combatName "Structure points"}}<br/>
+                        <input type="number" name="system.structurePoints" value="{{data.system.structurePoints}}" data-dtype="Number"/>
+                    </div>
                 </div>
             </div>
         </div>
@@ -24,11 +28,12 @@
 
     {{!-- Sheet Tab Navigation --}}
     <nav class="sheet-tabs tabs" data-group="primary">
-        <a class="item" data-tab="details">Details</a>
+        <a class="item" data-tab="details">{{genName "Details"}}</a>
+        <a class="item" data-tab="attachments">{{genName "Attachments"}}</a>
         {{#if systemData.hasEffect}}
-            <a class="item" data-tab="effects">Effects</a>
+            <a class="item" data-tab="effects">{{genName "Effects"}}</a>
         {{/if}}
-        <a class="item" data-tab="description">Description</a>
+        <a class="item" data-tab="description">{{genName "Description"}}</a>
     </nav>
 
     {{!-- Sheet Body --}}
@@ -50,11 +55,7 @@
                         {{/each}}
                     </select>
                 </div>
-                <div class="item-fields" style="flex: 1;">
-                    {{combatName "Structure points"}}<br/>
-                    <input type="number" name="system.structurePoints" value="{{data.system.structurePoints}}" data-dtype="Number"/>
-                </div>
-                <div class="item-fields" style="flex: 1;">
+                <div class="item-fields" style="white-space: nowrap;">
                     {{#if (checkEqual data.system.layer "Inner")}}
                         {{combatName "Attachment Points"}}<br/>
                     {{else}}
@@ -89,6 +90,7 @@
                 </tr>
             </table>
         </div>
+        {{> systems/the_edge/templates/items/meta-attachments.html}}
         {{#if systemData.hasEffect}}
             {{> systems/the_edge/templates/items/meta-effects.html}}
         {{/if}}

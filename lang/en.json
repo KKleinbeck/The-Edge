@@ -112,8 +112,8 @@
     "INNER": "Inner",
     "OUTER": "Outer",
     "ARMOUR ATTACHMENT": "Armour attachment",
-    "ATTACHMENT POINTS": "# Attachments",
-    "ATTACHMENT SIZE": "# takes slot",
+    "ATTACHMENT POINTS": "Attachments Slots",
+    "ATTACHMENT SIZE": "Attachment size",
 
     "STRUCTURE POINTS": "Structure Points",
     
@@ -167,6 +167,7 @@
     "EQUIP": "Equip",
     "TOGGLE EQUIPPED": "Toggle equipped",
     "UNEQUIP": "Unequip",
+    "DETACH": "Detach",
 
     "AMMUNITION": "Ammunition",
     "ARMOUR": "Armour",
@@ -226,7 +227,8 @@
 
     "EFFECT ALREADY EXISTS": "An effect for this item already exists. Mark effect in item as stackable or delete previous effect.",
     
-    "NO ATTACHABLE ARMOUR": "There is no armour avaible to which this can be attached to."
+    "NO ATTACHABLE ARMOUR": "There is no armour avaible to which this can be attached to.",
+    "MISSING ATTACHMENT POINTS": "Cannot attach to this armour. It has {available} attachment points left, but {needed} are needed."
   },
   "PROFICIENCY": {
     "CLIMBING": "Climbing",
@@ -305,6 +307,7 @@
   "APPLY DAMAGE": "Apply Damage",
   "APPLY MEDICINE": "Apply medicine",
   "ATTACHMENT": "Attachment",
+  "ATTACHMENTS": "Attachments",
   "_ATTR": "Attr",
   "ATTRIBUTES TAB": "Attributes",
   "AVAILABLE": "Available",
@@ -332,6 +335,7 @@
   "DESCRIPTION": "Description",
   "DESCRIPTION TAB": "Description",
   "DESIGNATED WEAPONS": "Designated Weapons",
+  "DETAILS": "Details",
   "DIGITAL": "Digital",
   "DISADVANTAGE": "Disadvantage",
   "DISTANCE": "Distance",
