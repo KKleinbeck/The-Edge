@@ -446,8 +446,7 @@ export class TheEdgeActor extends Actor {
     let [location, locationCoord] = this._generateLocation(crit)
 
     for (const armour of this.itemTypes["Armour"]) {
-      if(!armour.system.equipped) continue;
-      // TODO: Inner vs outer armour.
+      if(!armour.system.equipped || armour.system.layer == "Outer") continue;
       let protectedLoc = armour.system.bodyPart;
       if (protectedLoc === "Entire" || (location === protectedLoc) || (location !== "Head" && protectedLoc === "Below_Neck")) {
         damage = await ArmourItemTheEdge.protect.call(armour, damage, damageType)

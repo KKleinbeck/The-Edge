@@ -1,4 +1,5 @@
 import LocalisationServer from "../system/localisation_server.js";
+import Aux from "../system/auxilliaries.js";
 
 /**
  * Extend the base Item document to support attributes and groups with a custom template creation dialog.
@@ -70,6 +71,13 @@ export class TheEdgeItem extends Item {
 
 export class ArmourItemTheEdge extends TheEdgeItem {
   static async protect(damage, damageType) {
+    // Process inner armour first
+    for (const attachment of this.system.attachments) {
+      const actor = Aux.getActor(attachment.actorId, attachment.tokenId);
+      const shell = actor.items.get(attachment.shell._id);
+      damage = await ArmourItemTheEdge.protect.call(shell, damage, damageType);
+    }
+
     let protection = this.system.protection[damageType];
     damage = Math.max(0, damage - protection.absorption);
 
