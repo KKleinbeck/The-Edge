@@ -142,6 +142,10 @@ export class TheEdgeActorSheet extends ActorSheet {
 
   async _rollAttack(ev) {
     const target = ev.currentTarget; // HTMLElement
+    if (target.dataset?.type === "combatics") {
+      console.log("Combatics")
+      return undefined;
+    }
     const weaponID = target.closest(".weapon-id").dataset.weaponId
 
     let actor = this.actor;

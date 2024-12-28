@@ -441,6 +441,14 @@ export class TheEdgeActor extends Actor {
 
     return Math.max(level + attr_mod, 0)
   }
+
+  _getCombaticsPL() {
+    const sys = this.system;
+    const attr_mod = Math.floor((sys.attributes.str.value + sys.attributes.crd.value) / 4);
+    const level = sys.weapons.others.Combatics.advances + sys.weapons.others.Combatics.status;
+
+    return Math.max(level + attr_mod, 0);
+  }
   
   async applyDamage(damage, crit, damageType, name) {
     let [location, locationCoord] = this._generateLocation(crit)

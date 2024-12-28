@@ -143,7 +143,9 @@
     "1": "while whispering,",
     "2": "while talking,",
     "3": "while shouting,",
-    "CHANGING HEART RATE": "changing heart rate by"
+    "CHANGING HEART RATE": "changing heart rate by",
+
+    "LEAD ATTR COMBATICS": "Lead attr: Str & Crd"
   },
   "DIALOG": {
     "CANCEL": "Cancel",
@@ -349,6 +351,7 @@
   "FALLING": "Falling",
   "FEMALE": "Female",
   "HANDEDNESS": "Handedness",
+  "HAND TO HAND": "Hand to hand combat",
   "HEALING": "Healing",
   "HEALTH": "Health",
   "HEALTH STATUS TAB": "Health status",

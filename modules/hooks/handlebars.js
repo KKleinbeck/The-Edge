@@ -49,6 +49,7 @@ export default function() {
             return "(empty)";
         },
         calcWeaponPL: (actor, weaponID) => { return actor._getWeaponPL(weaponID) },
+        calcCombaticsPL: (actor) => { return actor._getCombaticsPL(); },
         checkRenderItem: (item, type) => {
             if (type !== "any" && item.type !== type) {
                 return false;
