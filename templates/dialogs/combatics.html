@@ -1,4 +1,7 @@
 <div class="check-dialog-box">
+  {{#if (checkEqual targetIDs.length 0)}}
+    <div style="width: 100%;"><h2>{{combatName "Missing Target"}}</h2></div>
+  {{/if}}
   <table>
     <tr>
       <td>

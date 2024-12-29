@@ -143,13 +143,13 @@ export class TheEdgeActorSheet extends ActorSheet {
 
   async _rollAttack(ev) {
     const target = ev.currentTarget; // HTMLElement
-    let targetIDs = game.user.targets.map(x => x.id);
-    console.log(targetIDs)
+    let targetIDs = Array.from(game.user.targets.map(x => x.id));  //targets is set
     if (target.dataset?.type === "combatics") {
       DialogCombatics.start({
         name: LocalisationServer.localise("Hand to Hand combat", "combat"),
         actorId: this.actor.id, threshold: this.actor._getCombaticsPL(),
-        damageType: "kinetic", targetIDs: targetIDs
+        damage: this.actor._getCombaticsDamage(), damageType: "kinetic",
+        targetIDs: targetIDs
       })
       return undefined;
     }

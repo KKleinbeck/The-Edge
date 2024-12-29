@@ -21,17 +21,21 @@ export default class DialogCombatics extends Dialog{
           const advantage = html.find('[name="AdvantageSelector"]').val();
 
           // Roll the attack
+          console.log(tempModificator, checkData.threshold)
           const modificators = {
-            modificator: tempModificator + checkData.modificator, advantage: advantage,
-            fireModeModifier: {damage: "1"},
+            threshold: Math.max(1, tempModificator + checkData.threshold),
+            advantage: advantage, fireModeModifier: {damage: checkData.damage},
+            dicesEff: 1
           }
           let [crits, damage, diceRes, hits] = await DiceServer.attackCheck(modificators);
 
           // Apply the damage
           let details = {
             name: checkData.name, rolls: [], damage: damage, actorId: checkData.actorId,
-            damageRoll: modificators.fireModeModifier.damage, damageType: checkData.damageType
+            damageRoll: modificators.fireModeModifier.damage, damageType: checkData.damageType,
+            tempModificator: tempModificator
           };
+          console.log(damage, checkData.damage)
           for (let i = 0; i < modificators.dicesEff; ++i) {
             details.rolls.push({res: diceRes[i], hit: hits[i]})
           }
@@ -43,7 +47,7 @@ export default class DialogCombatics extends Dialog{
               await target.applyDamage(damage[i], crits[i], checkData.damageType, checkData.name)
             }
           }
-          ChatServer.transmitEvent("WeaponCheck", details);
+          ChatServer.transmitEvent("CombaticsCheck", details);
         }
       },
       cancel: {
