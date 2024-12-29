@@ -6,6 +6,7 @@ import DialogMedicine from "../dialogs/dialog-medicine.js";
 import DialogRest from "../dialogs/dialog-rest.js";
 import DialogDamage from "../dialogs/dialog-damage.js";
 import DialogWeapon from "../dialogs/dialog-weapon.js";
+import DialogCombatics from "../dialogs/dialog-combatics.js";
 import DialogArmourAttachment from "../dialogs/dialog-attachOuterArmour.js";
 import LocalisationServer from "../system/localisation_server.js";
 import ChatServer from "../system/chat_server.js";
@@ -142,15 +143,20 @@ export class TheEdgeActorSheet extends ActorSheet {
 
   async _rollAttack(ev) {
     const target = ev.currentTarget; // HTMLElement
+    let targetIDs = game.user.targets.map(x => x.id);
+    console.log(targetIDs)
     if (target.dataset?.type === "combatics") {
-      console.log("Combatics")
+      DialogCombatics.start({
+        name: LocalisationServer.localise("Hand to Hand combat", "combat"),
+        actorId: this.actor.id, threshold: this.actor._getCombaticsPL(),
+        damageType: "kinetic", targetIDs: targetIDs
+      })
       return undefined;
     }
     const weaponID = target.closest(".weapon-id").dataset.weaponId
 
     let actor = this.actor;
     let sceneID = game.user.viewedScene;
-    let targetIDs = game.user.targets.map(x => x.id);
 
     const weapon = this.actor.items.get(weaponID)
     if (weapon.system.ammunitionID === "") {

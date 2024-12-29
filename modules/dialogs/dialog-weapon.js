@@ -55,6 +55,9 @@ export default class DialogWeapon extends Dialog{
           }
           ChatServer.transmitEvent("WeaponCheck", details);
         }
+      },
+      cancel: {
+        label: game.i18n.localize("DIALOG.CANCEL")
       }
     }
     if (game.user.isGM) {
