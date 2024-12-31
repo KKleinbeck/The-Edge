@@ -32,6 +32,7 @@ export const preloadHandlebarsTemplates = async function() {
     "systems/the_edge/templates/items/meta-attachments.html",
     "systems/the_edge/templates/items/meta-effects.html",
     "systems/the_edge/templates/items/meta-description.html",
+    "systems/the_edge/templates/items/meta-skill-description.html",
   ];
 
   // Load the template parts

@@ -236,6 +236,7 @@
     },
     "skill": {
       "levelEffects": [[]],
+      "requirements": [[]],
       "level": 1,
       "maxLevel": 1,
       "cost": "0"

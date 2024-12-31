@@ -252,46 +252,63 @@ class ItemSheetSkill extends TheEdgeItemSheet {
     const button = ev.currentTarget;
     let maxLevel = button.value;
     let le = this.item.system.levelEffects;
+    let re = this.item.system.requirements;
     if (le.length >= maxLevel) {
-      this.item.update({"system.maxLevel": maxLevel, "system.levelEffects": le.slice(0, maxLevel)})
+      this.item.update({
+        "system.maxLevel": maxLevel, "system.levelEffects": le.slice(0, maxLevel),
+        "system.requirements": re.slice(0, maxLevel)
+      })
     } else {
       for (let i = le.length; i < maxLevel ; ++i) {
         le.push([])
+        re.push([])
       }
-      this.item.update({"system.maxLevel": maxLevel, "system.levelEffects": le});
+      this.item.update({
+        "system.maxLevel": maxLevel, "system.levelEffects": le,
+        "system.requirements": re
+      });
     }
   }
 
   _onLevelAdd(ev) {
-    const level = ev.currentTarget.closest(".effect-level").dataset.index;
-    let le = this.item.system.levelEffects;
-    le[level].push({modifier: "", value: 0});
-    this.item.update({"system.levelEffects": le});
+    const dataHtml = ev.currentTarget.closest(".effect-level");
+    const level = dataHtml.dataset.index;
+    const target = dataHtml.dataset.type;
+    let targetList = this.item.system[target];
+    targetList[level].push({modifier: "", value: 0});
+    if (target == "levelEffects") this.item.update({"system.levelEffects": targetList});
+    if (target == "requirements") this.item.update({"system.requirements": targetList});
   }
 
   _onLevelModify(ev) {
     const button = ev.currentTarget;
-    const level = button.closest(".effect-level").dataset.index;
+    const dataHtml = ev.currentTarget.closest(".effect-level");
+    const level = dataHtml.dataset.index;
+    const target = dataHtml.dataset.type;
     let index = button.dataset.index;
-    let le = this.item.system.levelEffects;
+    let targetList = this.item.system[target];
     switch (button.type) {
       case "text":
-        le[level][index].modifier = button.value;
+        targetList[level][index].modifier = button.value;
         break;
       case "number":
-        le[level][index].value = parseInt(button.value);
+        targetList[level][index].value = parseInt(button.value);
         break;
     }
-    this.item.update({"system.levelEffects": le});
+    if (target == "levelEffects") this.item.update({"system.levelEffects": targetList});
+    if (target == "requirements") this.item.update({"system.requirements": targetList});
   }
 
   _onLevelDelete(ev) {
     const button = ev.currentTarget;
-    const level = button.closest(".effect-level").dataset.index;
+    const dataHtml = ev.currentTarget.closest(".effect-level");
+    const level = dataHtml.dataset.index;
+    const target = dataHtml.dataset.type;
     let index = button.dataset.index;
-    let le = this.item.system.levelEffects;
-    le[level].splice(index, 1);
-    this.item.update({"system.levelEffects": le});
+    let targetList = this.item.system[target];
+    targetList[level].splice(index, 1);
+    if (target == "levelEffects") this.item.update({"system.levelEffects": targetList});
+    if (target == "requirements") this.item.update({"system.requirements": targetList});
     this._render();
   }
 
