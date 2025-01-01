@@ -232,7 +232,10 @@
     "EFFECT ALREADY EXISTS": "An effect for this item already exists. Mark effect in item as stackable or delete previous effect.",
     
     "NO ATTACHABLE ARMOUR": "There is no armour avaible to which this can be attached to.",
-    "MISSING ATTACHMENT POINTS": "Cannot attach to this armour. It has {available} attachment points left, but {needed} are needed."
+    "MISSING ATTACHMENT POINTS": "Cannot attach to this armour. It has {available} attachment points left, but {needed} are needed.",
+
+    "MISSING REQUIREMENTS": "Skill has unmatched requirements. Skill {modifier} has to be at {value} first.",
+    "UNMET REQUIREMENTS": "Skill has unmatched requirements. {modifier} has to be {value}, but is {valueIs}."
   },
   "PROFICIENCY": {
     "CLIMBING": "Climbing",

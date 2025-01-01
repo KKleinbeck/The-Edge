@@ -373,15 +373,15 @@ export class TheEdgeActor extends Actor {
   learnSkill(newSkill) {
     for (const skill of this.items) {
       if (skill.name == newSkill.name && skill.type == newSkill.type && skill.system.level) {
-        // Skill already exists and can be leveled
-        this.skillLevelIncrease(skill.id)
+        // Skill already exists and can potentially be leveled
+        this.skillLevelIncrease(skill.id);
         return false;
       }
     }
 
-    // Languages doesn't exist yet
+    // Skill doesn't exist yet
+    if (!this.fulfillsRequirements(newSkill, true)) return false;
     const ph = this.system.PracticeHours
-    const spoken = newSkill.system.humanSpoken
     let cost = Aux.getSkillCost(newSkill)
     if (cost < ph.max - ph.used) {
       this.update({"system.PracticeHours.used": ph.used + cost})
@@ -391,11 +391,50 @@ export class TheEdgeActor extends Actor {
     return false
   }
 
+  fulfillsRequirements(skill, newSkill = false) {
+    const level = skill.system.level - newSkill;
+    const requirements = skill.system.requirements[level];
+    if (requirements === undefined || requirements.length == 0) return true;
+
+    for (const requirement of requirements) {
+      const sysMod = Aux.objectAt(this.system, requirement.modifier.toLowerCase())
+      const skillRef = this.items.filter(x => x.name.toLowerCase() == requirement.modifier.toLowerCase());
+      const details = structuredClone(requirement);
+      if (sysMod) {
+        if (sysMod.value < requirement.value) {
+          foundry.utils.mergeObject(details, {valueIs: sysMod.value})
+          const msg = LocalisationServer.parsedLocalisation(
+            "Unmet requirements", "Notifications", details
+          )
+          ui.notifications.notify(msg);
+          return false;
+        }
+      } else if (skillRef.length > 0) {
+        if (skillRef[0].system.level < requirement.value) {
+          foundry.utils.mergeObject(details, {valueIs: skillRef[0].system.level})
+          const msg = LocalisationServer.parsedLocalisation(
+            "Unmet requirements", "Notifications", details
+          )
+          ui.notifications.notify(msg);
+          return false;
+        }
+      } else {
+        const msg = LocalisationServer.parsedLocalisation(
+          "Missing requirements", "Notifications", details
+        )
+        ui.notifications.notify(msg);
+        return false;
+      }
+    }
+    return true;
+  }
+
   _attrCost(n) { return 10 * Math.floor(14 + 6 * Math.pow(1.2, n)); }
   _profCost(n) { return  5 * Math.floor( 5 + 5 * Math.pow(1.1, n)); }
 
   skillLevelIncrease(skillID) {
     let skill = this.items.get(skillID)
+    if (!this.fulfillsRequirements(skill)) return false;
     let cost = Aux.getSkillCost(skill, "increase");
     const ph = this.system.PracticeHours
     if (cost < ph.max - ph.used) {

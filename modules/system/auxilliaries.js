@@ -2,6 +2,10 @@ import THE_EDGE from "./config-the-edge.js"
 import LocalisationServer from "./localisation_server.js"
 
 export default class Aux {
+  static objectAt(obj, path) {
+    return path.split(".").reduce((a,i) => a[i], obj);
+  }
+
   static hasRaceCondDanger(id) {
     let lastUpdate = game.data[id]
     if (lastUpdate === undefined || Date.now() - lastUpdate > 100) {
@@ -50,7 +54,7 @@ export default class Aux {
     const regex = /^(\d+\/)*\d+$/; // parse [n_1 / n_2 / ...] n_m
     if (regex.test(cost)) {
       const costs = cost.split('/').map(Number)
-      if (!maxLevel || costs.length == maxLevel) {
+      if (!maxLevel || costs.length == maxLevel || costs.length == 1) {
         return cost.length == 1 ? costs[0] : costs;
       }
     }
