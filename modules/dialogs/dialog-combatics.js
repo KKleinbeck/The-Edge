@@ -23,29 +23,23 @@ export default class DialogCombatics extends Dialog{
           // Roll the attack
           const modificators = {
             threshold: Math.max(1, tempModificator + checkData.threshold),
-            vantage: vantage, fireModeModifier: {damage: checkData.damage},
-            dicesEff: 1
+            vantage: vantage, fireModeModifier: {damage: checkData.damage}
           }
           let [crits, damage, diceRes, hits] = await checkData.actor.rollAttackCheck(
-            modificators.dicesEff, modificators.threshold, vantage, checkData.damage
+            1, modificators.threshold, vantage, checkData.damage
           );
 
           // Apply the damage
           let details = {
-            name: checkData.name, rolls: [], damage: damage, actorId: checkData.actor.id,
-            damageRoll: modificators.fireModeModifier.damage, damageType: checkData.damageType,
-            tempModificator: tempModificator
+            name: checkData.name, rolls: [{res: diceRes[0], hit: hits[0]}], damage: damage,
+            actorId: checkData.actor.id, damageRoll: modificators.fireModeModifier.damage,
+            damageType: checkData.damageType, tempModificator: tempModificator
           };
-          for (let i = 0; i < modificators.dicesEff; ++i) {
-            details.rolls.push({res: diceRes[i], hit: hits[i]})
-          }
           foundry.utils.mergeObject(details, modificators)
           for (const id of checkData.targetIDs) {
             details["targetId"] = id;
             let target = Aux.getActor(undefined, id);
-            for (let i = 0; i < damage.length; ++i){
-              await target.applyDamage(damage[i], crits[i], checkData.damageType, checkData.name)
-            }
+            await target.applyDamage(damage[0], crits[0], checkData.damageType, checkData.name)
           }
           ChatServer.transmitEvent("CombaticsCheck", details);
         }

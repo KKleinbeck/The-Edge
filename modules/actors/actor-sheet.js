@@ -145,6 +145,13 @@ export class TheEdgeActorSheet extends ActorSheet {
     const target = ev.currentTarget; // HTMLElement
     let targetIDs = Array.from(game.user.targets.map(x => x.id));  //targets is set
     if (target.dataset?.type === "combatics") {
+      if (targetIDs.length > 1) {
+        const msg = LocalisationServer.parsedLocalisation(
+          "Too many targets", "Notifications", {weapon: "hand to hand", max: 1}
+        )
+        ui.notifications.notify(msg)
+        return undefined;
+      }
       DialogCombatics.start({
         name: LocalisationServer.localise("Hand to Hand combat", "combat"),
         actor: this.actor, threshold: this.actor._getCombaticsPL(),
