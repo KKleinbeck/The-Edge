@@ -147,7 +147,7 @@ export class TheEdgeActorSheet extends ActorSheet {
     if (target.dataset?.type === "combatics") {
       DialogCombatics.start({
         name: LocalisationServer.localise("Hand to Hand combat", "combat"),
-        actorId: this.actor.id, threshold: this.actor._getCombaticsPL(),
+        actor: this.actor, threshold: this.actor._getCombaticsPL(),
         damage: this.actor._getCombaticsDamage(), damageType: "kinetic",
         targetIDs: targetIDs
       })
@@ -175,13 +175,12 @@ export class TheEdgeActorSheet extends ActorSheet {
     const threshold = this.actor._getWeaponPL(weaponID)
     DialogWeapon.start({
       name: weapon.name,
-      actorId: this.actor.id,
+      actor: actor,
       ammunition: this.actor.items.get(weapon.system.ammunitionID),
       threshold: threshold,
       damageType: damageType,
       rangeChart: weapon.system.rangeChart,
       fireModes: weapon.system.fireModes,
-      actor: actor,
       sceneID: sceneID,
       targetIDs: targetIDs
     })

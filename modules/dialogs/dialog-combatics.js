@@ -18,24 +18,24 @@ export default class DialogCombatics extends Dialog{
         label: game.i18n.localize("DIALOG.ROLL"),
         callback: async (html) => {
           const tempModificator = parseInt(html.find('[name="Modifier"]').val());
-          const advantage = html.find('[name="AdvantageSelector"]').val();
+          const vantage = html.find('[name="VantageSelector"]').val();
 
           // Roll the attack
-          console.log(tempModificator, checkData.threshold)
           const modificators = {
             threshold: Math.max(1, tempModificator + checkData.threshold),
-            advantage: advantage, fireModeModifier: {damage: checkData.damage},
+            vantage: vantage, fireModeModifier: {damage: checkData.damage},
             dicesEff: 1
           }
-          let [crits, damage, diceRes, hits] = await DiceServer.attackCheck(modificators);
+          let [crits, damage, diceRes, hits] = await checkData.actor.rollAttackCheck(
+            modificators.dicesEff, modificators.threshold, vantage, checkData.damage
+          );
 
           // Apply the damage
           let details = {
-            name: checkData.name, rolls: [], damage: damage, actorId: checkData.actorId,
+            name: checkData.name, rolls: [], damage: damage, actorId: checkData.actor.id,
             damageRoll: modificators.fireModeModifier.damage, damageType: checkData.damageType,
             tempModificator: tempModificator
           };
-          console.log(damage, checkData.damage)
           for (let i = 0; i < modificators.dicesEff; ++i) {
             details.rolls.push({res: diceRes[i], hit: hits[i]})
           }

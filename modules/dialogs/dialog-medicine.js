@@ -20,8 +20,8 @@ export default class DialogMedicine extends Dialog{
       select: {
         label: game.i18n.localize("DIALOG.SELECT"),
         callback: async (html) => {
-          let healing = (await DiceServer._genericRoll(medicine.healing)).reduce((a,b) => a+b, 0);
-          let coagulation = (await DiceServer._genericRoll(medicine.coagulation)).reduce((a,b) => a+b, 0);
+          let healing = (await DiceServer.genericRoll(medicine.healing));
+          let coagulation = (await DiceServer.genericRoll(medicine.coagulation));
           
           let selectedID =  html.find('[name="WoundSelector"]').val();
           let wound = wounds.find(x => x.id == selectedID)

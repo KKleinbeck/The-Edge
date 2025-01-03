@@ -35,11 +35,13 @@ export default class DialogWeapon extends Dialog{
 
           // Roll the attack
           foundry.utils.mergeObject(modificators, {dicesEff: dices})
-          let [crits, damage, diceRes, hits] = await DiceServer.attackCheck(modificators);
+          let [crits, damage, diceRes, hits] = await checkData.actor.rollAttackCheck(
+            dices, modificators.threshold, modificators.vantage, modificators.fireModeModifier.damage
+          );
 
           // Apply the damage
           let details = {
-            name: checkData.name, rolls: [], damage: damage, actorId: checkData.actorId,
+            name: checkData.name, rolls: [], damage: damage, actorId: checkData.actor.id,
             damageRoll: modificators.fireModeModifier.damage, damageType: checkData.damageType
           };
           for (let i = 0; i < modificators.dicesEff; ++i) {
@@ -148,7 +150,7 @@ export default class DialogWeapon extends Dialog{
       threshold: threshold, precision: precision, pIndex: pIndex,
       tempModificator: tempModificator, range: range, size: size,
       movement: movement, cover: cover, fireMode: fireMode,
-      advantage: html.find('[name="AdvantageSelector"]').val(),
+      vantage: html.find('[name="VantageSelector"]').val(),
       rangeModifier: checkData.rangeChart[range][pIndex],
       sizeModifier: THE_EDGE.sizes[size][pIndex],
       movementModifier: THE_EDGE.movements[movement][pIndex],

@@ -9,195 +9,144 @@ export default class DiceServer {
   // - h[n]: take highest n dices
   // - l[n]: take lowest n dices
   // - KOMMA: return mutliple rolls
-  static async attributeCheck(check, modificators) {
-    let diceRes = await this._basicRoll("1d20", true);
-    if (diceRes === undefined) return undefined;
-
-    if (modificators.advantage != "Nothing") {
-      const diceRes2 = await this._basicRoll("1d20", true);
-
-      if ( ((modificators.advantage == "Advantage") && (diceRes2 < diceRes)) ||
-           ((modificators.advantage == "Disadvantage") && (diceRes2 > diceRes)) ) {
-        diceRes = diceRes2;
-      }
+  constructor() {
+    const interpretTemplate = {
+      crit: [1], critFail: [20], critFailTable: []
     }
 
-    let threshold = check.threshold + modificators.temporary;
-    let basicQuality = Math.floor((threshold - diceRes) / 2)
-    if (diceRes == 1) return {outcome: "CritSuccess", roll: diceRes, quality: Math.max(basicQuality + 2, 2)};
-    else if (diceRes == 20) return {outcome: "CritFailure", roll: diceRes, quality: Math.min(basicQuality - 2, -2)};
-    return {outcome: (threshold >= diceRes) ? "Success" : "Failure", roll: diceRes, quality: basicQuality};
+    this.interpretationParams = {
+      attribute: structuredClone(interpretTemplate),
+      proficiency: structuredClone(interpretTemplate),
+      combat: structuredClone(interpretTemplate),
+    }
+    this.interpretationParams.attribute.qualityStep = 2;
+    this.interpretationParams.proficiency.qualityStep = 4;
   }
 
-  static async proficiencyCheck(check, modificators) {
+  _selectVantageOutcome(vantage, roll1, roll2) {
+    console.log("Vantaging")
+    if ( (vantage == "Advantage" && roll1.netOutcome > roll2.netOutcome) ||
+          (vantage == "Disadvantage" && roll1.netOutcome < roll2.netOutcome) ) {
+      return roll1;
+    }
+    return roll2;
+  }
+
+  async _interpretCheck(type, roll, details = undefined) {
+    const interpretationParams = this.interpretationParams[type];
+    const qualityStep = interpretationParams.qualityStep;
+
+    let basicQuality = Math.floor(roll.netOutcome / qualityStep);
+    let outcome = (roll.netOutcome >= 0) ? "Success" : "Failure"
+    switch (type) {
+      case "attribute":
+        if (interpretationParams.crit.includes(roll.diceResult)) {
+          outcome = "CritSuccess"
+          basicQuality = Math.max(basicQuality + 2, 2);
+        }
+        if (interpretationParams.critFail.includes(roll.diceResult)) {
+          outcome = "CritFailure"
+          basicQuality = Math.min(basicQuality - 2, -2);
+        }
+        break;
+
+      case "proficiency":
+        for (const dice of roll.diceResults) {
+          if (interpretationParams.crit.includes(dice)) basicQuality += 2;
+          if (interpretationParams.critFail.includes(dice)) basicQuality -= 2;
+        }
+        break;
+      
+      case "combat":
+        let damage = []
+        let crits = []
+        for (let i = 0; i < details.dices; ++i) {
+          if (!roll.hits[i]) continue;
+
+          damage.push((await this._genericRoll(details.damageDice)))
+          if (interpretationParams.crit.includes(roll.diceResults[i])) {
+            damage[damage.length-1] += this._max(details.damageDice);
+            crits.push(true)
+          } else crits.push(false)
+        }
+
+        return [crits, damage, roll.diceResults, roll.hits];
+    }
+
+    let interpretation = {outcome: outcome, quality: basicQuality};
+    foundry.utils.mergeObject(interpretation, roll);
+    return interpretation;
+  }
+
+  async attributeCheck(threshold, vantage) {
+    let roll = await this._attributeRoll(threshold);
+
+    if (vantage == "Advantage" || vantage == "Disadvantage") {
+      const roll2 = this._attributeRoll(threshold);
+      roll = this._selectVantageOutcome(vantage, roll, roll2);
+    }
+
+    return this._interpretCheck("attribute", roll);
+  }
+
+  async _attributeRoll(threshold) {
+    let diceRes = await this._genericRoll("1d20");
+    return {diceResult: diceRes, netOutcome: threshold - diceRes};
+  }
+
+  async proficiencyCheck(thresholds, modificator, vantage) {
+    let roll = await this._proficiencyRoll(thresholds, modificator);
+
+    if (vantage == "Advantage" || vantage == "Disadvantage") {
+      const roll2 = await this._proficiencyRoll(thresholds, modificator);
+      roll = this._selectVantageOutcome(vantage, roll, roll2)
+    }
+
+    return this._interpretCheck("proficiency", roll);
+  }
+
+  async _proficiencyRoll(thresholds, modificator) {
     const diceRes = await new Roll("3d20").evaluate();
     let diceResults = [];
     let failedSum = 0;
     let sum = 0;
     for (let i = 0; i < 3; i++) {
       diceResults.push(diceRes.dice[0].results[i].result)
-      let netOutcome = check.thresholds[i] - diceResults[i]
+      let netOutcome = thresholds[i] - diceResults[i]
       failedSum += Math.min(netOutcome, 0)
       sum += netOutcome
     }
 
-    const modificator = modificators.modificator;
-    let results = undefined;
-    if (modificator > 0) {
-      // Is the modificator great enough to make the check?
-      let reserves = modificator + failedSum 
-      if (reserves >= 0) {
-        results = {outcome: "Success", quality: Math.floor((modificator + sum) / 3)};
-      }
-      else results = {outcome: "Failure", quality: Math.floor(reserves / 3)};
-    }
-    else {
-      // Negative modificator requires all checks to pass
-      if (failedSum < 0) results = {outcome: "Failure", quality: Math.floor((modificator + failedSum) / 3)};
-      else results = {outcome: sum < -modificator ? "Failure" : "Success", quality: Math.floor((modificator + sum) / 3)};
-    }
-    foundry.utils.mergeObject(results, {diceResults: diceResults})
-    
-    if (modificators.advantage != "Nothing") {
-      let advantage = modificators.advantage;
-      modificators.advantage = "Nothing";
-      let results2 = await this.proficiencyCheck(check, modificators);
-
-      if ( (advantage == "Advantage" && results2.quality > results.quality) ||
-           (advantage == "Disadvantage" && results2.quality < results.quality) ) {
-        return results2;
-      }
-    }
-    return results;
+    let netOutcome = modificator + ((modificator >= -failedSum || failedSum == 0) ? sum : failedSum);
+    return {diceResults: diceResults, netOutcome: netOutcome};
   }
 
-  static async attackCheck(modificators) {
+  async attackCheck(dices, threshold, vantage, damageDice) {
+    let roll = await this._attackRoll(dices, threshold);
+
+    if (vantage == "Advantage" || vantage == "Disadvantage") {
+      const roll2 = await this._attackRoll(dices, threshold);
+      roll = this._selectVantageOutcome(vantage, roll, roll2)
+    }
+
+    return this._interpretCheck("combat", roll, {damageDice: damageDice, dices: dices});
+  }
+
+  async _attackRoll(dices, threshold) {
     let diceRes = []
-    for (let i = 0; i < modificators.dicesEff; ++i) {
-      diceRes.push(await this._basicRoll("1d20", true));
-    }
-    if (diceRes == []) return undefined;
-    let hits = []
-    for (const res of diceRes) hits.push(res <= modificators.threshold);
-
-    if (modificators.advantage != "Nothing") {
-      let diceRes2 = []
-      for (let i = 0; i < modificators.dicesEff; ++i) {
-        diceRes2.push(await this._basicRoll("1d20", true));
-      }
-      let hits2 = []
-      for (const res of diceRes2) hits2.push(res <= modificators.threshold);
-      
-      let sum = hits.sum();
-      let sum2 = hits2.sum();
-      if ( ((modificators.advantage == "Advantage") && (sum < sum2)) ||
-           ((modificators.advantage == "Disadvantage") && (sum > sum2)) ) {
-        hits = hits2
-        diceRes = diceRes2
-      }
-    }
-
-    let damage = []
-    let crits = []
-    for (let i = 0; i < diceRes.length; ++i) {
-      if (!hits[i]) continue;
-
-      damage.push((await this._genericRoll(modificators.fireModeModifier.damage)).sum())
-      if (diceRes[i] == 1) {
-        damage[damage.length-1] += this._max(modificators.fireModeModifier.damage);
-        crits.push(true)
-      } else crits.push(false)
-    }
-
-    return [crits, damage, diceRes, hits];
+    for (let i = 0; i < dices; ++i) diceRes.push(await this._genericRoll("1d20"));
+    let hits = diceRes.map(x => x <= threshold);
+    return {diceResults: diceRes, hits: hits, netOutcome: hits.sum()};
   }
 
-  static async _genericRoll(rollDescription, isCheck = false) {
-    let rolls = rollDescription.replace(/\s/g, '').split("+");
-    let results = [];
-
-    for (const roll of rolls) {
-      if (!isNaN(roll)) results.push(+roll); // Plain numbers are added
-      else results.push(await this._basicRoll(roll, isCheck));
-    }
-    return results
-  }
-
-  static async _basicRoll(rollDescription, isCheck = false) {
-    //just an individual role, i.e., '2d3d20h2'
-    const regex = /^(\d*)?([ad])?(\d*)?d(\d+)([hl])?(\d*)?$/;
-    const match = rollDescription.match(regex);
-
-    if (match) {
-      let nVantageRolls = undefined;
-      let vantageRolls = match[2];
-      let nDices = undefined;
-      let nSides = match[4];
-      let subsetType = match[5];
-      let nSubset = match[6] ? match[6] : 1;
-
-      // Parameter Setup
-      if (vantageRolls) {
-        nVantageRolls = match[1] ? match[1] : 2;
-        if (nVantageRolls == 1) {
-          return undefined;
-        }
-        nDices = match[3] ? match[3] : 1;
-      }
-      else {
-        nDices = match[1] ? match[1] : 1;
-        nVantageRolls = 1; // pseudo so that we prevent conditions later
-      }
-
-      if (subsetType && nSubset >= nDices) {
-        return undefined;
-      }
-
-      // Roll generation
-      let vantageResults = [];
-      for (let i = 1; i <= nVantageRolls; ++i) {
-        let results = []
-        for (let j = 1; j <= nDices; ++j) {
-          results.push(await this._randInt(1, nSides));
-        }
-        switch (subsetType) {
-          case "h":
-            vantageResults.push(
-              results.sort((a, b) => a-b).slice(-nSubset).reduce((a, b) => a + b, 0)
-            );
-            break;
-          case "l":
-            vantageResults.push(
-              results.sort((a, b) => a-b).slice(0, nSubset).reduce((a, b) => a + b, 0)
-            );
-            break;
-          default:
-            vantageResults.push(
-              results.reduce((a,b) => a + b, 0)
-            )
-        }
-      }
-      switch (vantageRolls) {
-        case "a":
-          return isCheck ? Math.min(...vantageResults) : Math.max(...vantageResults);
-        case "d":
-          return isCheck ? Math.max(...vantageResults) : Math.max(...vantageResults);
-        default: // Only one dice roll
-          return vantageResults[0];
-      }
-    }
-
-    // If no match
-    let msg = LocalisationServer.parsedLocalisation("IllicitRole", "CHATERROR", {"_ROLE_": rollDescription})
-    ui.notifications.notify(msg)
-    return undefined;
-  }
-
-  static async _randInt(min, max) {
-    return Math.floor((max * Math.random() - min + 1) + min);
+  async _genericRoll(rollDescription) { return this.constructor.genericRoll(rollDescription); }
+  static async genericRoll(rollDescription) {
+    const roll = await new Roll(rollDescription).evaluate();
+    return roll._total;
   }
   
-  static _max(rollDescription) {
+  _max(rollDescription) { return this.constructor.max(rollDescription); }
+  static max(rollDescription) {
     let rolls = rollDescription.replace(/\s/g, '').split("+");
     let result = 0;
 

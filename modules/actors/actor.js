@@ -10,6 +10,10 @@ import DiceServer from "../system/dice_server.js";
  * @extends {Actor}
  */
 export class TheEdgeActor extends Actor {
+  constructor(...args) {
+    super(...args);
+    this.diceServer = new DiceServer();
+  }
 
   /** @inheritdoc */
   prepareDerivedData() {
@@ -133,41 +137,42 @@ export class TheEdgeActor extends Actor {
     this.update({"system.heroToken.available": this.system.heroToken.available + 1});
   }
 
-  async rollAttributeCheck(attribute, tempModifier = 0, advantage = false, transmit = true) {
-    const threshold = this.system.attributes[attribute]["value"];
-    let modificators = {temporary: tempModifier, advantage: advantage}
-    let result = await DiceServer.attributeCheck({threshold: threshold}, modificators)
+  async rollAttributeCheck(attribute, tempModifier = 0, vantage, transmit = true) {
+    const threshold = this.system.attributes[attribute]["value"] + tempModifier;
+    let result = await this.diceServer.attributeCheck(threshold, vantage)
 
     if (transmit) {
       let chatDetails = result
-      foundry.utils.mergeObject(chatDetails, {attribute: attribute, threshold: threshold, actorId: this.id})
-      foundry.utils.mergeObject(chatDetails, modificators)
+      foundry.utils.mergeObject(chatDetails, {
+        attribute: attribute, threshold: threshold, actorId: this.id,
+        advantage: vantage, temporary: tempModifier
+      });
       ChatServer.transmitEvent("AbilityCheck", chatDetails);
     }
   }
 
-  async rollProficiencyCheck(proficiency, tempModifier = 0, advantage = false, transmit = true) {
+  async rollProficiencyCheck(proficiency, tempModifier = 0, vantage, transmit = true) {
     let proficiencyData = Object.values(this.system.proficiencies)
       .find(profClass => proficiency in profClass)[proficiency]
+    const dices = proficiencyData.dices;
+    const thresholds = dices.map(dice => this.system.attributes[dice]["value"]);
 
-    let check = {
-      name: proficiency,
-      dices: proficiencyData.dices,
-      thresholds: proficiencyData.dices.map(dice => this.system.attributes[dice]["value"])
-    }
-
-    let modificator = proficiencyData["advances"] + proficiencyData["modifier"] + proficiencyData["status"];
-    let modificators = {modificator: modificator + tempModifier, advantage: advantage}
-    let results = await DiceServer.proficiencyCheck(check, modificators);
+    const modificator = proficiencyData["advances"] + proficiencyData["modifier"] + proficiencyData["status"];
+    const results = await this.diceServer.proficiencyCheck(thresholds, modificator + tempModifier, vantage);
 
     if (transmit) {
       let chatDetails = {
-        actorId: this.id, proficiency: proficiency, dices: check.dices, thresholds: check.thresholds,
-        character_mod: modificator, temporary_mod: tempModifier, advantage: advantage
+        actorId: this.id, proficiency: proficiency, dices: dices, thresholds: thresholds,
+        character_mod: modificator, temporary_mod: tempModifier, advantage: vantage
       };
       foundry.utils.mergeObject(chatDetails, results)
       ChatServer.transmitEvent("ProficiencyCheck", chatDetails);
     }
+    return results;
+  }
+
+  async rollAttackCheck(dices, threshold, vantage, damageDice) {
+    const results = await this.diceServer.attackCheck(dices, threshold, vantage, damageDice);
     return results;
   }
 
@@ -537,7 +542,7 @@ export class TheEdgeActor extends Actor {
   async applyFallDamage(height) {
     let n = Math.floor(height / 2);
     let damageRoll = `${n*n}d4+${n*n+n}`;
-    let damage = (await DiceServer._genericRoll(damageRoll)).sum();
+    let damage = (await DiceServer.genericRoll(damageRoll));
     this.applyDamage(damage, false, "fall", LocalisationServer.localise("falling") + ` ${height}m`);
     ChatServer.transmitEvent("fall", {actor: this.name, height: height, damage: damage, damageRoll: damageRoll});
   }
@@ -545,7 +550,7 @@ export class TheEdgeActor extends Actor {
   async applyImpactDamage(speed) {
     let n = Math.floor(speed / 3);
     let damageRoll = `${n}d8+${n*n}`;
-    let damage = (await DiceServer._genericRoll(damageRoll)).sum();
+    let damage = (await DiceServer.genericRoll(damageRoll));
     this.applyDamage(damage, false, "impact", LocalisationServer.localise("impacting at") + ` ${speed}m/s`);
     ChatServer.transmitEvent("impact", {actor: this.name, speed: speed, damage: damage, damageRoll: damageRoll});
   }

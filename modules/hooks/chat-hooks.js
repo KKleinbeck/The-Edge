@@ -94,9 +94,9 @@ export default function() {
 
     let damageList = html.find(".damage-list");
     let damageRoll = contextHtml[0].dataset.damageRoll;
-    let newDamage = (await DiceServer._genericRoll(damageRoll)).sum();
+    let newDamage = (await DiceServer.genericRoll(damageRoll));
     if (prevRoll > threshold) { // Add new damage box
-      if (threshold <= 1) newDamage +=  DiceServer._max(damageRoll);
+      if (threshold <= 1) newDamage +=  DiceServer.max(damageRoll);
 
       let noDamageBox = damageList.find(".no-damage-box");
       if (noDamageBox.length > 0) {
@@ -110,7 +110,7 @@ export default function() {
         damageList.children().eq(hitIndex + 1).before(damageList.children().last())
       }
     } else { // convert to crit
-      newDamage = DiceServer._max(damageRoll);
+      newDamage = DiceServer.max(damageRoll);
       let target = $(damageList.children()[hitIndex + 1]).children()[0];
       let oldDamage = parseInt(target.innerText);
       $(target).html(`${oldDamage + newDamage}`);
