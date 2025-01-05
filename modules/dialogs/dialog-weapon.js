@@ -1,4 +1,3 @@
-import DiceServer from "../system/dice_server.js";
 import ChatServer from "../system/chat_server.js";
 import THE_EDGE from "../system/config-the-edge.js";
 import Aux from "../system/auxilliaries.js";
@@ -31,12 +30,13 @@ export default class DialogWeapon extends Dialog{
             checkData.fireModes[modificators.fireMode].dices,
             ammuCapa.max - ammuCapa.used
           )
-          checkData.ammunition.update({"system.capacity.used": ammuCapa.used + dices})
+          // checkData.ammunition.update({"system.capacity.used": ammuCapa.used + dices})
 
           // Roll the attack
           foundry.utils.mergeObject(modificators, {dicesEff: dices})
-          let [crits, damage, diceRes, hits] = await checkData.actor.rollAttackCheck(
-            dices, modificators.threshold, modificators.vantage, modificators.fireModeModifier.damage
+          let [crits, damage, diceRes, hits, failEvents] = await checkData.actor.rollAttackCheck(
+            dices, modificators.threshold, modificators.vantage, modificators.fireModeModifier.damage,
+            checkData.damageType
           );
 
           // Apply the damage
@@ -56,6 +56,9 @@ export default class DialogWeapon extends Dialog{
             }
           }
           ChatServer.transmitEvent("WeaponCheck", details);
+          for (const event of failEvents) {
+            ChatServer.transmitEvent("Crit Fail Event", {event: event, check: "Combat check"})
+          }
         }
       },
       cancel: {

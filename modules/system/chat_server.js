@@ -7,6 +7,7 @@ export default class ChatServer {
 
   static async transmitEvent(id, details) {
     let html = undefined;
+    let text = undefined;
     switch (id.toUpperCase()) {
       case "ABILITYCHECK":
         html = await renderTemplate("systems/the_edge/templates/chat/attribute_check.html", details);
@@ -45,7 +46,7 @@ export default class ChatServer {
         break;
       
       case "HERO TOKEN":
-        let text = LocalisationServer.parsedLocalisation(details.reason, "Hero Token", details)
+        text = LocalisationServer.parsedLocalisation(details.reason, "Hero Token", details)
         html = await renderTemplate(
           "systems/the_edge/templates/chat/hero_token.html",
           {name: details.name, text: text}
@@ -58,6 +59,14 @@ export default class ChatServer {
       
       case "IMPACT":
         html = await renderTemplate("systems/the_edge/templates/chat/impact.html", details);
+        break;
+
+      case "CRIT FAIL EVENT":
+        text = LocalisationServer.parsedLocalisation(details.event, "Crit Fail Event")
+        html = await renderTemplate(
+          "systems/the_edge/templates/chat/crit_failure.html",
+          {check: details.check, text: text}
+        );
         break;
     }
     ChatMessage.create(this._chatDataSetup(html, "roll"))

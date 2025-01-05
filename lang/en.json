@@ -149,6 +149,20 @@
 
     "LEAD ATTR COMBATICS": "Lead attr: Str & Crd"
   },
+  "CRIT FAIL EVENT": {
+    "SPONTANEOUS DISCHARGE": "Weapon Spontaneously discharges and fires again with the currently selected fire mode.<br />Perform a Crd check:<br /> - QL 0 - 3: The shot hits a random structure within a 90deg arc infront of you.<br /> - QL > 3: Perform another attack modified -8+QL against your last target. - FL < 0: Attack a random creature within 20m and a 90deg arch infront of you, with modifier -FL.",
+    "JAM": "Weapon jams, which takes 2 actions to fix (strding permited during this). Pass a Foc check +5 to recognise this immediatly, otherwise only recognise it when you attempt your next fire action.",
+    "OPTICS DE-ADJUSTED": "Weapon now has a -2 on all aimed shots until optics are realigned, taking one action.",
+    "OVERHEATING": "Barrel overheats. Weapon cannot be used for one BR or obtain 1d3 damage and a burn with at a 25% chance per firing action in the next BR.",
+    "FLICKED SAFETY ON": "Weapons safety accidentally switched on, taking no actions to fix. Pass a Foc check to recognise this immediatly, otherwise only recognise ti when you attempt your next fire action.",
+    "TRIGGER JAM": "Trigger jams in the firing position, taking one action to fix. If the last shot was fired in automatic mode, the weapon empties itself and you have to pass a Crd check, otherwise you hit a random creature within 20m and a 90deg arc infront of you.",
+    "MAG DROP": "You accidentally release the mag. Empty the weapon. Picking the mag up takes 1 action in addition to usual reload cost.",
+    "RANDOM DISCHARGE": "At the beginning of the next BR your weapon discharges randomly at your last selected firing mode. Pass a Crd check, otherwise hit a random creature within 20m and a 90deg arc infront of you. At FL < -3 you hit yourself in the foot.",
+    "BROKEN GRIP": "Parts of the grips broke, both leading attributes of your weapon increase by 2 until fixed, taking 5min.",
+    "BARREL MISALIGNED": "Weapon now has a -1 on all shots until barrel is realigned, taking two actions.",
+    "BARRAL DAMAGED": "Barrel tip fractures. All shots now deal 1 less damage untill barrel is changed (this can stack).",
+    "CATASTROPHIC FAILURE": "The weapon suffers a critical failure, becoming unusable until repaired (taking an hour)."
+  },
   "DIALOG": {
     "CANCEL": "Cancel",
     "CHEAT": "Cheat",
@@ -332,6 +346,7 @@
   "COAGULATION": "Coagulation",
   "CRITFAILURE": "Critical Failure",
   "CRITSUCCESS": "Critical Success",
+  "COMBAT CHECK": "Combat check",
   "COMBAT TAB": "Combat",
   "CONDITIONING": "Conditioning",
   "CONSUMED": "Consumed",
@@ -353,6 +368,7 @@
   "ENCUMBRANCE": "Encumbrance",
   "EXPLANATIONS": "Explanations",
   "FAILURE": "Failure",
+  "FAILURE CHECK FAILED": "Confirmed critical failure",
   "FALL DAMAGE": "Fall damage",
   "FALLING": "Falling",
   "FEMALE": "Female",

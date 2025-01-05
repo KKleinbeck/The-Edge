@@ -21,6 +21,22 @@ export default class DiceServer {
     }
     this.interpretationParams.attribute.qualityStep = 2;
     this.interpretationParams.proficiency.qualityStep = 4;
+    this.interpretationParams.combat.critFailTable = [
+      {name: "Spontaneous discharge", frequency: 3}, {name: "Jam", frequency: 5},
+      {name: "Optics de-adjusted", frequency: 5}, {name: "Overheating", frequency: 5},
+      {name: "Flicked safety on", frequency: 5}, {name: "Trigger jam", frequency: 5},
+      {name: "Mag drop", frequency: 5}, {name: "Random discharge", frequency: 5},
+      {name: "Broken grip", frequency: 5}, {name: "Barrel misaligned", frequency: 5},
+      {name: "Barrel damaged", frequency: 2}, {name: "Catastrophic failure", frequency: 1}
+    ]
+  }
+
+  _selectFromFailTable(tableBasis) {
+    let table = [];
+    for (const elem of tableBasis) {
+      for (let i = 0; i < elem.frequency; ++i) table.push(elem.name);
+    }
+    return table.random();
   }
 
   _selectVantageOutcome(vantage, roll1, roll2) {
@@ -58,8 +74,8 @@ export default class DiceServer {
         break;
       
       case "combat":
-        let damage = []
-        let crits = []
+        let damage = [];
+        let crits = [];
         for (let i = 0; i < details.dices; ++i) {
           if (!roll.hits[i]) continue;
 
@@ -70,7 +86,16 @@ export default class DiceServer {
           } else crits.push(false)
         }
 
-        return [crits, damage, roll.diceResults, roll.hits];
+        let failEvents = [];
+        const nFailures = roll.diceResults.filter(x => interpretationParams.critFail.includes(x));
+        if (nFailures.length >= 0.5 || nFailures.length == roll.diceResults.length) {
+          const failCheck = (await this._genericRoll("1d20")) <= details.critThreshold;
+          if (!failCheck) {
+            failEvents.push(this._selectFromFailTable(interpretationParams.critFailTable));
+          }
+        }
+
+        return [crits, damage, roll.diceResults, roll.hits, failEvents];
     }
 
     let interpretation = {outcome: outcome, quality: basicQuality};
@@ -121,7 +146,7 @@ export default class DiceServer {
     return {diceResults: diceResults, netOutcome: netOutcome};
   }
 
-  async attackCheck(dices, threshold, vantage, damageDice) {
+  async attackCheck(dices, threshold, vantage, damageDice, critThreshold) {
     let roll = await this._attackRoll(dices, threshold);
 
     if (vantage == "Advantage" || vantage == "Disadvantage") {
@@ -129,7 +154,9 @@ export default class DiceServer {
       roll = this._selectVantageOutcome(vantage, roll, roll2)
     }
 
-    return this._interpretCheck("combat", roll, {damageDice: damageDice, dices: dices});
+    return this._interpretCheck("combat", roll,
+      {damageDice: damageDice, dices: dices, critThreshold: critThreshold}
+    );
   }
 
   async _attackRoll(dices, threshold) {
