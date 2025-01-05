@@ -357,7 +357,7 @@ export class TheEdgeActorSheet extends ActorSheet {
         }
         item.delete();
         this._render();
-        break
+        break;
       case "toggle-equip":
         if (item.type == "Armour" && item.system.layer == "Outer") {
           const attachableArmour = this._findAttachableArmour(item);
@@ -419,6 +419,7 @@ export class TheEdgeActorSheet extends ActorSheet {
     const button = event.currentTarget;
     const skillElement = button.closest(".skill");
     const skillID = skillElement?.dataset.itemId;
+    const skill = this.actor.items.get(skillID);
 
     // Handle different actions
     switch ( button.dataset.action ) {
@@ -428,9 +429,12 @@ export class TheEdgeActorSheet extends ActorSheet {
         return this.actor.skillLevelDecrease(skillID);
       case "delete":
         return this.actor.deleteSkill(skillID);
-
+      case "post":
+        ChatServer.transmitEvent("Post Skill",
+          {name: skill.name, type: skill.type, description: skill.system.description}
+        );
+        break;
       case "roll":
-        const skill = this.actor.items.get(skillID);
         if (skill.type == "Medicalskill") {
           DialogProficiency.start({proficiency: skill.system.basis, actor: this.actor})
         }

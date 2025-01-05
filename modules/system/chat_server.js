@@ -68,6 +68,10 @@ export default class ChatServer {
           {check: details.check, text: text}
         );
         break;
+      
+      case "POST SKILL":
+        html = await renderTemplate("systems/the_edge/templates/chat/skill-description.html", details);
+        break;
     }
     ChatMessage.create(this._chatDataSetup(html, "roll"))
   }

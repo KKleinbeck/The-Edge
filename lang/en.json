@@ -228,7 +228,11 @@
     "HEAD": "Head",
     "LEGSLEFT": "Left leg",
     "LEGSRIGHT": "Right leg",
-    "TORSO": "Torso"
+    "TORSO": "Torso",
+
+    "SKILL": "General Skill",
+    "COMBATSKILL": "Combat Skill",
+    "MEDICALSKILL": "Medical Skill"
   },
   "HERO TOKEN": {
     "ATTRIBUTE": "{name} used a hero token to improve an ability check.",
