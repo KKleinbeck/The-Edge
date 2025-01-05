@@ -21,7 +21,7 @@ Hooks.once("init", async function() {
     THE_EDGE.effect_map.proficiencies.all.push(...Object.keys(proficiencies))
   }
 
-  // Useful helper to get random element from array
+  // Useful helpers
   Array.prototype.random = function () {
     return this[Math.floor((Math.random()*this.length))];
   }

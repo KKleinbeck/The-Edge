@@ -94,4 +94,6 @@ export default class Aux {
     }
     return cost[level - 1];
   }
+
+  static randomInt(min, max) { return min + Math.floor(Math.random() * (max - min + 1)); }
 }

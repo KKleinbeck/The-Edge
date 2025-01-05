@@ -530,34 +530,38 @@ export class TheEdgeActor extends Actor {
       let bt = THE_EDGE.bleeding_threshold[damageType]
       let bleeding = Math.floor(damage / bt) + ((damage % bt) / bt < Math.random())
 
-      generateNewWound(name, location, locationCoord, damage, bleeding);
+      this.generateNewWound(name, location, locationCoord, damage, bleeding);
     }
 
     if(this.sheet.rendered) this.sheet._render();
   }
 
   async applyFallDamage(height, location) {
-    let n = Math.floor(height / 2);
-    let damageRoll = `${n*n}d4+${n*n+n}`;
-    let damage = (await DiceServer.genericRoll(damageRoll));
-    this.applyDamage(
-      damage, false, "fall",
-      LocalisationServer.localise("falling") + ` ${height}m`,
-      location
-    );
+    const n = Math.floor(height / 2);
+    const damageRoll = `${n*n}d4+${n*n+n}`;
+    const damage = (await DiceServer.genericRoll(damageRoll));
+    await this._applyImpactOrFallDamage(n, damage, "fall", `${height}m`, location)
     ChatServer.transmitEvent("fall", {actor: this.name, height: height, damage: damage, damageRoll: damageRoll});
   }
 
   async applyImpactDamage(speed, location) {
-    let n = Math.floor(speed / 3);
-    let damageRoll = `${n}d8+${n*n}`;
-    let damage = (await DiceServer.genericRoll(damageRoll));
-    this.applyDamage(
-      damage, false, "impact",
-      LocalisationServer.localise("impacting at") + ` ${speed}m/s`,
-      location
-    );
+    const n = Math.floor(speed / 3);
+    const damageRoll = `${n}d8+${n*n}`;
+    const damage = (await DiceServer.genericRoll(damageRoll));
+    await this._applyImpactOrFallDamage(n, damage, "impact", `${speed}m/s`, location)
     ChatServer.transmitEvent("impact", {actor: this.name, speed: speed, damage: damage, damageRoll: damageRoll});
+  }
+
+  async _applyImpactOrFallDamage(n, damage, name, description, location = undefined) {
+    const nWounds = Aux.randomInt(1, n);
+    for (let i = 0; i < nWounds; i++) {
+      this.applyDamage(
+        Math.min(damage, Math.ceil(damage / nWounds)), false, name,
+        LocalisationServer.localise(`${name} damage titel`) + " " + description,
+        location
+      );
+      damage -= Math.ceil(damage / nWounds)
+    }
   }
 
   async generateNewWound(name, location, locationCoord, damage, bleeding) {

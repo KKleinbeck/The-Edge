@@ -40,7 +40,6 @@ export default class DiceServer {
   }
 
   _selectVantageOutcome(vantage, roll1, roll2) {
-    console.log("Vantaging")
     if ( (vantage == "Advantage" && roll1.netOutcome > roll2.netOutcome) ||
           (vantage == "Disadvantage" && roll1.netOutcome < roll2.netOutcome) ) {
       return roll1;

@@ -219,7 +219,6 @@ export class TheEdgeActorSheet extends ActorSheet {
 
   async _applyDamage(ev) {
     const location = ev.currentTarget.dataset.location; // HTMLElement
-    console.log(location)
 
     DialogDamage.start({actor: this.actor, location: location});
   }
