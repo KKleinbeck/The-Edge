@@ -530,12 +530,7 @@ export class TheEdgeActor extends Actor {
       let bt = THE_EDGE.bleeding_threshold[damageType]
       let bleeding = Math.floor(damage / bt) + ((damage % bt) / bt < Math.random())
 
-      const cls = getDocumentClass("Item");
-      let wound = await cls.create({name: name, type: "Wounds"}, {parent: this});
-      wound.update({
-        "system.bodyPart": location, "system.coordinates": locationCoord,
-        "system.damage": damage, "system.bleeding": bleeding
-      });
+      generateNewWound(name, location, locationCoord, damage, bleeding);
     }
 
     if(this.sheet.rendered) this.sheet._render();
@@ -563,6 +558,15 @@ export class TheEdgeActor extends Actor {
       location
     );
     ChatServer.transmitEvent("impact", {actor: this.name, speed: speed, damage: damage, damageRoll: damageRoll});
+  }
+
+  async generateNewWound(name, location, locationCoord, damage, bleeding) {
+    const cls = getDocumentClass("Item");
+    let wound = await cls.create({name: name, type: "Wounds"}, {parent: this});
+    wound.update({
+      "system.bodyPart": location, "system.coordinates": locationCoord,
+      "system.damage": damage, "system.bleeding": bleeding
+    });
   }
 
   attachOuterArmour(armourId, shellId, tokenId) {

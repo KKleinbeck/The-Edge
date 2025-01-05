@@ -20,6 +20,15 @@ export default class DialogDamage extends Dialog{
         label: LocalisationServer.localise("impact damage"),
         callback: async (html) => {DialogFallAndImpact.start(checkData, "impact")}
       },
+      wound: {
+        label: LocalisationServer.localise("General wound"),
+        callback: async (html) => {
+          let [location, locationCoord] = checkData.actor._generateLocation(false, checkData.location);
+          checkData.actor.generateNewWound(
+            LocalisationServer.localise("New Wound"), location, locationCoord, 0, 0
+          ) 
+        }
+      },
       cancel: {label: LocalisationServer.localise("cancel", "dialog")}
     }
 
