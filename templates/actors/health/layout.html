@@ -73,7 +73,14 @@
       <div style="columns: 2;">
         {{#each helpers.bodyParts as |bPart|}}
           <div style="padding-bottom: 10px; break-inside: avoid-column; min-width: 200px;">
-            <b>{{genName bPart}}</b><hr />
+            <div style="display: flex;">
+              <b>{{genName bPart}}</b>
+              &emsp;
+              <div class="apply-damage" style="display: flex; white-space: nowrap; gap: 5px; cursor: pointer;" data-location={{bPart}}>
+                <a><i class="fas fa-heart-circle-minus"></i></a>
+              </div>
+            </div>
+            <hr />
             {{#each ../data.items as |item id|}}
               {{#if (checkEqual item.type "Wounds")}}
                 {{#if (checkInstance bPart item.system.bodyPart)}}

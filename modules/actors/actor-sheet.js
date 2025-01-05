@@ -83,26 +83,26 @@ export class TheEdgeActorSheet extends ActorSheet {
     html.find(".hero-token-spent").click(_ => this.actor.regenerateHeroToken());
 
     // Language skills
-    html.find(".skill-control").click(ev => this._onSkillControl(ev))
+    html.find(".skill-control").click(ev => this._onSkillControl(ev));
 
     // Attributes
     html.find(".attr-d20").click(ev => this._rollAttr(ev));
     html.find(".advance-attr").click(ev => this._advanceSrv(ev, "attr"));
 
     // Proficiencies
-    html.find(".prof-d20").click(ev => this._rollProficiency(ev))
+    html.find(".prof-d20").click(ev => this._rollProficiency(ev));
     html.find(".advance-prof").click(ev => this._advanceSrv(ev, "prof"));
 
     // Weapon Proficiencies
-    html.find(".weapon-d20").click(ev => this._rollAttack(ev))
-    html.find(".reload").click(ev => this._reload(ev))
+    html.find(".weapon-d20").click(ev => this._rollAttack(ev));
+    html.find(".reload").click(ev => this._reload(ev));
     html.find(".advance-combat").click(ev => this._advanceSrv(ev, "combat"));
     html.find(".advance-combat-general").click(ev => this._advanceSrv(ev, "combat-general"));
 
     // Health
-    html.find(".short-rest").click(_ => DialogRest.start({actor: this.actor, type: "short rest"}))
-    html.find(".long-rest").click(_ => DialogRest.start({actor: this.actor, type: "long rest"}))
-    html.find(".apply-damage").click(_ => DialogDamage.start({actor: this.actor}))
+    html.find(".short-rest").click(_ => DialogRest.start({actor: this.actor, type: "short rest"}));
+    html.find(".long-rest").click(_ => DialogRest.start({actor: this.actor, type: "long rest"}));
+    html.find(".apply-damage").click(ev => this._applyDamage(ev));
   }
 
   async _advanceSrv(ev, quantity) {
@@ -215,6 +215,13 @@ export class TheEdgeActorSheet extends ActorSheet {
       weapon: weapon,
       ammunition: ammunition
     })
+  }
+
+  async _applyDamage(ev) {
+    const location = ev.currentTarget.dataset.location; // HTMLElement
+    console.log(location)
+
+    DialogDamage.start({actor: this.actor, location: location});
   }
 
   async _onDropItem(event, data) {

@@ -502,8 +502,8 @@ export class TheEdgeActor extends Actor {
     return `1d${Math.floor((str+crd)/4)}+${Math.floor(str / 4)}`;
   }
   
-  async applyDamage(damage, crit, damageType, name) {
-    let [location, locationCoord] = this._generateLocation(crit)
+  async applyDamage(damage, crit, damageType, name, givenLocation = undefined) {
+    let [location, locationCoord] = this._generateLocation(crit, givenLocation)
 
     for (const armour of this.itemTypes["Armour"]) {
       if(!armour.system.equipped || armour.system.layer == "Outer") continue;
@@ -541,19 +541,27 @@ export class TheEdgeActor extends Actor {
     if(this.sheet.rendered) this.sheet._render();
   }
 
-  async applyFallDamage(height) {
+  async applyFallDamage(height, location) {
     let n = Math.floor(height / 2);
     let damageRoll = `${n*n}d4+${n*n+n}`;
     let damage = (await DiceServer.genericRoll(damageRoll));
-    this.applyDamage(damage, false, "fall", LocalisationServer.localise("falling") + ` ${height}m`);
+    this.applyDamage(
+      damage, false, "fall",
+      LocalisationServer.localise("falling") + ` ${height}m`,
+      location
+    );
     ChatServer.transmitEvent("fall", {actor: this.name, height: height, damage: damage, damageRoll: damageRoll});
   }
 
-  async applyImpactDamage(speed) {
+  async applyImpactDamage(speed, location) {
     let n = Math.floor(speed / 3);
     let damageRoll = `${n}d8+${n*n}`;
     let damage = (await DiceServer.genericRoll(damageRoll));
-    this.applyDamage(damage, false, "impact", LocalisationServer.localise("impacting at") + ` ${speed}m/s`);
+    this.applyDamage(
+      damage, false, "impact",
+      LocalisationServer.localise("impacting at") + ` ${speed}m/s`,
+      location
+    );
     ChatServer.transmitEvent("impact", {actor: this.name, speed: speed, damage: damage, damageRoll: damageRoll});
   }
 
@@ -573,14 +581,20 @@ export class TheEdgeActor extends Actor {
     armour.update({"system.attachments": attachments});
   }
 
-  _generateLocation(crit) {
+  _generateLocation(crit, givenLocation = undefined) {
     let locationDescription = "";
-    if (crit) locationDescription = "Head";
-    else {
-      let rand = Math.random();
-      if (rand < 0.15) locationDescription = "Legs" + ["Left", "Right"].random(); // 15%
-      else if (rand < 0.30) locationDescription = "Arms" + ["Left", "Right"].random(); // 30%
-      else locationDescription = "Torso"; // 65%, as p(crit) == 5%
+    if (givenLocation === undefined) {
+      if (crit) locationDescription = "Head";
+      else {
+        let rand = Math.random();
+        if (rand < 0.15) locationDescription = "Legs" + ["Left", "Right"].random(); // 15%
+        else if (rand < 0.30) locationDescription = "Arms" + ["Left", "Right"].random(); // 30%
+        else locationDescription = "Torso"; // 65%, as p(crit) == 5%
+      }
+    } else {
+      if (givenLocation == "Legs" || givenLocation == "Arms") {
+        locationDescription = givenLocation + ["Left", "Right"].random();
+      } else locationDescription = givenLocation;
     }
     let cordDescription = THE_EDGE.wounds_pixel_coords[this.system.sex][locationDescription]
     let [x0, y0] = cordDescription.coords[0];
