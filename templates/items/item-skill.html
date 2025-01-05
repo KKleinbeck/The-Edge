@@ -13,10 +13,24 @@
             <label for="maxLevel">Max {{genName "Level"}}</label><br />
             <input class="max-level" type="number" id="maxLevel" name="system.maxLevel" value="{{systemData.maxLevel}}"/>
           </div>
-          <div class="item-header-fields" style="min-width: 70%;">
-            <label for="cost">PH {{genName "Cost"}}</label><br />
-            <input type="text" id="cost" name="system.cost" value="{{systemData.cost}}"/>
-          </div>
+          {{#if (checkIn "basis" systemData)}}
+            <div class="item-header-fields">
+              <label for="cost">PH {{genName "Cost"}}</label><br />
+              <input type="text" id="cost" name="system.cost" value="{{systemData.cost}}"/>
+            </div>
+            <div class="item-header-fields">
+              <label for="basis">{{genName "Uses"}}</label><br />
+              <select class="selection-box" name="system.basis" id="basis" style="min-height: 26px;">
+                <option value="Medicine" {{#if (checkEqual "Medicine" systemData.basis)}}selected{{/if}}>{{proficiencyName "Medicine"}}</option>
+                <option value="First Aid" {{#if (checkEqual "First Aid" systemData.basis)}}selected{{/if}}>{{proficiencyName "First Aid"}}</option>
+              </select>
+            </div>
+          {{else}}
+            <div class="item-header-fields" style="min-width: 70%;">
+              <label for="cost">PH {{genName "Cost"}}</label><br />
+              <input type="text" id="cost" name="system.cost" value="{{systemData.cost}}"/>
+            </div>
+          {{/if}}
         </div>
       </div>
     </div>

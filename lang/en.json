@@ -147,7 +147,9 @@
     "3": "while shouting,",
     "CHANGING HEART RATE": "changing heart rate by",
 
-    "LEAD ATTR COMBATICS": "Lead attr: Str & Crd"
+    "LEAD ATTR COMBATICS": "Lead attr: Str & Crd",
+
+    "MEDICAL SKILLS": "Medical skills"
   },
   "CRIT FAIL EVENT": {
     "SPONTANEOUS DISCHARGE": "Weapon Spontaneously discharges and fires again with the currently selected fire mode.<br />Perform a Crd check:<br /> - QL 0 - 3: The shot hits a random structure within a 90deg arc infront of you.<br /> - QL > 3: Perform another attack modified -8+QL against your last target. - FL < 0: Attack a random creature within 20m and a 90deg arch infront of you, with modifier -FL.",
@@ -434,6 +436,7 @@
   "TOTAL BLEEDING": "Total Bleeding",
   "TYPE": "Type",
   "USED": "Used",
+  "USES": "Uses",
   "USE HERO TOKEN": "Use Hero Token",
   "VALUE": "Value",
   "WEIGHT": "Weight",

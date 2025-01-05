@@ -245,6 +245,7 @@ export class TheEdgeActorSheet extends ActorSheet {
       
       case "Skill":
       case "Combatskill":
+      case "Medicalskill":
       case "Languageskill":
         let createNew = this.actor.learnSkill(item);
         return createNew ? super._onDropItem(event, data) : undefined;
@@ -420,6 +421,13 @@ export class TheEdgeActorSheet extends ActorSheet {
         return this.actor.skillLevelDecrease(skillID);
       case "delete":
         return this.actor.deleteSkill(skillID);
+
+      case "roll":
+        const skill = this.actor.items.get(skillID);
+        if (skill.type == "Medicalskill") {
+          DialogProficiency.start({proficiency: skill.system.basis, actor: this.actor})
+        }
+        break;
     }
   }
 
