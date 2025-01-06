@@ -102,7 +102,31 @@ export default class Aux {
     const cumSum = Object.values(objectWithOdds).map((sum = 0, n => sum += n));
     const threshold = this.randomInt(1, cumSum.last());
     const index = cumSum.findIndex(x => x >= threshold);
-    console.log(cumSum, threshold, index)
     return Object.keys(objectWithOdds)[index];
+  }
+
+  static generateWoundLocation(crit, sex, givenLocation = undefined) {
+    let locationDescription = "";
+    if (givenLocation === undefined) {
+      if (crit) locationDescription = "Head";
+      else {
+        let rand = Math.random();
+        if (rand < 0.15) locationDescription = "Legs" + ["Left", "Right"].random(); // 15%
+        else if (rand < 0.30) locationDescription = "Arms" + ["Left", "Right"].random(); // 30%
+        else locationDescription = "Torso"; // 65%, as p(crit) == 5%
+      }
+    } else {
+      if (givenLocation == "Legs" || givenLocation == "Arms") {
+        locationDescription = givenLocation + ["Left", "Right"].random();
+      } else locationDescription = givenLocation;
+    }
+    let cordDescription = THE_EDGE.wounds_pixel_coords[sex][locationDescription]
+    let [x0, y0] = cordDescription.coords[0];
+    let [x1, y1] = cordDescription.coords[1];
+    let r = cordDescription.radius * Math.random();
+    let [t, phi] = [Math.random(), 2 * Math.PI * Math.random()];
+    let x = (1-t)*x0 + t*x1 + r * Math.cos(phi);
+    let y = (1-t)*y0 + t*y1 + r * Math.sin(phi);
+    return [locationDescription, [x,y]];
   }
 }

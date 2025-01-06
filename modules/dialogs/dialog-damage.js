@@ -23,7 +23,9 @@ export default class DialogDamage extends Dialog{
       wound: {
         label: LocalisationServer.localise("General wound"),
         callback: async (html) => {
-          let [location, locationCoord] = checkData.actor._generateLocation(false, checkData.location);
+          let [location, locationCoord] = Aux.generateWoundLocation(
+            false, checkData.actor.system.sex, checkData.location
+          );
           checkData.actor.generateNewWound(
             LocalisationServer.localise("New Wound"), location, locationCoord, 0, 0, "kinetic"
           ) 

@@ -390,6 +390,18 @@ class ItemSheetWounds extends TheEdgeItemSheet {
     context.helpers = {bodyParts: Object.keys(THE_EDGE.wounds_pixel_coords.female)};
     return context;
   }
+
+  activateListeners(html) {
+    super.activateListeners(html)
+    html.find(".wound-location").on("change", ev => this._onLocationChange(ev));
+  }
+
+  async _onLocationChange(event) {
+    const newLocation = $(event.currentTarget).val();
+    await this.item.update({"system.coordinates": Aux.generateWoundLocation(
+      false, this.item.actor?.system.sex || "female", newLocation
+    )[1]});
+  }
 }
 
 class ItemSheetEffect extends ItemSheetSkill {

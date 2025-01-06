@@ -96,7 +96,7 @@
                     </div>
                 </div>
             </div>
-            <div style="gap: 15px; display: flex; flex-flow: nowrap;">
+            <div style="display: flex; flex-flow: nowrap; justify-content: space-between;">
                 <div class="checkbox-container">
                     <input type="checkbox" id="hasEffect" name="system.hasEffect" {{#if systemData.hasEffect}}checked{{/if}} />
                     <label for="hasEffect">{{itemName "toggle effects"}}</label>
@@ -104,6 +104,10 @@
                 <div class="checkbox-container">
                     <input type="checkbox" id="is-elemental" name="system.isElemental" {{#if systemData.isElemental}}checked{{/if}} />
                     <label for="is-elemental">{{combatName "Elemental"}}</label>
+                </div>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="multiple-targets" name="system.multipleTargets" {{#if systemData.multipleTargets}}checked{{/if}} />
+                    <label for="multiple-targets" title="{{combatName 'Multi target help'}}">{{combatName "multiple targets"}}</label>
                 </div>
             </div><hr />
             <!-- Range Chart -->

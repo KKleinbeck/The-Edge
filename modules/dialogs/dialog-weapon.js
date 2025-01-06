@@ -30,7 +30,7 @@ export default class DialogWeapon extends Dialog{
             checkData.fireModes[modificators.fireMode].dices,
             ammuCapa.max - ammuCapa.used
           )
-          // checkData.ammunition.update({"system.capacity.used": ammuCapa.used + dices})
+          checkData.ammunition.update({"system.capacity.used": ammuCapa.used + dices})
 
           // Roll the attack
           foundry.utils.mergeObject(modificators, {dicesEff: dices})

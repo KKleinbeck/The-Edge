@@ -165,6 +165,14 @@ export class TheEdgeActorSheet extends ActorSheet {
     let sceneID = game.user.viewedScene;
 
     const weapon = this.actor.items.get(weaponID)
+    if (targetIDs.length > 1 && !(weapon.system.multipleTargets)) {
+      const msg = LocalisationServer.parsedLocalisation(
+        "Too many targets", "Notifications", {weapon: weapon.name, max: 1}
+      )
+      ui.notifications.notify(msg)
+      return undefined;
+    }
+
     if (weapon.system.ammunitionID === "") {
       let msg = LocalisationServer.localise("Ammu missing", "Notifications")
       ui.notifications.notify(msg)

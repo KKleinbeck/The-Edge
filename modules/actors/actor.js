@@ -503,7 +503,7 @@ export class TheEdgeActor extends Actor {
   }
   
   async applyDamage(damage, crit, damageType, name, givenLocation = undefined) {
-    let [location, locationCoord] = this._generateLocation(crit, givenLocation)
+    let [location, locationCoord] = Aux.generateWoundLocation(crit, this.system.sex, givenLocation)
 
     for (const armour of this.itemTypes["Armour"]) {
       if(!armour.system.equipped || armour.system.layer == "Outer") continue;
@@ -582,20 +582,20 @@ export class TheEdgeActor extends Actor {
     let odds = undefined;
     switch (damageType) {
       case "energy":
-        odds = {"graze": 5, "light burn": damage, "strong burn": Math.max(0, Math.ceil(damage*(damage - 9)/10))};
+        odds = {"abrasion": 5, "light burn": damage, "strong burn": Math.max(0, Math.ceil(damage*(damage - 9)/10))};
         break;
       case "kinetic":
-        odds = {"graze": 5, "laceration": damage, "fracture":    Math.max(0, Math.ceil(damage*(damage - 9)/10))};
+        odds = {"abrasion": 5, "laceration": damage, "fracture":    Math.max(0, Math.ceil(damage*(damage - 9)/10))};
         break;
       case "elemental":
         odds = {"light burn": damage, "strong burn": Math.max(0, damage*(damage - 5)/20)};
         break;
       case "fall":
       case "impact":
-        odds = {"graze": 10, "laceration": Math.ceil(damage/2), "fracture": Math.max(0, Math.ceil(damage*(damage - 9)/10))};
+        odds = {"abrasion": 10, "laceration": Math.ceil(damage/2), "fracture": Math.max(0, Math.ceil(damage*(damage - 9)/10))};
         break;
       case "HandToHand":
-        odds = {"graze": 10, "fracture": Math.max(0, Math.ceil(damage*(damage - 9)/10))};
+        odds = {"abrasion": 10, "fracture": Math.max(0, Math.ceil(damage*(damage - 9)/10))};
     }
     return Aux.pickFromOdds(odds);
   }
@@ -614,31 +614,6 @@ export class TheEdgeActor extends Actor {
     const attachments = armour.system.attachments;
     attachments.push({actorId: this.id, tokenId, shell: shell});
     armour.update({"system.attachments": attachments});
-  }
-
-  _generateLocation(crit, givenLocation = undefined) {
-    let locationDescription = "";
-    if (givenLocation === undefined) {
-      if (crit) locationDescription = "Head";
-      else {
-        let rand = Math.random();
-        if (rand < 0.15) locationDescription = "Legs" + ["Left", "Right"].random(); // 15%
-        else if (rand < 0.30) locationDescription = "Arms" + ["Left", "Right"].random(); // 30%
-        else locationDescription = "Torso"; // 65%, as p(crit) == 5%
-      }
-    } else {
-      if (givenLocation == "Legs" || givenLocation == "Arms") {
-        locationDescription = givenLocation + ["Left", "Right"].random();
-      } else locationDescription = givenLocation;
-    }
-    let cordDescription = THE_EDGE.wounds_pixel_coords[this.system.sex][locationDescription]
-    let [x0, y0] = cordDescription.coords[0];
-    let [x1, y1] = cordDescription.coords[1];
-    let r = cordDescription.radius * Math.random();
-    let [t, phi] = [Math.random(), 2 * Math.PI * Math.random()];
-    let x = (1-t)*x0 + t*x1 + r * Math.cos(phi);
-    let y = (1-t)*y0 + t*y1 + r * Math.sin(phi);
-    return [locationDescription, [x,y]];
   }
 
   async applyBloodLoss() {
