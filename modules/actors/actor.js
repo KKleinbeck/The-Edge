@@ -573,8 +573,7 @@ export class TheEdgeActor extends Actor {
     const type = this._generateWoundType(damage, damageType);
     wound.update({
       "system.bodyPart": location, "system.coordinates": locationCoord,
-      "system.damage": damage, "system.bleeding": bleeding, "system.type": type,
-      "system.status": (bleeding == 0) ? "sealed": "open"
+      "system.damage": damage, "system.bleeding": bleeding, "system.type": type
     });
   }
 

@@ -219,14 +219,12 @@
     "GENERIC": "Generic",
     "USE": "Use",
 
-    "COAGULATES": "Coagulates",
-    "COAGULATED": "Coagulated",
     "HEALS": "Heals",
     "HEALED": "Healed damage",
-    "OPEN": "Open",
     "SEALS": "Seals",
     "SEALED": "Sealed",
     "STOPPED BLEEDING": "Stopped bleeding",
+    "TREATABLE": "Treatable",
 
     "ROLL DAMAGE": "Roll damage",
 

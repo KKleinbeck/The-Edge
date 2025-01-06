@@ -306,7 +306,7 @@
     "effects": []
   },
   "Credits": {"isChid": true, "value": 0},
-  "Wounds": {"damage": 0, "bleeding": 0, "bodyPart": "", "coordinates": [0, 0], "status": "open", "type": "abrasion"},
+  "Wounds": {"damage": 0, "bleeding": 0, "bodyPart": "", "coordinates": [0, 0], "status": "treatable", "type": "abrasion"},
   "Effect": {"templates": ["description"], "effects": [{"modifier": "", "value": 0}]}
 }
 }

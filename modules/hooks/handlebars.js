@@ -89,12 +89,12 @@ export default function() {
       let coords = details.coordinates;
       let icon = undefined
       switch (details.status) {
-        case "open":
+        case "treatable":
           icon = "fa-regular fa-droplet";
           break;
-        case "coagulated":
-          icon = "fa-regular fa-droplet-slash";
-          break;
+        // case "coagulated":
+        //   icon = "fa-regular fa-droplet-slash";
+        //   break;
         case "sealed":
           icon = "fa-light fa-bandage";
           break;
@@ -106,10 +106,10 @@ export default function() {
     },
     getWoundIcon: (status) => {
       switch (status) {
-        case "open":
+        case "treatable":
           return "fa-droplet";
-        case "coagulated":
-          return "fa-droplet-slash";
+        // case "coagulated":
+        //   return "fa-droplet-slash";
         case "sealed":
           return "fa-bandage";
       }
