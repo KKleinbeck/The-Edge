@@ -149,8 +149,8 @@
     "templates": ["attributes", "proficiencies", "weapons"],
     "biography": "", "notes": "",
     "health": {
-      "value": 20,
-      "baseline_max": 20,
+      "value": 100,
+      "baseline_max": 100,
       "max": 0,
       "status": 0
     },
@@ -305,7 +305,7 @@
     "effects": []
   },
   "Credits": {"isChid": true, "value": 0},
-  "Wounds": {"damage": 0, "bleeding": 0, "bodyPart": "", "coordinates": [0, 0], "status": "open"},
+  "Wounds": {"damage": 0, "bleeding": 0, "bodyPart": "", "coordinates": [0, 0], "status": "open", "type": ""},
   "Effect": {"templates": ["description"], "effects": [{"modifier": "", "value": 0}]}
 }
 }

@@ -96,4 +96,13 @@ export default class Aux {
   }
 
   static randomInt(min, max) { return min + Math.floor(Math.random() * (max - min + 1)); }
+
+  static pickFromOdds(objectWithOdds) {
+    let sum = 0;
+    const cumSum = Object.values(objectWithOdds).map((sum = 0, n => sum += n));
+    const threshold = this.randomInt(1, cumSum.last());
+    const index = cumSum.findIndex(x => x >= threshold);
+    console.log(cumSum, threshold, index)
+    return Object.keys(objectWithOdds)[index];
+  }
 }

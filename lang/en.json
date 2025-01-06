@@ -149,7 +149,12 @@
 
     "LEAD ATTR COMBATICS": "Lead attr: Str & Crd",
 
-    "MEDICAL SKILLS": "Medical skills"
+    "MEDICAL SKILLS": "Medical skills",
+    "GRAZE": "GRAZE",
+    "LACERATION": "Laceration",
+    "FRACTURE": "Fracture",
+    "LIGHT BURN": "Light Burn",
+    "STRONG BURN": "Strong Burn"
   },
   "CRIT FAIL EVENT": {
     "SPONTANEOUS DISCHARGE": "Weapon Spontaneously discharges and fires again with the currently selected fire mode.<br />Perform a Crd check:<br /> - QL 0 - 3: The shot hits a random structure within a 90deg arc infront of you.<br /> - QL > 3: Perform another attack modified -8+QL against your last target. - FL < 0: Attack a random creature within 20m and a 90deg arch infront of you, with modifier -FL.",
@@ -390,7 +395,7 @@
   "INITIATIVE": "Initiative",
   "INJURIES": "Injuries & Wounds",
   "IMPACT DAMAGE": "Impact damage",
-  "IMPACT DAMAGE TITEL": "Impacting at",
+  "IMPACT DAMAGE TITLE": "Impacting at",
   "IMPACT SPEED": "Impact speed",
   "ITEM EFFECTS": "Item effects",
   "ITEMS TAB": "Items",

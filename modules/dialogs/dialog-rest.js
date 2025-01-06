@@ -11,7 +11,7 @@ export default class DialogRest extends Dialog{
     const template = "systems/the_edge/templates/dialogs/rest.html";
     let html = await renderTemplate(template, checkData);
     let buttons = {
-      select: {
+      rest: {
         label: LocalisationServer.localise("rest", "dialog"),
         callback: async (html) => {
           switch (checkData.type) {
@@ -31,7 +31,7 @@ export default class DialogRest extends Dialog{
       title: LocalisationServer.localise(checkData.type),
       content: html,
       buttons: buttons,
-      default: "cancel"
+      default: "rest"
     }).render(true)
   }
 }

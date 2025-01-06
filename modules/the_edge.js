@@ -28,6 +28,9 @@ Hooks.once("init", async function() {
   Array.prototype.sum = function () {
     return this.reduce((a,b) => a+b,0);
   }
+  Array.prototype.last = function () {
+    return this[this.length - 1];
+  }
 
   game.the_edge = {
     TheEdgeActor,

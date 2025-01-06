@@ -155,8 +155,7 @@ export class TheEdgeActorSheet extends ActorSheet {
       DialogCombatics.start({
         name: LocalisationServer.localise("Hand to Hand combat", "combat"),
         actor: this.actor, threshold: this.actor._getCombaticsPL(),
-        damage: this.actor._getCombaticsDamage(), damageType: "kinetic",
-        targetIDs: targetIDs
+        damage: this.actor._getCombaticsDamage(), targetIDs: targetIDs
       })
       return undefined;
     }

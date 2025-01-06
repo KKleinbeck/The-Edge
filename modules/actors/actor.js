@@ -530,7 +530,7 @@ export class TheEdgeActor extends Actor {
       let bt = THE_EDGE.bleeding_threshold[damageType]
       let bleeding = Math.floor(damage / bt) + ((damage % bt) / bt < Math.random())
 
-      this.generateNewWound(name, location, locationCoord, damage, bleeding);
+      this.generateNewWound(name, location, locationCoord, damage, bleeding, damageType);
     }
 
     if(this.sheet.rendered) this.sheet._render();
@@ -553,24 +553,51 @@ export class TheEdgeActor extends Actor {
   }
 
   async _applyImpactOrFallDamage(n, damage, name, description, location = undefined) {
-    const nWounds = Aux.randomInt(1, n);
-    for (let i = 0; i < nWounds; i++) {
-      this.applyDamage(
-        Math.min(damage, Math.ceil(damage / nWounds)), false, name,
-        LocalisationServer.localise(`${name} damage titel`) + " " + description,
+    const nApproxWounds = Aux.randomInt(Math.ceil(n/3), n);
+    const approxIncr = Math.ceil(damage / nApproxWounds)
+    for (let i = 0; i < 2*nApproxWounds; i++) {
+      const nextDamage = Math.min(damage, Math.floor(approxIncr / 2) + Aux.randomInt(1, approxIncr));
+      await this.applyDamage(
+        nextDamage, false, name,
+        LocalisationServer.localise(`${name} damage title`) + " " + description,
         location
       );
-      damage -= Math.ceil(damage / nWounds)
+      damage -= Math.ceil(nextDamage);
+      if (damage <= 0) break;
     }
   }
 
-  async generateNewWound(name, location, locationCoord, damage, bleeding) {
+  async generateNewWound(name, location, locationCoord, damage, bleeding, damageType) {
     const cls = getDocumentClass("Item");
-    let wound = await cls.create({name: name, type: "Wounds"}, {parent: this});
+    const wound = await cls.create({name: name, type: "Wounds"}, {parent: this});
+    const type = this._generateWoundType(damage, damageType);
     wound.update({
       "system.bodyPart": location, "system.coordinates": locationCoord,
-      "system.damage": damage, "system.bleeding": bleeding
+      "system.damage": damage, "system.bleeding": bleeding, "system.type": type,
+      "system.status": (bleeding == 0) ? "sealed": "open"
     });
+  }
+
+  _generateWoundType(damage, damageType) {
+    let odds = undefined;
+    switch (damageType) {
+      case "energy":
+        odds = {"graze": 5, "light burn": damage, "strong burn": Math.max(0, Math.ceil(damage*(damage - 9)/10))};
+        break;
+      case "kinetic":
+        odds = {"graze": 5, "laceration": damage, "fracture":    Math.max(0, Math.ceil(damage*(damage - 9)/10))};
+        break;
+      case "elemental":
+        odds = {"light burn": damage, "strong burn": Math.max(0, damage*(damage - 5)/20)};
+        break;
+      case "fall":
+      case "impact":
+        odds = {"graze": 10, "laceration": Math.ceil(damage/2), "fracture": Math.max(0, Math.ceil(damage*(damage - 9)/10))};
+        break;
+      case "HandToHand":
+        odds = {"graze": 10, "fracture": Math.max(0, Math.ceil(damage*(damage - 9)/10))};
+    }
+    return Aux.pickFromOdds(odds);
   }
 
   attachOuterArmour(armourId, shellId, tokenId) {

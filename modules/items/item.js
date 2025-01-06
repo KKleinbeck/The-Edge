@@ -79,6 +79,9 @@ export class ArmourItemTheEdge extends TheEdgeItem {
       damage = await ArmourItemTheEdge.protect.call(shell, damage, damageType);
     }
 
+    if (damageType == "HandToHand" || damageType == "fall" || damageType == "impact") {
+      damage = "kinetic";
+    }
     let protection = this.system.protection[damageType];
     damage = Math.max(0, damage - protection.absorption);
 

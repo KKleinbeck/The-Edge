@@ -25,7 +25,7 @@ export default class DialogDamage extends Dialog{
         callback: async (html) => {
           let [location, locationCoord] = checkData.actor._generateLocation(false, checkData.location);
           checkData.actor.generateNewWound(
-            LocalisationServer.localise("New Wound"), location, locationCoord, 0, 0
+            LocalisationServer.localise("New Wound"), location, locationCoord, 0, 0, "kinetic"
           ) 
         }
       },

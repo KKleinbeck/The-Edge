@@ -33,13 +33,13 @@ export default class DialogCombatics extends Dialog{
           let details = {
             name: checkData.name, rolls: [{res: diceRes[0], hit: hits[0]}], damage: damage,
             actorId: checkData.actor.id, damageRoll: modificators.fireModeModifier.damage,
-            damageType: checkData.damageType, tempModificator: tempModificator
+            tempModificator: tempModificator
           };
           foundry.utils.mergeObject(details, modificators)
           for (const id of checkData.targetIDs) {
             details["targetId"] = id;
             let target = Aux.getActor(undefined, id);
-            await target.applyDamage(damage[0], crits[0], checkData.damageType, checkData.name)
+            await target.applyDamage(damage[0], crits[0], "HandToHand", checkData.name)
           }
           ChatServer.transmitEvent("CombaticsCheck", details);
         }
