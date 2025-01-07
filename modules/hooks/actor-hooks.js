@@ -9,7 +9,8 @@ export default function() {
       actor = Aux.getActor(actorData.token.actorId, actorData.token.id)
     }
     await actor._determineEncumbrance();
-    await actor._updateStatus();
     await actor._updateStrain();
+    await actor._updatePain();
+    await actor._updateStatus();
   })
 }

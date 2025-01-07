@@ -194,12 +194,12 @@ export class TheEdgeActor extends Actor {
       let effects = this.itemTypes["Effect"]
       let currentEncumbrance = effects?.find(
         obj => obj.name == LocalisationServer.localise("Encumbrance"))
-      str += -1 + currentEncumbrance?.system.effects?.reduce(
-        (a,b) => a - b.value, 0
+      str += currentEncumbrance?.system.effects?.reduce(
+        (a,b) => a - b.value, -1
       ) || 0 // -1 for the phyiscal proficiencies
       if (str <= 0) return false; // We can't possibly do sensible things yet
       else if (weight <= str) {
-        if (currentEncumbrance) await currentEncumbrance.delete();
+        this._deleteEffect("Encumbrance");
         return true; // exit without being encumbered
       }
       
@@ -649,23 +649,54 @@ export class TheEdgeActor extends Actor {
       {strains: strains, communication: communication, hrChange: hrChange})
   }
 
+  async _updatePain() {
+    const damageTotal = this.system.health.max - this.system.health.value;
+    const damageBodyParts = {arms: 0, legs: 0, torso: 0, head: 0};
+    const wounds = this.itemTypes["Wounds"];
+    for (const wound of wounds) {
+      switch (wound.system.bodyPart) {
+        case "Torso":
+          damageBodyParts.torso += wound.system.damage;
+          break;
+        case "Head":
+          damageBodyParts.head += wound.system.damage;
+          break;
+        case "LegsLeft":
+        case "LegsRight":
+          damageBodyParts.legs += wound.system.damage;
+          break;
+        case "ArmsLeft":
+        case "ArmsRight":
+          damageBodyParts.arms += wound.system.damage;
+      }
+    }
+
+    if (damageTotal < 15) { this._deleteEffect("Pain") }
+    else {
+      const currentPain = await this._getEffectOrCreate("Pain");
+      const n = Math.floor(damageTotal / 15);
+      await currentPain.update({"system.effects": [
+        {modifier: "Proficiencies.All", value: -n}
+      ]})
+    }
+
+    for (const [bodyPart, damage] of Object.entries(damageBodyParts)) {
+      if (damage < 15) { this._deleteEffect(`Injuries ${bodyPart}`) }
+      else {
+        const injury = await this._getEffectOrCreate(`Injuries ${bodyPart}`);
+        const n = Math.floor(damage / 15);
+        await injury.update({"system.effects": [
+          {modifier: `system.${THE_EDGE.injury_map[bodyPart]}`, value: -n}
+        ]})
+      }
+    }
+  }
+
   async _updateStrain() {
-    let effects = this.itemTypes["Effect"]
-    let currentStrain = effects?.find(
-      obj => obj.name == LocalisationServer.localise("Strain"))
     let zone = this.getHRZone();
-    if (zone == 1) {
-      currentStrain?.delete()
-      return;
-    }
+    if (zone == 1) { this._deleteEffect("Strain") }
 
-    if (!currentStrain) {
-      const cls = getDocumentClass("Item");
-      currentStrain = await cls.create(
-        {name: LocalisationServer.localise("Strain"), type: "Effect"}, {parent: this}
-      );
-    }
-
+    let currentStrain = await this._getEffectOrCreate("Strain")
     if (zone == 2) {
       await currentStrain.update({"system.effects": [
         {modifier: "Weapons.All", value: -1},
@@ -680,6 +711,25 @@ export class TheEdgeActor extends Actor {
         {modifier: "Attributes.Mental", value: -1}
       ]})
     }
+  }
+
+  async _getEffectOrCreate(name) {
+    let effects = this.itemTypes["Effect"]
+    let effect = effects?.find(obj => obj.name == LocalisationServer.localise(name));
+
+    if (!effect) {
+      const cls = getDocumentClass("Item");
+      effect = await cls.create(
+        {name: LocalisationServer.localise(name), type: "Effect"}, {parent: this}
+      );
+    }
+    return effect;
+  }
+
+  _deleteEffect(name) {
+    let effects = this.itemTypes["Effect"]
+    let effect = effects?.find(obj => obj.name == LocalisationServer.localise(name));
+    if (effect) { effect.delete() }
   }
 
   getHRZone() {

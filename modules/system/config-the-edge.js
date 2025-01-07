@@ -31,6 +31,7 @@ THE_EDGE.bleeding_threshold = {
 }
 THE_EDGE.medicine_effects = ["heals", "seals"]
 THE_EDGE.wound_status = ["treatable", "sealed"]
+THE_EDGE.injury_map = {"torso": "end", "head": "foc", "arms": "crd", "legs": "spd"}
 
 THE_EDGE.effect_map = {
   attributes: {
