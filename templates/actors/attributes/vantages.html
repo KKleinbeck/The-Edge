@@ -8,10 +8,20 @@
             <li class="vantage item" data-item-id="{{item._id}}">
                 <h4 class="item-name item-control" data-action="edit" style="cursor: pointer; white-space: nowrap;">
                     {{item.name}}
-                    {{#if item.system.hasLevels}}
+                    {{#if (checkEqual item.system.maxLevel 1)}}
+                    {{else}}
                         ({{item.system.level}} / {{item.system.maxLevel}})
                     {{/if}}
                 </h4>
+                {{#if (checkEqual item.system.maxLevel 1)}}
+                {{else}}
+                    <div class="item-controls" style="padding-left: 5px;">
+                        <a class="item-control" data-action="decrease"><i class="fas fa-minus advance-fa"></i></a>
+                    </div>
+                    <div class="item-controls" style="padding-left: 5px;">
+                        <a class="item-control" data-action="increase"><i class="fas fa-plus advance-fa"></i></a>
+                    </div>
+                {{/if}}
                 <div class="item-controls" style="padding-left: 5px;">
                     <a class="item-control" title="{{ itemName 'Delete' }}" data-action="delete"><i class="fas fa-trash"></i></a>
                 </div>
@@ -24,14 +34,24 @@
   <hr />
   <div class="section-content vantage-list">
     {{#each data.items as |item id|}}
-        {{#if (checkEqual item.type "Aisadvantage")}}
+        {{#if (checkEqual item.type "Disadvantage")}}
             <li class="vantage item" data-item-id="{{item._id}}">
                 <h4 class="item-name item-control" data-action="edit" style="cursor: pointer; white-space: nowrap;">
                     {{item.name}}
-                    {{#if item.system.hasLevels}}
+                    {{#if (checkEqual item.system.maxLevel 1)}}
+                    {{else}}
                         ({{item.system.level}} / {{item.system.maxLevel}})
                     {{/if}}
                 </h4>
+                {{#if (checkEqual item.system.maxLevel 1)}}
+                {{else}}
+                    <div class="item-controls" style="padding-left: 5px;">
+                        <a class="item-control" data-action="decrease"><i class="fas fa-minus advance-fa"></i></a>
+                    </div>
+                    <div class="item-controls" style="padding-left: 5px;">
+                        <a class="item-control" data-action="increase"><i class="fas fa-plus advance-fa"></i></a>
+                    </div>
+                {{/if}}
                 <div class="item-controls" style="padding-left: 5px;">
                     <a class="item-control" title="{{ itemName 'Delete' }}" data-action="delete"><i class="fas fa-trash"></i></a>
                 </div>

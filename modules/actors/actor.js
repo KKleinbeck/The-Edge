@@ -470,6 +470,97 @@ export class TheEdgeActor extends Actor {
     skill.delete()
   }
 
+  async addOrCreateVantage(vantage) {
+    let AP = this.system.AdvantagePoints;
+
+    // Can be created or leveled?
+    if (vantage.type == "Advantage" && vantage.system.AP + AP.used > AP.max) {
+      let msg = LocalisationServer.parsedLocalisation(
+        "AP missing", "Notifications",
+        {name: vantage.name, need: vantage.system.AP, available: AP.max - AP.used}
+      )
+      ui.notifications.notify(msg);
+      return false;
+    } 
+    const existingCopy = this.findItem(vantage)
+    if (existingCopy && existingCopy.system.level >= existingCopy.system.maxLevel) {
+      let msg = LocalisationServer.parsedLocalisation(
+        "Max Level", "Notifications", {name: vantage.name}
+      )
+      ui.notifications.notify(msg)
+      return false;
+    } 
+
+    // Now create or level
+    let update = vantage.type == "Advantage" ?
+      {"system.AdvantagePoints.used": this.system.AdvantagePoints.used + vantage.system.AP} :
+      {"system.AdvantagePoints.max": this.system.AdvantagePoints.max + vantage.system.AP}
+
+    if (existingCopy) {
+      const sys = existingCopy.system
+      if (sys.hasLevels && sys.maxLevel > sys.level) {
+        await existingCopy.update({"system.level": sys.level + 1})
+      }
+    } else {
+      const cls = getDocumentClass("Item");
+      const newVantage = await cls.create({name: vantage.name, type: vantage.type}, {parent: this});
+      newVantage.update({"system": vantage.system});
+    }
+    await this.update(update);
+  }
+
+  decrementVantage(vantage) {
+    const AP = this.system.AdvantagePoints;
+    const itemAP = vantage.system.AP;
+    if (vantage.type == "Disadvantage" && AP.max - itemAP < AP.used) {
+      let msg = LocalisationServer.parsedLocalisation(
+        "AP missing decrement", "Notifications", {name: vantage.name, need: itemAP, available: AP.max - AP.used}
+      )
+      ui.notifications.notify(msg);
+      return undefined;
+    }
+
+    if (vantage.type == "Advantage") this.update({"system.AdvantagePoints.used": AP.used - itemAP});
+    else this.update({"system.AdvantagePoints.max": AP.max - itemAP});
+
+    if (vantage.system.level > 1) vantage.update({"system.level": vantage.system.level - 1});
+    else vantage.delete();
+  }
+
+  deleteVantage(vantage) {
+    const AP = this.system.AdvantagePoints;
+    const itemAP = (vantage.system.hasLevels ? vantage.system.level : 1) * vantage.system.AP;
+    if (vantage.type == "Disadvantage" && AP.max - itemAP < AP.used) {
+      let msg = LocalisationServer.parsedLocalisation(
+        "AP missing deletion", "Notifications", {name: vantage.name, need: itemAP, available: AP.max - AP.used}
+      )
+      ui.notifications.notify(msg);
+      return undefined;
+    }
+
+    if (vantage.type == "Advantage") this.update({"system.AdvantagePoints.used": AP.used - itemAP});
+    else this.update({"system.AdvantagePoints.max": AP.max - itemAP});
+    vantage.delete();
+  }
+
+  findItem(item) {
+    let _existingCopy = false
+    for (const _item of this.items) {
+      if (_item.name == item.name) {
+        if (_item.type == "Ammunition") {
+          let _cap = _item.system.capacity
+          let cap = item.system.capacity
+          if (_cap.max == cap.max && _cap.used == cap.used) {
+            _existingCopy = _item
+          }
+        } else {
+          _existingCopy = _item
+        }
+      }
+    }
+    return _existingCopy;
+  }
+
   _getWeaponPL(weaponID) {
     const weapon = this.items.get(weaponID).system
 

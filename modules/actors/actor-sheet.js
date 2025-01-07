@@ -243,18 +243,9 @@ export class TheEdgeActorSheet extends ActorSheet {
         return this._onDropStackableItem(event, data, item)
       
       case "Advantage":
-        let actorAP = this.actor.system.AdvantagePoints
-
-        if (item.system.AP + actorAP.used > actorAP.max) {
-          let msg = LocalisationServer.parsedLocalisation(
-            "AP missing", "Notifications",
-            {name: item.name, need: item.system.AP, available: actorAP.max - actorAP.used}
-          )
-          ui.notifications.notify(msg)
-          return false;
-        } // Now implicitly go into the disadvantage return
       case "Disadvantage":
-        return await this._createVantage(event, data, item)
+        this.actor.addOrCreateVantage(item);
+        break;
       
       case "Skill":
       case "Combatskill":
@@ -276,40 +267,7 @@ export class TheEdgeActorSheet extends ActorSheet {
   }
 
   _itemExists(item) {
-    let _existingCopy = false
-    for (const _item of this.actor.items) {
-      if (_item.name == item.name) {
-        if (_item.type == "Ammunition") {
-          let _cap = _item.system.capacity
-          let cap = item.system.capacity
-          if (_cap.max == cap.max && _cap.used == cap.used) {
-            _existingCopy = _item
-          }
-        } else {
-          _existingCopy = _item
-        }
-      }
-    }
-    return _existingCopy
-  }
-
-  async _createVantage(event, data, item) {
-    let update = item.type == "Advantage" ?
-      {"system.AdvantagePoints.used": this.actor.system.AdvantagePoints.used + item.system.AP} :
-      {"system.AdvantagePoints.max": this.actor.system.AdvantagePoints.max + item.system.AP}
-
-    let _existingCopy = this._itemExists(item)
-    if (_existingCopy) {
-      const sys = _existingCopy.system
-      if (sys.hasLevels && sys.maxLevel > sys.level) {
-        await this.actor.update(update)
-        await _existingCopy.update({"system.level": sys.level + 1})
-      }
-      return false
-    }
-
-    await this.actor.update(update)
-    return super._onDropItem(event, data)
+    return this.actor.findItem(item);
   }
 
   _onDropStackableItem(event, data, item) {
@@ -340,29 +298,15 @@ export class TheEdgeActorSheet extends ActorSheet {
         return clsEffect.create({name: LocalisationServer.localise("New effect", "item"), type: "Effect"}, {parent: this.actor});
       case "edit":
         return item.sheet.render(true);
+      case "increase":
+        this.actor.addOrCreateVantage(item);
+        break;
+      case "decrease":
+        this.actor.decrementVantage(item);
+        break;
       case "delete":
-        if (item.type == "Disadvantage") {
-          let actorAP = this.actor.system.AdvantagePoints
-          let itemAP = (item.system.hasLevels ? item.system.level : 1) * item.system.AP
-          if ((actorAP.max - itemAP < actorAP.used)) {
-            let msg = LocalisationServer.parsedLocalisation(
-              "AP missing", "Notifications",
-              {name: item.name, need: itemAP, available: actorAP.max - actorAP.used}
-            )
-            ui.notifications.notify(msg)
-            return undefined;
-          }
-
-          if (item.system.hasLevels) {
-            this.actor.update({"system.AdvantagePoints.max": actorAP.max - itemAP})
-          }
-        }
-        if (item.type == "Advantage") {
-          let itemAP = (item.system.hasLevels ? item.system.level : 1) * item.system.AP
-          this.actor.update({"system.AdvantagePoints.used": this.actor.system.AdvantagePoints.used - itemAP})
-        }
-        item.delete();
-        this._render();
+        if (item.type.includes("vantage")) this.actor.deleteVantage(item);
+        else item.delete();
         break;
       case "toggle-equip":
         if (item.type == "Armour" && item.system.layer == "Outer") {
