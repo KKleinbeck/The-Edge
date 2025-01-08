@@ -12,7 +12,6 @@ export default class DialogMedicine extends Dialog{
     let medicine = checkData.medicineItem.system.subtypes.medicine;
     let effect = medicine.effect;
     let wounds = checkData.wounds.filter(x => x.system.status != "sealed")
-    if (effect === "heals") wounds = wounds.filter(x => x.system.status == "open");
 
     const template = "systems/the_edge/templates/dialogs/medicine.html";
     let html = await renderTemplate(template, {"wounds": wounds});
@@ -35,7 +34,6 @@ export default class DialogMedicine extends Dialog{
           else {
             let woundStatus = wound.status;
             if (effect == "seals") woundStatus = "sealed";
-            else if (effect == "coagulates") woundStatus = "coagulated";
             wound.update({
               "system.damage": damage - healing, "system.bleeding": bleeding - coagulation,
               "system.status": woundStatus
@@ -48,15 +46,12 @@ export default class DialogMedicine extends Dialog{
             )
           })
 
-          if (checkData.medicineItem.system.quantity == 1) {
-            await checkData.medicineItem.delete()
-          } else checkData.medicineItem.update({"system.quantity": checkData.medicineItem.system.quantity - 1});
-
           ChatServer.transmitEvent("Medicine", {
             healing: healing, healingDice: medicine.healing,
             coagulation: coagulation, coagulationDice: medicine.coagulation,
             actor: checkData.actor.name, medicineName: checkData.medicineItem.name
           })
+          checkData.medicineItem.useOne();
         }
       },
       cancel: {

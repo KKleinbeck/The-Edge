@@ -329,7 +329,6 @@ export class TheEdgeActorSheet extends ActorSheet {
           case "medicine":
             let wounds = this.actor.itemTypes["Wounds"];
             DialogMedicine.start({medicineItem: item, wounds: wounds, actor: this.actor});
-            item.useOne();
             break;
 
           case "grenade":

@@ -1,4 +1,5 @@
 import LocalisationServer from "../system/localisation_server.js";
+import Aux from "../system/auxilliaries.js";
 
 export default class DialogDamage extends Dialog{
   static get defaultOptions() {
