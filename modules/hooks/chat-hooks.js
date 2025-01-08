@@ -123,6 +123,49 @@ export default function() {
     return [html, newDamage]
   }
 
+  // Hooks
+  Hooks.on("chatMessage", (chatLog, message, speaker) => {
+    const command = message.split(" ")[0];
+    const user = game.users.get(speaker.user);
+    
+    if (user.isGM) {
+      switch (command) {
+        case ">help":
+          let content = "Available commands:<br />";
+          content += "givePH amount PlayerName|[all]";
+          const d = new Dialog({
+            title: game.i18n.localize("Help"),
+            content: content,
+            buttons: {cancel: {label: game.i18n.localize("DIALOG.CANCEL")}},
+            default: "cancel"
+          })
+          d.options.width = 300;
+          d.render(true);
+          break;
+        
+        case ">givePH":
+          const pattern = /^>givePH\s*(\d+)\s*([a-zA-Z0-9 ]*)?$/;
+          const matchPH = pattern.exec(message);
+          if (matchPH === null) break;
+          const ph = +matchPH[1];
+          const name = matchPH[2] ? matchPH[2].toLowerCase() : "all";
+          if (name == "all") {
+            for (const actor of game.actors) {
+              if (actor.hasPlayerOwner) {
+                actor.update({"system.PracticeHours.max": actor.system.PracticeHours.max + ph});
+              }
+            }
+          } else {
+            const actor = game.actors.find(x => x.name.toLowerCase() == name);
+            if (!actor) break;
+
+            actor.update({"system.PracticeHours.max": actor.system.PracticeHours.max + ph});
+          }
+          break;
+      }
+    }
+  })
+
   Hooks.on("renderChatMessage", (chatMsgCls, html, message) => {
     // Hero token listeners
     new ContextMenu(html, ".rerollable", [{
