@@ -123,47 +123,53 @@ export default function() {
     return [html, newDamage]
   }
 
-  // Hooks
-  Hooks.on("chatMessage", (chatLog, message, speaker) => {
-    const command = message.split(" ")[0];
-    const user = game.users.get(speaker.user);
-    
-    if (user.isGM) {
-      switch (command) {
-        case ">help":
-          let content = "Available commands:<br />";
-          content += "givePH amount PlayerName|[all]";
-          const d = new Dialog({
-            title: game.i18n.localize("Help"),
-            content: content,
-            buttons: {cancel: {label: game.i18n.localize("DIALOG.CANCEL")}},
-            default: "cancel"
-          })
-          d.options.width = 300;
-          d.render(true);
-          break;
-        
-        case ">givePH":
-          const pattern = /^>givePH\s*(\d+)\s*([a-zA-Z0-9 ]*)?$/;
-          const matchPH = pattern.exec(message);
-          if (matchPH === null) break;
-          const ph = +matchPH[1];
-          const name = matchPH[2] ? matchPH[2].toLowerCase() : "all";
-          if (name == "all") {
-            for (const actor of game.actors) {
-              if (actor.hasPlayerOwner) {
-                actor.update({"system.PracticeHours.max": actor.system.PracticeHours.max + ph});
-              }
-            }
-          } else {
-            const actor = game.actors.find(x => x.name.toLowerCase() == name);
-            if (!actor) break;
-
-            actor.update({"system.PracticeHours.max": actor.system.PracticeHours.max + ph});
-          }
-          break;
-      }
+  const parseGivePH = (message, matches, chatData) => {
+    const user = game.users.get(chatData.user);
+    if (!user.isGM) {
+      const msg = LocalisationServer.localise("givePH permission", "chat")
+      ui.notifications.notify(msg)
+      return false;
     }
+
+    if (matches[2] === undefined) {
+      chatData.content = message + "<br />" + LocalisationServer.localise("givePH help", "chat");
+      return true;
+    }
+    const ph = +matches[2];
+    const name = matches[3] ? matches[3].toLowerCase() : "all";
+    const actors = [];
+    if (name == "all") {
+      for (const actor of game.actors) {
+        if (actor.hasPlayerOwner) {
+          actors.push(actor.name);
+          actor.update({"system.PracticeHours.max": actor.system.PracticeHours.max + ph});
+        }
+      }
+    } else {
+      const actor = game.actors.find(x => x.name.toLowerCase() == name);
+      if (!actor) {
+        chatData.content = message + "<br />" +
+          LocalisationServer.parsedLocalisation("missing actor", "chat", {actor: name});
+        return true;
+      }
+
+      actors.push(actor.name);
+      actor.update({"system.PracticeHours.max": actor.system.PracticeHours.max + ph});
+    }
+
+    chatData.content = `<h3>${LocalisationServer.localise("practice time", "chat")}</h3>` +
+      LocalisationServer.parsedLocalisation("Practice message", "chat", {actors: actors, phGain: ph})
+    return true;
+  }
+
+  // Hooks
+  Hooks.on("chatMessage", async (chatLog, message, chatData) => {
+    // costum chat commands
+    const regexPH = CONFIG.ui.chat.MESSAGE_PATTERNS.givePH;
+    const matchPH = regexPH.exec(message);
+    if (matchPH) { return parseGivePH(message, matchPH, chatData) }
+
+    return true;
   })
 
   Hooks.on("renderChatMessage", (chatMsgCls, html, message) => {

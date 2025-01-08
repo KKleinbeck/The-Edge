@@ -30,6 +30,15 @@
     "RES": "RES",
     "INT": "INT"
   },
+  "CHAT": {
+    "GIVEPH": "",
+    "GIVEPH HELP": "Use as: '/givePH amount CharacterName|[all]'",
+    "GIVEPH PERMISSION": "Only a GM can increase PH",
+    "LEVEL UP HELP": "Use '/givePH' to increase",
+    "MISSING ACTOR": "Cannot find any character with the name {actor}.",
+    "PRACTICE TIME": "Level up - Time for practice.",
+    "PRACTICE MESSAGE": "<b>{actors}</b>: finally stand down time after a cruesome meat grinder.<br />The next battle comes soon, but there is enough time for <b>{phGain}</b> hours of practice."
+  },
   "CHATNOTIFICATION": {
     "BLIND ROLL": "Blind roll",
     "DELETE": "Delete",

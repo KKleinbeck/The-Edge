@@ -43,7 +43,12 @@ Hooks.once("init", async function() {
   CONFIG.Item.documentClass = TheEdgeItem;
   CONFIG.Token.documentClass = TheEdgeTokenDocument;
   CONFIG.Token.objectClass = TheEdgeToken;
-  CONFIG.ChatMessage.template = "systems/the_edge/templates/chat/chat_message.html"
+
+  // Alter the default chat system
+  CONFIG.ChatMessage.template = "systems/the_edge/templates/chat/chat_message.html";
+  CONFIG.ui.chat.MESSAGE_PATTERNS = {
+    givePH: /^(\/givePH)\s*(\d+)?\s*([a-zA-Z0-9 ]*)?$/, ...CONFIG.ui.chat.MESSAGE_PATTERNS
+  }
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);

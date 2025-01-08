@@ -7,6 +7,7 @@ export default function() {
     genName: (a) => LocalisationServer.localise(a),
     actorName: (a) => LocalisationServer.localise(a, "Actor"),
     attrName: (a) => LocalisationServer.localise(a, "attr"),
+    chatName: (a) => LocalisationServer.localise(a, "chat"),
     attrAbbr: (a) => LocalisationServer.localise(a, "attr_abbr"),
     itemName: (a) => LocalisationServer.localise(a, "Item"),
     skillName: (a) => LocalisationServer.localise(a, "Skill"),
