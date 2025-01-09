@@ -2,49 +2,40 @@
   <div class="fixed-page">
     {{#each prepare.proficienciesLeft as |proficiencies category|}}
       <div class="proficiency-box proficiency-header">
-        <div class="proficiency-title">{{category}}</div>
-        <div class="proficiency-column"></div>
+        <div class="proficiency-title" style="text-transform: uppercase;">{{category}}</div>
         <div class="proficiency-column">{{genName "Adv"}}</div>
-        <div class="proficiency-column">{{genName "Sta"}}</div>
         <div class="proficiency-column">{{genName "Mod"}}</div>
-        <div class="proficiency-column"></div>
-        <div class="proficiency-column"></div>
-        <div class="proficiency-column"></div>
+        <div class="proficiency-column">{{genName "Sta"}}</div>
+        <div class="proficiency-column-dice"></div>
+        <div class="proficiency-column-dice"></div>
+        <div class="proficiency-column-dice"></div>
       </div>
       <hr />
       {{#each proficiencies as |proficiency|}}
       <div class="proficiency-box">
-        <div class="name">
+        <div class="proficiency-title">
           {{proficiencyName proficiency}}
         </div>
-        <div>
-          {{#if ../../prepare.canAdvance}}
-            <a data-name="{{proficiency}}" advance-type="refund"  class="advance-prof"><i data-tooltip="{{getSys ../../prepare 'prof' proficiency 'refund'}} PH" class="fas fa-minus advance-fa"></i></a>
-            <a data-name="{{proficiency}}" advance-type="advance" class="advance-prof"><i data-tooltip="{{getSys ../../prepare 'prof' proficiency 'cost'}} PH" class="fas fa-plus advance-fa"></i></a>
-          {{/if}}
+        <div class="proficiency-column">
+          <input class="core-value input-flow" data-target="system.proficiencies.{{category}}.{{proficiency}}.advances" type="number" value="{{getProficiency ../../actor category proficiency 'advances'}}" data-dtype="Number" style="max-height: 22px;">
         </div>
         <div class="proficiency-column">
-          <span class="output" style="width:27px">{{getProficiency ../../actor category proficiency 'advances'}}</span>
+          <input class="input-flow" name="system.proficiencies.{{category}}.{{proficiency}}.modifier" type="number" value="{{getProficiency ../../actor category proficiency 'modifier'}}" data-dtype="Number" style="max-height: 22px;">
         </div>
         <div class="proficiency-column">
           <span class="output" style="width:27px">{{getProficiency ../../actor category proficiency 'status'}}</span>
         </div>
-        <div class="proficiency-column">
-          <div class="input-restrainer">
-            <input name="system.proficiencies.{{category}}.{{proficiency}}.modifier" type="number" value="{{getProficiency ../../actor category proficiency 'modifier'}}" data-dtype="Number">
-          </div>
-        </div>
-        <div class="proficiency-column">
+        <div class="proficiency-column-dice">
           <a class="prof-d20 d20-{{getProficiencyDice ../../actor category proficiency 0}}" prof-name="{{proficiency}}" data-tooltip="{{getProficiencyDice ../../actor category proficiency 0}}">
               <span class="d20-overlay-proficiency">{{getProficiencyDice ../../actor category proficiency 0}}</span>
           </a>
         </div>
-        <div class="proficiency-column">
+        <div class="proficiency-column-dice">
           <a class="prof-d20 d20-{{getProficiencyDice ../../actor category proficiency 1}}" prof-name="{{proficiency}}" data-tooltip="{{getProficiencyDice ../../actor category proficiency 1}}">
               <span class="d20-overlay-proficiency">{{getProficiencyDice ../../actor category proficiency 1}}</span>
           </a>
         </div>
-        <div class="proficiency-column">
+        <div class="proficiency-column-dice">
           <a class="prof-d20 d20-{{getProficiencyDice ../../actor category proficiency 2}}" prof-name="{{proficiency}}" data-tooltip="{{getProficiencyDice ../../actor category proficiency 2}}">
               <span class="d20-overlay-proficiency">{{getProficiencyDice ../../actor category proficiency 2}}</span>
           </a>
@@ -56,50 +47,41 @@
   <div class="fixed-page">
     {{#each prepare.proficienciesRight as |proficiencies category|}}
       <div class="proficiency-box proficiency-header">
-        <div class="proficiency-title">{{category}}</div>
-        <div class="proficiency-column"></div>
+        <div class="proficiency-title" style="text-transform: uppercase;">{{category}}</div>
         <div class="proficiency-column">{{genName "Adv"}}</div>
-        <div class="proficiency-column">{{genName "Sta"}}</div>
         <div class="proficiency-column">{{genName "Mod"}}</div>
-        <div class="proficiency-column"></div>
-        <div class="proficiency-column"></div>
-        <div class="proficiency-column"></div>
+        <div class="proficiency-column">{{genName "Sta"}}</div>
+        <div class="proficiency-column-dice"></div>
+        <div class="proficiency-column-dice"></div>
+        <div class="proficiency-column-dice"></div>
       </div>
       <hr />
       {{#each proficiencies as |proficiency|}}
       <div class="proficiency-box">
-        <div class="name">
+        <div class="proficiency-title">
           {{proficiencyName proficiency}}
         </div>
-        <div>
-          {{#if ../../prepare.canAdvance}}
-            <a data-name="{{proficiency}}" advance-type="refund"  class="advance-prof"><i data-tooltip="{{getSys ../../prepare 'prof' proficiency 'refund'}} PH" class="fas fa-minus advance-fa"></i></a>
-            <a data-name="{{proficiency}}" advance-type="advance" class="advance-prof"><i data-tooltip="{{getSys ../../prepare 'prof' proficiency 'cost'}} PH" class="fas fa-plus advance-fa"></i></a>
-          {{/if}}
+        <div class="proficiency-column">
+          <input class="core-value input-flow" data-target="system.proficiencies.{{category}}.{{proficiency}}.advances" type="number" value="{{getProficiency ../../actor category proficiency 'advances'}}" data-dtype="Number" style="max-height: 22px;">
         </div>
         <div class="proficiency-column">
-          <span class="output" style="width:27px">{{getProficiency ../../actor category proficiency 'advances'}}</span>
+          <input class="input-flow" name="system.proficiencies.{{category}}.{{proficiency}}.modifier" type="number" value="{{getProficiency ../../actor category proficiency 'modifier'}}" data-dtype="Number" style="max-height: 22px;">
         </div>
         <div class="proficiency-column">
           <span class="output" style="width:27px">{{getProficiency ../../actor category proficiency 'status'}}</span>
         </div>
-        <div class="proficiency-column">
-          <div class="input-restrainer">
-            <input name="system.proficiencies.{{category}}.{{proficiency}}.modifier" type="number" value="{{getProficiency ../../actor category proficiency 'modifier'}}" data-dtype="Number">
-          </div>
-        </div>
-        <div class="proficiency-column">
-          <a class="prof-d20 d20-{{getProficiencyDice ../../actor category proficiency 0}}" prof-name="{{proficiency}}">
+        <div class="proficiency-column-dice">
+          <a class="prof-d20 d20-{{getProficiencyDice ../../actor category proficiency 0}}" prof-name="{{proficiency}}" data-tooltip="{{getProficiencyDice ../../actor category proficiency 0}}">
               <span class="d20-overlay-proficiency">{{getProficiencyDice ../../actor category proficiency 0}}</span>
           </a>
         </div>
-        <div class="proficiency-column">
-          <a class="prof-d20 d20-{{getProficiencyDice ../../actor category proficiency 1}}" prof-name="{{proficiency}}">
+        <div class="proficiency-column-dice">
+          <a class="prof-d20 d20-{{getProficiencyDice ../../actor category proficiency 1}}" prof-name="{{proficiency}}" data-tooltip="{{getProficiencyDice ../../actor category proficiency 1}}">
               <span class="d20-overlay-proficiency">{{getProficiencyDice ../../actor category proficiency 1}}</span>
           </a>
         </div>
-        <div class="proficiency-column">
-          <a class="prof-d20 d20-{{getProficiencyDice ../../actor category proficiency 2}}" prof-name="{{proficiency}}">
+        <div class="proficiency-column-dice">
+          <a class="prof-d20 d20-{{getProficiencyDice ../../actor category proficiency 2}}" prof-name="{{proficiency}}" data-tooltip="{{getProficiencyDice ../../actor category proficiency 2}}">
               <span class="d20-overlay-proficiency">{{getProficiencyDice ../../actor category proficiency 2}}</span>
           </a>
         </div>

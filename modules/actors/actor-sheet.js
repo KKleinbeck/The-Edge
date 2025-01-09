@@ -86,22 +86,20 @@ export class TheEdgeActorSheet extends ActorSheet {
     html.find(".skill-control").click(ev => this._onSkillControl(ev));
 
     // Attribute, proficiency and weapon skill change
-    html.find(".attr-prof-combat-value").on("keyup", ev => this._onModifyCoreValues(ev));
-    html.find(".attr-prof-combat-value").on("change", ev => this._onChangeCoreValues(ev));
+    html.find(".core-value").on("keyup", ev => this._onModifyCoreValues(ev));
+    html.find(".core-value").on("change", ev => this._onChangeCoreValues(ev));
 
     // Attributes
     html.find(".attr-d20").click(ev => this._rollAttr(ev));
-    html.find(".advance-attr").click(ev => this._advanceSrv(ev, "attr"));
+    html.find(".advance-attr").on("mouseover", ev => this._attrCostTooltip(ev));
+    html.find(".advance-attr").on("click", ev => this._advanceSrv(ev, "attr"));
 
     // Proficiencies
     html.find(".prof-d20").click(ev => this._rollProficiency(ev));
-    html.find(".advance-prof").click(ev => this._advanceSrv(ev, "prof"));
 
     // Weapon Proficiencies
     html.find(".weapon-d20").click(ev => this._rollAttack(ev));
     html.find(".reload").click(ev => this._reload(ev));
-    html.find(".advance-combat").click(ev => this._advanceSrv(ev, "combat"));
-    html.find(".advance-combat-general").click(ev => this._advanceSrv(ev, "combat-general"));
 
     // Health
     html.find(".short-rest").click(_ => DialogRest.start({actor: this.actor, type: "short rest"}));
@@ -116,18 +114,6 @@ export class TheEdgeActorSheet extends ActorSheet {
     switch (quantity){
       case "attr":
         this.actor._advanceAttr(name, type);
-        break;
-
-      case "prof":
-        this.actor._advanceProf(name, type);
-        break;
-
-      case "combat":
-        this.actor._advanceWeaponProf(name, type);
-        break;
-
-      case "combat-general":
-        this.actor._advanceCombatGeneral(name, type);
         break;
     }
     this._render();
@@ -392,6 +378,22 @@ export class TheEdgeActorSheet extends ActorSheet {
           DialogProficiency.start({proficiency: skill.system.basis, actor: this.actor})
         }
         break;
+    }
+  }
+  
+  _attrCostTooltip(event) {
+    const target = event.currentTarget;
+    const type = target.getAttribute("advance-type");
+    const cost = target.dataset.cost;
+    console.log("asd")
+
+    if (type == "advance") {
+      const text = LocalisationServer.parsedLocalisation("Costs", "notifications", {cost: cost});
+      game.tooltip.activate(event.currentTarget, {text: text, direction: "UP"});
+    }
+    else {
+      const text = LocalisationServer.parsedLocalisation("Gain", "notifications", {gain: cost});
+      game.tooltip.activate(event.currentTarget, {text: text, direction: "UP"});
     }
   }
 

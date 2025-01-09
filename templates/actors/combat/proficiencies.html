@@ -12,32 +12,16 @@
         {{#each ../systemData.generalCombatAdvances as |generalAdvance generalName|}}
           {{#if (checkEqual groupName generalName)}}
             <tr>
-              <td>
-                <div style="font-weight: bold">
-                  {{genName "Basic Proficiency"}}
-                </div>
-                {{#if ../../prepare.canAdvance}}
-                  <a data-name="{{generalName}}" advance-type="refund"  class="advance-combat-general"><i data-tooltip="{{getSys ../../prepare 'generalCombatAdvances' generalName 'refund'}} PH" class="fas fa-minus advance-fa"></i></a>
-                  <a data-name="{{generalName}}" advance-type="advance" class="advance-combat-general"><i data-tooltip="{{getSys ../../prepare 'generalCombatAdvances' generalName 'cost'}} PH" class="fas fa-plus advance-fa"></i></a>
-                {{/if}}
-              </td>
-              <td colspan="2"><div class="output">{{generalAdvance}}</div></td>
+              <td style="font-weight: bold;">{{genName "Basic Proficiency"}}</td>
+              <td colspan="2"><input class="core-value" data-target="system.generalCombatAdvances.{{groupName}}" type="number" value="{{generalAdvance}}" data-dtype="Number" style="max-height: 22px; text-align: center;"></td>
             </tr>
           {{/if}}
         {{/each}}
         {{#each group as |modifiers weapon|}}
           <tr>
-            <td>
-              <div style="font-weight: bold">
-                {{combatName weapon}}
-              </div>
-              {{#if ../../prepare.canAdvance}}
-                <a data-name="{{weapon}}" advance-type="refund"  class="advance-combat"><i data-tooltip="{{getSys ../../prepare 'weapons' weapon 'refund'}} PH" class="fas fa-minus advance-fa"></i></a>
-                <a data-name="{{weapon}}" advance-type="advance" class="advance-combat"><i data-tooltip="{{getSys ../../prepare 'weapons' weapon 'cost'}} PH" class="fas fa-plus advance-fa"></i></a>
-              {{/if}}
-            </td>
-            <td><div class="output">{{getWeaponProficiency ../../actor groupName weapon 'advances'}}</div></td>
-            <td><div class="output">{{getWeaponProficiency ../../actor groupName weapon 'status'}}</div></td>
+            <td style="font-weight: bold;">{{combatName weapon}}</td>
+            <td><input class="core-value" data-target="system.weapons.{{groupName}}.{{weapon}}.advances" type="number" value="{{getWeaponProficiency ../../actor groupName weapon 'advances'}}" data-dtype="Number" style="max-height: 22px; text-align: right; max-width: 30px;"></td>
+            <td><div class="output" style="max-width: 30px;">{{getWeaponProficiency ../../actor groupName weapon 'status'}}</div></td>
           </tr>
         {{/each}}
       </tbody>

@@ -284,6 +284,13 @@
     "PH MISSING": "Not enough PH to bring {name} to {level}. {need} needed, {available} available."
   },
   "PROFICIENCY": {
+    "ENVIRONMENTAL": "Environmental",
+    "KNOWLEDGE": "Knowledge",
+    "MENTAL": "Mental",
+    "PHYSICAL": "Physical",
+    "SOCIAL": "Social",
+    "TECHNICAL": "Technical",
+
     "CLIMBING": "Climbing",
     "SWIMMING": "Swimming",
     "SNEAKING": "Sneaking",
