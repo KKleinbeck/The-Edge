@@ -57,21 +57,12 @@ export class TheEdgeActor extends Actor {
 
   // Generates dict for the charactersheet to parse
   prepareSheet() {
-    let preparedData = { system: { attr: {}, prof: {}, weapons: {}, generalCombatAdvances: {}} };
+    let preparedData = { system: { attr: {}, profGroups: [], weapons: {}, generalCombatAdvances: {}} };
     for (const key of Object.keys(this.system.attributes)) {
       let n = this.system.attributes[key].advances;
       preparedData.system.attr[key] = {
         cost: this._attrCost(n),
         refund: n == 0 ? 0 : this._attrCost(n-1)
-      }
-    }
-    for (const [category, proficiencies] of Object.entries(this.system.proficiencies)) {
-      for (const proficiency of Object.keys(proficiencies)) {
-        let n = this.system.proficiencies[category][proficiency].advances
-        preparedData.system.prof[proficiency] = {
-          cost: this._profCost(n),
-          refund: n == 0 ? 0 : this._profCost(n-1)
-        }
       }
     }
     for (const [category, weapons] of Object.entries(this.system.weapons)) {
@@ -91,12 +82,16 @@ export class TheEdgeActor extends Actor {
     }
 
     foundry.utils.mergeObject(preparedData, {proficienciesLeft: {}, proficienciesRight: {}})
-    for (const proficiencyClass of ["physical", "environmental", "mental"]) {
-      preparedData.proficienciesLeft[proficiencyClass] = Object.keys(this.system.proficiencies[proficiencyClass]);
-    }
-    for (const proficiencyClass of ["technical", "social", "knowledge"]) {
-      preparedData.proficienciesRight[proficiencyClass] = Object.keys(this.system.proficiencies[proficiencyClass]);
-    }
+    preparedData.system.profGroups.push({
+      physical: Object.keys(this.system.proficiencies["physical"]),
+      social: Object.keys(this.system.proficiencies["social"]),
+      technical: Object.keys(this.system.proficiencies["technical"]),
+    })
+    preparedData.system.profGroups.push({
+      environmental: Object.keys(this.system.proficiencies["environmental"]),
+      knowledge: Object.keys(this.system.proficiencies["knowledge"]),
+      mental: Object.keys(this.system.proficiencies["mental"]),
+    })
 
     let sys = this.system;
     let ch = sys.attributes;

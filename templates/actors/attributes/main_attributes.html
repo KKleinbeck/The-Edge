@@ -14,7 +14,7 @@
       </div>
       {{/each}}
     </div>
-    <div class="table-row">
+    <div class="table-row" style="gap: 1px;">
       <div class="row-type table-data">
         <div class="column-name lineheight">
           {{localize "Advances"}}
@@ -26,19 +26,7 @@
       </div>
       {{/each}}
     </div>
-    <div class="actor-main-attr-modifier table-row">
-      <div class="row-type table-data">
-        <div class="column-name lineheight">
-          {{localize "Modifiers"}}
-        </div>
-      </div>
-      {{#each prepare.attrs as |ch|}}
-      <div class="number-input table-data">
-        <input name="system.attributes.{{ch}}.modifier" type="number" value="{{getSys ../actor 'attributes' ch 'modifier'}}" data-dtype="Number">
-      </div>
-      {{/each}}
-    </div>
-    <div class="table-row">
+    <div class="table-row" style="gap: 1px;">
       <div class="row-type table-data">
         <div class="column-name lineheight">
           {{localize "Status"}}

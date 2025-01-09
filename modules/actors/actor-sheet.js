@@ -41,7 +41,7 @@ export class TheEdgeActorSheet extends ActorSheet {
       secrets: this.document.isOwner,
       async: true
     });
-    context["prepare"] = this.actor.prepareSheet()
+    context.prepare = this.actor.prepareSheet()
 
     let credits = this.actor.itemTypes["Credits"]
     let creditsOffline = credits.find(c => c.system?.isSchid)?.system?.value || 0;
@@ -385,7 +385,6 @@ export class TheEdgeActorSheet extends ActorSheet {
     const target = event.currentTarget;
     const type = target.getAttribute("advance-type");
     const cost = target.dataset.cost;
-    console.log("asd")
 
     if (type == "advance") {
       const text = LocalisationServer.parsedLocalisation("Costs", "notifications", {cost: cost});

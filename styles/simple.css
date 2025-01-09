@@ -269,27 +269,48 @@
   background-repeat: no-repeat;
   position: relative;
 }
-.the_edge .proficiency-header {
-  margin-top: 15px;
-  margin-bottom: -8px; /* Space between title and the horizontal line */
-}
 .the_edge .proficiency-title {
   flex: 7;
-  font-size: 14px;
-  font-weight: bold; /* Optional: Make the title bold */
+  font-weight: 700;
 }
 .the_edge .proficiency-column {
-  width: 26px;
+  width: 25px;
 }
 .the_edge .proficiency-column-dice {
-  width: 22px;
+  align-items: end;
+  width: 15px;
 }
 .the_edge .proficiency-column .input-flow {
   text-align: right;
 }
 .the_edge .proficiency-column .output {
   max-height: 22;
+  max-width: 25px;
+  margin-right: 2px;
   text-align: right;
+}
+.the_edge .prof-d20 {
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: 15px;
+  height: 18px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: inline-block;
+  position: relative;
+}
+.the_edge .d20-overlay-proficiency {
+  white-space: nowrap;
+  position: absolute; /* Position the text absolutely inside the parent */
+  background: rgba(255, 255, 255, 0.5);
+  top: 50%; /* Center the text vertically */
+  left: 50%; /* Center the text horizontally */
+  transform: translate(-50%, -40%); /* Adjust for perfect centering */
+  z-index: 1; /* Ensure the text is above the background */
+  text-transform: uppercase; /* Makes the text all capital letters */
+  font-weight: bold; /* Optional: Make the title bold */
+  font-size: 10px;
 }
 .the_edge .proficiency-box {
   align-items: center;
@@ -298,6 +319,7 @@
   gap: 3px;
   line-height: 14px;
   height: 24px;
+  margin-bottom: 2px;
 }
 .the_edge .proficiency-box .name {
   flex: 7;
@@ -331,30 +353,6 @@
 .advantage-box {
   width: 150px;
   height: 25px;
-}
-.the_edge .prof-d20 {
-  border: none;
-  margin-left: 0px;
-  margin-right: 0px;
-  padding: 0;
-  width: 20px;
-  height: 24px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  display: inline-block;
-  position: relative;
-}
-.the_edge .d20-overlay-proficiency {
-  white-space: nowrap;
-  position: absolute; /* Position the text absolutely inside the parent */
-  background: rgba(255, 255, 255, 0.5);
-  top: 50%; /* Center the text vertically */
-  left: 50%; /* Center the text horizontally */
-  transform: translate(-50%, -40%); /* Adjust for perfect centering */
-  z-index: 1; /* Ensure the text is above the background */
-  text-transform: uppercase; /* Makes the text all capital letters */
-  font-weight: bold; /* Optional: Make the title bold */
-  font-size: 10px;
 }
 .the_edge .sheet-header .header-fields {
   flex: 1;
@@ -399,7 +397,7 @@
   background-color: #e0e0e0; /* Grey background */
   border: 1px solid #000; /* Black border */
   border-radius: 5px; /* Rounded corners */
-  padding: 2px 8px; /* Padding inside the box */
+  padding: 2px; /* Padding inside the box */
   font-size: 14px; /* Adjust font size as needed */
   width: 100%;
   box-sizing: border-box;
