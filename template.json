@@ -54,60 +54,60 @@
     "proficiencies": {
       "proficiencies": {
         "physical": {
-          "Climbing": {"dices": ["end", "str", "str"], "advances": 0, "modifier": 0, "status": 0},
-          "Swimming": {"dices": ["end", "end", "str"], "advances": 0, "modifier": 0, "status": 0},
-          "Sneaking": {"dices": ["crd", "emp", "foc"], "advances": 0, "modifier": 0, "status": 0},
-          "Jumping": {"dices": ["str", "spd", "spd"], "advances": 0, "modifier": 0, "status": 0},
-          "Throwing": {"dices": ["str", "str", "spd"], "advances": 0, "modifier": 0, "status": 0},
-          "Lock picking": {"dices": ["crd", "crd", "foc"], "advances": 0, "modifier": 0, "status": 0},
-          "Pick pocketing": {"dices": ["crd", "emp", "foc"], "advances": 0, "modifier": 0, "status": 0},
-          "Balance": {"dices": ["str", "crd", "foc"], "advances": 0, "modifier": 0, "status": 0},
-          "Physical Fortitude": {"dices": ["end", "str", "res"], "advances": 0, "modifier": 0, "status": 0}
+          "climbing": {"dices": ["end", "str", "str"], "advances": 0, "modifier": 0, "status": 0},
+          "swimming": {"dices": ["end", "end", "str"], "advances": 0, "modifier": 0, "status": 0},
+          "sneaking": {"dices": ["crd", "emp", "foc"], "advances": 0, "modifier": 0, "status": 0},
+          "jumping": {"dices": ["str", "spd", "spd"], "advances": 0, "modifier": 0, "status": 0},
+          "throwing": {"dices": ["str", "str", "spd"], "advances": 0, "modifier": 0, "status": 0},
+          "lock picking": {"dices": ["crd", "crd", "foc"], "advances": 0, "modifier": 0, "status": 0},
+          "pick pocketing": {"dices": ["crd", "emp", "foc"], "advances": 0, "modifier": 0, "status": 0},
+          "balance": {"dices": ["str", "crd", "foc"], "advances": 0, "modifier": 0, "status": 0},
+          "physical fortitude": {"dices": ["end", "str", "res"], "advances": 0, "modifier": 0, "status": 0}
         },
         "environmental": {
-          "Orientation": {"dices": ["foc", "foc", "int"], "advances": 0, "modifier": 0, "status": 0},
-          "Camouflage & hiding": {"dices": ["crd", "emp", "emp"], "advances": 0, "modifier": 0, "status": 0},
-          "Reconnoitring": {"dices": ["end", "end", "foc"], "advances": 0, "modifier": 0, "status": 0},
-          "Stalking & Hunting": {"dices": ["end", "end", "emp"], "advances": 0, "modifier": 0, "status": 0},
-          "Plants": {"dices": ["crd", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
-          "Animals": {"dices": ["emp", "emp", "int"], "advances": 0, "modifier": 0, "status": 0},
-          "Outdoor survival": {"dices": ["end", "res", "int"], "advances": 0, "modifier": 0, "status": 0}
+          "orientation": {"dices": ["foc", "foc", "int"], "advances": 0, "modifier": 0, "status": 0},
+          "camouflage & hiding": {"dices": ["crd", "emp", "emp"], "advances": 0, "modifier": 0, "status": 0},
+          "reconnoitring": {"dices": ["end", "end", "foc"], "advances": 0, "modifier": 0, "status": 0},
+          "stalking & hunting": {"dices": ["end", "end", "emp"], "advances": 0, "modifier": 0, "status": 0},
+          "plants": {"dices": ["crd", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
+          "animals": {"dices": ["emp", "emp", "int"], "advances": 0, "modifier": 0, "status": 0},
+          "outdoor survival": {"dices": ["end", "res", "int"], "advances": 0, "modifier": 0, "status": 0}
         },
         "mental": {
-          "Investigation": {"dices": ["foc", "foc", "foc"], "advances" : 0, "modifier": 0, "status": 0},
-          "Driving": {"dices": ["spd", "crd", "emp"], "advances" : 0, "modifier": 0, "status": 0},
-          "Piloting": {"dices": ["crd", "foc", "int"], "advances" : 0, "modifier": 0, "status": 0},
-          "Mental Fortitude": {"dices": ["foc", "res", "res"], "advances" : 0, "modifier": 0, "status": 0},
-          "Logic & Maths": {"dices": ["int", "int", "int"], "advances" : 0, "modifier": 0, "status": 0},
-          "Memory": {"dices": ["foc", "foc", "int"], "advances" : 0, "modifier": 0, "status": 0}
+          "investigation": {"dices": ["foc", "foc", "foc"], "advances" : 0, "modifier": 0, "status": 0},
+          "driving": {"dices": ["spd", "crd", "emp"], "advances" : 0, "modifier": 0, "status": 0},
+          "piloting": {"dices": ["crd", "foc", "int"], "advances" : 0, "modifier": 0, "status": 0},
+          "mental fortitude": {"dices": ["foc", "res", "res"], "advances" : 0, "modifier": 0, "status": 0},
+          "logic & maths": {"dices": ["int", "int", "int"], "advances" : 0, "modifier": 0, "status": 0},
+          "memory": {"dices": ["foc", "foc", "int"], "advances" : 0, "modifier": 0, "status": 0}
         },
         "technical": {
-          "Explosives" : {"dices": ["crd", "foc", "res"], "advances": 0, "modifier": 0, "status": 0},
-          "Electronics" : {"dices": ["crd", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
-          "Computer systems" : {"dices": ["int", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
-          "Mechanical" : {"dices": ["str", "crd", "crd"], "advances": 0, "modifier": 0, "status": 0},
-          "Bots and Mechs" : {"dices": ["str", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
-          "Chemicals" : {"dices": ["crd", "foc", "int"], "advances": 0, "modifier": 0, "status": 0},
-          "Weapons" : {"dices": ["crd", "foc", "int"], "advances": 0, "modifier": 0, "status": 0}
+          "explosives" : {"dices": ["crd", "foc", "res"], "advances": 0, "modifier": 0, "status": 0},
+          "electronics" : {"dices": ["crd", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
+          "computer systems" : {"dices": ["int", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
+          "mechanical" : {"dices": ["str", "crd", "crd"], "advances": 0, "modifier": 0, "status": 0},
+          "bots and mechs" : {"dices": ["str", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
+          "chemicals" : {"dices": ["crd", "foc", "int"], "advances": 0, "modifier": 0, "status": 0},
+          "weapons" : {"dices": ["crd", "foc", "int"], "advances": 0, "modifier": 0, "status": 0}
         },
         "social": {
-          "Human cultures": {"dices": ["cha", "emp", "int"], "advances": 0, "modifier": 0, "status": 0},
-          "Alien cultures": {"dices": ["cha", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
-          "Outlaws' customs": {"dices": ["cha", "cha", "int"], "advances": 0, "modifier": 0, "status": 0},
-          "Barter": {"dices": ["cha", "cha", "cha"], "advances": 0, "modifier": 0, "status": 0},
-          "Threaten": {"dices": ["str", "cha", "cha"], "advances": 0, "modifier": 0, "status": 0},
-          "Convince": {"dices": ["cha", "emp", "emp"], "advances": 0, "modifier": 0, "status": 0},
-          "Lie & Deceive": {"dices": ["cha", "cha", "emp"], "advances": 0, "modifier": 0, "status": 0},
-          "Cards & Gambling": {"dices": ["crd", "cha", "foc"], "advances": 0, "modifier": 0, "status": 0}
+          "human cultures": {"dices": ["cha", "emp", "int"], "advances": 0, "modifier": 0, "status": 0},
+          "alien cultures": {"dices": ["cha", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
+          "outlaws' customs": {"dices": ["cha", "cha", "int"], "advances": 0, "modifier": 0, "status": 0},
+          "barter": {"dices": ["cha", "cha", "cha"], "advances": 0, "modifier": 0, "status": 0},
+          "threaten": {"dices": ["str", "cha", "cha"], "advances": 0, "modifier": 0, "status": 0},
+          "convince": {"dices": ["cha", "emp", "emp"], "advances": 0, "modifier": 0, "status": 0},
+          "lie & deceive": {"dices": ["cha", "cha", "emp"], "advances": 0, "modifier": 0, "status": 0},
+          "cards & gambling": {"dices": ["crd", "cha", "foc"], "advances": 0, "modifier": 0, "status": 0}
         },
         "knowledge": {
-          "Tactics": {"dices": ["emp", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
-          "History & Legends": {"dices": ["int", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
-          "Religions": {"dices": ["cha", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
-          "Politics": {"dices": ["emp", "foc", "int"], "advances": 0, "modifier": 0, "status": 0},
-          "Gangs & Pirates": {"dices": ["cha", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
-          "First Aid": {"dices": ["crd", "end", "cha"], "advances": 0, "modifier": 0, "status": 0},
-          "Medicine": {"dices": ["crd", "end", "foc"], "advances": 0, "modifier": 0, "status": 0}
+          "tactics": {"dices": ["emp", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
+          "history & legends": {"dices": ["int", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
+          "religions": {"dices": ["cha", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
+          "politics": {"dices": ["emp", "foc", "int"], "advances": 0, "modifier": 0, "status": 0},
+          "gangs & pirates": {"dices": ["cha", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
+          "first aid": {"dices": ["crd", "end", "cha"], "advances": 0, "modifier": 0, "status": 0},
+          "medicine": {"dices": ["crd", "end", "foc"], "advances": 0, "modifier": 0, "status": 0}
         }
       }
     },

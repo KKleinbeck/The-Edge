@@ -15,7 +15,7 @@
       {{#each proficiencies as |proficiency|}}
       <div class="proficiency-box">
         <div class="name">
-          {{proficiency}}
+          {{proficiencyName proficiency}}
         </div>
         <div>
           {{#if ../../prepare.canAdvance}}
@@ -69,7 +69,7 @@
       {{#each proficiencies as |proficiency|}}
       <div class="proficiency-box">
         <div class="name">
-          {{proficiency}}
+          {{proficiencyName proficiency}}
         </div>
         <div>
           {{#if ../../prepare.canAdvance}}
