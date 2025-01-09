@@ -60,24 +60,42 @@
           </div>
         {{/if}}
       </div><br />
+      <h3>{{genName "Effects"}}</h3>
       {{#each systemData.levelEffects as |effectList|}}
-        <b>
-          Level {{add @index 1}} {{genName "Effects"}}
-        </b><br />
+        <div class="effect-level" data-index="{{@index}}" data-type="levelEffects" style="display: flex; justify-content: space-between;">
+          <b>Level {{add @index 1}} {{genName "Effects"}}</b>
+          <a class="effect-level-add" title="{{ itemName 'Create' }}" data-action="create"><i class="fas fa-plus"></i> {{ itemName "Add" }}</a>
+        </div>
         <div class="effect-level" data-index="{{@index}}" data-type="levelEffects">
-            {{#each effectList as |effect|}}
+          {{#each effectList as |effect|}}
+            <div class="item-columned-page" style="align-items: center;">
+              <input class="effect-level-modify" data-index="{{@index}}" type="text" value="{{effect.modifier}}"/>
+              <input class="effect-level-modify" data-index="{{@index}}" type="number" value="{{effect.value}}" style="width: 45px;"/>
+              <a class="effect-level-delete" data-index="{{@index}}" title="{{ itemName 'delete' }}"><i class="fas fa-trash"></i></a>
+            </div>
+          {{/each}}
+        </div>
+        <hr />
+      {{/each}}
+      <h3 class="effect-level" data-index="{{@index}}" data-type="requirements">{{genName "Requirements"}}</h3>
+      {{#each systemData.requirements as |levelRequirements|}}
+        <div style="display: flex; justify-content: space-between;">
+          <b>Level {{add @index 1}} {{genName "Requirements"}}</b>
+          <a class="effect-level-add" title="{{ itemName 'Create' }}" data-action="create"><i class="fas fa-plus"></i> {{ itemName "Add" }}</a>
+        </div>
+        <div>
+            {{#each levelRequirements as |requirement|}}
               <div class="item-columned-page" style="align-items: center;">
-                <input class="effect-level-modify" data-index="{{@index}}" type="text" value="{{effect.modifier}}"/>
-                <input class="effect-level-modify" data-index="{{@index}}" type="number" value="{{effect.value}}" style="width: 45px;"/>
+                <input class="effect-level-modify" data-index="{{@index}}" type="text" value="{{requirement.modifier}}"/>
+                <input class="effect-level-modify" data-index="{{@index}}" type="number" value="{{requirement.value}}" style="width: 45px;"/>
                 <a class="effect-level-delete" data-index="{{@index}}" title="{{ itemName 'delete' }}"><i class="fas fa-trash"></i></a>
               </div>
             {{/each}}
-          <a class="effect-level-add" title="{{ itemName 'Create' }}" data-action="create"><i class="fas fa-plus"></i> {{ itemName "Add" }}</a>
         </div>
         <hr />
       {{/each}}
     </div>
 
-    {{> systems/the_edge/templates/items/meta-skill-description.html}}
+    {{> systems/the_edge/templates/items/meta-description.html}}
   </section>
 </form>
