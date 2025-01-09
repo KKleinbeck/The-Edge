@@ -66,15 +66,12 @@
         },
         "environmental": {
           "Orientation": {"dices": ["foc", "foc", "int"], "advances": 0, "modifier": 0, "status": 0},
-          "Camouflage - Nature": {"dices": ["crd", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
-          "Camouflage - Cities": {"dices": ["emp", "emp", "int"], "advances": 0, "modifier": 0, "status": 0},
+          "Camouflage & hiding": {"dices": ["crd", "emp", "emp"], "advances": 0, "modifier": 0, "status": 0},
           "Reconnoitring": {"dices": ["end", "end", "foc"], "advances": 0, "modifier": 0, "status": 0},
           "Stalking & Hunting": {"dices": ["end", "end", "emp"], "advances": 0, "modifier": 0, "status": 0},
           "Plants": {"dices": ["crd", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
           "Animals": {"dices": ["emp", "emp", "int"], "advances": 0, "modifier": 0, "status": 0},
-          "Outdoor survival": {"dices": ["end", "res", "int"], "advances": 0, "modifier": 0, "status": 0},
-          "Ropes and Knots": {"dices": ["crd", "crd", "int"], "advances": 0, "modifier": 0, "status": 0},
-          "Natural materials": {"dices": ["foc", "int", "int"], "advances": 0, "modifier": 0, "status": 0}
+          "Outdoor survival": {"dices": ["end", "res", "int"], "advances": 0, "modifier": 0, "status": 0}
         },
         "mental": {
           "Investigation": {"dices": ["foc", "foc", "foc"], "advances" : 0, "modifier": 0, "status": 0},
@@ -85,9 +82,8 @@
           "Memory": {"dices": ["foc", "foc", "int"], "advances" : 0, "modifier": 0, "status": 0}
         },
         "technical": {
-          "Explosives" : {"dices": ["crd", "crd", "int"], "advances": 0, "modifier": 0, "status": 0},
+          "Explosives" : {"dices": ["crd", "foc", "res"], "advances": 0, "modifier": 0, "status": 0},
           "Electronics" : {"dices": ["crd", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
-          "Modern Materials" : {"dices": ["int", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
           "Computer systems" : {"dices": ["int", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
           "Mechanical" : {"dices": ["str", "crd", "crd"], "advances": 0, "modifier": 0, "status": 0},
           "Bots and Mechs" : {"dices": ["str", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
@@ -102,16 +98,14 @@
           "Threaten": {"dices": ["str", "cha", "cha"], "advances": 0, "modifier": 0, "status": 0},
           "Convince": {"dices": ["cha", "emp", "emp"], "advances": 0, "modifier": 0, "status": 0},
           "Lie & Deceive": {"dices": ["cha", "cha", "emp"], "advances": 0, "modifier": 0, "status": 0},
-          "Gambling": {"dices": ["cha", "foc", "int"], "advances": 0, "modifier": 0, "status": 0}
+          "Cards & Gambling": {"dices": ["crd", "cha", "foc"], "advances": 0, "modifier": 0, "status": 0}
         },
         "knowledge": {
-          "Astro navigation": {"dices": ["foc", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
           "Tactics": {"dices": ["emp", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
           "History & Legends": {"dices": ["int", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
           "Religions": {"dices": ["cha", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
           "Politics": {"dices": ["emp", "foc", "int"], "advances": 0, "modifier": 0, "status": 0},
           "Gangs & Pirates": {"dices": ["cha", "int", "int"], "advances": 0, "modifier": 0, "status": 0},
-          "Cards & Gambling": {"dices": ["crd", "foc", "int"], "advances": 0, "modifier": 0, "status": 0},
           "First Aid": {"dices": ["crd", "end", "cha"], "advances": 0, "modifier": 0, "status": 0},
           "Medicine": {"dices": ["crd", "end", "foc"], "advances": 0, "modifier": 0, "status": 0}
         }
