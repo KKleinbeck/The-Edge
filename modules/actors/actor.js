@@ -767,7 +767,7 @@ export class TheEdgeActor extends Actor {
       const currentPain = await this._getEffectOrCreate("Pain");
       const n = Math.floor(damageTotal / 15);
       await currentPain.update({"system.effects": [
-        {modifier: "Proficiencies.All", value: -n}
+        {modifier: "Proficiencies.All", value: -n}, {modifier: "Weapons.All", value: -n}
       ]})
     }
 
