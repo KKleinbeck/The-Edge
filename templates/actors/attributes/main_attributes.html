@@ -21,20 +21,8 @@
                 </div>
             </div>
             {{#each prepare.attrs as |ch|}}
-            <div class="table-data">
-                <span class="output">{{getSys ../actor 'attributes' ch 'advances'}}</span>
-            </div>
-            {{/each}}
-        </div>
-        <div class="table-row">
-            <div class="row-type table-data">
-                <div class="column-name lineheight">
-                    {{localize "Status"}}
-                </div>
-            </div>
-            {{#each prepare.attrs as |ch|}}
-            <div class="table-data">
-                <span class="output">{{getSys ../actor 'attributes' ch 'status'}}</span>
+            <div class="number-input table-data">
+                <input class="attr-prof-combat-value" data-target="system.attributes.{{ch}}.advances" type="number" value="{{getSys ../actor 'attributes' ch 'advances'}}" data-dtype="Number">
             </div>
             {{/each}}
         </div>
@@ -47,6 +35,18 @@
             {{#each prepare.attrs as |ch|}}
             <div class="number-input table-data">
                 <input name="system.attributes.{{ch}}.modifier" type="number" value="{{getSys ../actor 'attributes' ch 'modifier'}}" data-dtype="Number">
+            </div>
+            {{/each}}
+        </div>
+        <div class="table-row">
+            <div class="row-type table-data">
+                <div class="column-name lineheight">
+                    {{localize "Status"}}
+                </div>
+            </div>
+            {{#each prepare.attrs as |ch|}}
+            <div class="table-data">
+                <span class="output">{{getSys ../actor 'attributes' ch 'status'}}</span>
             </div>
             {{/each}}
         </div>

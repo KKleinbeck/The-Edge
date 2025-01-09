@@ -277,7 +277,11 @@
     "MISSING REQUIREMENTS": "Skill has unmatched requirements. Skill {modifier} has to be at {value} first.",
     "UNMET REQUIREMENTS": "Skill has unmatched requirements. {modifier} has to be {value}, but is {valueIs}.",
 
-    "MAX LEVEL": "{name} is already at it's max level."
+    "MAX LEVEL": "{name} is already at it's max level.",
+
+    "GAIN": "Gain {gain} PH",
+    "COSTS": "Costs {cost} PH",
+    "PH MISSING": "Not enough PH to bring {name} to {level}. {need} needed, {available} available."
   },
   "PROFICIENCY": {
     "CLIMBING": "Climbing",

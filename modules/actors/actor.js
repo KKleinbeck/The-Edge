@@ -178,6 +178,42 @@ export class TheEdgeActor extends Actor {
     return results;
   }
 
+  coreValueChangeCost(coreName, newVal) {
+    newVal = newVal ? +newVal : 0; // If empty / undefined
+    if (!Number.isInteger(+newVal)) {return;}
+
+    const oldVal = Aux.objectAt(this, coreName);
+
+    let costFun = coreName.includes("proficiencies") ? this._profCost : this._attrCost;
+    let cost = 0;
+    if (newVal > oldVal) {
+      for (let n = oldVal; n < newVal; n++) cost += costFun(n);
+    } else {
+      for (let n = newVal; n < oldVal; n++) cost -= costFun(n);
+    }
+    return cost;
+  }
+
+  changeCoreValue(coreName, newVal) {
+    newVal = newVal ? +newVal : 0; // If empty / undefined
+    if (!Number.isInteger(+newVal)) {return;}
+
+    const cost = this.coreValueChangeCost(coreName, newVal);
+    const availablePH = this.system.PracticeHours.max - this.system.PracticeHours.used;
+    if (cost > availablePH) {
+      const msg = LocalisationServer.parsedLocalisation(
+        "AP missing", "Notifications",
+        {name: coreName.split(".").last(), level: newVal, need: cost, available: availablePH}
+      )
+      ui.notifications.notify(msg)
+      return;
+    }
+
+    this.update({
+      [coreName]: newVal, "system.PracticeHours.used": this.system.PracticeHours.used + cost
+    })
+  }
+
   _determineWeight() {
     return this.items.reduce(
       (a, b) => a + ((b.system?.quantity || 1) * b.system?.weight || 0), 0

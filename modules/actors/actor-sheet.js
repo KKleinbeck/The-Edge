@@ -85,6 +85,10 @@ export class TheEdgeActorSheet extends ActorSheet {
     // Language skills
     html.find(".skill-control").click(ev => this._onSkillControl(ev));
 
+    // Attribute, proficiency and weapon skill change
+    html.find(".attr-prof-combat-value").on("keyup", ev => this._onModifyCoreValues(ev));
+    html.find(".attr-prof-combat-value").on("change", ev => this._onChangeCoreValues(ev));
+
     // Attributes
     html.find(".attr-d20").click(ev => this._rollAttr(ev));
     html.find(".advance-attr").click(ev => this._advanceSrv(ev, "attr"));
@@ -389,6 +393,29 @@ export class TheEdgeActorSheet extends ActorSheet {
         }
         break;
     }
+  }
+
+  _onModifyCoreValues(event) {
+    const field = $(event.currentTarget);
+    const name = event.currentTarget.dataset.target;
+
+    const cost = this.actor.coreValueChangeCost(name, field.val());
+
+    if (cost == 0) return;
+    else if (cost > 0) {
+      const text = LocalisationServer.parsedLocalisation("Costs", "notifications", {cost: cost});
+      game.tooltip.activate(event.currentTarget, {text: text, direction: "DOWN"});
+    }
+    else {
+      const text = LocalisationServer.parsedLocalisation("Gain", "notifications", {gain: -cost});
+      game.tooltip.activate(event.currentTarget, {text: text, direction: "DOWN"});
+    }
+  }
+
+  _onChangeCoreValues(event) {
+    const field = $(event.currentTarget);
+    const name = event.currentTarget.dataset.target;
+    this.actor.changeCoreValue(name, field.val());
   }
 
   // Thrash code which contains a useful template though
