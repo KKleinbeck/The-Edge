@@ -785,7 +785,10 @@ export class TheEdgeActor extends Actor {
 
   async _updateStrain() {
     let zone = this.getHRZone();
-    if (zone == 1) { this._deleteEffect("Strain") }
+    if (zone == 1) {
+      this._deleteEffect("Strain");
+      return;
+    }
 
     let currentStrain = await this._getEffectOrCreate("Strain")
     if (zone == 2) {
