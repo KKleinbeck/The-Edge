@@ -1,5 +1,6 @@
 import THE_EDGE from "../system/config-the-edge.js";
 import Aux from "../system/auxilliaries.js";
+import LocalisationServer from "../system/localisation_server.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -218,6 +219,15 @@ class ItemSheetSkill extends TheEdgeItemSheet {
   async getData(options) {
     const context = await super.getData(options);
     context.helpers = {displayHint: this.options.displayHint};
+    context.coreRequirements = {}
+    for (const coreValDetails of Object.values(THE_EDGE.core_value_map)) {
+      let prefix = "";
+      if (coreValDetails[1].includes("attributes")) prefix += "attrs";
+      else if (coreValDetails[1].includes("proficiencies")) prefix += "profs";
+      else prefix += "weapons";
+      prefix = "(" + LocalisationServer.localise(prefix) + ") "
+      context.coreRequirements[prefix + LocalisationServer.localise(coreValDetails[0])] = coreValDetails[1] + ".advances";
+    }
     return context;
   }
 
@@ -273,7 +283,7 @@ class ItemSheetSkill extends TheEdgeItemSheet {
     let index = button.dataset.index;
     let targetList = this.item.system[target];
     switch (button.type) {
-      case "text":
+      case "text": case "select-one":
         targetList[level][index].modifier = button.value;
         break;
       case "number":

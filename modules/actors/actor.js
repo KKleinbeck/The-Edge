@@ -20,8 +20,9 @@ export class TheEdgeActor extends Actor {
     super.prepareDerivedData();
 
     const sys = this.system;
-    for (let ch of Object.values(sys.attributes)) {
-      ch.value = Math.max(ch.status + ch.advances, 0);
+    for (const coreValDetails of Object.values(THE_EDGE.core_value_map)) {
+      const coreVal = Aux.objectAt(this, coreValDetails[1]);
+      coreVal.value = coreVal.advances + coreVal.status;
     }
     sys.health["max"] = sys.health.baseline_max + sys.health.status
     sys.heartRate["max"] = sys.heartRate.baseline_max + 
@@ -152,7 +153,7 @@ export class TheEdgeActor extends Actor {
     const dices = proficiencyData.dices;
     const thresholds = dices.map(dice => this.system.attributes[dice]["value"]);
 
-    const modificator = proficiencyData["advances"] + proficiencyData["status"];
+    const modificator = proficiencyData.value;
     const results = await this.diceServer.proficiencyCheck(thresholds, modificator + tempModifier, vantage);
 
     if (transmit) {
@@ -446,12 +447,12 @@ export class TheEdgeActor extends Actor {
     if (requirements === undefined || requirements.length == 0) return true;
 
     for (const requirement of requirements) {
-      const sysMod = Aux.objectAt(this.system, requirement.modifier.toLowerCase());
+      const sysMod = Aux.objectAt(this, requirement.modifier.toLowerCase());
       const skillRef = this.items.filter(x => x.name.toLowerCase() == requirement.modifier.toLowerCase());
       const details = structuredClone(requirement);
       if (sysMod) {
-        if (sysMod.value < requirement.value) {
-          foundry.utils.mergeObject(details, {valueIs: sysMod.value})
+        if (sysMod.advances < requirement.value) {
+          foundry.utils.mergeObject(details, {valueIs: sysMod.advances})
           const msg = LocalisationServer.parsedLocalisation(
             "Unmet requirements", "Notifications", details
           )

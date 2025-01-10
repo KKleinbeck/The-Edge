@@ -1,4 +1,4 @@
-<form class="flexcol {{cssClass}}" autocomplete="off">
+<form class="flexcol {{cssClass}}" autocomplete="off" style="height: 100%;">
   <header class="sheet-header-item">
     <div class="item-columned-page">
       <div style="width: 100px;">
@@ -43,7 +43,7 @@
   </nav>
 
   {{!-- Sheet Body --}}
-  <section class="sheet-body">
+  <section class="sheet-body" style="overflow-y: auto;">
     <div class="tab" data-group="primary" data-tab="details">
       <div style="margin: 0 10px 0px 10px;">
         <div class="effect-hint" style="display: flex; flex-wrap: nowrap; padding: 10px; background-color: #777; justify-content: space-between; color: white;">
@@ -77,16 +77,20 @@
         </div>
         <hr />
       {{/each}}
-      <h3 class="effect-level" data-index="{{@index}}" data-type="requirements">{{genName "Requirements"}}</h3>
+      <h3>{{genName "Requirements"}}</h3>
       {{#each systemData.requirements as |levelRequirements|}}
-        <div style="display: flex; justify-content: space-between;">
+        <div class="effect-level" data-index="{{@index}}" data-type="requirements" style="display: flex; justify-content: space-between;">
           <b>Level {{add @index 1}} {{genName "Requirements"}}</b>
           <a class="effect-level-add" title="{{ itemName 'Create' }}" data-action="create"><i class="fas fa-plus"></i> {{ itemName "Add" }}</a>
         </div>
-        <div>
+        <div class="effect-level" data-index="{{@index}}" data-type="requirements" style="padding: 0px 10px;">
             {{#each levelRequirements as |requirement|}}
               <div class="item-columned-page" style="align-items: center;">
-                <input class="effect-level-modify" data-index="{{@index}}" type="text" value="{{requirement.modifier}}"/>
+                <select class="effect-level-modify" data-index="{{@index}}" style="width: 100%;">
+                  {{#each ../../coreRequirements as |path coreRequirement|}}
+                      <option value={{path}} {{#if (checkEqual requirement.modifier path)}}selected{{/if}}>{{coreRequirement}}</option>
+                  {{/each}}
+                </select>
                 <input class="effect-level-modify" data-index="{{@index}}" type="number" value="{{requirement.value}}" style="width: 45px;"/>
                 <a class="effect-level-delete" data-index="{{@index}}" title="{{ itemName 'delete' }}"><i class="fas fa-trash"></i></a>
               </div>

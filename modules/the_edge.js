@@ -7,6 +7,7 @@ import { TheEdgeActorSheet } from "./actors/actor-sheet.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
 import { createWorldbuildingMacro } from "./macro.js";
 import { TheEdgeToken, TheEdgeTokenDocument } from "./token.js";
+import LocalisationServer from "./system/localisation_server.js";
 
 Hooks.once("init", async function() {
   console.log(`Initializing the Galaxy`);
@@ -15,10 +16,20 @@ Hooks.once("init", async function() {
   for (const [group, weapon_class] of Object.entries(game.model.Actor.character.weapons)) {
     THE_EDGE.effect_map.weapons[group.toLowerCase()] = Object.keys(weapon_class)
     THE_EDGE.effect_map.weapons.all.push(...Object.keys(weapon_class))
+    for (const weapon of Object.keys(weapon_class)) {
+      THE_EDGE.core_value_map[weapon] = [LocalisationServer.localise(weapon, "combat"), `system.weapons.${group}.${weapon}`]
+    }
   }
   for (const [group, proficiencies] of Object.entries(game.model.Actor.character.proficiencies)) {
     THE_EDGE.effect_map.proficiencies[group.toLowerCase()] = Object.keys(proficiencies)
     THE_EDGE.effect_map.proficiencies.all.push(...Object.keys(proficiencies))
+    for (const prof of Object.keys(proficiencies)) {
+      THE_EDGE.core_value_map[prof] = [LocalisationServer.localise(prof, "proficiency"), `system.proficiencies.${group}.${prof}`]
+    }
+  }
+
+  for (const attr of Object.keys(game.model.Actor.character.attributes)) {
+    THE_EDGE.core_value_map[attr] = [LocalisationServer.localise(attr, "attr"), `system.attributes.${attr}`]
   }
 
   // Useful helpers
