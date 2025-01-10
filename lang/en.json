@@ -281,7 +281,8 @@
 
     "GAIN": "Gain {gain} PH",
     "COSTS": "Costs {cost} PH",
-    "PH MISSING": "Not enough PH to bring {name} to {level}. {need} needed, {available} available."
+    "PH MISSING": "Not enough PH to bring {name} to {level}. {need} needed, {available} available.",
+    "CORE VALUE TOO SMALL": "Basic combat proficiency for {name} is too small. Level {level} needed but it is at {basic}."
   },
   "PROFICIENCY": {
     "ENVIRONMENTAL": "Environmental",

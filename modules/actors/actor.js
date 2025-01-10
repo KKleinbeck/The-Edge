@@ -152,7 +152,7 @@ export class TheEdgeActor extends Actor {
     const dices = proficiencyData.dices;
     const thresholds = dices.map(dice => this.system.attributes[dice]["value"]);
 
-    const modificator = proficiencyData["advances"] + proficiencyData["modifier"] + proficiencyData["status"];
+    const modificator = proficiencyData["advances"] + proficiencyData["status"];
     const results = await this.diceServer.proficiencyCheck(thresholds, modificator + tempModifier, vantage);
 
     if (transmit) {
@@ -195,13 +195,25 @@ export class TheEdgeActor extends Actor {
 
     const cost = this.coreValueChangeCost(coreName, newVal);
     const availablePH = this.system.PracticeHours.max - this.system.PracticeHours.used;
+    const parts = coreName.split(".");
     if (cost > availablePH) {
       const msg = LocalisationServer.parsedLocalisation(
         "AP missing", "Notifications",
-        {name: coreName.split(".").last(), level: newVal, need: cost, available: availablePH}
+        {name: parts[parts.length - 2], level: newVal, need: cost, available: availablePH}
       )
       ui.notifications.notify(msg)
       return;
+    }
+    if (coreName.includes("weapons")) {
+      const type = coreName.split(".")[2];
+      if (newVal > this.system.generalCombatAdvances[type]) {
+        const msg = LocalisationServer.parsedLocalisation(
+          "Core Value too small", "Notifications",
+          {name: parts[parts.length - 2], level: newVal, basic: this.system.generalCombatAdvances[type]}
+        )
+        ui.notifications.notify(msg)
+        return;
+      }
     }
 
     this.update({
