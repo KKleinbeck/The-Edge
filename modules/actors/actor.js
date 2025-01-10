@@ -21,7 +21,7 @@ export class TheEdgeActor extends Actor {
 
     const sys = this.system;
     for (let ch of Object.values(sys.attributes)) {
-      ch.value = Math.max(ch.status + ch.advances + ch.modifier, 0);
+      ch.value = Math.max(ch.status + ch.advances, 0);
     }
     sys.health["max"] = sys.health.baseline_max + sys.health.status
     sys.heartRate["max"] = sys.heartRate.baseline_max + 
@@ -216,40 +216,39 @@ export class TheEdgeActor extends Actor {
   }
   
   async _determineEncumbrance() {
-      let weight = this._determineWeight();
-      // let str = this.system.attributes.Str.value;
-      let str = this.system.attributes.str.modifier +
-        this.system.attributes.str.advances + this.system.attributes.str.status;
+    let weight = this._determineWeight();
+    // let str = this.system.attributes.Str.value;
+    let str = this.system.attributes.str.advances + this.system.attributes.str.status;
 
-      // Correct for the current encumbrance level
-      let effects = this.itemTypes["Effect"]
-      let currentEncumbrance = effects?.find(
-        obj => obj.name == LocalisationServer.localise("Encumbrance"))
-      str += currentEncumbrance?.system.effects?.reduce(
-        (a,b) => a - b.value, -1
-      ) || 0 // -1 for the phyiscal proficiencies
-      if (str <= 0) return false; // We can't possibly do sensible things yet
-      else if (weight <= str) {
-        this._deleteEffect("Encumbrance");
-        return true; // exit without being encumbered
-      }
-      
-      let encumbranceLevel = Math.max(Math.ceil((weight - 1.5 * str) / (str / 2)), 0)
-      let physicalMalus = -Math.ceil(encumbranceLevel / 2)
-      let allMalus = -Math.floor(encumbranceLevel / 2)
+    // Correct for the current encumbrance level
+    let effects = this.itemTypes["Effect"]
+    let currentEncumbrance = effects?.find(
+      obj => obj.name == LocalisationServer.localise("Encumbrance"))
+    str += currentEncumbrance?.system.effects?.reduce(
+      (a,b) => a - b.value, -1
+    ) || 0 // -1 for the phyiscal proficiencies
+    if (str <= 0) return false; // We can't possibly do sensible things yet
+    else if (weight <= str) {
+      this._deleteEffect("Encumbrance");
+      return true; // exit without being encumbered
+    }
+    
+    let encumbranceLevel = Math.max(Math.ceil((weight - 1.5 * str) / (str / 2)), 0)
+    let physicalMalus = -Math.ceil(encumbranceLevel / 2)
+    let allMalus = -Math.floor(encumbranceLevel / 2)
 
-      if (!currentEncumbrance) {
-        const cls = getDocumentClass("Item");
-        currentEncumbrance = await cls.create(
-          {name: LocalisationServer.localise("Encumbrance"), type: "Effect"}, {parent: this}
-        );
-      }
-      await currentEncumbrance.update({"system.effects": [
-        {modifier: "Proficiencies.Physical", value: -1},
-        {modifier: "Attributes.Physical", value: physicalMalus},
-        {modifier: "Attributes.All", value: allMalus}
-      ]})
-      return true
+    if (!currentEncumbrance) {
+      const cls = getDocumentClass("Item");
+      currentEncumbrance = await cls.create(
+        {name: LocalisationServer.localise("Encumbrance"), type: "Effect"}, {parent: this}
+      );
+    }
+    await currentEncumbrance.update({"system.effects": [
+      {modifier: "Proficiencies.Physical", value: -1},
+      {modifier: "Attributes.Physical", value: physicalMalus},
+      {modifier: "Attributes.All", value: allMalus}
+    ]})
+    return true
   };
 
   async _updateStatus() {

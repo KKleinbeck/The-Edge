@@ -381,8 +381,6 @@ class ItemSheetWounds extends TheEdgeItemSheet {
 class ItemSheetEffect extends ItemSheetSkill {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["the_edge", "sheet", "item-effect"],
-      height: 240,
       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "effects"}],
     });
   }

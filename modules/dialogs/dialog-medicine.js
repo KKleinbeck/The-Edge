@@ -11,7 +11,7 @@ export default class DialogMedicine extends Dialog{
   static async start(checkData) {
     let medicine = checkData.medicineItem.system.subtypes.medicine;
     let effect = medicine.effect;
-    let wounds = checkData.wounds.filter(x => x.system.status != "sealed")
+    let wounds = checkData.wounds.filter(x => x.system.status != "treated")
 
     const template = "systems/the_edge/templates/dialogs/medicine.html";
     let html = await renderTemplate(template, {"wounds": wounds});
@@ -33,7 +33,7 @@ export default class DialogMedicine extends Dialog{
           if (healing == damage && coagulation == bleeding) wound.delete();
           else {
             let woundStatus = wound.status;
-            if (effect == "seals") woundStatus = "sealed";
+            if (effect == "treats") woundStatus = "treated";
             wound.update({
               "system.damage": damage - healing, "system.bleeding": bleeding - coagulation,
               "system.status": woundStatus

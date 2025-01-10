@@ -88,7 +88,7 @@ export default function() {
     getWoundCoords: (details) => {
       let colour = details.bleeding > 0 ? "red" : "orange";
       let coords = details.coordinates;
-      let icon = undefined
+      let icon = undefined;
       switch (details.status) {
         case "treatable":
           icon = "fa-regular fa-droplet";
@@ -96,7 +96,7 @@ export default function() {
         // case "coagulated":
         //   icon = "fa-regular fa-droplet-slash";
         //   break;
-        case "sealed":
+        case "treated":
           icon = "fa-light fa-bandage";
           break;
       }
@@ -111,7 +111,7 @@ export default function() {
           return "fa-droplet";
         // case "coagulated":
         //   return "fa-droplet-slash";
-        case "sealed":
+        case "treated":
           return "fa-bandage";
       }
     },
