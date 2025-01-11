@@ -174,6 +174,13 @@ export class TheEdgeActor extends Actor {
     return results;
   }
 
+  async _advanceAttr(attrName, type) {
+    const attrValue = this.system.attributes[attrName].advances;
+    const newVal = attrValue + (type == "advance" ? 1 : -1);
+
+    this.changeCoreValue(`system.attributes.${attrName}.advances`, newVal);
+  }
+
   coreValueChangeCost(coreName, newVal) {
     newVal = newVal ? +newVal : 0; // If empty / undefined
     if (!Number.isInteger(+newVal)) {return;}
@@ -199,7 +206,7 @@ export class TheEdgeActor extends Actor {
     const parts = coreName.split(".");
     if (cost > availablePH) {
       const msg = LocalisationServer.parsedLocalisation(
-        "AP missing", "Notifications",
+        "PH missing", "Notifications",
         {name: parts[parts.length - 2], level: newVal, need: cost, available: availablePH}
       )
       ui.notifications.notify(msg)
@@ -378,46 +385,6 @@ export class TheEdgeActor extends Actor {
       }
     }
     await this.update(update);
-  }
-
-  async _advanceAttr(attrName, type) {
-    const attrValue = this.system.attributes[attrName].advances;
-
-    this._levelingSrv(`system.attributes.${attrName}.advances`, type, attrValue, this._attrCost)
-  }
-
-  async _advanceProf(profName, type) {
-    let group = Aux.getProficiencyGroup(profName);
-    let profValue = this.system.proficiencies[group][profName].advances;
-
-    this._levelingSrv(`system.proficiencies.${group}.${profName}.advances`, type, profValue, this._profCost)
-  }
-
-  async _advanceWeaponProf(profName, type) {
-    let group = Aux.getWeaponGroup(profName);
-    let profValue = this.system.weapons[group][profName].advances;
-    if (profValue >= this.system.generalCombatAdvances[group] && type == "advance") return undefined;
-
-    this._levelingSrv(`system.weapons.${group}.${profName}.advances`, type, profValue, this._attrCost)
-  }
-
-  async _advanceCombatGeneral(category, type) {
-    let profValue = this.system.generalCombatAdvances[category];
-    this._levelingSrv(`system.generalCombatAdvances.${category}`, type, profValue, this._attrCost)
-  }
-
-  async _levelingSrv(updateName, type, level, costFunc) {
-    const ph = this.system.PracticeHours;
-    let update = {}
-    if ((type == "advance") && (ph.max - ph.used >= costFunc(level)) ) {
-      update[updateName] = level + 1
-      update[`system.PracticeHours.used`] = ph.used + costFunc(level)
-    }
-    else if ((type == "refund") && (level > 0) ) {
-      update[updateName] = level - 1
-      update[`system.PracticeHours.used`] = ph.used - costFunc(level - 1)
-    }
-    this.update(update)
   }
 
   learnSkill(newSkill) {
