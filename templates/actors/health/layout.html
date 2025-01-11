@@ -84,12 +84,12 @@
             {{#each ../data.items as |item id|}}
               {{#if (checkEqual item.type "Wounds")}}
                 {{#if (checkInstance bPart item.system.bodyPart)}}
-                  <div class="item-control item" data-action="edit" data-item-id="{{item._id}}" style="cursor: pointer; min-width: 200px;">
-                    <div>
+                  <div class="item" data-item-id="{{item._id}}" style="cursor: pointer; min-width: 200px;">
+                    <div class="item-control" data-action="edit">
                       <h4 class="item-name" style="margin: 0px;">{{item.name}}</h4>
                     </div>
                     <div class="item-controls" style="white-space: no-wrap; padding: 0 0 5px 10px;">
-                      <div style="display: flex; gap: 5px;">
+                      <div class="item-control" data-action="edit" style="display: flex; gap: 5px;">
                         {{combatName item.system.type}} - {{itemName item.system.status}}
                         <i class="fa-regular {{getWoundIcon item.system.status}}" style="font-size: 12px; transform: translateY(2px);"></i>
                       </div>

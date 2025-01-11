@@ -671,17 +671,17 @@ export class TheEdgeActor extends Actor {
   }
 
   async applyFallDamage(height, location) {
+    const damageRoll = `${height}d12 + ${4*height-22}`;
+    const damage = Math.max((await DiceServer.genericRoll(damageRoll)), 0);
     const n = Math.floor(height / 2);
-    const damageRoll = `${n*n}d4+${n*n+n}`;
-    const damage = (await DiceServer.genericRoll(damageRoll));
     await this._applyImpactOrFallDamage(n, damage, "fall", `${height}m`, location)
     ChatServer.transmitEvent("fall", {actor: this.name, height: height, damage: damage, damageRoll: damageRoll});
   }
 
   async applyImpactDamage(speed, location) {
+    const damageRoll = `${speed}d${speed}+${speed-30}`;
+    const damage = Math.max((await DiceServer.genericRoll(damageRoll)), 0);
     const n = Math.floor(speed / 3);
-    const damageRoll = `${n}d8+${n*n}`;
-    const damage = (await DiceServer.genericRoll(damageRoll));
     await this._applyImpactOrFallDamage(n, damage, "impact", `${speed}m/s`, location)
     ChatServer.transmitEvent("impact", {actor: this.name, speed: speed, damage: damage, damageRoll: damageRoll});
   }
