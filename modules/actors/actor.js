@@ -414,7 +414,7 @@ export class TheEdgeActor extends Actor {
     if (requirements === undefined || requirements.length == 0) return true;
 
     for (const requirement of requirements) {
-      const sysMod = Aux.objectAt(this, requirement.modifier.toLowerCase());
+      const sysMod = Aux.objectAt(this, requirement.modifier);
       const skillRef = this.items.filter(x => x.name.toLowerCase() == requirement.modifier.toLowerCase());
       const details = structuredClone(requirement);
       if (sysMod) {

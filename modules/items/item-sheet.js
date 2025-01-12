@@ -231,6 +231,12 @@ class ItemSheetSkill extends TheEdgeItemSheet {
       // Spaces need to be replaced for html parsing to work
       context.coreRequirements[displayName] = coreValDetails[1] + ".advances";
     }
+    const skills = game.items.filter(x => x.type.toLowerCase().includes("skill"));
+    for (const skill of skills) {
+      const displayName = "(" + LocalisationServer.localise("Skill", "Skill") + ") " +
+        skill.name;
+      context.coreRequirements[displayName] = skill.name;
+    }
     return context;
   }
 

@@ -339,7 +339,8 @@
   },
   "SKILL": {
     "DECREASE": "Decrease skill level",
-    "INCREASE": "Increase skill level"
+    "INCREASE": "Increase skill level",
+    "SKILL": "Skill"
   },
   "TEXT": {
     "EFFECTS": "Add a status modifiery to your attributes, proficiencies, weapon proficiencies and other character attributes.\nFor this write 'Attributes.NAME', 'Proficiencies.NAME', 'Weapons.NAME'. This is generally case-insensitive, except for specific proficiency and weapon names. You can also use group names, for example 'attributes.physical' or 'weapons.Energy'. Furthermore there is an 'all' specifier to affect everything.\nOther modifiers: 'health', 'heartRate.[min,max]', 'bloodVolumn'.",
