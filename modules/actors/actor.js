@@ -418,11 +418,9 @@ export class TheEdgeActor extends Actor {
       const skillRef = this.items.filter(x => x.name.toLowerCase() == requirement.modifier.toLowerCase());
       const details = structuredClone(requirement);
       if (sysMod) {
-        if (sysMod.advances < requirement.value) {
-          foundry.utils.mergeObject(details, {valueIs: sysMod.advances})
-          const msg = LocalisationServer.parsedLocalisation(
-            "Unmet requirements", "Notifications", details
-          )
+        if (sysMod < requirement.value) {
+          foundry.utils.mergeObject(details, {valueIs: sysMod});
+          const msg = LocalisationServer.parsedLocalisation("Unmet requirements", "Notifications", details);
           ui.notifications.notify(msg);
           return false;
         }

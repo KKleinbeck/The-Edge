@@ -88,7 +88,7 @@
               <div class="item-columned-page" style="align-items: center;">
                 <select class="effect-level-modify" data-index="{{@index}}" style="width: 100%;">
                   {{#each ../../coreRequirements as |path coreRequirement|}}
-                      <option value={{path}} {{#if (checkEqual requirement.modifier path)}}selected{{/if}}>{{coreRequirement}}</option>
+                      <option value="{{[path]}}" {{#if (checkEqual requirement.modifier path)}}selected{{/if}}>{{coreRequirement}}</option>
                   {{/each}}
                 </select>
                 <input class="effect-level-modify" data-index="{{@index}}" type="number" value="{{requirement.value}}" style="width: 45px;"/>

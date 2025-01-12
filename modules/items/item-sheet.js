@@ -221,12 +221,15 @@ class ItemSheetSkill extends TheEdgeItemSheet {
     context.helpers = {displayHint: this.options.displayHint};
     context.coreRequirements = {}
     for (const coreValDetails of Object.values(THE_EDGE.core_value_map)) {
-      let prefix = "";
-      if (coreValDetails[1].includes("attributes")) prefix += "attrs";
-      else if (coreValDetails[1].includes("proficiencies")) prefix += "profs";
-      else prefix += "weapons";
-      prefix = "(" + LocalisationServer.localise(prefix) + ") "
-      context.coreRequirements[prefix + LocalisationServer.localise(coreValDetails[0])] = coreValDetails[1] + ".advances";
+      let displayName = "";
+      if (coreValDetails[1].includes("attributes")) displayName += "attrs";
+      else if (coreValDetails[1].includes("proficiencies")) displayName += "profs";
+      else displayName += "weapons";
+      displayName = "(" + LocalisationServer.localise(displayName) + ") ";
+      displayName += LocalisationServer.localise(coreValDetails[0]);
+
+      // Spaces need to be replaced for html parsing to work
+      context.coreRequirements[displayName] = coreValDetails[1] + ".advances";
     }
     return context;
   }
