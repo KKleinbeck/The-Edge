@@ -157,8 +157,14 @@ export default function() {
       actor.update({"system.PracticeHours.max": actor.system.PracticeHours.max + ph});
     }
 
-    chatData.content = `<h3>${LocalisationServer.localise("practice time", "chat")}</h3>` +
-      LocalisationServer.parsedLocalisation("Practice message", "chat", {actors: actors, phGain: ph})
+    if (actors.length > 0) {
+      chatData.content = `<h3>${LocalisationServer.localise("practice time", "chat")}</h3>` +
+        LocalisationServer.parsedLocalisation("Practice message", "chat", {actors: actors, phGain: ph})
+    } else {
+      const msg = LocalisationServer.localise("No actors to level up", "Notifications");
+      ui.notifications.notify(msg);
+      return false;
+    }
     return true;
   }
 
