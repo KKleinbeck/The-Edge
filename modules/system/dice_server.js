@@ -66,9 +66,19 @@ export default class DiceServer {
         break;
 
       case "proficiency":
+        let nCrits = 0;
+        let nCritFails = 0;
         for (const dice of roll.diceResults) {
-          if (interpretationParams.crit.includes(dice)) basicQuality += 2;
-          if (interpretationParams.critFail.includes(dice)) basicQuality -= 2;
+          if (interpretationParams.crit.includes(dice)) ++nCrits;
+          if (interpretationParams.critFail.includes(dice)) ++nCritFails;
+        }
+        basicQuality += 2 * (nCrits - nCritFails);
+        if (nCrits >= 2) {
+          basicQuality = Math.max(basicQuality, 7);
+          outcome = "CritSuccess";
+        } else if (nCritFails >= 2) {
+          basicQuality = Math.min(basicQuality, -7);
+          outcome = "CritFailure";
         }
         break;
       

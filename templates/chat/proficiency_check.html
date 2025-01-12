@@ -10,7 +10,7 @@
 <div class="centered-row">
   <b>{{genName "result"}}:</b>
   <span class="prof-outcome">{{genName outcome}}</span>
-  <span class="prof-quality" data-quality={{quality}}>{{quality}}&thinsp;{{#if (checkEqual outcome "Success")}}QL{{else}}FL{{/if}}</span>
+  <span class="prof-quality" data-quality={{quality}}>{{quality}}&thinsp;{{#if (checkInstance "Success" outcome)}}QL{{else}}FL{{/if}}</span>
 </div>
 <div class="centered-row">
   <b>{{genName "Modificators"}}: </b>
