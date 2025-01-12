@@ -221,6 +221,18 @@ export class TheEdgeActor extends Actor {
         )
         ui.notifications.notify(msg)
         return;
+      } else if (coreName.includes("Combatics")) {
+        const combaticsBasic = Math.floor(
+          (this.system.attributes.str.value + this.system.attributes.crd.value) / 2
+        );
+        if (newVal > combaticsBasic) {
+          const msg = LocalisationServer.parsedLocalisation(
+            "Core Value combatics too small", "Notifications",
+            {level: newVal, basic: combaticsBasic}
+          )
+          ui.notifications.notify(msg)
+          return;
+        } 
       }
     }
 

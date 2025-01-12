@@ -283,6 +283,7 @@
     "COSTS": "Costs {cost} PH",
     "PH MISSING": "Not enough PH to bring {name} to {level}. {need} needed, {available} available.",
     "CORE VALUE TOO SMALL": "Basic combat proficiency for {name} is too small. Level {level} needed but it is at {basic}.",
+    "CORE VALUE COMBATICS TOO SMALL": "Basic combat proficiency (average str and crd) for Combatics is too small. {level} needed but it is at {basic}.",
 
     "NO ACTORS TO LEVEL UP": "Could not give PH to any character. Make sure they have a player owner."
   },
