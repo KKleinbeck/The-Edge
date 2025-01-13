@@ -27,7 +27,7 @@ THE_EDGE.wounds_pixel_coords = {
   }
 }
 THE_EDGE.bleeding_threshold = {
-  "energy": 4, "kinetic": 2, "elemental": 10, "fall": 10, "impact": 10, "HandToHand": 10
+  "energy": 10, "kinetic": 4, "elemental": 20, "fall": 20, "impact": 20, "HandToHand": 20
 }
 THE_EDGE.medicine_effects = ["heals", "treats"]
 THE_EDGE.wound_status = ["treatable", "treated"]

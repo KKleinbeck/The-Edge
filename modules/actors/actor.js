@@ -856,8 +856,8 @@ export class TheEdgeActor extends Actor {
   hrZone1() {return 5 * Math.floor(this.system.heartRate.max * 75 / 500)}
   hrZone2() {return 5 * Math.floor(this.system.heartRate.max * 90 / 500)}
 
-  shortRest() {this._rest("1d3 % 2", "1d3-2", "short rest")} // 2/3, 1/3 chances
-  longRest() {this._rest("2d3kh", "2d3kl", "long rest")}
+  shortRest() {this._rest("1d3 % 2", "1d3-1", "short rest")}
+  longRest() {this._rest("2d3kh", "2d6 / 2", "long rest")}
 
   async _rest(coagulationDice, healingDice, type) {
     let wounds = this.itemTypes["Wounds"];
@@ -866,7 +866,7 @@ export class TheEdgeActor extends Actor {
     for (const wound of wounds) {
       if (wound.system.bleeding > 0) {
         let coagulationRoll = await new Roll(coagulationDice).evaluate()
-        let coagulation = coagulationRoll.total
+        let coagulation = Math.floor(coagulationRoll.total);
         if (wound.system.damage == 0 && wound.system.bleeding <= coagulation) {
           accCoagulation += wound.system.bleeding;
           wound.delete();
@@ -876,7 +876,7 @@ export class TheEdgeActor extends Actor {
         }
       } else {
         let healingRoll = await new Roll(healingDice).evaluate()
-        let healing = healingRoll.total
+        let healing = Math.floor(healingRoll.total);
         if (wound.system.damage <= healing) { // shortcut: wound healed afterwards
           accHealing += wound.system.damage;
           wound.delete();
