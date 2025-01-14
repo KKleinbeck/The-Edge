@@ -692,20 +692,19 @@ export class TheEdgeActor extends Actor {
     let odds = undefined;
     switch (damageType) {
       case "energy":
-        odds = {"abrasion": 5, "light burn": damage, "strong burn": Math.max(0, Math.ceil(damage*(damage - 9)/10))};
+        odds = {"abrasion": 10, "light burn": damage, "strong burn": Math.max(0, Math.ceil(damage*(damage - 10)/10))};
         break;
       case "kinetic":
-        odds = {"abrasion": 5, "laceration": damage, "fracture":    Math.max(0, Math.ceil(damage*(damage - 9)/10))};
+        odds = {"abrasion": 10, "laceration": damage, "fracture":    Math.max(0, Math.ceil(damage*(damage - 10)/10))};
         break;
       case "elemental":
-        odds = {"light burn": damage, "strong burn": Math.max(0, damage*(damage - 5)/20)};
+        odds = {"light burn": damage, "strong burn": Math.max(0, damage*(damage - 10)/10)};
         break;
-      case "fall":
-      case "impact":
-        odds = {"abrasion": 10, "laceration": Math.ceil(damage/2), "fracture": Math.max(0, Math.ceil(damage*(damage - 9)/10))};
+      case "fall": case "impact":
+        odds = {"abrasion": 20, "laceration": Math.ceil(damage/2), "fracture": Math.max(0, Math.ceil(damage*(damage - 10)/10))};
         break;
       case "HandToHand":
-        odds = {"abrasion": 10, "fracture": Math.max(0, Math.ceil(damage*(damage - 9)/10))};
+        odds = {"abrasion": 20, "fracture": Math.max(0, Math.ceil(damage*(damage - 10)/10))};
     }
     return Aux.pickFromOdds(odds);
   }
