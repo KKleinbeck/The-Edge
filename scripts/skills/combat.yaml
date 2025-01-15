@@ -1,0 +1,6 @@
+- name: In the hands of a master everything is a weapon
+  levels: 2
+  cost: 2300 / 3000
+- name: Fire corridor
+  type: Reaction
+  cost: 400

@@ -345,6 +345,10 @@
     "INCREASE": "Increase skill level",
     "SKILL": "Skill"
   },
+  "SKILL TEXT": {
+    "IN THE HANDS OF A MASTER EVERYTHING IS A WEAPON": "Get a +1/+2 modifier on all weapon skills below 8/12 (however, weapon skill + this modifier must not exceed the threshold). <br />Requires one weapon skill at 13/17.",
+    "FIRE CORRIDOR": "Takes 3 actions. You set up a fire corridor, a 30° wide cone in front of you. Whenever something enters or leaves the corridor, or enters/ leaves full cover in the corridor, you can perform an aimed shot as a reaction twice until your next turn. Counts as readied action."
+  },
   "TEXT": {
     "EFFECTS": "Add a status modifiery to your attributes, proficiencies, weapon proficiencies and other character attributes.\nFor this write 'Attributes.NAME', 'Proficiencies.NAME', 'Weapons.NAME'. This is generally case-insensitive, except for specific proficiency and weapon names. You can also use group names, for example 'attributes.physical' or 'weapons.Energy'. Furthermore there is an 'all' specifier to affect everything.\nOther modifiers: 'health', 'heartRate.[min,max]', 'bloodVolumn'.",
     "NO STRAIN": "Examples: Standing, sitting, lying, using a weapon",
