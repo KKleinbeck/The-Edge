@@ -798,7 +798,7 @@ export class TheEdgeActor extends Actor {
         const injury = await this._getEffectOrCreate(`Injuries ${bodyPart}`);
         const n = Math.floor(damage / 15);
         await injury.update({"system.effects": [
-          {modifier: `system.${THE_EDGE.injury_map[bodyPart]}`, value: -n}
+          {modifier: `attributes.${THE_EDGE.injury_map[bodyPart]}`, value: -n}
         ]})
       }
     }
@@ -887,7 +887,10 @@ export class TheEdgeActor extends Actor {
         }
       }
     }
-    this.update({"system.health.value": Math.min(this.system.health.max, this.system.health.value + accHealing)});
+    this.update({
+      "system.health.value": Math.min(this.system.health.max, this.system.health.value + accHealing),
+      "system.heartRate.value": this.system.heartRate.min - accHealing
+    });
     ChatServer.transmitEvent(type, {healing: accHealing, coagulation: accCoagulation})
   }
 }
