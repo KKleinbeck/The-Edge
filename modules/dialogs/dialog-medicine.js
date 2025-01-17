@@ -42,7 +42,7 @@ export default class DialogMedicine extends Dialog{
 
           checkData.actor.update({
             "system.health.value": Math.min(
-              checkData.actor.system.health.max, checkData.actor.system.health.value + healing
+              checkData.actor.system.health.max.value, checkData.actor.system.health.value + healing
             )
           })
 

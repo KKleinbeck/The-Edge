@@ -108,9 +108,7 @@
     "biography": "", "notes": "",
     "health": {
       "value": 100,
-      "baseline_max": 100,
-      "max": 0,
-      "status": 0
+      "max": {"value": 0, "status": 0, "baseline": 100}
     },
     "age": 21,
     "sex": "female",
@@ -120,16 +118,13 @@
     "size": "normal",
     "heartRate": {
       "value": 50,
-      "baseline_min": 50,
-      "baseline_max": 195,
-      "min": 0,
-      "max": 0,
-      "status_min": 0,
-      "status_max": 0
+      "min": {"value": 0, "status": 0, "baseline": 50},
+      "max": {"value": 0, "status": 0, "baseline": 195}
     },
     "bloodLoss": {
       "value": 0,
-      "status_threshold": 0
+      "threshold": {"value": 0, "status": 0, "baseline": 0},
+      "effectStep": {"value": 0, "status": 0, "baseline": 5}
     },
     "heroToken": {
       "max": 2,

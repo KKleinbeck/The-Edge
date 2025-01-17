@@ -11,18 +11,18 @@
                     <p class="attribute-title">{{genName "health"}}</p>
                     <input 
                         name="system.health.value" type="number" value="{{systemData.health.value}}"
-                        style="width: 54px; max-height: 23px; text-align: center;" max="{{systemData.health.max}}"
+                        style="width: 54px; max-height: 23px; text-align: center;" max="{{systemData.health.max.value}}"
                     />
                     <span> / </span>
-                    <span class="output" style="width: 54px;">{{systemData.health.max}}</span>
+                    <span class="output" style="width: 54px;">{{systemData.health.max.value}}</span>
                 </div>
                 <div class="page-centered">
                     <p class="attribute-title">{{genName "Heartrate"}}</p>
                     <input
                         name="system.heartRate.value" type="number" value="{{systemData.heartRate.value}}"
-                        style="width: 54px; max-height: 23px; text-align: center;" min="{{systemData.heartRate.min}}" max="{{systemData.heartRate.max}}"
+                        style="width: 54px; max-height: 23px; text-align: center;"
                     />
-                    <span class="output" style="width: 74px;">{{systemData.heartRate.min}} &ndash; {{systemData.heartRate.max}}</span>
+                    <span class="output" style="width: 74px;">{{systemData.heartRate.min.value}} &ndash; {{systemData.heartRate.max.value}}</span>
                 </div>
                 <div class="page-centered">
                     <!-- <p class="attribute-title">{{genName "herotoken"}}</p> -->

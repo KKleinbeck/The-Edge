@@ -24,13 +24,14 @@ export class TheEdgeActor extends Actor {
       const coreVal = Aux.objectAt(this, coreValDetails[1]);
       coreVal.value = coreVal.advances + coreVal.status;
     }
-    sys.health["max"] = sys.health.baseline_max + sys.health.status
-    sys.heartRate["max"] = sys.heartRate.baseline_max + 
-      sys.heartRate.status_max + sys.attributes["end"].value -
-      2 * Math.floor((sys.age - 21) / 3)
-    sys.heartRate["min"] = sys.heartRate.baseline_min + sys.heartRate.status_min +
-      (sys.health["max"] - sys.health["value"]) - sys.attributes["end"].value
-    sys.bloodVolumn["max"] = sys.bloodVolumn.baseline_max + sys.bloodVolumn.status
+    sys.health.max.value = sys.health.max.baseline + sys.health.max.status
+    sys.bloodLoss.threshold.value = sys.bloodLoss.threshold.baseline + sys.bloodLoss.threshold.status
+    sys.bloodLoss.effectStep.value = sys.bloodLoss.effectStep.baseline + sys.bloodLoss.effectStep.status
+    
+    sys.heartRate.max.value = sys.heartRate.max.baseline + sys.heartRate.max.status +
+      sys.attributes["end"].value - 2 * Math.floor((sys.age - 21) / 3)
+    sys.heartRate.min.value = sys.heartRate.min.baseline + sys.heartRate.min.status +
+      (sys.health.max.value - sys.health.value) - sys.attributes["end"].value
 
     sys.wounds = {}
   }
@@ -288,8 +289,9 @@ export class TheEdgeActor extends Actor {
 
     // Reset to a blank state
     let update = {
-      "system.health.status": 0, "system.heartRate.status_min": 0,
-      "system.heartRate.status_max": 0, "system.bloodVolumn.status": 0
+      "system.health.max.status": 0, "system.heartRate.min.status": 0,
+      "system.heartRate.max.status": 0, "system.bloodLoss.threshold.status": 0,
+      "system.bloodLoss.effectStep.status": 0
     }
     for (const attr of THE_EDGE.attrs) {
       update[`system.attributes.${attr}.status`] = 0;
@@ -386,14 +388,18 @@ export class TheEdgeActor extends Actor {
           
           case "heartrate":
             if (modifierSubclass.toLowerCase() == "min") {
-              update["system.heartRate.status_min"] += effect.value;
+              update["system.heartRate.min.status"] += effect.value;
             } else if (modifierSubclass.toLowerCase() == "max") {
-              update["system.heartRate.status_max"] += effect.value;
+              update["system.heartRate.max.status"] += effect.value;
             }
             break;
           
-          case "bloodvolumn":
-            update["system.bloodVolumn.status"] += effect.value;
+          case "bloodLoss":
+            if (modifierSubclass.toLowerCase() == "threshold") {
+              update["system.bloodLoss.threshold.status"] += effect.value;
+            } else if (modifierSubclass.toLowerCase() == "effectStep") {
+              update["system.bloodLoss.effectStep.status"] += effect.value;
+            }
             break;
         }
       }
@@ -637,9 +643,9 @@ export class TheEdgeActor extends Actor {
       let update = {}
       update["system.health.value"] = Math.max(health - damage, 0)
       if (health > damage) { // increase heartrate upon damage
-        update["system.heartRate.value"] = Math.min(heartRate.value + damage, heartRate.max)
+        update["system.heartRate.value"] = Math.min(heartRate.value + damage, heartRate.max.value)
       } else if (health > 0) { // Dying damage
-        update["system.heartRate.value"] = Math.max(heartRate.max - (damage - health), 0)
+        update["system.heartRate.value"] = Math.max(heartRate.max.value - (damage - health), 0)
       } else { // bleeding out
         update["system.heartRate.value"] = Math.max(heartRate.value - damage, 0)
       }
@@ -736,7 +742,7 @@ export class TheEdgeActor extends Actor {
     const wounds = this.itemTypes["Wounds"];
     const bleeding = wounds.map(x => x.system.bleeding).sum();
     const sys = this.system;
-    const lossRate = sys.heartRate.value / sys.heartRate.max;
+    const lossRate = sys.heartRate.value / sys.heartRate.max.value;
     const bloodLoss = Math.floor(lossRate * bleeding);
     console.log(lossRate, bleeding)
     this.update({"system.bloodLoss.value": sys.bloodLoss.value + bloodLoss});
@@ -756,7 +762,7 @@ export class TheEdgeActor extends Actor {
     hrChange += (maxStrain - zone + 1) * [0, 1, 2, 4][communication]
     
     let hr = this.system.heartRate;
-    let threshold = [hr.min, this.hrZone1(), this.hrZone2(), hr.max][maxStrain]
+    let threshold = [hr.min, this.hrZone1(), this.hrZone2(), hr.max.value][maxStrain]
     let clamper = isRest ? Math.max : Math.min;
     await this.update({"system.heartRate.value": clamper(hr.value + hrChange, threshold)});
     
@@ -768,7 +774,7 @@ export class TheEdgeActor extends Actor {
   }
 
   async _updatePain() {
-    const damageTotal = this.system.health.max - this.system.health.value;
+    const damageTotal = this.system.health.max.value - this.system.health.value;
     const damageBodyParts = {arms: 0, legs: 0, torso: 0, head: 0};
     const wounds = this.itemTypes["Wounds"];
     for (const wound of wounds) {
@@ -862,8 +868,8 @@ export class TheEdgeActor extends Actor {
     return 3;
   }
 
-  hrZone1() {return 5 * Math.floor(this.system.heartRate.max * 75 / 500)}
-  hrZone2() {return 5 * Math.floor(this.system.heartRate.max * 90 / 500)}
+  hrZone1() {return 5 * Math.floor(this.system.heartRate.max.value * 75 / 500)}
+  hrZone2() {return 5 * Math.floor(this.system.heartRate.max.value * 90 / 500)}
 
   shortRest() {this._rest("1d3 % 2", "1d3-1", "1d5", "short rest")}
   longRest() {this._rest("2d3kh", "2d6 / 2", "3d5", "long rest")}
@@ -902,8 +908,8 @@ export class TheEdgeActor extends Actor {
     const bloodRegenRoll = await new Roll(bloodRegenDice).evaluate();
     const bloodRegen = Math.min(this.system.bloodLoss.value, bloodRegenRoll.total - remainingBleeding);
     this.update({
-      "system.health.value": Math.min(this.system.health.max, this.system.health.value + accHealing),
-      "system.heartRate.value": this.system.heartRate.min - accHealing,
+      "system.health.value": Math.min(this.system.health.max.value, this.system.health.value + accHealing),
+      "system.heartRate.value": this.system.heartRate.min.value - accHealing,
       "system.bloodLoss.value": this.system.bloodLoss.value - bloodRegen
     });
     ChatServer.transmitEvent(
