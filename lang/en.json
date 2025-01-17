@@ -230,6 +230,7 @@
 
     "HEALS": "Heals",
     "HEALED": "Healed damage",
+    "REGEN BLOODLOSS": "Regenerated bloodloss",
     "STOPPED BLEEDING": "Stopped bleeding",
     "TREATABLE": "Treatable",
     "TREATS": "Treats",
@@ -421,6 +422,7 @@
   "BIOGRAPHY": "Biography",
   "BIOLOGY": "Biology",
   "BLEEDING": "Bleeding",
+  "BLOOD LOSS": "Blood loss",
   "BLOOD TYPE": "Blood type",
   "BLOOD VOLUMN": "Blood Volumn",
   "BODY": "Body",

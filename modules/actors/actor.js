@@ -733,12 +733,13 @@ export class TheEdgeActor extends Actor {
   }
 
   async applyBloodLoss() {
-    let wounds = this.itemTypes["Wounds"];
-    let bleeding = wounds.map(x => x.system.bleeding).sum();
-    let sys = this.system;
-    let lossRate = Math.floor(20 * sys.heartRate.value / sys.heartRate.max);
-    let bloodLoss = lossRate * bleeding;
-    this.update({"system.bloodVolumn.value": Math.max(sys.bloodVolumn.value - bloodLoss, 0)});
+    const wounds = this.itemTypes["Wounds"];
+    const bleeding = wounds.map(x => x.system.bleeding).sum();
+    const sys = this.system;
+    const lossRate = sys.heartRate.value / sys.heartRate.max;
+    const bloodLoss = Math.floor(lossRate * bleeding);
+    console.log(lossRate, bleeding)
+    this.update({"system.bloodLoss.value": sys.bloodLoss.value + bloodLoss});
   }
 
   async applyCombatStrain(strains, communication) {
@@ -864,27 +865,30 @@ export class TheEdgeActor extends Actor {
   hrZone1() {return 5 * Math.floor(this.system.heartRate.max * 75 / 500)}
   hrZone2() {return 5 * Math.floor(this.system.heartRate.max * 90 / 500)}
 
-  shortRest() {this._rest("1d3 % 2", "1d3-1", "short rest")}
-  longRest() {this._rest("2d3kh", "2d6 / 2", "long rest")}
+  shortRest() {this._rest("1d3 % 2", "1d3-1", "1d5", "short rest")}
+  longRest() {this._rest("2d3kh", "2d6 / 2", "3d5", "long rest")}
 
-  async _rest(coagulationDice, healingDice, type) {
-    let wounds = this.itemTypes["Wounds"];
+  async _rest(coagulationDice, healingDice, bloodRegenDice, type) {
+    const wounds = this.itemTypes["Wounds"];
     let accHealing = 0;
     let accCoagulation = 0;
+    let remainingBleeding = 0;
     for (const wound of wounds) {
       if (wound.system.bleeding > 0) {
-        let coagulationRoll = await new Roll(coagulationDice).evaluate()
-        let coagulation = Math.floor(coagulationRoll.total);
+        const coagulationRoll = await new Roll(coagulationDice).evaluate()
+        const coagulation = Math.floor(coagulationRoll.total);
         if (wound.system.damage == 0 && wound.system.bleeding <= coagulation) {
           accCoagulation += wound.system.bleeding;
           wound.delete();
         } else if (coagulation > 0) {
           accCoagulation += Math.min(coagulation, wound.system.bleeding);
-          wound.update({"system.bleeding": Math.max(wound.system.bleeding - coagulation, 0)});
+          const newBleeding = Math.max(wound.system.bleeding - coagulation, 0);
+          wound.update({"system.bleeding": newBleeding});
+          remainingBleeding += newBleeding;
         }
       } else {
-        let healingRoll = await new Roll(healingDice).evaluate()
-        let healing = Math.floor(healingRoll.total);
+        const healingRoll = await new Roll(healingDice).evaluate();
+        const healing = Math.floor(healingRoll.total);
         if (wound.system.damage <= healing) { // shortcut: wound healed afterwards
           accHealing += wound.system.damage;
           wound.delete();
@@ -894,10 +898,16 @@ export class TheEdgeActor extends Actor {
         }
       }
     }
+
+    const bloodRegenRoll = await new Roll(bloodRegenDice).evaluate();
+    const bloodRegen = Math.min(this.system.bloodLoss.value, bloodRegenRoll.total - remainingBleeding);
     this.update({
       "system.health.value": Math.min(this.system.health.max, this.system.health.value + accHealing),
-      "system.heartRate.value": this.system.heartRate.min - accHealing
+      "system.heartRate.value": this.system.heartRate.min - accHealing,
+      "system.bloodLoss.value": this.system.bloodLoss.value - bloodRegen
     });
-    ChatServer.transmitEvent(type, {healing: accHealing, coagulation: accCoagulation})
+    ChatServer.transmitEvent(
+      type, {healing: accHealing, coagulation: accCoagulation, bloodRegen: bloodRegen}
+    )
   }
 }

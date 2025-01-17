@@ -25,15 +25,6 @@
                     <span class="output" style="width: 74px;">{{systemData.heartRate.min}} &ndash; {{systemData.heartRate.max}}</span>
                 </div>
                 <div class="page-centered">
-                    <p class="attribute-title">{{genName "Blood Volumn"}}</p>
-                    <input
-                        name="system.bloodVolumn.value" type="number" value="{{systemData.bloodVolumn.value}}"
-                        style="width: 54px; max-height: 23px; text-align: center;" min="0"
-                    />
-                    <span> / </span>
-                    <span class="output" style="width: 54px;">{{systemData.bloodVolumn.max}}</span>
-                </div>
-                <div class="page-centered">
                     <!-- <p class="attribute-title">{{genName "herotoken"}}</p> -->
                     {{#each prepare.herotoken as |token|}}
                         {{#if token}}

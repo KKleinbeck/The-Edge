@@ -127,11 +127,9 @@
       "status_min": 0,
       "status_max": 0
     },
-    "bloodVolumn": {
-      "value": 6000,
-      "baseline_max": 6000,
-      "max": 0,
-      "status": 0
+    "bloodLoss": {
+      "value": 0,
+      "status_threshold": 0
     },
     "heroToken": {
       "max": 2,
