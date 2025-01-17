@@ -296,6 +296,7 @@ export class TheEdgeActorSheet extends ActorSheet {
         break;
       case "delete":
         if (item.type.includes("vantage")) this.actor.deleteVantage(item);
+        else if (item.type == "Wounds") this.actor.deleteWound(item);
         else item.delete();
         break;
       case "toggle-active":

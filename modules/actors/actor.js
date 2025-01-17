@@ -549,6 +549,11 @@ export class TheEdgeActor extends Actor {
     else vantage.delete();
   }
 
+  deleteWound(wound) {
+    this.update({"system.health.value": this.system.health.value + wound.system.damage});
+    wound.delete();
+  }
+
   deleteVantage(vantage) {
     const AP = this.system.AdvantagePoints;
     const itemAP = (vantage.system.hasLevels ? vantage.system.level : 1) * vantage.system.AP;
