@@ -249,7 +249,10 @@
 
     "SKILL": "General Skill",
     "COMBATSKILL": "Combat Skill",
-    "MEDICALSKILL": "Medical Skill"
+    "MEDICALSKILL": "Medical Skill",
+
+    "ACTIVATE": "Activate",
+    "DEACTIVATE": "Deactivate"
   },
   "HERO TOKEN": {
     "ATTRIBUTE": "{name} used a hero token to improve an ability check.",

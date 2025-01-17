@@ -481,7 +481,8 @@
   overflow-y: auto;
 }
 .the_edge .effect-list .effect-box {
-  justify-content: space-between;
+  display: flex;
+  gap: 5px;
 }
 
 .the_edge.sheet.actor {

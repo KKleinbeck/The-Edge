@@ -298,6 +298,9 @@ export class TheEdgeActorSheet extends ActorSheet {
         if (item.type.includes("vantage")) this.actor.deleteVantage(item);
         else item.delete();
         break;
+      case "toggle-active":
+        item.toggleActive()
+        break;
       case "toggle-equip":
         if (item.type == "Armour" && item.system.layer == "Outer") {
           const attachableArmour = this._findAttachableArmour(item);
@@ -311,7 +314,8 @@ export class TheEdgeActorSheet extends ActorSheet {
           )
           break;
         }
-        item.toggleEquipped()
+        await item.toggleEquipped();
+        await this.actor._updateStatus();
         this._render();
         break;
       case "consume":

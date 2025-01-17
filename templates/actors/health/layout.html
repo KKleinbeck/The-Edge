@@ -3,9 +3,18 @@
   <div class="effect-list">
     {{#each data.items as |item id|}}
       {{#if (checkEqual item.type "Effect")}}
-        <div class="item-control item effect-box" data-action="edit" data-item-id="{{item._id}}" style="cursor: pointer;">
-          {{item.name}}
-          <a class="item-control" title="{{ itemName 'Delete' }}" data-action="delete"><i class="fas fa-trash"></i></a>
+        <div class="item effect-box" data-item-id="{{item._id}}" style="cursor: pointer;">
+          <div class="item-control" data-action="edit">
+            {{item.name}}
+          </div>
+          <div>
+            {{#if item.system.active}}
+              <a class="item-control" title="{{ itemName 'Deactivate' }}" data-action="toggle-active"><i class="far fa-check-circle"></i></a>
+            {{else}}
+              <a class="item-control" title="{{ itemName 'Activate' }}" data-action="toggle-active"><i class="far fa-circle"></i></a>
+            {{/if}}
+            <a class="item-control" title="{{ itemName 'Delete' }}" data-action="delete"><i class="fas fa-trash"></i></a>
+          </div>
         </div>
       {{/if}}
     {{/each}}

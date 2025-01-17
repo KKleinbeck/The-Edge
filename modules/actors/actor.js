@@ -309,7 +309,9 @@ export class TheEdgeActor extends Actor {
 
     // Iterate through items and apply their effects
     for (const item of this.items) {
-      if (!["Effect", "Skill", "Combatskill"].includes(item.type) && (!item.system.equipped || !item.system.hasEffect)) continue;
+      if (!["Effect", "Skill", "Combatskill"].includes(item.type) &&
+          !(item.system.equipped && item.system.hasEffect)) continue;
+      if (item.type == "Effect" && !item.system.active) continue;
 
       // Fetch item effect list
       let effects = [];

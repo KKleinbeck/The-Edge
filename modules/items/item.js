@@ -53,14 +53,19 @@ export class TheEdgeItem extends Item {
     }
   }
 
-  toggleEquipped() {
+  async toggleActive() {
+    if (this.system.active === undefined) return undefined;
+    await this.update({"system.active": !this.system.active})
+  }
+
+  async toggleEquipped() {
     if (this.system.equipped === undefined) return undefined;
     if (this.system.structurePoints <= 0) {
       let msg = LocalisationServer.parsedLocalisation("EquipBroken", "Notifications")
       ui.notifications.notify(msg)
       return undefined;
     }
-    this.update({"system.equipped": !this.system.equipped})
+    await this.update({"system.equipped": !this.system.equipped})
   }
 
   useOne() {
