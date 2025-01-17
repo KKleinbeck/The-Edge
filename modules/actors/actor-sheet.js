@@ -316,7 +316,7 @@ export class TheEdgeActorSheet extends ActorSheet {
           break;
         }
         await item.toggleEquipped();
-        await this.actor._updateStatus();
+        await this.actor.updateStatus();
         this._render();
         break;
       case "consume":

@@ -8,9 +8,10 @@ export default function() {
     if (actorData.token) {
       actor = Aux.getActor(actorData.token.actorId, actorData.token.id)
     }
-    await actor._determineEncumbrance();
-    await actor._updateStrain();
-    await actor._updatePain();
-    await actor._updateStatus();
+    await actor.determineEncumbrance();
+    await actor.updateStrain();
+    await actor.updatePain();
+    await actor.updateBloodloss();
+    await actor.updateStatus();
   })
 }

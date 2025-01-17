@@ -124,7 +124,7 @@
     "bloodLoss": {
       "value": 0,
       "threshold": {"value": 0, "status": 0, "baseline": 0},
-      "effectStep": {"value": 0, "status": 0, "baseline": 5}
+      "effectStep": {"value": 0, "status": 0, "baseline": 6}
     },
     "heroToken": {
       "max": 2,

@@ -248,7 +248,7 @@ export class TheEdgeActor extends Actor {
     );
   }
   
-  async _determineEncumbrance() {
+  async determineEncumbrance() {
     let weight = this._determineWeight();
     // let str = this.system.attributes.Str.value;
     let str = this.system.attributes.str.advances + this.system.attributes.str.status;
@@ -284,7 +284,7 @@ export class TheEdgeActor extends Actor {
     return true
   };
 
-  async _updateStatus() {
+  async updateStatus() {
     let map = THE_EDGE.effect_map
 
     // Reset to a blank state
@@ -394,10 +394,10 @@ export class TheEdgeActor extends Actor {
             }
             break;
           
-          case "bloodLoss":
+          case "bloodloss":
             if (modifierSubclass.toLowerCase() == "threshold") {
               update["system.bloodLoss.threshold.status"] += effect.value;
-            } else if (modifierSubclass.toLowerCase() == "effectStep") {
+            } else if (modifierSubclass.toLowerCase() == "effectstep") {
               update["system.bloodLoss.effectStep.status"] += effect.value;
             }
             break;
@@ -762,18 +762,18 @@ export class TheEdgeActor extends Actor {
     hrChange += (maxStrain - zone + 1) * [0, 1, 2, 4][communication]
     
     let hr = this.system.heartRate;
-    let threshold = [hr.min, this.hrZone1(), this.hrZone2(), hr.max.value][maxStrain]
+    let threshold = [hr.min.value, this.hrZone1(), this.hrZone2(), hr.max.value][maxStrain]
     let clamper = isRest ? Math.max : Math.min;
     await this.update({"system.heartRate.value": clamper(hr.value + hrChange, threshold)});
     
     let newZone = this.getHRZone();
-    if (newZone != zone) {this._updateStrain()}
+    if (newZone != zone) {this.updateStrain()}
     
     ChatServer.transmitEvent("strainUpdate",
       {strains: strains, communication: communication, hrChange: hrChange})
   }
 
-  async _updatePain() {
+  async updatePain() {
     const damageTotal = this.system.health.max.value - this.system.health.value;
     const damageBodyParts = {arms: 0, legs: 0, torso: 0, head: 0};
     const wounds = this.itemTypes["Wounds"];
@@ -818,7 +818,7 @@ export class TheEdgeActor extends Actor {
     }
   }
 
-  async _updateStrain() {
+  async updateStrain() {
     let zone = this.getHRZone();
     if (zone == 1) {
       this._deleteEffect("Strain");
@@ -840,6 +840,24 @@ export class TheEdgeActor extends Actor {
         {modifier: "Attributes.Mental", value: -1}
       ], "system.deactivatable": false})
     }
+  }
+
+  async updateBloodloss() {
+    const bl = this.system.bloodLoss;
+    const bloodlossEff = Math.max(bl.value - bl.threshold.value, 0);
+    const level = Math.floor(bloodlossEff / bl.effectStep.value);
+    if (level == 0) {
+      this._deleteEffect("Blood loss");
+      return;
+    }
+
+    let currentBloodLoss = await this._getEffectOrCreate("Blood loss");
+    currentBloodLoss.update({"system.effects": [
+      {modifier: "Attributes.Crd", value: -level},
+      {modifier: "Attributes.Foc", value: -level},
+      {modifier: "Attributes.Res", value: -level},
+      {modifier: "Attributes.Int", value: -level},
+    ], "system.deactivatable": false})
   }
 
   async _getEffectOrCreate(name) {
