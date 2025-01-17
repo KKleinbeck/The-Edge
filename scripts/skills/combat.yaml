@@ -1,6 +1,124 @@
-- name: In the hands of a master everything is a weapon
+- name: Action surge
   levels: 2
-  cost: 2300 / 3000
+  cost: 2000
+  requirements:
+    - Spd: [12, 14]
+    - Foc: [12, 14]
+- name: Adrenaline surge
+  type: Passive
+  levels: 3
+  cost: 500 / 750 / 1000
+  requirements:
+    - Physical Fortitude: [2, 6, 10]
+- name: Bringing a gun to a knife fight
+  cost: 1000
+- name: Bringing a knife to a gunfight
+  cost: 400
+- name: Cover and concealment
+  cost: 350
+  requirements:
+    - Camouflage & hiding: 5
+- name: Fast acquisition
+  cost: 400
+  requirements:
+    - Spd: 13
+    - Foc: 15
+- name: Fast draw
+  levels: 2
+  cost: 300
+- name: Fast reload
+  levels: 2
+  cost: 600
 - name: Fire corridor
   type: Reaction
   cost: 400
+- name: Grit
+  type: Passive
+  cost: 750
+  requirements:
+    - Physical Fortitude: [5, 8]
+- name: Honing in on target
+  levels: 3
+  cost: 200 / 300 / 400
+  requirements:
+    - Foc: [10, 12,  14]
+- name: Hug dirt
+  type: Reaction
+  cost: 500
+- name: In the hands of a master everything is a weapon
+  levels: 2
+  cost: 2300 / 3000
+- name: Keen eyes - behaviour
+  cost: 500
+  requirements:
+    - Tactics: 4
+- name: Keen eyes - loadout
+  cost: 500
+  requirements:
+    - Weapons: 4
+- name: Keen eyes - training
+  cost: 500
+  requirements:
+    - Tactics: 4
+- name: Last stand
+  type: Passive
+  levels: 2
+  cost: 750
+  requirements:
+    - Res: [13, 15]
+- name: Master chef
+  cost: 400
+- name: Never shall I fail
+  cost: 1000
+  requirements:
+    - Res: 15
+- name: Riding the lightning (LMG)
+  cost: 600
+  requirements:
+    - LMGs: 9
+    - Str: 12
+- name: Riding the lightning (SAB)
+  cost: 600
+  requirements:
+    - SABs: 9
+    - Foc: 12
+- name: Shock and awe
+  levels: 2
+  cost: 500
+  requirements:
+    - Cha: [10, 12]
+    - Tactics: [4, 7]
+- name: Spatial awareness
+  type: Passive
+  cost: 350
+  requirements:
+    - Int: 12
+- name: Spray and pray
+  cost: 250
+- name: Stable shooting platform
+  levels: 3
+  cost: 1000
+  requirements:
+    - Crd: [12, 14, 16]
+    - Foc: [12, 14, 16]
+- name: Steady aim
+  levels: 3
+  cost: 1500
+  requirements:
+    - Foc: [13, 15, 17]
+- name: Suppressive fire
+  levels: 2
+  cost: 300 / 500
+- name: Tennis arm
+  type: Reaction
+  levels: 2
+  cost: 300 / 600
+  requirements:
+    - Spd: [12, 14]
+    - Foc: [12, 14]
+    - Throwing: [~, 5]
+- name: Unfinished business
+  type: Passive
+  cost: 500
+  requirements:
+    - Res: 13

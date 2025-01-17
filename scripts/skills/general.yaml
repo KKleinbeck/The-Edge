@@ -1,0 +1,59 @@
+- name: Been there, done that...
+  cost: 500
+  requirements:
+    - Mental fortitude: 4
+- name: ...got the scars to prove it
+  cost: 500
+  requirements:
+    - Physical fortitude: 4
+- name: Double check the double-check
+  levels: 3
+  cost: 500
+  requirements:
+    - Leader: [1, 1, 2]
+- name: Estimating distances
+  type: Passive
+  cost: 200
+- name: Leader
+  levels: 2
+  cost: 600
+  requirements:
+    - Cha: [12, 15]
+- name: Meticulous approach
+  type: environmental
+  cost: 200
+- name: Meticulous approach
+  type: knowledge
+  cost: 200
+- name: Meticulous approach
+  type: mental
+  cost: 200
+- name: Meticulous approach
+  type: physical
+  cost: 300
+- name: Meticulous approach
+  type: social
+  cost: 300
+- name: Meticulous approach
+  type: technical
+  cost: 300
+- name: Motivational speech
+  levels: 3
+  cost: 750
+- name: Inspirational speech
+  levels: 3
+  cost: 1000 / 1500 / 2000
+  requirements:
+    - Motivational speech: [1, 2, 3]
+- name: Reliable talent
+  levels: 10
+  cost: 250
+- name: Special talent
+  levels: 5
+  cost: 400
+- name: Team player
+  levels: 2
+  cost: 300
+- name: Walking blood bank
+  levels: 4
+  cost: 300 / 400 / 500 / 600
