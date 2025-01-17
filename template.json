@@ -78,11 +78,11 @@
     "weapons": {
       "weapons": {
         "energy": {
-          "Blaster Pistols":   {"advances": 0, "status": 0},
-          "Pulse Rifle":       {"advances": 0, "status": 0},
-          "SABs":              {"advances": 0, "status": 0},
-          "Blaster Shockguns": {"advances": 0, "status": 0},
-          "Blaster Rifles":    {"advances": 0, "status": 0}
+          "Blaster Pistols":      {"advances": 0, "status": 0},
+          "Pulse Rifle":          {"advances": 0, "status": 0},
+          "SABs":                 {"advances": 0, "status": 0},
+          "Blaster Shockguns":    {"advances": 0, "status": 0},
+          "Blaster Sniper Rifle": {"advances": 0, "status": 0}
         },
         "kinetic": {
           "Kinetic Pistols":  {"advances": 0, "status": 0},
@@ -235,7 +235,7 @@
     "capacity": {"max": 30, "used": 0},
     "type": "energy",
     "whitelist": {
-      "energy": {"Blaster Pistols": true, "Pulse Rifle": true, "SABs": true, "Blaster Shockguns": true, "Blaster Rifles": true},
+      "energy": {"Blaster Pistols": true, "Pulse Rifle": true, "SABs": true, "Blaster Shockguns": true, "Blaster Sniper Rifle": true},
       "kinetic": {"Kinetic Pistols": true, "Slug Throwers": true, "LMGs": true, "Shotguns": true, "Projectile Rifle": true},
       "others": {"Recoilless Rifles": true}
     },
