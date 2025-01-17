@@ -28,8 +28,8 @@ export class TheEdgeActor extends Actor {
     sys.heartRate["max"] = sys.heartRate.baseline_max + 
       sys.heartRate.status_max + sys.attributes["end"].value -
       2 * Math.floor((sys.age - 21) / 3)
-    sys.heartRate["min"] = sys.heartRate.baseline_min + sys.heartRate.status_min -
-      sys.attributes["end"].value
+    sys.heartRate["min"] = sys.heartRate.baseline_min + sys.heartRate.status_min +
+      (sys.health["max"] - sys.health["value"]) - sys.attributes["end"].value
     sys.bloodVolumn["max"] = sys.bloodVolumn.baseline_max + sys.bloodVolumn.status
 
     sys.wounds = {}
