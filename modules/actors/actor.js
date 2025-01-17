@@ -279,7 +279,7 @@ export class TheEdgeActor extends Actor {
       {modifier: "Proficiencies.Physical", value: -1},
       {modifier: "Attributes.Physical", value: physicalMalus},
       {modifier: "Attributes.All", value: allMalus}
-    ]})
+    ], "system.deactivatable": false})
     return true
   };
 
@@ -787,9 +787,10 @@ export class TheEdgeActor extends Actor {
     else {
       const currentPain = await this._getEffectOrCreate("Pain");
       const n = Math.floor(damageTotal / 15);
-      await currentPain.update({"system.effects": [
-        {modifier: "Proficiencies.All", value: -n}, {modifier: "Weapons.All", value: -n}
-      ]})
+      await currentPain.update({
+        "system.deactivatable": false,
+        "system.effects": [{modifier: "Proficiencies.All", value: -n}, {modifier: "Weapons.All", value: -n}]
+      })
     }
 
     for (const [bodyPart, damage] of Object.entries(damageBodyParts)) {
@@ -797,9 +798,10 @@ export class TheEdgeActor extends Actor {
       else {
         const injury = await this._getEffectOrCreate(`Injuries ${bodyPart}`);
         const n = Math.floor(damage / 15);
-        await injury.update({"system.effects": [
-          {modifier: `attributes.${THE_EDGE.injury_map[bodyPart]}`, value: -n}
-        ]})
+        await injury.update({
+          "system.deactivatable": false,
+          "system.effects": [{modifier: `attributes.${THE_EDGE.injury_map[bodyPart]}`, value: -n}]
+        })
       }
     }
   }
@@ -817,14 +819,14 @@ export class TheEdgeActor extends Actor {
         {modifier: "Weapons.All", value: -1},
         {modifier: "Attributes.Crd", value: -1},
         {modifier: "Attributes.Spd", value: 1}
-      ]})
+      ], "system.deactivatable": false})
     } else {
       await currentStrain.update({"system.effects": [
         {modifier: "Weapons.All", value: -3},
         {modifier: "Attributes.Crd", value: -2},
         {modifier: "Attributes.Social", value: -1},
         {modifier: "Attributes.Mental", value: -1}
-      ]})
+      ], "system.deactivatable": false})
     }
   }
 

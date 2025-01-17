@@ -8,10 +8,12 @@
             {{item.name}}
           </div>
           <div>
-            {{#if item.system.active}}
-              <a class="item-control" title="{{ itemName 'Deactivate' }}" data-action="toggle-active"><i class="far fa-check-circle"></i></a>
-            {{else}}
-              <a class="item-control" title="{{ itemName 'Activate' }}" data-action="toggle-active"><i class="far fa-circle"></i></a>
+            {{#if item.system.deactivatable}}
+              {{#if item.system.active}}
+                <a class="item-control" title="{{ itemName 'Deactivate' }}" data-action="toggle-active"><i class="far fa-check-circle"></i></a>
+              {{else}}
+                <a class="item-control" title="{{ itemName 'Activate' }}" data-action="toggle-active"><i class="far fa-circle"></i></a>
+              {{/if}}
             {{/if}}
             <a class="item-control" title="{{ itemName 'Delete' }}" data-action="delete"><i class="fas fa-trash"></i></a>
           </div>
