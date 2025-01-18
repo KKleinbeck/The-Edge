@@ -20,8 +20,8 @@ export class TheEdgeActor extends Actor {
     super.prepareDerivedData();
 
     const sys = this.system;
-    for (const coreValDetails of Object.values(THE_EDGE.core_value_map)) {
-      const coreVal = Aux.objectAt(this, coreValDetails[1]);
+    for (const coreValPath of Object.values(foundry.utils.flattenObject(THE_EDGE.core_value_map))) {
+      const coreVal = Aux.objectAt(this.system, coreValPath);
       coreVal.value = coreVal.advances + coreVal.status;
     }
     sys.health.max.value = sys.health.max.baseline + sys.health.max.status
@@ -29,9 +29,9 @@ export class TheEdgeActor extends Actor {
     sys.bloodLoss.effectStep.value = sys.bloodLoss.effectStep.baseline + sys.bloodLoss.effectStep.status
     
     sys.heartRate.max.value = sys.heartRate.max.baseline + sys.heartRate.max.status +
-      sys.attributes["end"].value - 2 * Math.floor((sys.age - 21) / 3)
+      sys.attributes.end.value - 2 * Math.floor((sys.age - 21) / 3)
     sys.heartRate.min.value = sys.heartRate.min.baseline + sys.heartRate.min.status +
-      (sys.health.max.value - sys.health.value) - sys.attributes["end"].value
+      (sys.health.max.value - sys.health.value) - sys.attributes.end.value
 
     sys.wounds = {}
   }
@@ -277,133 +277,137 @@ export class TheEdgeActor extends Actor {
       );
     }
     await currentEncumbrance.update({"system.effects": [
-      {modifier: "Proficiencies.Physical", value: -1},
-      {modifier: "Attributes.Physical", value: physicalMalus},
-      {modifier: "Attributes.All", value: allMalus}
+      {group: "proficiencies", name: "physical", value: -1},
+      {group: "attributes", name: "physical", value: physicalMalus},
+      {group: "attributes", name: "all", value: allMalus}
     ], "system.deactivatable": false})
     return true
   };
 
-  async updateStatus() {
-    let map = THE_EDGE.effect_map
+  async updateStrain() {
+    let zone = this.getHRZone();
+    if (zone == 1) {
+      this._deleteEffect("Strain");
+      return;
+    }
 
-    // Reset to a blank state
-    let update = {
-      "system.health.max.status": 0, "system.heartRate.min.status": 0,
-      "system.heartRate.max.status": 0, "system.bloodLoss.threshold.status": 0,
-      "system.bloodLoss.effectStep.status": 0
+    let currentStrain = await this._getEffectOrCreate("Strain")
+    if (zone == 2) {
+      await currentStrain.update({"system.effects": [
+        {group: "weapons", name: "all", value: -1},
+        {group: "attributes", name: "crd", value: -1},
+        {group: "attributes", name: "spd", value: 1}
+      ], "system.deactivatable": false})
+    } else {
+      await currentStrain.update({"system.effects": [
+        {group: "weapons", name: "all", value: -3},
+        {group: "attributes", name: "crd", value: -2},
+        {group: "attributes", name: "social", value: -1},
+        {group: "attributes", name: "mental", value: -1}
+      ], "system.deactivatable": false})
     }
-    for (const attr of THE_EDGE.attrs) {
-      update[`system.attributes.${attr}.status`] = 0;
-    }
-    for (const group of Object.keys(map.proficiencies)) {
-      if (group === "all") continue;
-      for (const proficiency of map.proficiencies[group]) {
-        update[`system.proficiencies.${group}.${proficiency}.status`] = 0;
+  }
+
+  async updatePain() {
+    const damageTotal = this.system.health.max.value - this.system.health.value;
+    const damageBodyParts = {arms: 0, legs: 0, torso: 0, head: 0};
+    const wounds = this.itemTypes["Wounds"];
+    for (const wound of wounds) {
+      switch (wound.system.bodyPart) {
+        case "Torso":
+          damageBodyParts.torso += wound.system.damage;
+          break;
+        case "Head":
+          damageBodyParts.head += wound.system.damage;
+          break;
+        case "LegsLeft":
+        case "LegsRight":
+          damageBodyParts.legs += wound.system.damage;
+          break;
+        case "ArmsLeft":
+        case "ArmsRight":
+          damageBodyParts.arms += wound.system.damage;
       }
     }
-    for (const group of Object.keys(map.weapons)) {
-      if (group === "all") continue;
-      for (const proficiency of map.weapons[group]) {
-        update[`system.weapons.${group}.${proficiency}.status`] = 0;
+
+    if (damageTotal < 15) { this._deleteEffect("Pain") }
+    else {
+      const currentPain = await this._getEffectOrCreate("Pain");
+      const n = Math.floor(damageTotal / 15);
+      await currentPain.update({"system.effects": [
+        {group: "proficiencies", name: "all", value: -n}, {group: "weapons", name: "all", value: -n}
+        ], "system.deactivatable": false
+      })
+    }
+
+    for (const [bodyPart, damage] of Object.entries(damageBodyParts)) {
+      if (damage < 15) { this._deleteEffect(`Injuries ${bodyPart}`) }
+      else {
+        const injury = await this._getEffectOrCreate(`Injuries ${bodyPart}`);
+        const n = Math.floor(damage / 15);
+        await injury.update({"system.effects": [
+            {group: "attributes", name: THE_EDGE.injury_map[bodyPart], value: -n}
+          ], "system.deactivatable": false,
+        })
+      }
+    }
+  }
+
+  async updateBloodloss() {
+    const bl = this.system.bloodLoss;
+    const bloodlossEff = Math.max(bl.value - bl.threshold.value, 0);
+    const level = Math.floor(bloodlossEff / bl.effectStep.value);
+    if (level == 0) {
+      this._deleteEffect("Blood loss");
+      return;
+    }
+
+    let currentBloodLoss = await this._getEffectOrCreate("Blood loss");
+    currentBloodLoss.update({"system.effects": [
+      {group: "attributes", name: "crd", value: -level},
+      {group: "attributes", name: "foc", value: -level},
+      {group: "attributes", name: "res", value: -level},
+      {group: "attributes", name: "int", value: -level},
+    ], "system.deactivatable": false})
+  }
+
+  async updateStatus() {
+    // Reset to a blank state
+    let update = {}
+    for (const group of ["attributes", "proficiencies", "weapons"]) {
+      for (const elem of THE_EDGE.effect_map[group].all) {
+        update[elem] = 0;
+      }
+    }
+    for (const elems of Object.values(THE_EDGE.effect_map["others"])) {
+      for (const elem of Object.values(elems)) {
+        update[elem] = 0;
       }
     }
 
     // Iterate through items and apply their effects
     for (const item of this.items) {
-      if (!["Effect", "Skill", "Combatskill"].includes(item.type) &&
-          !(item.system.equipped && item.system.hasEffect)) continue;
-      if (item.type == "Effect" && !item.system.active) continue;
-
-      // Fetch item effect list
-      let effects = [];
-      if (["Skill", "Combatskill"].includes(item.type)) {
+      if (item.type == "Skill" || item.type == "Combatskill") {
         for (let i = 0; i < item.system.level; ++i) {
+          for (const effect of item.system.levelEffects[i]) {
+            for (const effectPath of THE_EDGE.effect_map[effect.group][effect.name]) {
+              update[effectPath] += effect.value;
+            }
+          }
           if (!item.system.levelEffects[i]) continue;
-          effects.push(...item.system.levelEffects[i])
         }
-      } else effects = item.system.effects;
+      } else {
+        if (item.type == "Effect" && !item.system.active) continue;
+        if (item.type != "Effect" && !(item.system.equipped && item.system.hasEffect)) continue;
 
-      // Iterate effects
-      for (const effect of effects) {
-        let [modifierClass, modifierSubclass] = effect.modifier.split(".");
-        switch (modifierClass.toLowerCase()) {
-          case "attributes":
-            modifierSubclass = modifierSubclass.toLowerCase();
-            if (map["attributes"].all?.includes(modifierSubclass)) {
-              // Individual part
-              update[`system.attributes.${modifierSubclass}.status`] += effect.value;
-            } else if (map["attributes"][modifierSubclass]) {
-              // Grouped parts
-              for (const subclass of map["attributes"][modifierSubclass]) {
-                update[`system.attributes.${subclass}.status`] += effect.value;
-              }
-            }
-            break;
-          
-          case "proficiencies":
-            if (map["proficiencies"].all?.includes(modifierSubclass)) {
-              // Individual part
-              let group = Aux.getProficiencyGroup(modifierSubclass)
-              update[`system.proficiencies.${group}.${modifierSubclass}.status`] += effect.value;
-            } else if (modifierSubclass.toLowerCase() === "all") {
-              for (const group of Object.keys(map.proficiencies)) {
-                if (group === "all") continue;
-                for (const proficiency of map.proficiencies[group]) {
-                  update[`system.proficiencies.${group}.${proficiency}.status`] += effect.value;
-                }
-              }
-            } else if (map["proficiencies"][modifierSubclass.toLowerCase()]) {
-              // Grouped parts
-              modifierSubclass = modifierSubclass.toLowerCase();
-              for (const subclass of map["proficiencies"][modifierSubclass]) {
-                update[`system.proficiencies.${modifierSubclass}.${subclass}.status`] += effect.value;
-              }
-            }
-            break;
-
-          case "weapons":
-            if (map["weapons"].all?.includes(modifierSubclass)) {
-              let group = Aux.getWeaponGroup(modifierSubclass)
-              update[`system.weapons.${group}.${modifierSubclass}.status`] += effect.value;
-            } else if (modifierSubclass.toLowerCase() === "all") {
-              for (const group of Object.keys(map.weapons)) {
-                if (group === "all") continue;
-                for (const proficiency of map.weapons[group]) {
-                  update[`system.weapons.${group}.${proficiency}.status`] += effect.value;
-                }
-              }
-            } else if (map["weapons"][modifierSubclass.toLowerCase()]) {
-              // Grouped parts
-              modifierSubclass = modifierSubclass.toLowerCase();
-              for (const subclass of map["weapons"][modifierSubclass]) {
-                update[`system.weapons.${modifierSubclass}.${subclass}.status`] += effect.value;
-              }
-            }
-            break;
-          
-          case "health":
-            update["system.health.status"] += effect.value;
-            break;
-          
-          case "heartrate":
-            if (modifierSubclass.toLowerCase() == "min") {
-              update["system.heartRate.min.status"] += effect.value;
-            } else if (modifierSubclass.toLowerCase() == "max") {
-              update["system.heartRate.max.status"] += effect.value;
-            }
-            break;
-          
-          case "bloodloss":
-            if (modifierSubclass.toLowerCase() == "threshold") {
-              update["system.bloodLoss.threshold.status"] += effect.value;
-            } else if (modifierSubclass.toLowerCase() == "effectstep") {
-              update["system.bloodLoss.effectStep.status"] += effect.value;
-            }
-            break;
+        for (const effect of item.system.effects) {
+          for (const effectPath of THE_EDGE.effect_map[effect.group][effect.name]) {
+            update[effectPath] += effect.value;
+          }
         }
       }
     }
+    // console.log(update)
     await this.update(update);
   }
 
@@ -434,18 +438,17 @@ export class TheEdgeActor extends Actor {
     if (requirements === undefined || requirements.length == 0) return true;
 
     for (const requirement of requirements) {
-      const sysMod = Aux.objectAt(this, requirement.modifier);
-      const skillRef = this.items.filter(x => x.name.toLowerCase() == requirement.modifier.toLowerCase());
+      const group = requirement.group;
       const details = structuredClone(requirement);
-      if (sysMod) {
-        if (sysMod < requirement.value) {
-          foundry.utils.mergeObject(details, {valueIs: sysMod});
-          const msg = LocalisationServer.parsedLocalisation("Unmet requirements", "Notifications", details);
+      if (group == "skills") {
+        const skillRef = this.items.filter(x => x.name.toLowerCase() == requirement.name.toLowerCase());
+        if (skillRef.length == 0) {
+          const msg = LocalisationServer.parsedLocalisation(
+            "Missing requirements", "Notifications", details
+          )
           ui.notifications.notify(msg);
           return false;
-        }
-      } else if (skillRef.length > 0) {
-        if (skillRef[0].system.level < requirement.value) {
+        } else if (skillRef[0].system.level < requirement.value) {
           foundry.utils.mergeObject(details, {valueIs: skillRef[0].system.level})
           const msg = LocalisationServer.parsedLocalisation(
             "Unmet requirements", "Notifications", details
@@ -454,11 +457,14 @@ export class TheEdgeActor extends Actor {
           return false;
         }
       } else {
-        const msg = LocalisationServer.parsedLocalisation(
-          "Missing requirements", "Notifications", details
-        )
-        ui.notifications.notify(msg);
-        return false;
+        const target = THE_EDGE.core_value_map[group][requirement.name] + ".advances";
+        const sysMod = Aux.objectAt(this.system, target);
+        if (sysMod < requirement.value) {
+          foundry.utils.mergeObject(details, {valueIs: sysMod});
+          const msg = LocalisationServer.parsedLocalisation("Unmet requirements", "Notifications", details);
+          ui.notifications.notify(msg);
+          return false;
+        }
       }
     }
     return true;
@@ -744,7 +750,6 @@ export class TheEdgeActor extends Actor {
     const sys = this.system;
     const lossRate = sys.heartRate.value / sys.heartRate.max.value;
     const bloodLoss = Math.floor(lossRate * bleeding);
-    console.log(lossRate, bleeding)
     this.update({"system.bloodLoss.value": sys.bloodLoss.value + bloodLoss});
   }
 
@@ -771,93 +776,6 @@ export class TheEdgeActor extends Actor {
     
     ChatServer.transmitEvent("strainUpdate",
       {strains: strains, communication: communication, hrChange: hrChange})
-  }
-
-  async updatePain() {
-    const damageTotal = this.system.health.max.value - this.system.health.value;
-    const damageBodyParts = {arms: 0, legs: 0, torso: 0, head: 0};
-    const wounds = this.itemTypes["Wounds"];
-    for (const wound of wounds) {
-      switch (wound.system.bodyPart) {
-        case "Torso":
-          damageBodyParts.torso += wound.system.damage;
-          break;
-        case "Head":
-          damageBodyParts.head += wound.system.damage;
-          break;
-        case "LegsLeft":
-        case "LegsRight":
-          damageBodyParts.legs += wound.system.damage;
-          break;
-        case "ArmsLeft":
-        case "ArmsRight":
-          damageBodyParts.arms += wound.system.damage;
-      }
-    }
-
-    if (damageTotal < 15) { this._deleteEffect("Pain") }
-    else {
-      const currentPain = await this._getEffectOrCreate("Pain");
-      const n = Math.floor(damageTotal / 15);
-      await currentPain.update({
-        "system.deactivatable": false,
-        "system.effects": [{modifier: "Proficiencies.All", value: -n}, {modifier: "Weapons.All", value: -n}]
-      })
-    }
-
-    for (const [bodyPart, damage] of Object.entries(damageBodyParts)) {
-      if (damage < 15) { this._deleteEffect(`Injuries ${bodyPart}`) }
-      else {
-        const injury = await this._getEffectOrCreate(`Injuries ${bodyPart}`);
-        const n = Math.floor(damage / 15);
-        await injury.update({
-          "system.deactivatable": false,
-          "system.effects": [{modifier: `attributes.${THE_EDGE.injury_map[bodyPart]}`, value: -n}]
-        })
-      }
-    }
-  }
-
-  async updateStrain() {
-    let zone = this.getHRZone();
-    if (zone == 1) {
-      this._deleteEffect("Strain");
-      return;
-    }
-
-    let currentStrain = await this._getEffectOrCreate("Strain")
-    if (zone == 2) {
-      await currentStrain.update({"system.effects": [
-        {modifier: "Weapons.All", value: -1},
-        {modifier: "Attributes.Crd", value: -1},
-        {modifier: "Attributes.Spd", value: 1}
-      ], "system.deactivatable": false})
-    } else {
-      await currentStrain.update({"system.effects": [
-        {modifier: "Weapons.All", value: -3},
-        {modifier: "Attributes.Crd", value: -2},
-        {modifier: "Attributes.Social", value: -1},
-        {modifier: "Attributes.Mental", value: -1}
-      ], "system.deactivatable": false})
-    }
-  }
-
-  async updateBloodloss() {
-    const bl = this.system.bloodLoss;
-    const bloodlossEff = Math.max(bl.value - bl.threshold.value, 0);
-    const level = Math.floor(bloodlossEff / bl.effectStep.value);
-    if (level == 0) {
-      this._deleteEffect("Blood loss");
-      return;
-    }
-
-    let currentBloodLoss = await this._getEffectOrCreate("Blood loss");
-    currentBloodLoss.update({"system.effects": [
-      {modifier: "Attributes.Crd", value: -level},
-      {modifier: "Attributes.Foc", value: -level},
-      {modifier: "Attributes.Res", value: -level},
-      {modifier: "Attributes.Int", value: -level},
-    ], "system.deactivatable": false})
   }
 
   async _getEffectOrCreate(name) {

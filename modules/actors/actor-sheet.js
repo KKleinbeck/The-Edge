@@ -241,7 +241,7 @@ export class TheEdgeActorSheet extends ActorSheet {
       case "Combatskill":
       case "Medicalskill":
       case "Languageskill":
-        let createNew = this.actor.learnSkill(item);
+        const createNew = this.actor.learnSkill(item);
         return createNew ? super._onDropItem(event, data) : undefined;
       
       case "Credits":

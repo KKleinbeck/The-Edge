@@ -34,15 +34,9 @@ THE_EDGE.wound_status = ["treatable", "treated"]
 THE_EDGE.injury_map = {"torso": "end", "head": "foc", "arms": "crd", "legs": "spd"}
 
 // Entries below are primarily implemented in the_edge.js
+THE_EDGE.core_value_map = {attributes: {}, proficiencies: {}, weapons: {}}
 THE_EDGE.effect_map = {
-  attributes: {
-    physical: ["end", "str", "spd", "crd"],
-    social: ["cha", "emp"],
-    mental: ["foc", "res", "int"]
-  },
-  proficiencies: {all: []},
-  weapons: {all: []}
+  attributes: {all: []}, proficiencies: {all: []}, weapons: {all: []}, others: {}
 }
-THE_EDGE.core_value_map = {}
 
 export default THE_EDGE

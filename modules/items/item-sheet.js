@@ -57,17 +57,8 @@ export class TheEdgeItemSheet extends ItemSheet {
       async: true
     });
     context.systemData.userIsGM = game.user.isGM;
+    context.definedEffects = THE_EDGE.effect_map;
     return context;
-  }
-
-  /* -------------------------------------------- */
-
-  /** @inheritdoc */
-  activateListeners(html) {
-    super.activateListeners(html);
-
-    // Everything below here is only needed if the sheet is editable
-    if ( !this.isEditable ) return;
   }
 
   /* -------------------------------------------- */
@@ -87,22 +78,18 @@ export class TheEdgeItemSheet extends ItemSheet {
 
   _onAdd(event) {
     let effects = this.item.system.effects;
-    effects.push({modifier: "", value: 0});
+    effects.push({group: "attributes", name: "end", value: 0});
     this.item.update({"system.effects": effects});
   }
 
   _onModify(ev) {
     const button = ev.currentTarget;
-    let index = button.dataset.index;
-    let effects = this.item.system.effects;
-    switch (button.type) {
-      case "text":
-        effects[index].modifier = button.value;
-        break;
-      case "number":
-        effects[index].value = parseInt(button.value);
-        break;
-    }
+    const index = button.dataset.index;
+    const effects = this.item.system.effects;
+    const target = button.dataset.target;
+    effects[index][target] = target == "value" ? parseInt(button.value) : button.value;
+    // The next line also sets the name to something sensible if the group changes
+    if (target == "group") effects[index].name = Object.keys(THE_EDGE.core_value_map[button.value])[0];
     this.item.update({"system.effects": effects});
   }
 
@@ -125,7 +112,7 @@ class ItemSheetWeapon extends TheEdgeItemSheet {
 
   async getData(options) {
     const context = await super.getData(options);
-    context.helpers = {attrs: THE_EDGE.attrs, weapon_types: THE_EDGE.effect_map.weapons.all};
+    context.helpers = {attrs: THE_EDGE.attrs, weapon_types: Object.keys(THE_EDGE.core_value_map.weapons)};
     return context;
   }
 }
@@ -219,24 +206,13 @@ class ItemSheetSkill extends TheEdgeItemSheet {
   async getData(options) {
     const context = await super.getData(options);
     context.helpers = {displayHint: this.options.displayHint};
-    context.coreRequirements = {}
-    for (const coreValDetails of Object.values(THE_EDGE.core_value_map)) {
-      let displayName = "";
-      if (coreValDetails[1].includes("attributes")) displayName += "attrs";
-      else if (coreValDetails[1].includes("proficiencies")) displayName += "profs";
-      else displayName += "weapons";
-      displayName = "(" + LocalisationServer.localise(displayName) + ") ";
-      displayName += LocalisationServer.localise(coreValDetails[0]);
-
-      // Spaces need to be replaced for html parsing to work
-      context.coreRequirements[displayName] = coreValDetails[1] + ".advances";
-    }
+    context.coreRequirements = structuredClone(THE_EDGE.core_value_map);
+    context.coreRequirements.skills = {};
     const skills = game.items.filter(x => x.type.toLowerCase().includes("skill"));
     for (const skill of skills) {
-      const displayName = "(" + LocalisationServer.localise("Skill", "Skill") + ") " +
-        skill.name;
-      context.coreRequirements[displayName] = skill.name;
+      context.coreRequirements.skills[skill.name] = skill.name;
     }
+    context.definedEffects = THE_EDGE.effect_map;
     return context;
   }
 
@@ -279,28 +255,26 @@ class ItemSheetSkill extends TheEdgeItemSheet {
     const level = dataHtml.dataset.index;
     const target = dataHtml.dataset.type;
     let targetList = this.item.system[target];
-    targetList[level].push({modifier: "", value: 0});
+    targetList[level].push({group: "attributes", name: "end", value: 0});
     if (target == "levelEffects") this.item.update({"system.levelEffects": targetList});
     if (target == "requirements") this.item.update({"system.requirements": targetList});
   }
 
-  _onLevelModify(ev) {
+  async _onLevelModify(ev) {
     const button = ev.currentTarget;
     const dataHtml = ev.currentTarget.closest(".effect-level");
+    const type = dataHtml.dataset.type;
+
+    const targetList = this.item.system[type];
     const level = dataHtml.dataset.index;
-    const target = dataHtml.dataset.type;
-    let index = button.dataset.index;
-    let targetList = this.item.system[target];
-    switch (button.type) {
-      case "text": case "select-one":
-        targetList[level][index].modifier = button.value;
-        break;
-      case "number":
-        targetList[level][index].value = parseInt(button.value);
-        break;
-    }
-    if (target == "levelEffects") this.item.update({"system.levelEffects": targetList});
-    if (target == "requirements") this.item.update({"system.requirements": targetList});
+    const index = button.dataset.index;
+    const target = button.dataset.target;
+    targetList[level][index][target] = target == "value" ? parseInt(button.value) : button.value;
+    // The next line also sets the name to something sensible if the group changes
+    const context = await this.getData();
+    if (target == "group") targetList[level][index].name = Object.keys(context.coreRequirements[button.value])[0];
+    if (type == "levelEffects") this.item.update({"system.levelEffects": targetList});
+    if (type == "requirements") this.item.update({"system.requirements": targetList});
   }
 
   _onLevelDelete(ev) {
@@ -397,7 +371,7 @@ class ItemSheetWounds extends TheEdgeItemSheet {
   }
 }
 
-class ItemSheetEffect extends ItemSheetSkill {
+class ItemSheetEffect extends TheEdgeItemSheet {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "effects"}],

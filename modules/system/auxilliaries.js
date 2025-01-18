@@ -27,24 +27,6 @@ export default class Aux {
     return game.actors.get(actorID);
   }
 
-  static getProficiencyGroup(profName) {
-    let map = THE_EDGE.effect_map["proficiencies"]
-    for (const group of Object.keys(map)) {
-        if (group === "all") continue;
-        if (map[group].includes(profName)) return group;
-    }
-    return undefined;
-  }
-
-  static getWeaponGroup(weaponName) {
-    let map = THE_EDGE.effect_map["weapons"]
-    for (const group of Object.keys(map)) {
-        if (group === "all") continue;
-        if (map[group].includes(weaponName)) return group;
-    }
-    return undefined;
-  }
-
   static _language_cost_table(humanSpoken) {
     return humanSpoken ? [200, 400, 1000, 2000, 3200, 3200] : [600, 3000, 6400]
   }

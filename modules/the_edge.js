@@ -7,31 +7,9 @@ import { TheEdgeActorSheet } from "./actors/actor-sheet.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
 import { createWorldbuildingMacro } from "./macro.js";
 import { TheEdgeToken, TheEdgeTokenDocument } from "./token.js";
-import LocalisationServer from "./system/localisation_server.js";
 
 Hooks.once("init", async function() {
   console.log(`Initializing the Galaxy`);
-  THE_EDGE.attrs = Object.keys(game.model.Actor.character.attributes)
-  THE_EDGE.effect_map.attributes.all = THE_EDGE.attrs
-  for (const [group, weapon_class] of Object.entries(game.model.Actor.character.weapons)) {
-    THE_EDGE.effect_map.weapons[group.toLowerCase()] = Object.keys(weapon_class)
-    THE_EDGE.effect_map.weapons.all.push(...Object.keys(weapon_class))
-    for (const weapon of Object.keys(weapon_class)) {
-      THE_EDGE.core_value_map[weapon] = [LocalisationServer.localise(weapon, "combat"), `system.weapons.${group}.${weapon}`]
-    }
-  }
-  for (const [group, proficiencies] of Object.entries(game.model.Actor.character.proficiencies)) {
-    THE_EDGE.effect_map.proficiencies[group.toLowerCase()] = Object.keys(proficiencies)
-    THE_EDGE.effect_map.proficiencies.all.push(...Object.keys(proficiencies))
-    for (const prof of Object.keys(proficiencies)) {
-      THE_EDGE.core_value_map[prof] = [LocalisationServer.localise(prof, "proficiency"), `system.proficiencies.${group}.${prof}`]
-    }
-  }
-
-  for (const attr of Object.keys(game.model.Actor.character.attributes)) {
-    THE_EDGE.core_value_map[attr] = [LocalisationServer.localise(attr, "attr"), `system.attributes.${attr}`]
-  }
-
   // Useful helpers
   Array.prototype.random = function () {
     return this[Math.floor((Math.random()*this.length))];
@@ -42,6 +20,46 @@ Hooks.once("init", async function() {
   Array.prototype.last = function () {
     return this[this.length - 1];
   }
+
+  // Generating maps for the fundamental data model
+  THE_EDGE.attrs = Object.keys(game.model.Actor.character.attributes)
+  const coreValues = Object.keys(foundry.utils.flattenObject(game.model.Actor.character))
+    .filter(x => x.split(".").last() == "advances");
+  for (const coreValue of coreValues) {
+    const parts = coreValue.split(".");
+    THE_EDGE.core_value_map[parts[0]][parts[parts.length-2]] = coreValue.replace(".advances", "");
+  }
+
+  const basicEffects = Object.keys(foundry.utils.flattenObject(game.model.Actor.character))
+    .filter(x => x.split(".").last() == "status");
+  for (let effect of basicEffects) {
+    const parts = effect.split(".");
+    effect = "system." + effect;
+    if (THE_EDGE.effect_map[parts[0]]) {
+      if (parts.length == 3) {
+        THE_EDGE.effect_map[parts[0]][parts[1]] = [effect];
+      } else {
+        THE_EDGE.effect_map[parts[0]][parts[2]] = [effect];
+        if (THE_EDGE.effect_map[parts[0]][parts[1]]) {
+          THE_EDGE.effect_map[parts[0]][parts[1]].push(effect);
+        } else THE_EDGE.effect_map[parts[0]][parts[1]] = [effect];
+      }
+      THE_EDGE.effect_map[parts[0]].all.push(effect);
+    } else {
+      THE_EDGE.effect_map["others"][parts[0] + " - " + parts[1]] = [effect];
+    }
+  }
+  THE_EDGE.effect_map["attributes"]["physical"] = [
+    THE_EDGE.effect_map["attributes"]["end"], THE_EDGE.effect_map["attributes"]["str"], 
+    THE_EDGE.effect_map["attributes"]["spd"], THE_EDGE.effect_map["attributes"]["crd"], 
+  ]
+  THE_EDGE.effect_map["attributes"]["social"] = [
+    THE_EDGE.effect_map["attributes"]["cha"], THE_EDGE.effect_map["attributes"]["emp"], 
+  ]
+  THE_EDGE.effect_map["attributes"]["mental"] = [
+    THE_EDGE.effect_map["attributes"]["foc"], THE_EDGE.effect_map["attributes"]["res"], 
+    THE_EDGE.effect_map["attributes"]["int"]
+  ]
 
   game.the_edge = {
     TheEdgeActor,
