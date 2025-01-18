@@ -85,14 +85,14 @@ export default function() {
     getDmgModifier: (a) => {return `dmg: ${a.system.damage.bonus} / ${a.system.damage.penetration}`},
     getWeightClass: (weight, str) => {
       if (str == 0) return "";
-      let encumbrance = Math.max(Math.ceil((weight - str) / (str/2)), 0);
-      return `(${LocalisationServer.localise("encumbrance")}: ${encumbrance})`
+      const overload = Math.max(Math.ceil((weight - str) / (str/2)), 0);
+      return `(${LocalisationServer.localise("Overload")}: ${overload})`
     },
     getNextWeightClass: (weight, str) => {
       if (str == 0) return "";
       if (weight < str) return `${Math.floor(10 * (str-weight))/10}kg ${LocalisationServer.localise("to next level")}`
-      let encumbrance = Math.ceil((weight - str) / (str/2));
-      let remaining = encumbrance * (str/2) - (weight - str)
+      const overload = Math.ceil((weight - str) / (str/2));
+      let remaining = overload * (str/2) - (weight - str)
       return `${Math.floor(10 * remaining)/10}kg ${LocalisationServer.localise("to next level")}`
     },
     getWoundCoords: (details) => {

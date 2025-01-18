@@ -248,35 +248,35 @@ export class TheEdgeActor extends Actor {
     );
   }
   
-  async determineEncumbrance() {
+  async determineOverload() {
     let weight = this._determineWeight();
     // let str = this.system.attributes.Str.value;
     let str = this.system.attributes.str.advances + this.system.attributes.str.status;
 
-    // Correct for the current encumbrance level
+    // Correct for the current overload level
     let effects = this.itemTypes["Effect"]
-    let currentEncumbrance = effects?.find(
-      obj => obj.name == LocalisationServer.localise("Encumbrance"))
-    str += currentEncumbrance?.system.effects?.reduce(
+    let currentOverload = effects?.find(
+      obj => obj.name == LocalisationServer.localise("Overload"))
+    str += currentOverload?.system.effects?.reduce(
       (a,b) => a - b.value, -1
     ) || 0 // -1 for the phyiscal proficiencies
     if (str <= 0) return false; // We can't possibly do sensible things yet
     else if (weight <= str) {
-      this._deleteEffect("Encumbrance");
-      return true; // exit without being encumbered
+      this._deleteEffect("Overload");
+      return true; // exit without being overloaded
     }
     
-    let encumbranceLevel = Math.max(Math.ceil((weight - 1.5 * str) / (str / 2)), 0)
-    let physicalMalus = -Math.ceil(encumbranceLevel / 2)
-    let allMalus = -Math.floor(encumbranceLevel / 2)
+    let overloadLevel = Math.max(Math.ceil((weight - 1.5 * str) / (str / 2)), 0)
+    let physicalMalus = -Math.ceil(overloadLevel / 2)
+    let allMalus = -Math.floor(overloadLevel / 2)
 
-    if (!currentEncumbrance) {
+    if (!currentOverload) {
       const cls = getDocumentClass("Item");
-      currentEncumbrance = await cls.create(
-        {name: LocalisationServer.localise("Encumbrance"), type: "Effect"}, {parent: this}
+      currentOverload = await cls.create(
+        {name: LocalisationServer.localise("Overload"), type: "Effect"}, {parent: this}
       );
     }
-    await currentEncumbrance.update({"system.effects": [
+    await currentOverload.update({"system.effects": [
       {group: "proficiencies", name: "physical", value: -1},
       {group: "attributes", name: "physical", value: physicalMalus},
       {group: "attributes", name: "all", value: allMalus}
