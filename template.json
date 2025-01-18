@@ -123,7 +123,7 @@
     },
     "bloodLoss": {
       "value": 0,
-      "threshold": {"value": 0, "status": 0, "baseline": 0},
+      "threshold": {"value": 0, "status": 0, "baseline": 4},
       "effectStep": {"value": 0, "status": 0, "baseline": 6}
     },
     "heroToken": {
