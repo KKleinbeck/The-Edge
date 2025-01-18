@@ -358,11 +358,11 @@ export class TheEdgeActor extends Actor {
     const bloodlossEff = Math.max(bl.value - bl.threshold.value, 0);
     const level = Math.floor(bloodlossEff / bl.effectStep.value);
     if (level == 0) {
-      this._deleteEffect("Blood loss");
+      this._deleteEffect("Vertigo");
       return;
     }
 
-    let currentBloodLoss = await this._getEffectOrCreate("Blood loss");
+    let currentBloodLoss = await this._getEffectOrCreate("Vertigo");
     currentBloodLoss.update({"system.effects": [
       {group: "attributes", name: "crd", value: -level},
       {group: "attributes", name: "foc", value: -level},
