@@ -384,12 +384,18 @@ export class TheEdgeActor extends Actor {
         update[elem] = 0;
       }
     }
+    const critDice = {
+      attributes: {crit: [1], critFail: [20]},
+      proficiencies: {crit: [1], critFail: [20]},
+      weapons: {crit: [1], critFail: [20]}
+    }
 
     // Iterate through items and apply their effects
     for (const item of this.items) {
       if (item.type == "Skill" || item.type == "Combatskill") {
         for (let i = 0; i < item.system.level; ++i) {
           for (const effect of item.system.levelEffects[i]) {
+            if (this._updateCritDice(effect, critDice)) continue;
             for (const effectPath of THE_EDGE.effect_map[effect.group][effect.name]) {
               update[effectPath] += effect.value;
             }
@@ -401,14 +407,40 @@ export class TheEdgeActor extends Actor {
         if (item.type != "Effect" && !(item.system.equipped && item.system.hasEffect)) continue;
 
         for (const effect of item.system.effects) {
+          if (this._updateCritDice(effect, critDice)) continue;
           for (const effectPath of THE_EDGE.effect_map[effect.group][effect.name]) {
             update[effectPath] += effect.value;
           }
         }
       }
     }
-    // console.log(update)
+    
+    for (const [group, dice] of Object.entries(critDice)) {
+      this.diceServer.interpretationParams[group].crit = dice.crit;
+      this.diceServer.interpretationParams[group].critFail = dice.critFail;
+    }
     await this.update(update);
+  }
+
+  _updateCritDice(effect, critDice) {
+    if (effect.name == "crit") {
+      const index = critDice[effect.group].critFail.indexOf(effect.value);
+      if (index > -1) {
+        critDice[effect.group].critFail.splice(index, 1);
+        return true;
+      }
+      critDice[effect.group].crit.push(effect.value)
+      return true;
+    } else if (effect.name == "critFail") {
+      const index = critDice[effect.group].crit.indexOf(effect.value);
+      if (index > -1) {
+        critDice[effect.group].crit.splice(index, 1);
+        return true;
+      }
+      critDice[effect.group].critFail.push(effect.value)
+      return true;
+    }
+    return false;
   }
 
   learnSkill(newSkill) {

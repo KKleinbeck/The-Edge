@@ -1,27 +1,19 @@
 import LocalisationServer from "./localisation_server.js";
 
 export default class DiceServer {
-  // [2]a1d20 + 3d3d10h2 + 5d6l3, [1]d20+60
-  // Meaning:
-  // - [n=2]a: advantage (default highest of two rolls)
-  // - [n=2]d: disadvantage (default lowest of two rolls)
-  // - [n=1]d: dices
-  // - h[n]: take highest n dices
-  // - l[n]: take lowest n dices
-  // - KOMMA: return mutliple rolls
   constructor() {
     const interpretTemplate = {
       crit: [1], critFail: [20], critFailTable: []
     }
 
     this.interpretationParams = {
-      attribute: structuredClone(interpretTemplate),
-      proficiency: structuredClone(interpretTemplate),
-      combat: structuredClone(interpretTemplate),
+      attributes: structuredClone(interpretTemplate),
+      proficiencies: structuredClone(interpretTemplate),
+      weapons: structuredClone(interpretTemplate),
     }
-    this.interpretationParams.attribute.qualityStep = 2;
-    this.interpretationParams.proficiency.qualityStep = 4;
-    this.interpretationParams.combat.critFailTable = [
+    this.interpretationParams.attributes.qualityStep = 2;
+    this.interpretationParams.proficiencies.qualityStep = 4;
+    this.interpretationParams.weapons.critFailTable = [
       {name: "Spontaneous discharge", frequency: 3}, {name: "Jam", frequency: 5},
       {name: "Optics de-adjusted", frequency: 5}, {name: "Overheating", frequency: 5},
       {name: "Flicked safety on", frequency: 5}, {name: "Trigger jam", frequency: 5},
@@ -54,7 +46,7 @@ export default class DiceServer {
     let basicQuality = Math.floor(roll.netOutcome / qualityStep);
     let outcome = (roll.netOutcome >= 0) ? "Success" : "Failure"
     switch (type) {
-      case "attribute":
+      case "attributes":
         if (interpretationParams.crit.includes(roll.diceResult)) {
           outcome = "CritSuccess"
           basicQuality = Math.max(basicQuality + 2, 2);
@@ -65,7 +57,7 @@ export default class DiceServer {
         }
         break;
 
-      case "proficiency":
+      case "proficiencies":
         let nCrits = 0;
         let nCritFails = 0;
         for (const dice of roll.diceResults) {
@@ -82,7 +74,7 @@ export default class DiceServer {
         }
         break;
       
-      case "combat":
+      case "weapons":
         let damage = [];
         let crits = [];
         for (let i = 0; i < details.dices; ++i) {
@@ -120,7 +112,7 @@ export default class DiceServer {
       roll = this._selectVantageOutcome(vantage, roll, roll2);
     }
 
-    return this._interpretCheck("attribute", roll);
+    return this._interpretCheck("attributes", roll);
   }
 
   async _attributeRoll(threshold) {
@@ -136,7 +128,7 @@ export default class DiceServer {
       roll = this._selectVantageOutcome(vantage, roll, roll2)
     }
 
-    return this._interpretCheck("proficiency", roll);
+    return this._interpretCheck("proficiencies", roll);
   }
 
   async _proficiencyRoll(thresholds, modificator) {
@@ -163,7 +155,7 @@ export default class DiceServer {
       roll = this._selectVantageOutcome(vantage, roll, roll2)
     }
 
-    return this._interpretCheck("combat", roll,
+    return this._interpretCheck("weapons", roll,
       {damageDice: damageDice, dices: dices, critThreshold: critThreshold}
     );
   }

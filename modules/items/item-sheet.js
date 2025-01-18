@@ -57,7 +57,11 @@ export class TheEdgeItemSheet extends ItemSheet {
       async: true
     });
     context.systemData.userIsGM = game.user.isGM;
-    context.definedEffects = THE_EDGE.effect_map;
+    context.definedEffects = structuredClone(THE_EDGE.effect_map);
+    for (const group of ["attributes", "proficiencies", "weapons"]) {
+      context.definedEffects[group].crit = undefined;
+      context.definedEffects[group].critFail = undefined;
+    }
     return context;
   }
 
@@ -212,7 +216,6 @@ class ItemSheetSkill extends TheEdgeItemSheet {
     for (const skill of skills) {
       context.coreRequirements.skills[skill.name] = skill.name;
     }
-    context.definedEffects = THE_EDGE.effect_map;
     return context;
   }
 
