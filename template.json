@@ -182,7 +182,6 @@
     },
     "equipable": {
       "equipped": false,
-      "hasEffect": false,
       "effects": []
     },
     "skill": {
