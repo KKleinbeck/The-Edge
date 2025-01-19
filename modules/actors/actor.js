@@ -804,7 +804,6 @@ export class TheEdgeActor extends Actor {
     let newZone = this.getHRZone();
     if (newZone != zone) {this.updateStrain()}
     
-    console.log(communication)
     ChatServer.transmitEvent("strainUpdate",
       {strains: strains, communication: communication, hrChange: hrChange})
   }
