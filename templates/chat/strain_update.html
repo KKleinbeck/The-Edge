@@ -4,9 +4,15 @@
   <b>{{combatName "Strain actions"}}: </b>
   {{strains}}
 </div>
+{{#if communication}}
 <div class="centered-row">
-  <b>{{combatName communication}}</b>
+  <b>{{combatName "communication"}}</b>
 </div>
+{{else}}
+<div class="centered-row">
+  <b>{{combatName "no communication"}}</b>
+</div>
+{{/if}}
 <div class="centered-row">
   <b>{{combatName "changing heart rate"}}</b>
   {{hrChange}}

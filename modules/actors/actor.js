@@ -789,21 +789,22 @@ export class TheEdgeActor extends Actor {
     let isRest = maxStrain < zone;
     let hrChange = 0;
     if (isRest) {
-      hrChange = 2 * strains.map(x => x - zone).reduce((a, b) => a+b, 0)
+      hrChange = 2 * strains.map(x => x - zone).sum();
     } else {
-      hrChange = 4 * strains.map(x => Math.max(x - zone + 1, 0)).reduce((a,b) => a+b, 0)
+      hrChange = 4 * strains.map(x => Math.max(x - zone + 1, 0)).sum();
     }
 
-    hrChange += (maxStrain - zone + 1) * [0, 1, 2, 4][communication]
+    hrChange += 4 * communication * !isRest;
     
     let hr = this.system.heartRate;
-    let threshold = [hr.min.value, this.hrZone1(), this.hrZone2(), hr.max.value][maxStrain]
+    let threshold = [hr.min.value, this.hrZone1(), this.hrZone2(), hr.max.value][maxStrain];
     let clamper = isRest ? Math.max : Math.min;
     await this.update({"system.heartRate.value": clamper(hr.value + hrChange, threshold)});
     
     let newZone = this.getHRZone();
     if (newZone != zone) {this.updateStrain()}
     
+    console.log(communication)
     ChatServer.transmitEvent("strainUpdate",
       {strains: strains, communication: communication, hrChange: hrChange})
   }

@@ -4,23 +4,19 @@
       <b>{{combatName action}}</b>
       <select class="advantage-box" name="StrainSelector" style="width: 60%;">
         {{#each ../strainLevel as |strain|}}
-          <option value="{{@index}}">{{combatName "Strain Level"}} {{@index}}</option>
+          <option value="{{@index}}">{{combatName strain}}</option>
         {{/each}}
       </select>
     </div>
   {{/each}}
-  <div style="display: flex; gap: 5px; width: 100%; justify-content: space-between; align-items: center;">
-    <b>{{combatName "Communication"}}</b>
-    <select class="advantage-box" name="CommunicationSelector" style="width: 60%;">
-      {{#each communicationOptions as |communication|}}
-        <option value="{{@index}}">{{combatName communication}}</option>
-      {{/each}}
-    </select>
+  <div style="display: flex; gap: 5px; width: 100%; align-items: center;">
+    <input type="checkbox" name="communication" id="communication"/>
+    <label for="communication">{{combatName "Communication"}}</label>
   </div>
   <details>
     <summary>{{genName "Description"}}</summary>
     <div>
-      {{#each strainLevel as |strain|}}
+      {{#each descriptions as |strain|}}
         <div>
           {{combatName strain}}: {{textLocalisation strain}}
         </div>

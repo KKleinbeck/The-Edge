@@ -148,16 +148,14 @@
     "FOURTH ACTION": "Fourth action",
 
     "STRAIN LEVEL": "Strain level",
+    "NO ACTION": "No action",
     "NO STRAIN": "No strain actions",
     "STRAIN L1": "Strain level 1 actions",
     "STRAIN L2": "Strain level 2 actions",
     "STRAIN L3": "Strain level 3 actions",
 
-    "COMMUNICATION": "Communication",
-    "MUTE": "Mute",
-    "SHOUT": "Shout",
-    "TALK": "Talk",
-    "WHISPER": "Whisper",
+    "COMMUNICATION": "With communication",
+    "NO COMMUNICATION": "Without communication",
 
     "HEART RATE CHANGE": "Heart rate change",
     "STRAIN ACTIONS": "Performed actions at strain level",
@@ -165,7 +163,7 @@
     "1": "while whispering,",
     "2": "while talking,",
     "3": "while shouting,",
-    "CHANGING HEART RATE": "changing heart rate by",
+    "CHANGING HEART RATE": "Changing heart rate by",
 
     "LEAD ATTR COMBATICS": "Lead attr: Str & Crd",
 
@@ -408,8 +406,8 @@
   },
   "TEXT": {
     "EFFECTS": "Add a status modifiery to your attributes, proficiencies, weapon proficiencies and other character attributes.\nFor this write 'Attributes.NAME', 'Proficiencies.NAME', 'Weapons.NAME'. This is generally case-insensitive, except for specific proficiency and weapon names. You can also use group names, for example 'attributes.physical' or 'weapons.Energy'. Furthermore there is an 'all' specifier to affect everything.\nOther modifiers: 'health', 'heartRate.[min,max]', 'bloodVolumn'.",
-    "NO STRAIN": "Examples: Standing, sitting, lying, using a weapon",
-    "STRAIN L1": "Examples: Walking, striding, throwing, normal swimming",
+    "NO STRAIN": "Examples: Standing, sitting, lying, aiming.",
+    "STRAIN L1": "Examples: Walking, striding, throwing, firing a weapon, normal swimming",
     "STRAIN L2": "Examples: Running, jumping, climbing, fast swimming",
     "STRAIN L3": "Examples: Sprinting, maximal physical efforts, melee combat"
   },
