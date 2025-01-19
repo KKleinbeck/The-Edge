@@ -84,7 +84,7 @@
     - Foc: 12
 - name: Shock and awe
   levels: 2
-  cost: 500
+  cost: 400 / 700
   requirements:
     - Cha: [10, 12]
     - Tactics: [4, 7]

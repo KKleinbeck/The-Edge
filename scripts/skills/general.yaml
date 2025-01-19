@@ -20,22 +20,10 @@
   requirements:
     - Cha: [12, 15]
 - name: Meticulous approach
-  type: environmental
+  type: environmental / knowledge / mental
   cost: 200
 - name: Meticulous approach
-  type: knowledge
-  cost: 200
-- name: Meticulous approach
-  type: mental
-  cost: 200
-- name: Meticulous approach
-  type: physical
-  cost: 300
-- name: Meticulous approach
-  type: social
-  cost: 300
-- name: Meticulous approach
-  type: technical
+  type: physical / social / technical
   cost: 300
 - name: Motivational speech
   levels: 3

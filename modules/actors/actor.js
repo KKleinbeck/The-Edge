@@ -24,7 +24,8 @@ export class TheEdgeActor extends Actor {
       const coreVal = Aux.objectAt(this.system, coreValPath);
       coreVal.value = coreVal.advances + coreVal.status;
     }
-    sys.health.max.value = sys.health.max.baseline + sys.health.max.status;
+    sys.health.max.value = sys.health.max.baseline + sys.health.max.status +
+      sys.attributes.str.advances + Math.floor((sys.attributes.end.advances + sys.attributes.res.advances) / 2);
     sys.bloodLoss.threshold.value = sys.bloodLoss.threshold.baseline + sys.bloodLoss.threshold.status;
     sys.bloodLoss.effectStep.value = sys.bloodLoss.effectStep.baseline + sys.bloodLoss.effectStep.status;
     
