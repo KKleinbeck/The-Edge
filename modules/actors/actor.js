@@ -24,14 +24,14 @@ export class TheEdgeActor extends Actor {
       const coreVal = Aux.objectAt(this.system, coreValPath);
       coreVal.value = coreVal.advances + coreVal.status;
     }
-    sys.health.max.value = sys.health.max.baseline + sys.health.max.status
-    sys.bloodLoss.threshold.value = sys.bloodLoss.threshold.baseline + sys.bloodLoss.threshold.status
-    sys.bloodLoss.effectStep.value = sys.bloodLoss.effectStep.baseline + sys.bloodLoss.effectStep.status
+    sys.health.max.value = sys.health.max.baseline + sys.health.max.status;
+    sys.bloodLoss.threshold.value = sys.bloodLoss.threshold.baseline + sys.bloodLoss.threshold.status;
+    sys.bloodLoss.effectStep.value = sys.bloodLoss.effectStep.baseline + sys.bloodLoss.effectStep.status;
     
     sys.heartRate.max.value = sys.heartRate.max.baseline + sys.heartRate.max.status +
-      sys.attributes.end.value - 2 * Math.floor((sys.age - 21) / 3)
+      sys.attributes.end.value - 2 * Math.floor((sys.age - 21) / 3) - sys.bloodLoss.value;
     sys.heartRate.min.value = sys.heartRate.min.baseline + sys.heartRate.min.status +
-      (sys.health.max.value - sys.health.value) - sys.attributes.end.value
+      (sys.health.max.value - sys.health.value) - sys.attributes.end.value;
 
     sys.wounds = {}
   }
@@ -364,10 +364,7 @@ export class TheEdgeActor extends Actor {
 
     let currentBloodLoss = await this._getEffectOrCreate("Vertigo");
     currentBloodLoss.update({"system.effects": [
-      {group: "attributes", name: "crd", value: -level},
-      {group: "attributes", name: "foc", value: -level},
-      {group: "attributes", name: "res", value: -level},
-      {group: "attributes", name: "int", value: -level},
+      {group: "attributes", name: "mental", value: -level},
     ], "system.deactivatable": false})
   }
 
