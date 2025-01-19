@@ -171,7 +171,8 @@ export class TheEdgeActor extends Actor {
 
   async rollAttackCheck(dices, threshold, vantage, damageDice, damageType) {
     const results = await this.diceServer.attackCheck(
-      dices, threshold, vantage, damageDice, this.system.generalCombatAdvances[damageType] || 0
+      dices, threshold, vantage, damageDice,
+      Math.floor((this.system.generalCombatAdvances[damageType] || 0) / 2)
     );
     return results;
   }

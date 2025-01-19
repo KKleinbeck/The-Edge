@@ -89,9 +89,9 @@ export default class DiceServer {
 
         let failEvents = [];
         const nFailures = roll.diceResults.filter(x => interpretationParams.critFail.includes(x));
-        if (nFailures.length >= 0.5 || nFailures.length == roll.diceResults.length) {
-          const failCheck = (await this._genericRoll("1d20")) <= details.critThreshold;
-          if (!failCheck) {
+        if (nFailures.length >= 0.33335 * roll.diceResults.length) {
+          const failCheck = (await this._genericRoll("1d20"));
+          if (failCheck == 20 || failCheck > details.critThreshold) {
             failEvents.push(this._selectFromFailTable(interpretationParams.critFailTable));
           }
         }
@@ -163,7 +163,9 @@ export default class DiceServer {
   async _attackRoll(dices, threshold) {
     let diceRes = []
     for (let i = 0; i < dices; ++i) diceRes.push(await this._genericRoll("1d20"));
-    let hits = diceRes.map(x => x <= threshold);
+    let hits = diceRes.map(x =>
+      x <= threshold && !(this.interpretationParams.weapons.critFail.includes(x))
+    );
     return {diceResults: diceRes, hits: hits, netOutcome: hits.sum()};
   }
 
