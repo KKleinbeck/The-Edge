@@ -1,4 +1,5 @@
 import LocalisationServer from "../system/localisation_server.js";
+import Aux from "../system/auxilliaries.js";
 
 export default class DialogItemDeletion extends Dialog{
   static get defaultOptions() {
@@ -21,7 +22,7 @@ export default class DialogItemDeletion extends Dialog{
                 const attachment = actor.items.get(attachmentData.shellId);
                 attachment.update({"system.equipped": false, "system.attachments": []});
               }
-            } else {
+            } else if (item.system.equipped == true) {
               const parent = actor.items.get(item.system.attachments[0].armourId);
               await Aux.detachFromParent(parent, item._id, item.system.attachmentPoints.max);
             }
