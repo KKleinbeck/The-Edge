@@ -206,11 +206,13 @@
     "CANCEL": "Cancel",
     "CHEAT": "Cheat",
     "COMBAT ACTIONS": "Combat Actions",
+    "DELETE ITEM": "Delete {name}?",
     "EMPTY": "Empty",
     "REST": "Rest",
     "ROLL": "Roll",
     "SELECT": "Select",
-    "SUBMIT": "Submit"
+    "SUBMIT": "Submit",
+    "YES": "Yes"
   },
   "HERO TOKEN": {
     "ATTRIBUTE": "{name} used a hero token to improve an ability check.",

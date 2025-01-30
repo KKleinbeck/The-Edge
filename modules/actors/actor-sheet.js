@@ -7,6 +7,7 @@ import DialogRest from "../dialogs/dialog-rest.js";
 import DialogDamage from "../dialogs/dialog-damage.js";
 import DialogWeapon from "../dialogs/dialog-weapon.js";
 import DialogCombatics from "../dialogs/dialog-combatics.js";
+import DialogItemDeletion from "../dialogs/dialog-item-deletion.js";
 import DialogArmourAttachment from "../dialogs/dialog-attachOuterArmour.js";
 import LocalisationServer from "../system/localisation_server.js";
 import ChatServer from "../system/chat_server.js";
@@ -319,20 +320,7 @@ export class TheEdgeActorSheet extends ActorSheet {
       case "delete":
         if (item.type.includes("vantage")) this.actor.deleteVantage(item);
         else if (item.type == "Wounds") this.actor.deleteWound(item);
-        else {
-          if (item.type = "Armour" && item.system.attachments) {
-            if (item.system.layer == "Inner") {
-              for (const attachmentData of item.system.attachments) {
-                const attachment = this.actor.items.get(attachmentData.shellId);
-                attachment.update({"system.equipped": false, "system.attachments": []});
-              }
-            } else {
-              const parent = this.actor.items.get(item.system.attachments[0].armourId);
-              await Aux.detachFromParent(parent, item._id, item.system.attachmentPoints.max);
-            }
-          }
-          item.delete();
-        }
+        else DialogItemDeletion.start({item: item, actor: this.actor});
         break;
       case "toggle-active":
         item.toggleActive();
