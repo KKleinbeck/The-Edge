@@ -1,0 +1,30 @@
+<div style="display: flex; gap: 5px;">
+  {{#each systemData.weapons as |group groupName|}}
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 70%"><p style="font-size: 14; text-transform: uppercase;">{{itemName groupName}}</p></th>
+          <th>{{genName "Lvl"}}</th>
+          <th>{{genName "Sta"}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each ../systemData.generalCombatAdvances as |generalAdvance generalName|}}
+          {{#if (checkEqual groupName generalName)}}
+            <tr>
+              <td style="font-weight: bold;">{{genName "Basic Proficiency"}}</td>
+              <td colspan="2"><input class="core-value" data-target="system.generalCombatAdvances.{{groupName}}" type="number" value="{{generalAdvance}}" data-dtype="Number" style="max-height: 22px; text-align: center;"></td>
+            </tr>
+          {{/if}}
+        {{/each}}
+        {{#each group as |modifiers weapon|}}
+          <tr>
+            <td style="font-weight: bold;">{{combatName weapon}}</td>
+            <td><input class="core-value" data-target="system.weapons.{{groupName}}.{{weapon}}.advances" type="number" value="{{getWeaponProficiency ../../actor groupName weapon 'advances'}}" data-dtype="Number" style="max-height: 22px; text-align: right; max-width: 30px;"></td>
+            <td><div class="output" style="max-height: 22px; max-width: 30px; text-align: right;">{{getWeaponProficiency ../../actor groupName weapon 'status'}}</div></td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  {{/each}}
+</div>

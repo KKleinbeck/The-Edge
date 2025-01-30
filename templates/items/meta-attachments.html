@@ -1,0 +1,46 @@
+<div class="tab" data-group="primary" data-tab="attachments">
+  <b>{{genName "Attachments"}}</b>
+  <table>
+    <tr>
+      <td></td>
+      <td style="text-align: center;">{{combatName "Absorption"}}</td>
+      <td style="text-align: center;">{{combatName "Threshold"}}</td>
+    </tr>
+    <tr>
+      {{#each systemData.attachments as |attachment|}}
+        <tr>
+          <td>
+            <div style="display: flex; justify-content: space-between;" data-index={{@index}} data-actor-id={{attachment.actorId}} data-token-id={{attachment.tokenId}} data-attachment-id="{{attachment.shell._id}}">
+              <div class="attachment-edit" style="cursor: pointer;">
+                {{attachment.shell.name}}
+              </div>
+              <a class="attachment-detach" title="{{ itemName 'Detach' }}"><i class="far fa-square-minus"></i></a>
+            </div>
+          </td>
+          <td style="text-align: center;">
+            <div class="output" style="width: 25px;">
+              {{attachment.shell.system.protection.energy.absorption}}
+            </div>
+            <div class="output" style="width: 25px;">
+              {{attachment.shell.system.protection.kinetic.absorption}}
+            </div>
+            <div class="output" style="width: 25px;">
+              {{attachment.shell.system.protection.elemental.absorption}}
+            </div>
+          </td>
+          <td style="text-align: center;">
+            <div class="output" style="width: 25px;">
+              {{attachment.shell.system.protection.energy.threshold}}
+            </div>
+            <div class="output" style="width: 25px;">
+              {{attachment.shell.system.protection.kinetic.threshold}}
+            </div>
+            <div class="output" style="width: 25px;">
+              {{attachment.shell.system.protection.elemental.threshold}}
+            </div>
+          </td>
+        </tr>
+      {{/each}}
+    </tr>
+  </table>
+</div>

@@ -1,0 +1,13 @@
+# IDE
+.idea/
+.vs/
+the_edge.code-workspace
+
+# Separate Repos
+docs/
+
+# Node Modules
+node_modules/
+package-lock.json
+
+worldbuilding.lock

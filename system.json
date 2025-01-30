@@ -1,0 +1,38 @@
+{
+  "id": "the_edge",
+  "version": "0.1.0",
+  "title": "The Edge",
+  "url": "https://github.com/KKleinbeck/The-Edge.git",
+  "description": "A Sci-Fi centric rule system, heavily inspired by the DSA ruleset.",
+  "license": "LICENSE.txt",
+  "authors": [
+    {
+      "name": "Kevin Kleinbeck",
+      "flags": {}
+    }
+  ],
+  "esmodules": [
+    "modules/the_edge.js"
+  ],
+  "styles": [
+    "styles/simple.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json",
+      "flags": {}
+    }
+  ],
+  "compatibility": {
+    "minimum": "12",
+    "verified": "12"
+  },
+  "grid": {
+    "distance": 1,
+    "units": "m"
+  },
+  "manifest": "https://raw.githubusercontent.com/KKleinbeck/The-Edge/master/system.json",
+  "download": ""
+}

@@ -1,0 +1,16 @@
+<hr>
+<b>{{combatName "Armour protection"}}:</b>
+<div style="padding-left: 5px;">
+  <table>
+    {{#each protection as |protected name|}}
+      <tr>
+        <td>{{name}}:</td>
+        <td>
+          {{#each protected}}
+            <b>{{this}}</b>{{#unless @last}}, {{/unless}}
+          {{/each}}
+        </td>
+      </tr>
+    {{/each}}
+  </table>
+</div>

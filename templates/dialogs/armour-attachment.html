@@ -1,0 +1,7 @@
+<div class="check-dialog-box" style="padding-bottom: 15px;">
+  <select name="ArmourSelector">
+    {{#each attachable as |armour|}}
+      <option value="{{armour.id}}">{{armour.name}} - {{armour.system.structurePoints}}</option>
+    {{/each}}
+  </select>
+</div>

@@ -1,0 +1,21 @@
+<div class="centered-row">
+  <h3>{{attrName attribute}} {{genName "Check"}}: </h3>
+  <a class="attr-d20-chat d20-{{attribute}} rerollable" data-index="0" data-actor-id={{actorId}} data-type="attribute">
+    <span class="d20-overlay" title="{{attrName attribute}} {{genName 'threshold'}}: {{threshold}}" data-threshold="{{threshold}}">{{diceResult}}</span>
+  </a>
+</div>
+<div class="centered-row">
+  <b>{{genName "result"}}:</b>
+  <span class="attr-outcome">{{genName outcome}}</span>
+  <span class="attr-quality">{{quality}}&thinsp;{{#if (checkInstance "Success" outcome)}}QL{{else}}FL{{/if}}</span>
+</div>
+<div class="centered-row">
+  <b>{{genName "Modificators"}}: </b>
+  <span>Temp: {{temporary}}</span>
+</div>
+{{#if (checkEqual advantage "Nothing")}}
+{{else}}
+<div class="centered-row">
+  <b>{{genName "with"}} {{genName advantage}}</b>
+</div>
+{{/if}}

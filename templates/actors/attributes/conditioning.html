@@ -1,0 +1,27 @@
+<div class="section right-aligned-text">
+  <p class="section-title">{{genName "Conditioning"}}</p>
+  <hr />
+  <div class="columned-page section-content" style="gap: 10px 5px;">
+    <div class="page-right-aligned">
+      {{#each prepare.zones as |dict i|}}
+        <p data-tooltip={{dict.tooltip}}>
+          {{genName "Zone"}} {{i}} <i class="fa fa-long-arrow-right" aria-hidden="true"></i> {{add i 1}}&#8199;
+          <span class="output" style="width: 50px;">{{dict.value}}</span>
+        </p>
+      {{/each}}
+      <p><span class="output" style="visibility: hidden;">0</span></p> <!-- Hidden element to match right column -->
+      <p>
+        <span class="output" style="max-width: 0px; visibility: hidden;">0</span> <!-- Hidden element to match height -->
+        {{genName "Initiative"}}
+      </p>
+    </div>
+    <div class="page-right-aligned">
+      {{#each prepare.speeds as |dict name|}}
+        <p data-tooltip={{dict.tooltip}}>{{name}} {{genName "Speed"}}&#8199;<span class="output" style="width: 50px;">{{dict.value}}</span></p>
+      {{/each}}
+      <div class="output" data-tooltip="{{genName 'Default'}}: 1d20 + 1d-Spd + 1d-Foc - 2">
+        1d20 + 1d{{systemData.attributes.spd.value}} + 1d{{systemData.attributes.foc.value}} - 2</systemData>
+      </div>
+    </div>
+  </div>
+</div>

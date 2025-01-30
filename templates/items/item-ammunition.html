@@ -1,0 +1,92 @@
+<form class="flexcol {{cssClass}}" autocomplete="off">
+  <header class="sheet-header-item">
+    <div class="item-columned-page">
+      <div style="width: 100px;">
+        <img class="profile-img-item" src="{{data.img}}" data-edit="img" title="{{data.name}}" />
+      </div>
+      <div style="flex: 1">
+        <h3 class="charname">
+          <input name="name" type="text" value="{{data.name}}" placeholder="Name" />
+        </h3>
+        <div class="item-columned-page">
+          <div class="item-header-fields">
+            {{genName "Weight"}}<br/>
+            <input type="number" name="system.weight" value="{{data.system.weight}}" data-dtype="Number"/>
+          </div>
+          <div class="item-header-fields">
+            {{genName "Value"}}<br/>
+            <input type="number" name="system.value" value="{{data.system.value}}" data-dtype="Number"/>
+          </div>
+          <div class="item-header-fields">
+            {{genName "Quantity"}}<br/>
+            <input type="number" name="system.quantity" value="{{data.system.quantity}}" data-dtype="Number"/>
+          </div>
+          <div class="item-header-fields" style="min-width: 37%;">
+            {{genName "Capacity"}}
+            <div style="display: flex; align-items: center; gap: 3px;">
+              <div class="output" title="{{genName 'available'}}" style="width: 44%; height: 26px; line-height: 1.45rem;">{{sub data.system.capacity.max data.system.capacity.used}}</div>
+              /
+              <input type="number" title="{{genName 'maximum'}}" name="system.capacity.max" value="{{data.system.capacity.max}}" data-dtype="Number" style="width: 44%;"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="details">Details</a>
+    <a class="item" data-tab="description">Description</a>
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+    <div class="tab" data-group="primary" data-tab="details">
+      <div class="item-columned-page" style="justify-content: start; gap: 12px">
+        <div class="item-field">
+          <b>{{genName "Type"}}</b><br />
+          <select class="selection-box" name="system.type" id="Type Selector">
+            {{#each data.system.whitelist as |weapons type|}}
+              <option value="{{type}}" {{#if (checkEqual type ../data.system.type)}}selected{{/if}}>{{type}}</option>
+            {{/each}}
+          </select><br />
+          <b>{{genName "Damage modifiers"}}</b><br />
+          <input type="number" id="damage-bonus" name="system.damage.bonus" value="{{systemData.damage.bonus}}" style="width: 25px;"/>
+          <label for="damage-bonus">{{genName "Damage"}}</label><br />
+          <input type="number" id="penetr-bonus" name="system.damage.penetration" value="{{systemData.damage.penetration}}" style="width: 25px;"/>
+          <label for="penetr-bonus">{{genName "Penetration"}}</label>
+        </div>
+        <div class="item-field">
+          <b>{{genName "Range modifiers"}}</b><br />
+          {{#each systemData.modifiers as |mods range|}}
+            <div style="flex: 1;">
+              {{#each mods as |mod|}}
+                <input type="number" name="system.modifiers.{{range}}" value="{{mod}}" style="width: 25px;"/>
+              {{/each}}
+              {{genRange range}}
+            </div>
+          {{/each}}
+        </div>
+        <div class="item-field">
+          <b>{{genName "Available for"}}</b>
+          {{#each data.system.whitelist as |candidates type|}}
+            {{#if (checkEqual type ../data.system.type)}}
+              {{#each candidates as |val weapon|}}
+                <div class="checkbox-container">
+                  <input type="checkbox" id="is-{{weapon}}" name="system.whitelist.{{type}}.{{weapon}}" {{#if val}}checked{{/if}} />
+                  <label for="is-{{weapon}}">{{combatName weapon}}</label>
+                </div>
+              {{/each}}
+            {{/if}}
+          {{/each}}
+        </div>
+      </div>
+      <div style="height: 200px;">
+        <b title="{{tooltipText 'designated weapon'}}">{{genName "Designated Weapons"}}:</b>
+        {{editor designatedWeaponsHTML target="system.designatedWeapons" button=true editable=editable engine="prosemirror"}}
+      </div>
+    </div>
+    {{> systems/the_edge/templates/items/meta-description.html}}
+  </section>
+</form>

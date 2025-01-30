@@ -1,0 +1,42 @@
+<div class="actor-main row-section wrap">
+  <div class="attributes-table" cellpadding="0">
+    <div class="table-row">
+      <div class="table-header"></div> <!-- Empty first cell-->
+      {{#each prepare.attrs as |ch|}}
+      <div data-tooltip="{{attrName ch}}" class="table-header">
+        {{#if ../prepare.canAdvance}}
+          <a data-name="{{ch}}" advance-type="refund"  class="advance-attr" data-cost="{{getSys ../prepare 'attr' ch 'refund'}}"><i class="fas fa-minus advance-fa" style="font-size: 10px;"></i></a>
+          <b>{{attrAbbr ch}}</b>
+          <a data-name="{{ch}}" advance-type="advance" class="advance-attr" data-cost="{{getSys ../prepare 'attr' ch 'cost'}}"><i class="fas fa-plus advance-fa" style="font-size: 10px;"></i></a>
+        {{else}}
+          <b>{{attrAbbr ch}}</b>
+        {{/if}}
+      </div>
+      {{/each}}
+    </div>
+    <div class="table-row" style="gap: 1px; padding-bottom: 2px;">
+      <div class="row-type table-data">
+        <div class="column-name lineheight">
+          {{localize "Level"}}
+        </div>
+      </div>
+      {{#each prepare.attrs as |ch|}}
+      <div class="number-input table-data">
+        <input class="core-value" data-target="system.attributes.{{ch}}.advances" type="number" value="{{getSys ../actor 'attributes' ch 'advances'}}" data-dtype="Number">
+      </div>
+      {{/each}}
+    </div>
+    <div class="table-row" style="gap: 1px;">
+      <div class="row-type table-data">
+        <div class="column-name lineheight">
+          {{localize "Status"}}
+        </div>
+      </div>
+      {{#each prepare.attrs as |ch|}}
+      <div class="table-data">
+        <span class="output" style="width: calc(100% - 2px);">{{getSys ../actor 'attributes' ch 'status'}}</span>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+</div>

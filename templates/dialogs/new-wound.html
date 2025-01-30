@@ -1,0 +1,14 @@
+<div class="check-dialog-box" style="padding-bottom: 15px;">
+  <div style="display: flex; gap: 10px; white-space: nowrap; align-items: center;">
+    <label for="damage">{{genName "damage"}}:</label>
+    <input name="damage" id="damage" type="number" value="0" style="max-width: 32px; text-align: right;">
+  </div>
+  <div style="display: flex; gap: 10px; white-space: nowrap; align-items: center;">
+    <label for="damage type">{{genName "Damage type"}}:</label>
+    <select name="type" id="damage type">
+      {{#each damageTypes as |type|}}
+        <option value="{{type}}">{{combatName type}}</option>
+      {{/each}}
+    </select>
+  </div>
+</div>

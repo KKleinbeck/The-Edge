@@ -1,0 +1,131 @@
+<form class="flexcol {{cssClass}}" autocomplete="off">
+  <header class="sheet-header-item">
+    <div class="item-columned-page">
+      <div style="width: 100px;">
+        <img class="profile-img-item" src="{{data.img}}" data-edit="img" title="{{data.name}}" />
+      </div>
+      <div style="flex: 1">
+        <h3 class="charname">
+          <input name="name" type="text" value="{{data.name}}" placeholder="Name" />
+        </h3>
+        <div class="item-columned-page">
+          <div class="item-header-fields">
+            {{genName "Weight"}}<br/>
+            <input type="number" name="system.weight" value="{{data.system.weight}}" data-dtype="Number"/>
+          </div>
+          <div class="item-header-fields">
+            {{genName "Value"}}<br/>
+            <input type="number" name="system.value" value="{{data.system.value}}" data-dtype="Number"/>
+          </div>
+          <div class="item-header-fields">
+            {{genName "Type"}}<br/>
+            <select class="selection-box" name="system.type" id="Type Selector">
+              {{#each helpers.weapon_types as |type|}}
+                <option value="{{type}}" {{#if (checkEqual type ../data.system.type)}}selected{{/if}}>{{type}}</option>
+              {{/each}}
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="details">Details</a>
+    <a class="item" data-tab="effects">Effects</a>
+    <a class="item" data-tab="description">Description</a>
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+    <div class="tab" data-group="primary" data-tab="details">
+      <div class="item-columned-page">
+        <!-- Fire modes -->
+        <div class="item-fields" style="gap: 10px;">
+          <b>{{combatName "Fire modes"}}</b>
+          {{#each systemData.fireModes as |modifier mode|}}
+            <div style="align-items: center; display: flex; flex-flow: nowrap; justify-content: space-between; gap: 5px;">
+              <span style="white-space: nowrap;">{{combatName mode}}</span>
+              <div style="width: 180px;">
+                <input type="text" name="system.fireModes.{{mode}}.dices" value="{{modifier.dices}}" style="width: 25px; text-align: right;" title="{{combatName 'damage dice'}}"/>
+                x
+                <input type="text" name="system.fireModes.{{mode}}.damage" value="{{modifier.damage}}" style="width: 80px"/>
+                {{#each modifier.mali as |mod|}}
+                  <input type="number" name="system.fireModes.{{mode}}.mali" value="{{mod}}" style="width: 25px; text-align: right;" title="{{combatName 'Precision mali'}}"/>
+                {{/each}}
+              </div>
+            </div>
+          {{/each}}
+        </div>
+        <!-- Leading Attributes -->
+        <div class="item-fields">
+          <div style="display: flex; flex-flow: nowrap; gap: 5px">
+            <div style="width: min-content;">
+              <b>{{genName "_attr"}} 1</b><br />
+              {{#if systemData.userIsGM}}
+                <select class="selection-box" name="system.leadAttr1.name" id="Attr1-Selector" style="width: 57px; text-transform: capitalize;">
+                  {{#each helpers.attrs as |attr|}}
+                    <option value={{attr}} {{#if (checkEqual attr ../data.system.leadAttr1.name)}}selected{{/if}}>{{attr}}</option>
+                  {{/each}}
+                </select><br/>
+              {{else}}
+                <a class="attr-d20-chat d20-{{data.system.leadAttr1.name}}">
+                  <span class="d20-overlay" data-tooltip="{{attrName data.system.leadAttr1.name}}">{{data.system.leadAttr1.name}}</span>
+                </a><br />
+              {{/if}}
+              <input type="number" name="system.leadAttr1.value" value="{{data.system.leadAttr1.value}}" style="width: 57px;"/><br />
+            </div>
+            <div style="width: min-content;">
+              <b>{{genName "_attr"}} 2</b><br />
+              {{#if systemData.userIsGM}}
+                <select class="selection-box" name="system.leadAttr2.name" id="Attr2-Selector" style="width: 57px; text-transform: capitalize;">
+                  {{#each helpers.attrs as |attr|}}
+                    <option value={{attr}} {{#if (checkEqual attr ../data.system.leadAttr2.name)}}selected{{/if}}>{{attr}}</option>
+                  {{/each}}
+                </select><br/>
+              {{else}}
+                <a class="attr-d20-chat d20-{{data.system.leadAttr2.name}}">
+                  <span class="d20-overlay" data-tooltip="{{attrName data.system.leadAttr2.name}}">{{data.system.leadAttr2.name}}</span>
+                </a><br />
+              {{/if}}
+              <input type="number" name="system.leadAttr2.value" value="{{data.system.leadAttr2.value}}" style="width: 57px;"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; flex-flow: nowrap; justify-content: space-between;">
+        <div class="checkbox-container">
+          <input type="checkbox" id="is-elemental" name="system.isElemental" {{#if systemData.isElemental}}checked{{/if}} />
+          <label for="is-elemental">{{combatName "Elemental"}}</label>
+        </div>
+        <div class="checkbox-container">
+          <input type="checkbox" id="multiple-targets" name="system.multipleTargets" {{#if systemData.multipleTargets}}checked{{/if}} />
+          <label for="multiple-targets" title="{{combatName 'Multi target help'}}">{{combatName "multiple targets"}}</label>
+        </div>
+      </div><hr />
+      <!-- Range Chart -->
+      <div class="item-columned-page">
+        <div style="margin-top: 15px; margin-bottom: 5px;">
+          <b>{{combatName "Range chart"}}</b><br/>
+        </div>
+      </div>
+      <div class="item-columned-page" style="align-items: baseline;">
+        <div class="item-columned-page">
+          {{#each data.system.rangeChart as |mods range|}}
+          <div style="flex: 1; text-align: center;">
+            {{genRange range}}<br/>
+            <div>
+              {{#each mods as |mod|}}
+                <input type="number" name="system.rangeChart.{{range}}" value="{{mod}}" style="width: 45%; text-align: right;"/>
+              {{/each}}
+            </div>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+    {{> systems/the_edge/templates/items/meta-effects.html}}
+    {{> systems/the_edge/templates/items/meta-description.html}}
+  </section>
+</form>

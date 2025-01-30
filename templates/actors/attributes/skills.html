@@ -1,0 +1,22 @@
+<div class="section fixed-page">
+  <p class="section-title">{{genName "Skills"}}</p>
+  <hr />
+  <div class="skill-container">
+    {{#each data.items as |item|}}
+      {{#if (checkEqual item.type 'Skill')}}
+        <div class="skill-box">
+          <div class="item skill loadout-name" data-item-id="{{item._id}}">
+            <div class="item-control" data-action="edit" style="cursor: pointer;">{{item.name}} {{#if (checkEqual item.system.maxLevel 1)}}{{else}}({{item.system.level}} / {{item.system.maxLevel}}){{/if}}</div>
+            {{#if (checkEqual item.system.maxLevel 1)}}
+            {{else}}
+              <a class="skill-control" title="{{ skillName 'decrease' }}" data-action="decrease"><i class="fas fa-minus"></i></a>
+              <a class="skill-control" title="{{ skillName 'increase' }}" data-action="increase"><i class="fas fa-plus"></i></a>
+            {{/if}}
+            <a class="skill-control" title="{{ genName 'Post to chat' }}" data-action="post"><i class="fas fa-message"></i></a>
+            <a class="skill-control" title="{{ itemName 'Delete' }}" data-action="delete"><i class="fas fa-trash"></i></a>
+          </div>
+        </div>
+      {{/if}}
+    {{/each}}
+  </div>
+</div>

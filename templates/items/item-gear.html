@@ -1,0 +1,38 @@
+<form class="flexcol {{cssClass}}" autocomplete="off">
+  <header class="sheet-header-item">
+    <div class="item-columned-page">
+      <div style="width: 100px;">
+        <img class="profile-img-item" src="{{data.img}}" data-edit="img" title="{{data.name}}" />
+      </div>
+      <div style="flex: 1">
+        <h3 class="charname">
+          <input name="name" type="text" value="{{data.name}}" placeholder="Name" />
+        </h3>
+        <div class="item-columned-page">
+          <div class="item-header-fields">
+            {{genName "Weight"}}<br/>
+            <input type="number" name="system.weight" value="{{data.system.weight}}" data-dtype="Number"/>
+          </div>
+          <div class="item-header-fields">
+            {{genName "Value"}}<br/>
+            <input type="number" name="system.value" value="{{data.system.value}}" data-dtype="Number"/>
+          </div>
+          <div class="item-header-fields">
+            {{genName "Quantity"}}<br/>
+            <input type="number" name="system.quantity" value="{{data.system.quantity}}" data-dtype="Number"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="description">Description</a>
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+    {{> systems/the_edge/templates/items/meta-description.html}}
+  </section>
+</form>

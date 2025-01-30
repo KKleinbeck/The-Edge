@@ -1,0 +1,26 @@
+<div class="check-dialog-box" style="padding-bottom: 15px;">
+  {{#each actions as |action|}}
+    <div style="display: flex; gap: 5px; width: 100%; justify-content: space-between; align-items: center;">
+      <b>{{combatName action}}</b>
+      <select class="advantage-box" name="StrainSelector" style="width: 60%;">
+        {{#each ../strainLevel as |strain|}}
+          <option value="{{@index}}">{{combatName strain}}</option>
+        {{/each}}
+      </select>
+    </div>
+  {{/each}}
+  <div style="display: flex; gap: 5px; width: 100%; align-items: center;">
+    <input type="checkbox" name="communication" id="communication"/>
+    <label for="communication">{{combatName "Communication"}}</label>
+  </div>
+  <details>
+    <summary>{{genName "Description"}}</summary>
+    <div>
+      {{#each descriptions as |strain|}}
+        <div>
+          {{combatName strain}}: {{textLocalisation strain}}
+        </div>
+      {{/each}}
+    </div>
+  </details>
+</div>

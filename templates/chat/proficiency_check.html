@@ -1,0 +1,24 @@
+<h3>{{proficiencyName proficiency}}</h3>
+<div class="centered-row">
+  <b>{{genName "Check"}}: </b>
+  {{#each dices as |dice|}}
+  <a class="attr-d20-chat d20-{{dice}} rerollable" data-index={{@index}} data-actor-id={{../actorId}} data-type="proficiency">
+    <span class="d20-overlay" data-tooltip="{{attrName dice}} {{genName 'threshold'}}: {{getEntry ../thresholds @index}}" data-threshold="{{getEntry ../thresholds @index}}">{{getEntry ../diceResults @index}}</span>
+  </a>
+  {{/each}}
+</div>
+<div class="centered-row">
+  <b>{{genName "result"}}:</b>
+  <span class="prof-outcome">{{genName outcome}}</span>
+  <span class="prof-quality" data-quality={{quality}}>{{quality}}&thinsp;{{#if (checkInstance "Success" outcome)}}QL{{else}}FL{{/if}}</span>
+</div>
+<div class="centered-row">
+  <b>{{genName "Modificators"}}: </b>
+  <span>{{genName "Level"}}: {{permanentMod}}&#8195;{{genName "Temporary"}}: {{temporaryMod}}</span>
+</div>
+{{#if (checkEqual advantage "Nothing")}}
+{{else}}
+<div class="centered-row">
+  <b>{{genName "with"}} {{genName advantage}}</b>
+</div>
+{{/if}}

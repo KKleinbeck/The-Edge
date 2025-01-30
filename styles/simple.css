@@ -1,0 +1,756 @@
+:root {
+  --minColumnWidth: 330px;
+  --minColumnWidth40: 264px;
+  --minColumnWidth60: 396px;
+  --minColumnWidth70: 462px;
+}
+
+@font-face {
+  font-family: "Titillium-Regular";
+  src: url("../fonts/TitilliumWeb-Regular.ttf") format("truetype");
+
+  /* Modern Browsers */
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Titillium-Bold";
+  src: url("../fonts/TitilliumWeb-SemiBold.ttf") format("truetype");
+
+  /* Modern Browsers */
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: "Titillium-Regular";
+  line-height: 1.35;
+}
+h1, h2, h3, h4, h5, h6, h7, b {
+  font-family: "Titillium-Bold";
+}
+
+.the_edge {
+  /* Sheet Tabs */
+  /* Items List */
+  /* Attributes */
+}
+.the_edge .window-content {
+  height: 100%;
+  padding: 5px;
+  overflow-y: hidden;
+}
+.the_edge .form {
+  height: 100%;
+}
+.the_edge .tab-scroll {
+ position: absolute;
+ overflow-y: auto;
+ width: 100%;
+}
+.the_edge .character-editor-wrap {
+  height: 15vh;
+}
+.the_edge .editor,
+.the_edge .editor-content {
+  min-height: 50px;
+  height: 100%;
+}
+.the_edge .editor-wrap
+.the_edge .advance-fa {
+  font-size: 8pt;
+  color: #888;
+}
+.the_edge .sheet-header {
+  flex: 0 0 185px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+}
+.the_edge .sheet-header-item {
+  flex: 0 0 100px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+}
+.the_edge .sheet-header .profile-img {
+  flex: 0 0 150px;
+  height: 150px;
+  margin-right: 10px;
+}
+.item-columned-page {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px 5px;
+  padding: 0;
+  margin-top: 0;
+}
+.the_edge .item-columned-page .item-fields {
+  width: min-content;
+  padding: 10px 0px;
+  text-align: center;
+}
+.the_edge .checkbox-container {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+.the_edge .sheet-header-item .profile-img-item {
+  flex: 0 0 100px;
+  height: 100px;
+  margin-right: 10px;
+}
+.the_edge .sheet-header .token-img {
+  border: none;
+  margin-left: 5px;
+  margin-right: 5px;
+  padding: 0;
+  width: 33px;
+  height: 51px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: inline-block;
+}
+.hero-token {
+  background-image: url('../icons/hero_token.png');
+}
+.hero-token-spent {
+  background-image: url('../icons/hero_token_spent.png');
+}
+.the_edge .attr-d20 {
+  border: none;
+  margin-left: 0px;
+  margin-right: 0px;
+  padding: 0;
+  width: 35px;
+  height: 42px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: inline-block;
+  position: relative;
+}
+.the_edge .attr-d20-chat {
+  border: none;
+  margin-left: 0px;
+  margin-right: 0px;
+  padding: 0;
+  width: 28px;
+  height: 33px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: inline-block;
+  position: relative;
+}
+.the_edge .d20-overlay {
+  white-space: nowrap;
+  position: absolute; /* Position the text absolutely inside the parent */
+  top: 40%; /* Center the text vertically */
+  left: 50%; /* Center the text horizontally */
+  transform: translate(-50%, -40%); /* Adjust for perfect centering */
+  z-index: 1; /* Ensure the text is above the background */
+  text-transform: uppercase; /* Makes the text all capital letters */
+  font-weight: bold; /* Optional: Make the title bold */
+  font-size: 12px;
+}
+.the_edge .centered-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.the_edge .d20-end {
+  background-image: url('../icons/d20r1.png');
+}
+.the_edge .d20-str {
+  background-image: url('../icons/d20r2.png');
+}
+.the_edge .d20-spd {
+  background-image: url('../icons/d20r3.png');
+}
+.the_edge .d20-crd {
+  background-image: url('../icons/d20p.png');
+}
+.the_edge .d20-cha {
+  background-image: url('../icons/d20g2.png');
+}
+.the_edge .d20-emp {
+  background-image: url('../icons/d20g1.png');
+}
+.the_edge .d20-foc {
+  background-image: url('../icons/d20b2.png');
+}
+.the_edge .d20-res {
+  background-image: url('../icons/d20b3.png');
+}
+.the_edge .d20-int {
+  background-image: url('../icons/d20b1.png');
+}
+.the_edge .d20-black {
+  background-image: url('../icons/d20black.png');
+}
+.the_edge .damage-box {
+  width: 28px;
+  height: 28px;
+  background-color: #666;
+  border-radius: 14px;
+}
+.the_edge .no-damage-box {
+  height: 28px;
+  width: 82px;
+  background-color: #666;
+  border-radius: 14px;
+}
+.the_edge .native-language {
+  display: flex;
+  white-space: nowrap;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+.the_edge .language-container {
+  columns: 2;
+  gap: 10px;
+}
+.the_edge .language-container .language-box {
+  break-inside: avoid;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.the_edge .skill-container {
+  columns: 3;
+  gap: 10px; /* Space between elements */
+  padding: 0 10px; /* Small padding on left and right */
+  width: 100%;
+}
+.the_edge .skill-container .skill-box {
+  height: 55px;
+  padding: 10px;
+  break-inside: avoid;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.the_edge .loadout-container {
+  columns: 2;
+  gap: 10px; /* Space between elements */
+  padding: 0 10px; /* Small padding on left and right */
+  width: 100%;
+}
+.the_edge .loadout-container .loadout-box {
+  height: 35px;
+  padding: 10px;
+  break-inside: avoid;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.the_edge .loadout-container .loadout-box .loadout-name {
+  display: flex;
+  width: 80%;
+  gap: 5px;
+  align-items: center;
+}
+.the_edge .weapon-box {
+  display: flex;
+  width: 100%;
+  gap: 6px;
+  line-height: 14px;
+  height: 28px;
+  padding: 0px 8px 0px 8px;
+  margin-bottom: 10px;
+}
+.the_edge .d20-overlay-weapon {
+  white-space: nowrap;
+  position: absolute;
+  color: #FFF;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Center horizontally and vertically */
+  text-transform: uppercase; /* Makes the text all capital letters */
+  font-weight: bold; /* Optional: Make the title bold */
+  font-size: 12px;
+}
+.the_edge .weapon-d20 {
+  border: none;
+  margin-left: 0px;
+  margin-right: 0px;
+  padding: 0;
+  width: 25px;
+  height: 30px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: relative;
+}
+.the_edge .proficiency-title {
+  flex: 7;
+  font-weight: 700;
+}
+.the_edge .proficiency-column {
+  width: 25px;
+}
+.the_edge .proficiency-column-dice {
+  align-items: end;
+  width: 15px;
+}
+.the_edge .proficiency-column .input-flow {
+  text-align: right;
+}
+.the_edge .proficiency-column .output {
+  max-height: 22;
+  max-width: 25px;
+  margin-right: 2px;
+  text-align: right;
+}
+.the_edge .prof-d20 {
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: 15px;
+  height: 18px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: inline-block;
+  position: relative;
+}
+.the_edge .d20-overlay-proficiency {
+  white-space: nowrap;
+  position: absolute; /* Position the text absolutely inside the parent */
+  background: rgba(255, 255, 255, 0.5);
+  top: 50%; /* Center the text vertically */
+  left: 50%; /* Center the text horizontally */
+  transform: translate(-50%, -40%); /* Adjust for perfect centering */
+  z-index: 1; /* Ensure the text is above the background */
+  text-transform: uppercase; /* Makes the text all capital letters */
+  font-weight: bold; /* Optional: Make the title bold */
+  font-size: 10px;
+}
+.the_edge .proficiency-box {
+  align-items: center;
+  display: flex;
+  width: 100%;
+  gap: 3px;
+  line-height: 14px;
+  height: 24px;
+  margin-bottom: 1px;
+}
+.the_edge .proficiency-box .name {
+  flex: 7;
+  font-weight: bold;
+}
+.check-dialog-box { /* As Dialog, don't add the_edge before  */
+  display: flex;
+  flex-flow: row wrap;
+  gap: 9px;
+  align-items: center;
+}
+.check-dialog-box .dialog-modifier {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+.check-dialog-box td {
+  padding: 2px 10px;
+}
+.input-box {
+  flex: 0 0 25px;
+  width: 20px;
+  height: 15px;
+  float: right;
+}
+.selection-box {
+  flex: 0 0 1;
+  height: 25px;
+}
+.advantage-box {
+  width: 150px;
+  height: 25px;
+}
+.the_edge .sheet-header .header-fields {
+  flex: 1;
+  height: 150px;
+}
+.the_edge .sheet-header-item .item-header-fields {
+  flex: 1;
+  height: 50px;
+  text-align: center;
+}
+.the_edge .sheet-header h1.charname {
+  height: 40px;
+  padding: 0px;
+  margin: 5px 0;
+  border-bottom: 0;
+}
+.the_edge .sheet-header h1.charname input {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+.sheet-header .attribute-title {
+  text-align: center;
+  text-transform: capitalize;
+  font-size: 14px; /* Adjust font size as needed */
+  margin-top: 5px;
+  margin-left: 5px; /* Adds a small indent */
+  margin-right: 5px; /* Adds a small indent */
+  margin-bottom: 0; /* Space between title and the horizontal line */
+  font-weight: bold; /* Optional: Make the title bold */
+}
+.the_edge .resource {
+  /* width: 20%; */
+  height: 40px;
+  margin-top: 10px;
+  /* float: left; */
+  text-align: center;
+  vertical-align: middle;
+}
+.the_edge .output {
+  display: inline-block;
+  background-color: #e0e0e0; /* Grey background */
+  border: 1px solid #000; /* Black border */
+  border-radius: 5px; /* Rounded corners */
+  padding: 1px 3px; /* Padding inside the box */
+  font-size: 14px; /* Adjust font size as needed */
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+.the_edge .chat-button {
+  display: inline-block;
+  background-color: #000000; /* Grey background */
+  color: #FFF;
+  border: 1px solid #000; /* Black border */
+  border-radius: 5px; /* Rounded corners */
+  padding: 1px 3px; /* Padding inside the box */
+  font-size: 14px; /* Adjust font size as needed */
+  font-weight: bold;
+  width: 122px;
+  box-sizing: border-box;
+  text-align: center;
+}
+.the_edge .resource input {
+  width: 100px;
+  height: 28px;
+}
+.the_edge .tabs {
+  flex: 0 0 40px;
+  border-top: 1px solid #AAA;
+  border-bottom: 1px solid #AAA;
+}
+.the_edge .tabs .item {
+  line-height: 40px;
+  font-weight: bold;
+}
+.the_edge .tabs .item.active {
+  text-decoration: underline;
+  text-shadow: none;
+}
+.the_edge .sheet-body {
+  overflow: hidden;
+}
+.the_edge .sheet-body .tab {
+  height: 100%;
+  overflow-y: auto;
+}
+.the_edge .item-list {
+  list-style: none;
+  columns: 2;
+  margin: 7px 0;
+  padding: 0;
+  overflow-y: auto;
+}
+.the_edge .item-list .item {
+  min-height: 30px;
+  line-height: 24px;
+  padding: 3px 0;
+  border-bottom: 1px solid #BBB;
+  align-items: stretch;
+}
+.the_edge .item-list .item img {
+  flex: 0 0 24px;
+  margin-right: 5px;
+}
+.the_edge .item-list .item-name {
+  margin: 0;
+}
+.the_edge .item-list .item-controls {
+  flex: 0 0 60px;
+  text-align: right;
+}
+.the_edge .item-list .item-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  flex: 2;
+  justify-content: flex-start;
+}
+.the_edge .item-list .item-button {
+  line-height: 1;
+  font-size: 11px;
+  flex: none;
+  width: auto;
+}
+.the_edge .item-list .item-create {
+  height: 31px;
+  gap: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.the_edge .effect-list {
+  columns: 4;
+  margin: 7px 0;
+  gap: 5px;
+  padding: 0;
+  overflow-y: auto;
+}
+.the_edge .effect-list .effect-box {
+  display: flex;
+  gap: 5px;
+}
+
+.the_edge.sheet.actor {
+  min-width: 680px;
+  min-height: 800px;
+}
+.the_edge.sheet.item {
+  min-width: 390px;
+  min-height: 420px;
+}
+.the_edge.sheet.item-wounds {
+  min-width: 390px;
+  min-height: 240px;
+}
+.the_edge.sheet.item-credits {
+  min-width: 390px;
+  min-height: 240px;
+}
+
+.main-row {
+  display: flex;
+  width: 100%;
+  flex: 1;
+}
+
+.row-section {
+  display: flex;
+
+  &.wrap {
+    flex-wrap: wrap;
+  }
+
+  .col {
+    flex: 100%;
+
+    &.libItem{
+      margin-top: 30px;
+      padding: 10px;
+      border-radius: 10px;
+      background-color: rgba(0,0,0,0.05);
+      border: 1px solid var(--border-color);
+    }
+
+    &.morph {
+      flex: 50%;
+      min-width: var(--minColumnWidth);
+    }
+
+    &.morph40 {
+      flex: 40%;
+      min-width: var(--minColumnWidth40);
+    }
+
+    &.morph60 {
+      flex: 60%;
+    }
+  }
+
+  &.filterfull .col.morph {
+    flex: 100%;
+  }
+
+  &.proficiencies {
+    border: 0.5px solid var(--border-color);
+    margin: 0;
+    padding: 2px;
+  }
+}
+
+.generic-table {
+  display: block;
+  width: 100%;
+}
+
+.generic-table .table-row {
+  display: flex;
+  width: 100%;
+}
+
+.generic-table .center-cell {
+  text-align: center;
+}
+
+.generic-table .tablerow .cell-right-align {
+  flex: 2;
+  text-align: right;
+}
+
+.attributes-table {
+  display: block;
+  width: 100%;
+  min-width: var(--minColumnWidth70);
+}
+  
+.attributes-table .table-row {
+  text-align: center;
+  width: 100%;
+  border-bottom: none;
+  border-right: none;
+  display: flex;
+}
+
+.table-row .table-data, .table-header {
+  flex: 1;
+}
+
+.table-row .table-data:first-child, .table-header:first-child {
+  flex: 1.5;
+}
+
+.table-header .header-label {
+  text-align: center;
+  height: 100%;
+}
+
+.table-row .lineheight {
+  line-height: 26px;
+}
+
+.columned-page {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 10px 15px;
+  padding: 0;
+  margin-top: 0;
+}
+
+.columned-page .fixed-page {
+  flex: 1;
+}
+
+.columned-page .page {
+  flex: 0 1 auto; /* Allows the column to take as much width as needed based on content */
+}
+
+.columned-page .page-centered {
+  flex-wrap: wrap;
+  margin-left: auto; /* Moves the page to the right edge*/
+  margin-right: auto; /* Moves the page to the right edge*/
+  flex: 0 1 auto;
+}
+
+.columned-page .page-right-aligned {
+  margin-left: auto; /* Moves the page to the right edge*/
+  flex: 0 1 auto;
+}
+
+.the_edge .section {
+  margin-bottom: 10px; /* Space between sections */
+}
+.the_edge .section .section-content {
+  padding: 0px 10px;
+}
+.the_edge .section .vantage-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+.the_edge .section .vantage-list .vantage {
+  display: flex;
+  justify-content: space-between;
+  padding-right: 12px;
+}
+
+.the_edge .section-title {
+  font-size: 14px;
+  text-transform: uppercase; /* Makes the text all capital letters */
+  margin-top: 10px;
+  margin-left: 10px; /* Adds a small indent */
+  margin-right: 10px; /* Adds a small indent */
+  margin-bottom: 5px; /* Space between title and the horizontal line */
+  font-weight: bold; /* Optional: Make the title bold */
+}
+
+.the_edge .wound-overview {
+  position: relative;
+  width: 179px; /* Adjust to your image's width */
+  height: 436px; /* Adjust to your image's height */
+}
+.the_edge .wound-overview .background-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 0;
+}
+.the_edge .wound-overview .overlay {
+  position: absolute; 
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.the_edge .wound-overview .red-dot {
+  position: absolute; 
+  left: 50%;
+  transform: translate(-50%, 0); 
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  filter: blur(4px); /* Gaussian blur effect */
+}
+.the_edge .wound-overview .orange-dot {
+  position: absolute; 
+  left: 50%;
+  transform: translate(-50%, 0); 
+  width: 10px;
+  height: 10px;
+  background-color: orange;
+  border-radius: 50%;
+  filter: blur(4px); /* Gaussian blur effect */
+}
+.the_edge .wound-overview .dot-label {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0); 
+  font-size: 11px;
+}
+.the_edge .roll-offline {
+  opacity: 70%;
+}
+.the_edge .hr {
+    border: none;
+    border-top: 1px solid #ccc; /* Style the horizontal line */
+    width: 100%; /* Make sure the line spans the entire column */
+    margin: 0px;
+    margin-top: 0px;
+}
+
+.right-aligned-text {
+    text-align: right; /* Flushed to the right */
+}

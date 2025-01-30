@@ -1,0 +1,58 @@
+<h3>{{combatName precision}} {{genName "shot"}} - {{name}}</h3>
+<div class="centered-row">
+  <b>{{genName "Check"}}: </b>
+  {{#each rolls as |roll|}}
+    <a class="attr-d20-chat {{#if roll.hit}}d20-cha{{else}}d20-end{{/if}} rerollable" data-index={{@index}} data-type="weapon" {{#if ../targetId}}data-target-id={{../targetId}}{{/if}}>
+      <span class="d20-overlay" data-tooltip="{{#if roll.hit}}Hit{{else}}Miss{{/if}} - {{genName 'threshold'}}: {{../threshold}}" style="font-size: 14px;">{{roll.res}}</span>
+    </a>
+  {{/each}}
+</div>
+<div class="centered-row">
+  <b>{{genName "Damage"}}: </b>
+  <div class="damage-list">
+    {{#if (checkEqual damage.length 0)}}
+      <a class="attr-d20-chat no-damage-box">
+        <span class="d20-overlay-weapon">{{genName "No Hit"}}</span>
+      </a>
+    {{else}}
+      {{> systems/the_edge/templates/chat/meta-damage.html}}
+    {{/if}}
+  </div>
+</div>
+<div class="apply-damage" style="min-height: 0px;">
+  {{#if (checkEqual damage.length 0)}}
+  {{else}}
+    {{> systems/the_edge/templates/chat/meta-apply-damage.html}}
+  {{/if}}
+</div>
+<hr>
+<div class="centered-row">
+  <b>{{genName "Modificators"}}: </b>
+  <span>{{tempModificator}}</span>
+</div>
+{{#if (checkEqual vantage "Nothing")}}
+{{else}}
+<div class="centered-row">
+  <b>{{genName "with"}} {{genName vantage}}</b>
+</div>
+{{/if}}
+<div class="centered-row">
+  <b>{{combatName "Range"}}: </b>
+  <span>{{combatName range}} ({{rangeModifier}} PL)</span>
+</div>
+<div class="centered-row">
+  <b>{{combatName "size"}}: </b>
+  <span>{{combatName size}} ({{sizeModifier}} PL)</span>
+</div>
+<div class="centered-row">
+  <b>{{combatName "movement"}}: </b>
+  <span>{{combatName movement}} ({{movementModifier}} PL)</span>
+</div>
+<div class="centered-row">
+  <b>{{combatName "cover"}}: </b>
+  <span>{{combatName cover}} ({{coverModifier}} PL)</span>
+</div>
+<div class="centered-row">
+  <b>{{combatName "fire selection"}}: </b>
+  <span>{{combatName fireMode}} ({{getEntry fireModeModifier pIndex}} PL)</span>
+</div>

@@ -1,0 +1,120 @@
+<form class="flexcol {{cssClass}}" autocomplete="off">
+  <header class="sheet-header-item">
+    <div class="item-columned-page">
+      <div style="width: 100px;">
+        <img class="profile-img-item" src="{{data.img}}" data-edit="img" title="{{data.name}}" />
+      </div>
+      <div style="flex: 1">
+        <h3 class="charname">
+          <input name="name" type="text" value="{{data.name}}" placeholder="Name" />
+        </h3>
+        <div class="item-columned-page">
+          <div class="item-header-fields">
+            {{genName "Weight"}}<br/>
+            <input type="number" name="system.weight" value="{{data.system.weight}}" data-dtype="Number"/>
+          </div>
+          <div class="item-header-fields">
+            {{genName "Value"}}<br/>
+            <input type="number" name="system.value" value="{{data.system.value}}" data-dtype="Number"/>
+          </div>
+          <div class="item-header-fields">
+            {{genName "Quantity"}}<br/>
+            <input type="number" name="system.quantity" value="{{data.system.quantity}}" data-dtype="Number"/>
+          </div>
+          <div class="item-header-fields">
+            {{genName "Type"}}<br/>
+            <select class="selection-box" name="system.subtype" id="Type Selector">
+              {{#each systemData.subtypes as |details typeName|}}
+                <option value="{{typeName}}" {{#if (checkEqual ../systemData.subtype typeName)}}selected{{/if}}>{{itemName typeName}}</option>
+              {{/each}}
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="effects">Effects</a>
+    <a class="item" data-tab="description">Description</a>
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+    {{#if (checkEqual systemData.subtype "grenade")}}
+      <div class="tab" data-group="primary" data-tab="effects">
+        <div class="item-columned-page" style="gap: 15px;">
+          <table>
+            <tr>
+              <td></td>
+              <td style="width: 18%; text-align: center;">{{combatName "close"}}</td>
+              <td style="width: 18%; text-align: center;">{{combatName "far"}}</td>
+            </tr>
+            <tr>
+              <td>{{combatName "Blast distance"}}</td>
+              {{#each systemData.subtypes.grenade.blastDistance as |distance|}}
+                <td><input type="number" style="text-align: right;" name="system.subtypes.grenade.blastDistance" value="{{distance}}"/></td>
+              {{/each}}
+            </tr>
+            <tr>
+              <td>{{genName "Damage"}}</td>
+              {{#each systemData.subtypes.grenade.damage as |damage|}}
+                <td><input type="text" style="text-align: right;" name="system.subtypes.grenade.damage" value="{{damage}}"/></td>
+              {{/each}}
+            </tr>
+            <tr>
+              <td>{{genName "Damage type"}}</td>
+              <td colspan="2">
+                <select class="selection-box" name="system.subtypes.grenade.type" id="Grenade Damage Type Selector">
+                  {{#each helpers.damageTypes as |type|}}
+                    <option value="{{type}}" {{#if (checkEqual ../systemData.subtypes.grenade.type type)}}selected{{/if}}>{{combatName type}}</option>
+                  {{/each}}
+                </select>
+              </td>
+            </tr>
+          </table>
+          <div class="item-fields">
+            {{#each systemData.subtypes.grenade.effects as |value effect|}}
+              <div style="display: flex; gap: 5px; align-items: center;">
+                <input type="checkbox" name="system.subtypes.grenade.effects.{{effect}}" id="has-effect-{{effect}}" {{#if value}}checked{{/if}}/>
+                <label for="has-effect-{{effect}}">{{combatName effect}}</label>
+              </div>
+            {{/each}}
+            </select>
+          </div>
+        </div> 
+      </div>
+    {{else}}
+      {{#if (checkEqual systemData.subtype "medicine")}}
+        <div class="tab" data-group="primary" data-tab="effects">
+          <div class="item-columned-page" style="align-items: baseline;">
+            <div class="item-fields">
+              <label for="Healing">{{genName "Healing"}}</label><br/>
+              <input type="text" id="Healing" name="system.subtypes.medicine.healing" value="{{systemData.subtypes.medicine.healing}}"/>
+            </div>
+            <div class="item-fields">
+              <label for="Coagulation">{{genName "Coagulation"}}</label><br/>
+              <input type="text" id="Coagulation" name="system.subtypes.medicine.coagulation" value="{{systemData.subtypes.medicine.coagulation}}"/>
+            </div>
+            <div class="item-fields" style="white-space: nowrap;">
+              <label for="ActionCost">{{genName "Action Cost"}}</label><br/>
+              <input type="number" id="ActionCost" name="system.subtypes.medicine.actionCost" value="{{systemData.subtypes.medicine.actionCost}}"/>
+            </div>
+            <div class="item-fields">
+              <label for="Medicine Effect Selector">{{genName "Effect"}}</label><br/>
+              <select class="selection-box" name="system.subtypes.medicine.effect" id="Medicine Effect Selector">
+                {{#each helpers.medicineEffects as |effect|}}
+                  <option value="{{effect}}" {{#if (checkEqual ../systemData.subtypes.medicine.effect effect)}}selected{{/if}}>{{itemName effect}}</option>
+                {{/each}}
+              </select>
+            </div>
+          </div> 
+        </div>
+      {{else}}
+        {{> systems/the_edge/templates/items/meta-effects.html}}
+      {{/if}}
+    {{/if}}
+    {{> systems/the_edge/templates/items/meta-description.html}}
+  </section>
+</form>

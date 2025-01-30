@@ -1,0 +1,95 @@
+<form class="flexcol {{cssClass}}" autocomplete="off">
+  {{!-- Sheet Header --}}
+  <header class="sheet-header">
+    <img class="profile-img" src="{{data.img}}" data-edit="img" title="{{data.name}}"/>
+    <div class="header-fields">
+      <h1 class="charname">
+        <input name="name" type="text" value="{{data.name}}" placeholder="Name" />
+      </h1>
+      <div class="columned-page">
+        <div class="page-centered">
+          <div class="attribute-title">{{genName "health"}}</div>
+          <div style="display: flex; align-items: center; gap: 4px;">
+            <input 
+              name="system.health.value" type="number" value="{{systemData.health.value}}"
+              style="width: 54px; max-height: 23px; text-align: center;" max="{{systemData.health.max.value}}"
+            />
+            <span> / </span>
+            <span class="output" style="width: 54px; max-height: 23px;">{{systemData.health.max.value}}</span>
+          </div>
+        </div>
+        <div class="page-centered">
+          <div class="attribute-title">{{genName "Heartrate"}}</div>
+          <div style="display: flex; align-items: center; gap: 4px;">
+            <input
+              name="system.heartRate.value" type="number" value="{{systemData.heartRate.value}}"
+              style="width: 54px; max-height: 23px; text-align: center;"
+            />
+            <span class="output" style="width: 74px; max-height: 23px;">{{systemData.heartRate.min.value}} &ndash; {{systemData.heartRate.max.value}}</span>
+          </div>
+        </div>
+        {{#if (checkEqual helpers.armourProtection 0)}}
+        {{else}}
+          <div class="page-centered">
+            <div class="attribute-title">{{genName "Armour"}}</div>
+            <div style="display: flex; align-items: center; gap: 4px;">
+              <span class="output" style="width: 74px; max-height: 23px;">{{helpers.armourProtection}}</span>
+            </div>
+          </div>
+        {{/if}}
+        <div class="page-centered">
+          <!-- <p class="attribute-title">{{genName "herotoken"}}</p> -->
+          {{#each prepare.herotoken as |token|}}
+            {{#if token}}
+            <a class="token-img hero-token" data-tooltip="Hero Token"></a>
+            {{else}}
+            <a class="token-img hero-token-spent"></a>
+            {{/if}}
+          {{/each}}
+        </div>
+      </div>
+      <div class="columned-page">
+        {{#each prepare.attrs as |attr|}}
+        <div class="page-centered">
+          <p class="attribute-title">{{attr}}</p>
+          <a class="attr-d20 d20-{{attr}}" attr-name="{{attr}}">
+            <span class="d20-overlay">{{getSys ../actor "attributes" attr 'value'}}</span>
+          </a>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </header>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="attributes">{{genName "Attributes tab"}}</a>
+    <a class="item" data-tab="proficiencies">{{genName "Proficiencies tab"}}</a>
+    <a class="item" data-tab="combat">{{genName "Combat tab"}}</a>
+    <a class="item" data-tab="items">{{genName "Items tab"}}</a>
+    <a class="item" data-tab="health">{{genName "Health status tab"}}</a>
+    <a class="item" data-tab="description">{{genName "Description tab"}}</a>
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body" style="position: relative;">
+    <div class="tab tab-scroll" data-group="primary" data-tab="attributes">
+      {{> systems/the_edge/templates/actors/attributes/layout.html}}
+    </div>
+    <div class="tab tab-scroll" data-group="primary" data-tab="proficiencies">
+      {{> systems/the_edge/templates/actors/proficiencies/layout.html}}
+    </div>
+    <div class="tab tab-scroll" data-group="primary" data-tab="combat">
+      {{> systems/the_edge/templates/actors/combat/layout.html}}
+    </div>
+    <div class="tab tab-scroll" data-group="primary" data-tab="items">
+      {{> systems/the_edge/templates/actors/items.html}}
+    </div>
+    <div class="tab tab-scroll" data-group="primary" data-tab="health">
+      {{> systems/the_edge/templates/actors/health/layout.html}}
+    </div>
+    <div class="tab tab-scroll" data-group="primary" data-tab="description">
+      {{> systems/the_edge/templates/actors/biography.html}}
+    </div>
+  </section>
+</form>

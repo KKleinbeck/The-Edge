@@ -1,0 +1,42 @@
+<div class="section right-aligned-text">
+  <p class="section-title">{{genName "Progress"}}</p>
+  <hr />
+  <div class="generic-table section-content">
+    <div class="table-row">
+      <div class="table-data">
+      </div>
+      <div class="table-header center-cell">
+        <b>{{genName "Used"}}</b>
+      </div>
+      <div class="table-header center-cell">
+        <b>{{genName "Available"}}</b>
+      </div>
+    </div>
+    <div class="table-row">
+      <div class="table-data">
+        <div class="column-name lineheight">
+            {{genName "PracticeHours"}}
+        </div>
+      </div>
+      <div class="table-data center-cell">
+        <span class="output" style="width: 80px;">{{systemData.PracticeHours.used}}</span>
+      </div>
+      <div class="table-data center-cell" title="{{chatName 'level up help'}}">
+        <span class="output" style="width: 80px;">{{systemData.PracticeHours.max}}</span>
+      </div>
+    </div>
+    <div class="table-row">
+      <div class="table-data">
+        <div class="column-name lineheight">
+            {{genName "AdvantagePoints"}}
+        </div>
+      </div>
+      <div class="table-data center-cell">
+        <span class="output" style="width: 80px;">{{systemData.AdvantagePoints.used}}</span>
+      </div>
+      <div class="table-data center-cell">
+        <span class="output" style="width: 80px;">{{systemData.AdvantagePoints.max}}</span>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+<h3>{{grenade.actor.name}} &ndash; {{grenade.name}} {{genName "check"}}</h3>
+<div class="centered-row proficiency-roll" data-actor-id="{{actorID}}" data-token-id="{{tokenID}}" data-proficiency="throwing">
+  <b>{{proficiencyName "Throwing"}} {{genName "Check"}}:</b>
+  <div class="roll" style="display: flex; gap: 5px; align-items: center;">
+    <div class="weapon-d20 d20-black"></div>
+    {{genName "roll"}}
+  </div>
+</div>
+<div class="centered-row">
+  <b>{{combatName "Blast distance"}}: </b>
+  {{getEntry details.blastDistance 0}}m / {{getEntry details.blastDistance 1}}m
+</div>
+<div class="roll-description">
+</div>
+<div class="centered-row generic-roll roll-offline">
+  <b>{{genName "Damage"}}: </b>
+  <div class="roll" data-roll="{{getEntry details.damage 0}}">
+    <div class="weapon-d20 d20-black" title="{{getEntry details.damage 0}}"></div>
+  </div>
+  <div class="roll" data-roll="{{getEntry details.damage 1}}" style="display: flex; gap: 5px; align-items: center;">
+    <div class="weapon-d20 d20-black" title="{{getEntry details.damage 1}}"></div>
+    {{genName "roll"}}
+  </div>
+</div>
