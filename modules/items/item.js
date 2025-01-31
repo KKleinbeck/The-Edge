@@ -60,11 +60,6 @@ export class TheEdgeItem extends Item {
 
   async toggleEquipped() {
     if (this.system.equipped === undefined) return undefined;
-    if (this.system.structurePoints <= 0) {
-      let msg = LocalisationServer.parsedLocalisation("EquipBroken", "Notifications")
-      ui.notifications.notify(msg)
-      return undefined;
-    }
     await this.update({"system.equipped": !this.system.equipped})
   }
 
@@ -111,8 +106,9 @@ export class ArmourItemTheEdge extends TheEdgeItem {
     if (update["system.structurePoints"] == 0) {
       let msg = LocalisationServer.parsedLocalisation("Destroyed", "Notifications", {name: this.name})
       ui.notifications.notify(msg)
-      update["name"] = this.name + " (broken)";
+      update["name"] = this.name + " - " + LocalisationServer.localise("broken");
       update["system.equipped"] = false;
+      update["system.attachments"] = [];
       if (this.system.layer == "Outer") {
         const parentInfo = this.system.attachments[0];
         const actor = Aux.getActor(parentInfo.actorId, parentInfo.tokenId);

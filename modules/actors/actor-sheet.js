@@ -138,7 +138,7 @@ export class TheEdgeActorSheet extends ActorSheet {
     const attribute = target.getAttribute("attr-name");
     DialogAttribute.start({
       actor: this.actor, actorId: this.actor.id, attribute: attribute,
-      tokenId: this.token.id, sceneID: game.user.viewedScene.id
+      tokenId: this.token.id, sceneID: game.user.viewedScene
     })
   }
 
@@ -147,14 +147,14 @@ export class TheEdgeActorSheet extends ActorSheet {
     const proficiency = target.getAttribute("prof-name");
     DialogProficiency.start({
       actor: this.actor, actorId: this.actor.id, proficiency: proficiency,
-      token: this.token, tokenId: this.token.id, sceneID: game.user.viewedScene.id
+      token: this.token, tokenId: this.token.id, sceneID: game.user.viewedScene
     })
   }
 
   async _rollAttack(ev) {
     const target = ev.currentTarget; // HTMLElement
     const targetIds = Array.from(game.user.targets.map(x => x.id));  //targets is set
-    let sceneId = game.user.viewedScene.id;
+    const sceneId = game.user.viewedScene;
     if (target.dataset?.type === "combatics") {
       if (targetIds.length > 1) {
         const msg = LocalisationServer.parsedLocalisation(
@@ -326,24 +326,32 @@ export class TheEdgeActorSheet extends ActorSheet {
         item.toggleActive();
         break;
       case "toggle-equip":
-        if (item.type == "Armour" && item.system.layer == "Outer") {
-          if (item.system.equipped) {
-            const parent = this.actor.items.get(item.system.attachments[0].armourId);
-            await Aux.detachFromParent(parent, item._id, item.system.attachmentPoints.max);
-            await item.update({"system.attachments": []})
-            await item.toggleEquipped();
-            break;
-          } else {
-            const attachableArmour = this._findAttachableArmour(item);
-            if (attachableArmour.length == 0) {
-              let msg = LocalisationServer.localise("No attachable armour", "Notifications")
-              ui.notifications.notify(msg)
+        if (item.type == "Armour") {
+          if (item.system.structurePoints <= 0) {
+            let msg = LocalisationServer.parsedLocalisation("EquipBroken", "Notifications")
+            ui.notifications.notify(msg)
+            return undefined;
+          }
+          
+          if (item.system.layer == "Outer") {
+            if (item.system.equipped) {
+              const parent = this.actor.items.get(item.system.attachments[0].armourId);
+              await Aux.detachFromParent(parent, item._id, item.system.attachmentPoints.max);
+              await item.update({"system.attachments": []})
+              await item.toggleEquipped();
+              break;
+            } else {
+              const attachableArmour = this._findAttachableArmour(item);
+              if (attachableArmour.length == 0) {
+                let msg = LocalisationServer.localise("No attachable armour", "Notifications")
+                ui.notifications.notify(msg)
+                break;
+              }
+              DialogArmourAttachment.start(
+                {actor: this.actor, tokenId: this.token?.id, shellId: item.id, attachable: attachableArmour}
+              )
               break;
             }
-            DialogArmourAttachment.start(
-              {actor: this.actor, tokenId: this.token?.id, shellId: item.id, attachable: attachableArmour}
-            )
-            break;
           }
         }
         await item.toggleEquipped();
