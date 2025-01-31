@@ -2,15 +2,14 @@
   <div class="columned-page" style="gap: 0; justify-content: space-between; margin-bottom: 15px;">
     {{#each profGroup as |proficiencies category|}}
       <div style="width: 31.5%;">
-        <div class="proficiency-box" style="margin-bottom: 4px;">
-          <div class="proficiency-title" style="text-transform: uppercase; font-size: 14px;">{{category}}</div>
+        <div class="proficiency-box title" style="margin-bottom: 4px;">
+          <div class="proficiency-title" style="text-transform: capitalize; font-size: 14px;">{{category}}</div>
           <div class="proficiency-column" style="text-align: center;">{{genName "Lvl"}}</div>
           <div class="proficiency-column" style="text-align: center;">{{genName "Sta"}}</div>
           <div class="proficiency-column-dice"></div>
           <div class="proficiency-column-dice"></div>
           <div class="proficiency-column-dice"></div>
         </div>
-        <hr style="margin-top: -8px;"/>
         {{#each proficiencies as |proficiency|}}
           <div class="proficiency-box">
             <div class="proficiency-title" style="font-size: 13px;">

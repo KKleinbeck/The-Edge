@@ -1,6 +1,7 @@
 <div class="fixed-page">
-  <p class="section-title">{{combatName "Medical skills"}}</p>
-  <hr />
+  <div class="title">
+    <div class="section-title">{{combatName "Medical skills"}}</div>
+  </div>
   <div class="skill-container">
     {{#each data.items as |item|}}
       {{#if (checkEqual item.type 'Medicalskill')}}

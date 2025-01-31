@@ -514,7 +514,7 @@ h1, h2, h3, h4, h5, h6, h7, b {
 }
 .the_edge .effect-list {
   columns: 4;
-  margin: 7px 0;
+  margin: 7px 0px 15px 0px;
   gap: 5px;
   padding: 0;
   overflow-y: auto;
@@ -686,14 +686,18 @@ h1, h2, h3, h4, h5, h6, h7, b {
   padding-right: 12px;
 }
 
+.the_edge .title {
+  margin-top: 3px;
+  margin-bottom: 7px;
+  border-bottom: 1px solid var(--color-underline-header);
+}
 .the_edge .section-title {
-  font-size: 14px;
-  text-transform: uppercase; /* Makes the text all capital letters */
-  margin-top: 10px;
-  margin-left: 10px; /* Adds a small indent */
-  margin-right: 10px; /* Adds a small indent */
-  margin-bottom: 5px; /* Space between title and the horizontal line */
-  font-weight: bold; /* Optional: Make the title bold */
+  font-size: 1.15em;
+  text-transform: capitalize;
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-bottom: 2px;
+  font-weight: bold;
 }
 
 .the_edge .wound-overview {

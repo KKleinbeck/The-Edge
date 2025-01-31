@@ -1,7 +1,8 @@
 {{#each helpers.types as |type|}}
-  <h3>{{itemName type}}</h3>
-  <hr />
-  <ol class="item-list item-category" data-category="{{loc}}">
+  <div class="title">
+    <div class="section-title">{{itemName type}}</div>
+  </div>
+  <ol class="item-list item-category" data-category="{{loc}}" style="margin-bottom: 15px;">
     {{#each ../data.items as |item id|}}
       {{#if (checkRenderItem item type)}}
         <li class="item" data-item-id="{{item._id}}" style="break-inside: avoid;">
@@ -60,11 +61,12 @@
     </li>
   </ol>
 {{/each}}
-<h3>{{itemName "Others"}}</h3>
-<hr />
+<div class="title">
+  <div class="section-title">{{itemName "Others"}}</div>
+</div>
 <div style="display: flex; justify-content: space-between;">
   <div style="display: flex; gap: 20px;">
-    <h3 style="margin: 0;">Credits:</h3>
+    <div class="section-title">{{genName "Credits"}}</div>
     <div style="max-width: 30%;">
       <input type="Number" id="Chids" style="width: 70%; text-align: right;" name="system.credits.chids" value="{{systemData.credits.chids}}"/>
       <lavel for="Chids">Chids</lavel>
@@ -75,10 +77,8 @@
     </div>
   </div>
   <div style="display: flex; gap: 20px; align-items: center;">
-    <h3 style="margin: 0;">{{genName "weight"}}:</h3>
-    <div>
-      {{round helpers.weight 2}}
-    </div>
+    <div class="section-title">{{genName "Weight"}}</div>
+    <div>{{round helpers.weight 2}}</div>
     <div style="white-space: nowrap;" title="{{getNextWeightClass helpers.weight systemData.attributes.str.value}}">
       {{getWeightClass helpers.weight systemData.attributes.str.value}}
     </div>

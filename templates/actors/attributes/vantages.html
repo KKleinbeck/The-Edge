@@ -1,6 +1,7 @@
 <div class="section">
-  <p class="section-title">{{genName "Advantages"}}</p>
-  <hr />
+  <div class="title">
+    <div class="section-title">{{genName "Advantages"}}</div>
+  </div>
   <div class="section-content">
     <div class="vantage-list">
     {{#each data.items as |item id|}}
@@ -30,8 +31,9 @@
     {{/each}}
     </div>
   </div>
-  <p class="section-title">{{genName "Disadvantages"}}</p>
-  <hr />
+  <div class="title">
+    <div class="section-title">{{genName "Disadvantages"}}</div>
+  </div>
   <div class="section-content vantage-list">
     {{#each data.items as |item id|}}
         {{#if (checkEqual item.type "Disadvantage")}}

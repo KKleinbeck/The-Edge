@@ -1,5 +1,7 @@
 <div class="actor-biography groupbox">
-  <h3>{{genName "Biology"}}</h3>
+  <div class="title">
+    <div class="section-title">{{genName "Biology"}}</div>
+  </div>
   <div style="display: flex; justify-content: space-between;">
     <div style="white-space: nowrap;">
       <label for="Age">{{genName "Age"}}</label>
@@ -34,13 +36,15 @@
       </select>
     </div>
   </div>
-  <hr />
-  <h3>{{genName "Biography"}}</h3>
+  <div class="title">
+    <div class="section-title">{{genName "Biography"}}</div>
+  </div>
   <div class="character-editor-wrap">
     {{editor biographyHTML target="system.biography" button=true editable=editable engine="prosemirror"}}
   </div>
-  <hr />
-  <h3>{{genName "Notes"}}</h3>
+  <div class="title">
+    <div class="section-title">{{genName "Notes"}}</div>
+  </div>
   <div class="character-editor-wrap">
     {{editor notesHTML target="system.notes" button=true editable=editable engine="prosemirror"}}
   </div>
