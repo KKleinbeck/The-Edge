@@ -16,7 +16,7 @@ export default class DialogItemDeletion extends Dialog{
           const item = checkData.item;
           const actor = checkData.actor;
 
-          if (item.type = "Armour" && item.system.attachments) {
+          if (item.type == "Armour") {
             if (item.system.layer == "Inner") {
               for (const attachmentData of item.system.attachments) {
                 const attachment = actor.items.get(attachmentData.shellId);

@@ -1,8 +1,12 @@
 {{#each helpers.types as |type|}}
   <div class="title">
     <div class="section-title">{{itemName type}}</div>
+    <div class="item-control" title="{{ itemName 'Create' }}" data-action="create" data-type="{{type}}" style="gap: 5px; cursor: pointer;">
+      {{itemName "Create"}}
+      <a><i class="fas fa-plus"></i></a>
+    </div>
   </div>
-  <ol class="item-list item-category" data-category="{{loc}}" style="margin-bottom: 15px;">
+  <ol class="item-list item-category" data-category="{{loc}}" style="margin-bottom: 15px; padding: 0px 5px 0px 5px;">
     {{#each ../data.items as |item id|}}
       {{#if (checkRenderItem item type)}}
         <li class="item" data-item-id="{{item._id}}" style="break-inside: avoid;">
@@ -16,10 +20,12 @@
                 {{#if (checkIn "quantity" item.system)}}
                   {{item.system.quantity}} x 
                 {{/if}}
+                {{item.name}}
                 {{#if (checkEqual item.type "Ammunition")}}
-                  {{item.name}} {{getAmmunitionCount item}}
-                {{else}}
-                  {{item.name}}
+                  {{getAmmunitionCount item}}
+                {{/if}}
+                {{#if (checkEqual item.type "Armour")}}
+                  {{getStructurePoints item}}
                 {{/if}}
               </b>
             </div>
@@ -44,7 +50,7 @@
                 <div class="item-control" data-action="edit" style="cursor: pointer; display: flex; align-items: center;">
                   <a class="item-control" style="padding: 0px 8px;"><i class="fas fa-turn-up" style="transform: rotate(90deg);"></i></a>
                   <img src="{{attachment.shell.img}}" title="{{attachment.shell.name}}" width="24" height="24" />
-                  <b>({{genName "Attachment"}}) {{attachment.shell.name}}</b>
+                  <b>({{genName "Attachment"}}) {{attachment.shell.name}} {{getStructurePoints item}}</b>
                 </div>
                 <div class="item-controls">
                   <a class="item-control" title="{{ itemName 'Unequip' }}" data-action="toggle-equip"><i class="far fa-check-circle"></i></a>
@@ -56,9 +62,6 @@
         </li>
       {{/if}}
     {{/each}}
-    <li class="item-control item-create" title="{{ itemName 'Create' }}" data-action="create" data-type="{{type}}">
-      <i class="fas fa-plus"></i> {{ itemName "Create" }}
-    </li>
   </ol>
 {{/each}}
 <div class="title">

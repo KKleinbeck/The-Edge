@@ -1,8 +1,12 @@
 <div class="actor-health groupbox">
-  <div class="title">
+  <div class="title" style="padding-right: 10px;">
     <div class="section-title">{{genName "Effects"}}</div>
+    <div class="item-control" title="{{ itemName 'Create' }}" data-action="create-effect" style="gap: 5px; cursor: pointer;">
+      {{itemName "New Effect"}}
+      <a><i class="fas fa-plus"></i></a>
+    </div>
   </div>
-  <div class="effect-list">
+  <div class="effect-list" style="padding: 0px 5px 0px 5px; overflow: hidden;">
     {{#each data.items as |item id|}}
       {{#if (checkEqual item.type "Effect")}}
         <div class="item effect-box" data-item-id="{{item._id}}" style="cursor: pointer;">
@@ -22,9 +26,6 @@
         </div>
       {{/if}}
     {{/each}}
-  </div>
-  <div style="justify-content: end;">
-    <a class="item-control" title="{{ itemName 'Create' }}" data-action="create-effect"><i class="fas fa-plus"></i> {{itemName "New Effect"}}</a>
   </div>
   <div class="title">
     <div class="section-title">{{genName "Item Effects"}}</div>
