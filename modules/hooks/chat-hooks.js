@@ -39,7 +39,9 @@ export default function() {
     const modificator = sys.permanentMod + sys.temporaryMod;
     if (sys.netOutcome < 0) {
       for (let i = 0; i < 3; ++i) {
-        sys.diceResults[i] = sys.thresholds[i] + Math.floor(modificator / 3);
+        sys.diceResults[i] = Math.min(
+          sys.thresholds[i] + Math.floor(modificator / 3), 19
+        );
       }
       sys.netOutcome = modificator - 3 * Math.floor(modificator / 3);
     } else {
