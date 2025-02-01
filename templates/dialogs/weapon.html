@@ -1,120 +1,132 @@
-<div class="check-dialog-box">
-  {{#if (checkEqual targetIds.length 0)}}
-    <div style="width: 100%;"><h2>{{combatName "Missing Target"}}</h2></div>
-  {{/if}}
-  <table>
-    <tr>
-      <td>
-        <div class="dialog-modifier">
-          <label for="Modifier">Modifiers:</label>
-          <input name="Modifier" type="number" data-dtype="Number" value="0" id="Modifier" class="input-box" style="text-align: right;">
-        </div>
-      </td>
-      <td>
-        <select class="advantage-box" name="VantageSelector" id="VantageSelector">
-          <option value="Nothing">No Advantage</option>
-          <option value="Advantage">Advantage</option>
-          <option value="Disadvantage">Disadvantage</option>
-        </select>
-      </td>
-    </tr>
+<div class="the_edge">
+  <div class="check-dialog-box" style="gap: 0px;">
     {{#if (checkEqual targetIds.length 0)}}
+      <div class="title" style="width: 100%; padding-bottom: 0px;"><div class="section-title">{{combatName "Missing Target"}}</div></div>
+    {{/if}}
+    <table>
       <tr>
         <td>
-          {{genName "Distance"}}:
+          <div class="dialog-modifier">
+            <label for="Modifier">Modifiers:</label>
+            <input name="Modifier" type="number" data-dtype="Number" value="0" id="Modifier" class="input-box" style="text-align: right;">
+          </div>
         </td>
         <td>
-          <select class="advantage-box" name="RangeSelector">
-            {{#each rangeChart as |boni range|}}
-              <option value="{{range}}">{{genRange range}} ({{getEntry boni 0}} / {{getEntry boni 1}})</option>
-            {{/each}}
+          <select class="advantage-box" name="VantageSelector" id="VantageSelector">
+            <option value="Nothing">No Advantage</option>
+            <option value="Advantage">Advantage</option>
+            <option value="Disadvantage">Disadvantage</option>
           </select>
         </td>
       </tr>
-      <tr>
-        <td>
-          {{genName "Size"}}:
-        </td>
-        <td>
-          <select class="advantage-box" name="SizeSelector">
-            {{#each sizes as |mali size|}}
-              <option value="{{size}}">{{combatName size}} ({{getEntry mali 0}} / {{getEntry mali 1}})</option>
-            {{/each}}
-          </select>
-        </td>
-      </tr>
-    {{else}}
-      {{#if distance}}
+      {{#if (checkEqual targetIds.length 0)}}
         <tr>
           <td>
             {{genName "Distance"}}:
           </td>
           <td>
-            {{round distance 1}} m {{getRangeModifier rangeChart distance}}
+            <select class="advantage-box" name="RangeSelector">
+              {{#each rangeChart as |boni range|}}
+                <option value="{{range}}">{{genRange range}} ({{getEntry boni 0}} / {{getEntry boni 1}})</option>
+              {{/each}}
+            </select>
           </td>
         </tr>
-      {{/if}}
-      {{#if smallestSize}}
         <tr>
           <td>
             {{genName "Size"}}:
           </td>
           <td>
-            {{combatName smallestSize}} {{getSizeModifier smallestSize}}
+            <select class="advantage-box" name="SizeSelector">
+              {{#each sizes as |mali size|}}
+                <option value="{{size}}">{{combatName size}} ({{getEntry mali 0}} / {{getEntry mali 1}})</option>
+              {{/each}}
+            </select>
           </td>
         </tr>
+      {{else}}
+        {{#if distance}}
+          <tr>
+            <td>
+              {{genName "Distance"}}:
+            </td>
+            <td>
+              {{round distance 1}} m {{getRangeModifier rangeChart distance}}
+            </td>
+          </tr>
+        {{/if}}
+        {{#if smallestSize}}
+          <tr>
+            <td>
+              {{genName "Size"}}:
+            </td>
+            <td>
+              {{combatName smallestSize}} {{getSizeModifier smallestSize}}
+            </td>
+          </tr>
+        {{/if}}
       {{/if}}
-    {{/if}}
-    <tr>
-      <td>
-        {{combatName "Movement"}}:
-      </td>
-      <td>
-        <select class="advantage-box" name="MovementSelector">
-          {{#each movements as |mali movement|}}
-            <option value="{{movement}}">{{combatName movement}} ({{getEntry mali 0}} / {{getEntry mali 1}})</option>
-          {{/each}}
-        </select>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        {{combatName "Cover"}}:
-      </td>
-      <td>
-        <select class="advantage-box" name="CoverSelector">
-          {{#each cover as |mali cover|}}
-            <option value="{{cover}}">{{combatName cover}} ({{mali}})</option>
-          {{/each}}
-        </select>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        {{combatName "Fire Selection"}}:
-      </td>
-      <td>
-        <select class="advantage-box" name="FireSelector">
-          {{#each fireModes as |details fireMode|}}
-            {{#if (checkEqual details.damage "N.A.")}}
-            {{else}}
-              <option value="{{fireMode}}">{{combatName fireMode}} ({{getEntry details.mali 0}} / {{getEntry details.mali 1}})</option>
-            {{/if}}
-          {{/each}}
-        </select>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        {{combatName "Precision"}}:
-      </td>
-      <td>
-        <select class="advantage-box" name="PrecisionSelector">
-          <option value="aimed">{{combatName "aimed"}}</option>
-          <option value="unaimed">{{combatName "unaimed"}}</option>
-        </select>
-      </td>
-    </tr>
-  </table>
+      <tr>
+        <td>
+          {{combatName "Movement"}}:
+        </td>
+        <td>
+          <select class="advantage-box" name="MovementSelector">
+            {{#each movements as |mali movement|}}
+              <option value="{{movement}}">{{combatName movement}} ({{getEntry mali 0}} / {{getEntry mali 1}})</option>
+            {{/each}}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          {{combatName "Cover"}}:
+        </td>
+        <td>
+          <select class="advantage-box" name="CoverSelector">
+            {{#each cover as |mali cover|}}
+              <option value="{{cover}}">{{combatName cover}} ({{mali}})</option>
+            {{/each}}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          {{combatName "Fire Selection"}}:
+        </td>
+        <td>
+          <select class="advantage-box" name="FireSelector">
+            {{#each fireModes as |details fireMode|}}
+              {{#if (checkEqual details.damage "N.A.")}}
+              {{else}}
+                <option value="{{fireMode}}">{{combatName fireMode}} ({{getEntry details.mali 0}} / {{getEntry details.mali 1}})</option>
+              {{/if}}
+            {{/each}}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          {{combatName "Precision"}}:
+        </td>
+        <td>
+          <select class="advantage-box" name="PrecisionSelector">
+            <option value="aimed">{{combatName "aimed"}}</option>
+            <option value="unaimed">{{combatName "unaimed"}}</option>
+          </select>
+        </td>
+      </tr>
+    </table>
+  </div>
+  {{#if (checkEqual effectModifier.length 0)}}
+  {{else}}
+    <div class="title" style="width: 100%;"><div class="section-title">{{genName "Status effects"}}</div></div>
+    <div style="columns: 2; padding: 0px 5px 10px 5px">
+      {{#each effectModifier as |effect|}}
+        <div style="padding-top: 5px;">
+          {{effect.name}}: {{effect.value}}
+        </div>
+      {{/each}}
+    </div>
+  {{/if}}
 </div>
-<p>Status effects: </p>

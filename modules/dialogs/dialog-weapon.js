@@ -11,10 +11,10 @@ export default class DialogWeapon extends Dialog{
   static async start(checkData) {
     checkData["distance"] = this.getDistance(checkData.token, checkData.targetIds, checkData.sceneId);
     checkData["smallestSize"] =  this.getSmallestSize(checkData.targetIds, checkData.sceneId);
-    const templateParams = {
-      rangeChart: checkData.rangeChart, targetIds: checkData.targetIds, fireModes: checkData.fireModes,
-      sizes: THE_EDGE.sizes, movements: THE_EDGE.movements, cover: THE_EDGE.cover
-    }
+    const templateParams = foundry.utils.mergeObject(
+      {sizes: THE_EDGE.sizes, movements: THE_EDGE.movements, cover: THE_EDGE.cover},
+      checkData
+    );
     const template = "systems/the_edge/templates/dialogs/weapon.html";
     let html = await renderTemplate(template, templateParams);
     const buttons = {
@@ -85,7 +85,7 @@ export default class DialogWeapon extends Dialog{
 
   static getDistance(aggressor, targetIds, sceneId) {
     // get the scene
-    const scene = game.scenes.get(sceneId)
+    const scene = game.scenes.get(sceneId);
     if (scene === undefined) return undefined;
 
     const targetPos = targetIds.map(id => {

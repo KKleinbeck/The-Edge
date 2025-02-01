@@ -196,12 +196,23 @@ export class TheEdgeActorSheet extends ActorSheet {
       damageType = "energy"
     } else damageType = "kinetic";
     
-    const threshold = this.actor._getWeaponPL(weaponID)
+    const threshold = this.actor._getWeaponPL(weaponID);
+    const effectItems = this.actor.items.filter(x => x.system.effects !== undefined)
+    const effectModifier = [];
+    for (const effectItem of effectItems) {
+      if (!effectItem.system.active && !effectItem.system.equipped) continue;
+      for (const effect of effectItem.system.effects) {
+        if (effect.group != "weapons") continue;
+        if (effect.name == "all" || effect.name == damageType || effect.name == weapon.system.type) {
+          effectModifier.push({name: effectItem.name, value: effect.value})
+        }
+      }
+    }
     DialogWeapon.start({
       name: weapon.name, actor: actor, actorId: actor.id, token: this.token,
       tokenId: this.token.id, sceneId: sceneId,
       ammunition: this.actor.items.get(weapon.system.ammunitionID),
-      threshold: threshold,
+      threshold: threshold, effectModifier: effectModifier,
       damageType: damageType,
       rangeChart: weapon.system.rangeChart,
       fireModes: weapon.system.fireModes,
