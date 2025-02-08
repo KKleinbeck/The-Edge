@@ -172,7 +172,7 @@ export default function() {
       condition: (contextHtml) => {
         const prevRoll = parseInt(contextHtml.find(".d20-overlay").html());
         const type = contextHtml[0].dataset.type;
-        // return actor.system.heroToken.available > 0 && (prevRoll != 1 || type == "proficiency");
+        return actor.system.heroToken.available > 0 && (prevRoll != 1 || type == "proficiency");
       },
       callback: async (contextHtml) => {
         let newContent = "";
