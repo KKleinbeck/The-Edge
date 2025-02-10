@@ -139,7 +139,7 @@ export class TheEdgeActor extends Actor {
   }
 
   async rollAttributeCheck(checkData, roll = "roll", transmit = true) {
-    checkData["threshold"] = this.system.attributes[checkData.attribute]["value"] +
+    checkData.threshold = this.system.attributes[checkData.attribute]["value"] +
       checkData.temporaryMod;
     const result = await this.diceServer.attributeCheck(checkData.threshold, checkData.vantage);
 
