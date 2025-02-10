@@ -138,7 +138,7 @@ export class TheEdgeActorSheet extends ActorSheet {
     const attribute = target.getAttribute("attr-name");
     DialogAttribute.start({
       actor: this.actor, actorId: this.actor.id, attribute: attribute,
-      tokenId: this.token.id, sceneID: game.user.viewedScene
+      tokenId: this.token?.id, sceneID: game.user.viewedScene
     })
   }
 
@@ -147,7 +147,7 @@ export class TheEdgeActorSheet extends ActorSheet {
     const proficiency = target.getAttribute("prof-name");
     DialogProficiency.start({
       actor: this.actor, actorId: this.actor.id, proficiency: proficiency,
-      token: this.token, tokenId: this.token.id, sceneID: game.user.viewedScene
+      token: this.token, tokenId: this.token?.id, sceneID: game.user.viewedScene
     })
   }
 
