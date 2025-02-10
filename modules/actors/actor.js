@@ -157,7 +157,7 @@ export class TheEdgeActor extends Actor {
     checkData.thresholds = checkData.dices.map(dice => this.system.attributes[dice]["value"]);
 
     const results = await this.diceServer.proficiencyCheck(
-      checkData.thresholds, checkData.permanentMod + checkData.temporaryMod, checkData.vantage
+      checkData.thresholds, checkData.permanentMod + (checkData.temporaryMod || 0), checkData.vantage
     );
 
     if (transmit) {

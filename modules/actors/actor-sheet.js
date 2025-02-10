@@ -377,7 +377,7 @@ export class TheEdgeActorSheet extends ActorSheet {
 
           case "grenade":
             ChatServer.transmitEvent("grenade", {
-              actorID: this.actor?.id, tokenID: this.token?.id, grenade: item, details: item.system.subtypes.grenade
+              actorId: this.actor?.id, tokenId: this.token?.id, grenade: item, details: item.system.subtypes.grenade
             })
             item.useOne();
             break;

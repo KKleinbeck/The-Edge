@@ -205,13 +205,9 @@ export default function() {
       const target = ev.currentTarget;
       if (!rollIsReady("proficiency-roll", target)) return undefined;
 
-      const actorID = target.dataset.actorId;
-      const tokenID = target.dataset.tokenId;
-
-      const actor = Aux.getActor(actorID, tokenID);
-
-      const proficiency = target.dataset.proficiency;
-      const proficiencyRoll = await actor.rollProficiencyCheck(proficiency, 0, false, false)
+      const sys = message.message.system;
+      const actor = Aux.getActor(sys.actorId, sys.tokenId);
+      const proficiencyRoll = await actor.rollProficiencyCheck({proficiency: sys.check}, "roll", false);
       let elem = $(target)
       elem.find(".roll").remove()
       switch (proficiencyRoll.outcome) {
@@ -222,7 +218,7 @@ export default function() {
           elem.append(`<div title="${proficiencyRoll.diceResults}">${-proficiencyRoll.quality} FL</div>`)
       }
 
-      const rollDescription = ProficiencyConfig.rollOutcome(proficiency, proficiencyRoll.quality);
+      const rollDescription = ProficiencyConfig.rollOutcome(sys.check, proficiencyRoll.quality);
       addRollDescription(elem, rollDescription);
 
       rollFollowUps(elem);

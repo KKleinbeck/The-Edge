@@ -34,6 +34,7 @@ export default class ChatServer {
         break;
       
       case "GRENADE":
+        details.check = "throwing";
         html = await renderTemplate("systems/the_edge/templates/chat/grenade.html", details);
         break;
       
