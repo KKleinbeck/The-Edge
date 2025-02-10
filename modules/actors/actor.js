@@ -723,7 +723,7 @@ export class TheEdgeActor extends Actor {
     const cls = getDocumentClass("Item");
     const wound = await cls.create({name: name, type: "Wounds"}, {parent: this});
     const type = this._generateWoundType(damage, damageType);
-    wound.update({
+    await wound.update({
       "system.bodyPart": location, "system.coordinates": locationCoord,
       "system.damage": damage, "system.bleeding": bleeding, "system.type": type
     });
