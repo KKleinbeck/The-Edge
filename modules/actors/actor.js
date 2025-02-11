@@ -344,9 +344,10 @@ export class TheEdgeActor extends Actor {
 
   async updateBloodloss() {
     const bl = this.system.bloodLoss;
-    let res = this.system.attributes.res.value;
+    let res = this.system.attributes.res.advances + this.system.attributes.res.status;
     let currentBloodLoss = this._getEffect("Vertigo");
     if (currentBloodLoss) res -= currentBloodLoss?.system?.effects[0].value || 0;
+    if (res <= 1) return; // Cannot possibly do sensible things right now
 
     const bloodlossEff = Math.max(bl.value - bl.threshold.value - res + 1, 0);
     const stepSize = bl.effectStep.value + Math.floor(res / 2);
@@ -357,9 +358,11 @@ export class TheEdgeActor extends Actor {
     }
 
     if (!currentBloodLoss) currentBloodLoss = await this._getEffectOrCreate("Vertigo");
-    await currentBloodLoss.update({"system.effects": [
-      {group: "attributes", name: "mental", value: -level},
-    ], "system.deactivatable": false})
+    if (currentBloodLoss.system.effects[0].value != -level) {
+      await currentBloodLoss.update({"system.effects": [
+        {group: "attributes", name: "mental", value: -level},
+      ], "system.deactivatable": false})
+    }
   }
 
   async updateStatus() {

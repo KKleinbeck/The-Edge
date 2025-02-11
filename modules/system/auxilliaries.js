@@ -10,7 +10,7 @@ export default class Aux {
 
   static hasRaceCondDanger(id) {
     const lastUpdate = game.data[id]
-    if (lastUpdate === undefined || Date.now() - lastUpdate > 200) {
+    if (lastUpdate === undefined || Date.now() - lastUpdate > 350) {
       // Prevent too frequent updates to avoid race conditions
       game.data[id] = Date.now();
       return false;
