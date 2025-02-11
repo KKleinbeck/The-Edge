@@ -211,6 +211,7 @@ class ItemSheetSkill extends TheEdgeItemSheet {
     for (const skill of skills) {
       context.coreRequirements.skills[skill.name] = skill.name;
     }
+    console.log(context.definedEffects)
     return context;
   }
 
@@ -270,7 +271,10 @@ class ItemSheetSkill extends TheEdgeItemSheet {
     targetList[level][index][target] = target == "value" ? parseInt(button.value) : button.value;
     // The next line also sets the name to something sensible if the group changes
     const context = await this.getData();
-    if (target == "group") targetList[level][index].name = Object.keys(context.coreRequirements[button.value])[0];
+    if (target == "group") {
+      if (button.value == "others") targetList[level][index].name = context.definedEffects["others"][0];
+      else targetList[level][index].name = Object.keys(context.coreRequirements[button.value])[0];
+    }
     if (type == "levelEffects") this.item.update({"system.levelEffects": targetList});
     if (type == "requirements") this.item.update({"system.requirements": targetList});
   }
