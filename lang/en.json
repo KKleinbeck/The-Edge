@@ -50,7 +50,9 @@
 
     "BLIND ROLL": "Blind roll",
     "PUBLIC ROLL": "Public roll",
-    "GM-WHISPER": "GM-Whisper"
+    "GM-WHISPER": "GM-Whisper",
+
+    "REROLLING": "{name} rerolled a {check} check, changing a dice from {old} to {new}."
   },
   "CHATNOTIFICATION": {
     "BLIND MESSAGE": "Blind message",
@@ -59,6 +61,8 @@
     "WHISPER": "Whisper"
   },
   "COMBAT": {
+    "COMBAT": "Combat",
+
     "BLASTER PISTOLS": "Blaster Pistols",
     "PULSE RIFLE": "Pulse Rifle",
     "SABS": "SABs",
@@ -566,6 +570,8 @@
   "QUANTITY": "Quantity",
   "RANGE MODIFIERS": "Range modifiers",
   "RELOAD": "Reload",
+  "REROLL": "Reroll",
+  "REROLLING": "Rerolling",
   "RESULT": "Result",
   "REQUIREMENTS": "Requirements",
   "RIGHT": "Right",
