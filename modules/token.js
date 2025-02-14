@@ -10,6 +10,7 @@ export class TheEdgeTokenDocument extends TokenDocument {
     const attr = alternative || this[barName]?.attribute;
     if ( !data || !attr || !this.actor ) return data;
     const current = foundry.utils.getProperty(this.actor.system, attr);
+    data.max = current.max?.value || data.max;
     if ( current?.dtype === "Resource" ) data.min = parseInt(current.min || 0);
     data.editable = true;
     return data;
