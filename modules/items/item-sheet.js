@@ -86,14 +86,18 @@ export class TheEdgeItemSheet extends ItemSheet {
     this.item.update({"system.effects": effects});
   }
 
-  _onModify(ev) {
+  async _onModify(ev) {
     const button = ev.currentTarget;
     const index = button.dataset.index;
     const effects = this.item.system.effects;
     const target = button.dataset.target;
     effects[index][target] = target == "value" ? parseInt(button.value) : button.value;
     // The next line also sets the name to something sensible if the group changes
-    if (target == "group") effects[index].name = Object.keys(THE_EDGE.core_value_map[button.value])[0];
+    const context = await this.getData();
+    if (target == "group") {
+      if (button.value == "others") effects[index].name = Object.keys(context.definedEffects["others"])[0];
+      else effects[index].name = Object.keys(THE_EDGE.core_value_map[button.value])[0];
+    }
     this.item.update({"system.effects": effects});
   }
 
@@ -272,7 +276,7 @@ class ItemSheetSkill extends TheEdgeItemSheet {
     // The next line also sets the name to something sensible if the group changes
     const context = await this.getData();
     if (target == "group") {
-      if (button.value == "others") targetList[level][index].name = context.definedEffects["others"][0];
+      if (button.value == "others") targetList[level][index].name = Object.keys(context.definedEffects["others"])[0];
       else targetList[level][index].name = Object.keys(context.coreRequirements[button.value])[0];
     }
     if (type == "levelEffects") this.item.update({"system.levelEffects": targetList});
