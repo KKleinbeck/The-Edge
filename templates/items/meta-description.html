@@ -1,3 +1,17 @@
 <div class="tab" data-group="primary" data-tab="description">
-  {{editor descriptionHTML target="system.description" button=true editable=editable engine="prosemirror"}}
+  {{#if editable}} 
+    <prose-mirror name="system.description" data-document-u-u-i-d="{{item.uuid}}" value="{{systemData.description}}" collaborate="true" toggled="true">
+      {{{descriptionHTML}}}
+    </prose-mirror>
+  {{else}} {{{descriptionHTML}}}
+  {{/if}}
+  {{#if systemData.userIsGM}}
+    <h4>{{genName "GM Notes"}}</h4>
+    {{#if editable}} 
+      <prose-mirror name="system.gm_description" data-document-u-u-i-d="{{item.uuid}}" value="{{systemData.gm_description}}" collaborate="true" toggled="true">
+        {{{gmDescriptionHTML}}}
+      </prose-mirror>
+    {{else}} {{{gmDescriptionHTML}}}
+    {{/if}}
+  {{/if}}
 </div>

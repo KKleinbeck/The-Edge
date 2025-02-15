@@ -56,6 +56,10 @@ export class TheEdgeItemSheet extends ItemSheet {
       secrets: this.document.isOwner,
       async: true
     });
+    context.gmDescriptionHTML = await TextEditor.enrichHTML(context.systemData.gm_description, {
+      secrets: this.document.isOwner,
+      async: true
+    });
     context.systemData.userIsGM = game.user.isGM;
     context.definedEffects = structuredClone(THE_EDGE.effect_map);
     for (const group of ["attributes", "proficiencies", "weapons"]) {
