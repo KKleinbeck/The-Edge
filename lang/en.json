@@ -87,6 +87,8 @@
     "ENERGY": "Energy",
     "KINETIC": "Kinetic",
     "ELEMENTAL": "Elemental",
+    "FALL": "Fall damage",
+    "IMPACT": "Impact damage",
 
     "MULTIPLE TARGETS": "Multiple targets",
     "MULTI TARGET HELP": "Can this weapon damage multiple targets at once? E.g. grenade launchers.",
@@ -390,6 +392,7 @@
     "BEEN THERE, DONE THAT...": "The character ignores one level of fright in and out of combat. Stacks with battle hardened.",
     "BLISTER TREATMENT": "Wound needs to be treatable.<br />Heal 25% of the damage on light burns caused by energy and elemental weapons. Can only be applied once per wound. Takes 5min.<br />Uses one operational kit.",
     "BLOOD EXTRACTION": "Extract blood from any willing or unconscious creature. Blood extracted can be used 1-to-1 to replenish someone else's blood. Takes one 15sec per level of blood loss. Blood extracted like this lasts for one hour.",
+    "BLUFF": "<p>Perform a Lie & Deceive check against a sentient target creature within hearing range. Your target has to react with an Emp, Foc, or Int check, depending on the nature of your bluff. On level 2 your target gains disadvantage for their check.</p><p>If you beat your targets QL, they have to spent one action during their next BR to react to your bluff. Out of combat, your target might spent more time to investigate. Bluffing does not cost an action but counts as communication.</p>",
     "BRINGING A GUN TO A KNIFE FIGHT": "Mali for weapon engagements <2m are changed to the respective <20m mali, if smaller.<br />Requires level 8 in the respective weapon skill.",
     "BRINGING A KNIFE TO A GUNFIGHT": "Upon performing a successful throwing check you may target anything within your throw range and perform a knife attack with advantage against that target. Regardless of the throw check, you throw the knife and have to recover it.",
     "CLEANING CUTS": "Select one laceration wound, it will no longer factor into the injury calculation. Takes one minute -5sec per QL per damage of the wound. Requires one operation kit.",

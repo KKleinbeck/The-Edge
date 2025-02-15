@@ -135,8 +135,7 @@ export default class DiceServer {
 
   async _proficiencyRoll(thresholds, modificator) {
     const diceRes = await new Roll("3d20").evaluate();
-    // const diceResults = diceRes.dice[0].results.map(x => x.result);
-    const diceResults = [7, 1, 16];
+    const diceResults = diceRes.dice[0].results.map(x => x.result);
     const netOutcome = this.constructor.proficiencyNetOutcome(diceResults, thresholds, modificator);
     return {diceResults: diceResults, netOutcome: netOutcome};
   }
