@@ -89,19 +89,19 @@
       {{#if (checkEqual systemData.subtype "medicine")}}
         <div class="tab" data-group="primary" data-tab="effects">
           <div class="item-columned-page" style="align-items: baseline;">
-            <div class="item-fields">
+            <div class="item-fields" style="width: 20%;">
               <label for="Healing">{{genName "Healing"}}</label><br/>
               <input type="text" id="Healing" name="system.subtypes.medicine.healing" value="{{systemData.subtypes.medicine.healing}}"/>
             </div>
-            <div class="item-fields">
+            <div class="item-fields" style="width: 20%;">
               <label for="Coagulation">{{genName "Coagulation"}}</label><br/>
               <input type="text" id="Coagulation" name="system.subtypes.medicine.coagulation" value="{{systemData.subtypes.medicine.coagulation}}"/>
             </div>
-            <div class="item-fields" style="white-space: nowrap;">
+            <div class="item-fields" style="width: 20%; white-space: nowrap;">
               <label for="ActionCost">{{genName "Action Cost"}}</label><br/>
               <input type="number" id="ActionCost" name="system.subtypes.medicine.actionCost" value="{{systemData.subtypes.medicine.actionCost}}"/>
             </div>
-            <div class="item-fields">
+            <div class="item-fields" style="width: 20%;">
               <label for="Medicine Effect Selector">{{genName "Effect"}}</label><br/>
               <select class="selection-box" name="system.subtypes.medicine.effect" id="Medicine Effect Selector">
                 {{#each helpers.medicineEffects as |effect|}}
