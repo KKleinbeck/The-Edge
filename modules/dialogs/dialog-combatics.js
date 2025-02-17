@@ -36,7 +36,7 @@ export default class DialogCombatics extends Dialog{
             tempModificator: tempModificator
           };
           foundry.utils.mergeObject(details, modificators)
-          for (const id of checkData.targetIss) {
+          for (const id of checkData.targetIds) {
             details["targetId"] = id;
             let target = Aux.getActor(undefined, id);
             await target.applyDamage(damage[0], crits[0], "HandToHand", checkData.name)

@@ -34,6 +34,7 @@ export default class ChatServer {
         break;
       
       case "GRENADE":
+        details.check = "throwing";
         html = await renderTemplate("systems/the_edge/templates/chat/grenade.html", details);
         break;
       
@@ -75,6 +76,10 @@ export default class ChatServer {
       
       case "POST SKILL":
         html = await renderTemplate("systems/the_edge/templates/chat/skill-description.html", details);
+        break;
+      
+      case "REROLL":
+        html = await renderTemplate("systems/the_edge/templates/chat/reroll-check.html", details);
         break;
     }
     const chatData = this._chatDataSetup(html, roll);

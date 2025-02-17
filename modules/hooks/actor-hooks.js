@@ -2,13 +2,15 @@ import Aux from "../system/auxilliaries.js";
 
 export default function() {
   Hooks.on("renderActorSheet", async (sheet, html, actorData) => {
+    if (!game.user.isGM) return; // Prevents update coming from each player
+
     const actor = actorData.actor;
     if (actorData.token) {
       actor = Aux.getActor(actorData.token.actorId, actorData.token.id)
     }
     if (Aux.hasRaceCondDanger(`renderActor${actor.id}`)) return undefined;
 
-    await new Promise(r => setTimeout(r, 20));
+    await new Promise(r => setTimeout(r, 100));
     // Timeout is a hack to give game enough time to update potential
     // attribute advances before we do the effect calculations.
     await actor.updateStatus();

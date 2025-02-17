@@ -138,7 +138,7 @@ export class TheEdgeActorSheet extends ActorSheet {
     const attribute = target.getAttribute("attr-name");
     DialogAttribute.start({
       actor: this.actor, actorId: this.actor.id, attribute: attribute,
-      tokenId: this.token.id, sceneID: game.user.viewedScene
+      tokenId: this.token?.id, sceneID: game.user.viewedScene
     })
   }
 
@@ -147,7 +147,7 @@ export class TheEdgeActorSheet extends ActorSheet {
     const proficiency = target.getAttribute("prof-name");
     DialogProficiency.start({
       actor: this.actor, actorId: this.actor.id, proficiency: proficiency,
-      token: this.token, tokenId: this.token.id, sceneID: game.user.viewedScene
+      token: this.token, tokenId: this.token?.id, sceneID: game.user.viewedScene
     })
   }
 
@@ -155,6 +155,7 @@ export class TheEdgeActorSheet extends ActorSheet {
     const target = ev.currentTarget; // HTMLElement
     const targetIds = Array.from(game.user.targets.map(x => x.id));  //targets is set
     const sceneId = game.user.viewedScene;
+    const actor = this.actor;
     if (target.dataset?.type === "combatics") {
       if (targetIds.length > 1) {
         const msg = LocalisationServer.parsedLocalisation(
@@ -166,13 +167,11 @@ export class TheEdgeActorSheet extends ActorSheet {
       DialogCombatics.start({
         name: LocalisationServer.localise("Hand to Hand combat", "combat"),
         actor: actor, token: this.token, sceneId: sceneId, targetIds: targetIds,
-        threshold: this.actor._getCombaticsPL(), damage: this.actor._getCombaticsDamage()
+        threshold: actor._getCombaticsPL(), damage: actor._getCombaticsDamage()
       })
       return undefined;
     }
     const weaponID = target.closest(".weapon-id").dataset.weaponId
-
-    let actor = this.actor;
 
     const weapon = this.actor.items.get(weaponID)
     if (targetIds.length > 1 && !(weapon.system.multipleTargets)) {
@@ -196,8 +195,8 @@ export class TheEdgeActorSheet extends ActorSheet {
       damageType = "energy"
     } else damageType = "kinetic";
     
-    const threshold = this.actor._getWeaponPL(weaponID);
-    const effectItems = this.actor.items.filter(x => x.system.effects !== undefined)
+    const threshold = actor._getWeaponPL(weaponID);
+    const effectItems = actor.items.filter(x => x.system.effects !== undefined)
     const effectModifier = [];
     for (const effectItem of effectItems) {
       if (!effectItem.system.active && !effectItem.system.equipped) continue;
@@ -378,7 +377,7 @@ export class TheEdgeActorSheet extends ActorSheet {
 
           case "grenade":
             ChatServer.transmitEvent("grenade", {
-              actorID: this.actor?.id, tokenID: this.token?.id, grenade: item, details: item.system.subtypes.grenade
+              actorId: this.actor?.id, tokenId: this.token?.id, grenade: item, details: item.system.subtypes.grenade
             })
             item.useOne();
             break;

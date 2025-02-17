@@ -31,11 +31,16 @@ export default class DialogWeapon extends Dialog{
             return;
           }
 
-          const dices = Math.min(
-            checkData.fireModes[modificators.fireMode].dices,
+          const ammuCost = Math.min(
+            checkData.fireModes[modificators.fireMode].cost,
             ammuCapa.max - ammuCapa.used
-          )
-          checkData.ammunition.update({"system.capacity.used": ammuCapa.used + dices})
+          );
+          const dices = Math.floor(
+            (ammuCost + 0.1) * 
+            checkData.fireModes[modificators.fireMode].dices /
+            checkData.fireModes[modificators.fireMode].cost
+          );
+          checkData.ammunition.update({"system.capacity.used": ammuCapa.used + ammuCost});
 
           // Roll the attack
           foundry.utils.mergeObject(modificators, {dicesEff: dices})

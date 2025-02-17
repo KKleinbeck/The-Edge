@@ -199,9 +199,9 @@
     "isElemental": false,
     "multipleTargets": false,
     "fireModes": {
-      "Single": {"damage": "2d4+2", "dices": 1, "mali": [0, 0]},
-      "Burst": {"damage": "1d8", "dices": 3, "mali": [0, 0]},
-      "Automatic": {"damage": "N.A.", "dices": 0, "mali": [0, 0]}
+      "Single": {"damage": "2d4+2", "cost": 1, "dices": 1, "mali": [0, 0]},
+      "Burst": {"damage": "1d8", "cost": 3, "dices": 3, "mali": [0, 0]},
+      "Automatic": {"damage": "N.A.", "cost": 0, "dices": 0, "mali": [0, 0]}
     },
     "leadAttr1": {"name": "str", "value": 10},
     "leadAttr2": {"name": "str", "value": 10},

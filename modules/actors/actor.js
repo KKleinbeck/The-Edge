@@ -139,7 +139,7 @@ export class TheEdgeActor extends Actor {
   }
 
   async rollAttributeCheck(checkData, roll = "roll", transmit = true) {
-    checkData["threshold"] = this.system.attributes[checkData.attribute]["value"] +
+    checkData.threshold = this.system.attributes[checkData.attribute]["value"] +
       checkData.temporaryMod;
     const result = await this.diceServer.attributeCheck(checkData.threshold, checkData.vantage);
 
@@ -157,7 +157,7 @@ export class TheEdgeActor extends Actor {
     checkData.thresholds = checkData.dices.map(dice => this.system.attributes[dice]["value"]);
 
     const results = await this.diceServer.proficiencyCheck(
-      checkData.thresholds, checkData.permanentMod + checkData.temporaryMod, checkData.vantage
+      checkData.thresholds, checkData.permanentMod + (checkData.temporaryMod || 0), checkData.vantage
     );
 
     if (transmit) {
@@ -344,9 +344,10 @@ export class TheEdgeActor extends Actor {
 
   async updateBloodloss() {
     const bl = this.system.bloodLoss;
-    let res = this.system.attributes.res.value;
+    let res = this.system.attributes.res.advances + this.system.attributes.res.status;
     let currentBloodLoss = this._getEffect("Vertigo");
     if (currentBloodLoss) res -= currentBloodLoss?.system?.effects[0].value || 0;
+    if (res <= 1) return; // Cannot possibly do sensible things right now
 
     const bloodlossEff = Math.max(bl.value - bl.threshold.value - res + 1, 0);
     const stepSize = bl.effectStep.value + Math.floor(res / 2);
@@ -357,9 +358,11 @@ export class TheEdgeActor extends Actor {
     }
 
     if (!currentBloodLoss) currentBloodLoss = await this._getEffectOrCreate("Vertigo");
-    await currentBloodLoss.update({"system.effects": [
-      {group: "attributes", name: "mental", value: -level},
-    ], "system.deactivatable": false})
+    if (currentBloodLoss.system.effects[0].value != -level) {
+      await currentBloodLoss.update({"system.effects": [
+        {group: "attributes", name: "mental", value: -level},
+      ], "system.deactivatable": false})
+    }
   }
 
   async updateStatus() {
@@ -723,7 +726,7 @@ export class TheEdgeActor extends Actor {
     const cls = getDocumentClass("Item");
     const wound = await cls.create({name: name, type: "Wounds"}, {parent: this});
     const type = this._generateWoundType(damage, damageType);
-    wound.update({
+    await wound.update({
       "system.bodyPart": location, "system.coordinates": locationCoord,
       "system.damage": damage, "system.bleeding": bleeding, "system.type": type
     });

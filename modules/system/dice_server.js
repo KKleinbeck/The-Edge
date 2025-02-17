@@ -1,5 +1,3 @@
-import LocalisationServer from "./localisation_server.js";
-
 export default class DiceServer {
   constructor() {
     const interpretTemplate = {
@@ -50,10 +48,12 @@ export default class DiceServer {
         if (interpretationParams.crit.includes(roll.diceResult)) {
           outcome = "CritSuccess"
           basicQuality = Math.max(basicQuality + 2, 2);
+          roll.netOutcome += 8;
         }
         if (interpretationParams.critFail.includes(roll.diceResult)) {
           outcome = "CritFailure"
           basicQuality = Math.min(basicQuality - 2, -2);
+          roll.netOutcome -= 8;
         }
         break;
 
@@ -65,6 +65,8 @@ export default class DiceServer {
           if (interpretationParams.critFail.includes(dice)) ++nCritFails;
         }
         basicQuality += 2 * (nCrits - nCritFails);
+        roll.netOutcome += 8 * (nCrits - nCritFails);
+        outcome = (roll.netOutcome >= 0) ? "Success" : "Failure"
         if (nCrits >= 2) {
           basicQuality = Math.max(basicQuality, 7);
           outcome = "CritSuccess";
@@ -133,18 +135,20 @@ export default class DiceServer {
 
   async _proficiencyRoll(thresholds, modificator) {
     const diceRes = await new Roll("3d20").evaluate();
-    let diceResults = [];
+    const diceResults = diceRes.dice[0].results.map(x => x.result);
+    const netOutcome = this.constructor.proficiencyNetOutcome(diceResults, thresholds, modificator);
+    return {diceResults: diceResults, netOutcome: netOutcome};
+  }
+  
+  static proficiencyNetOutcome(diceResults, thresholds, modificator) {
     let failedSum = 0;
     let sum = 0;
     for (let i = 0; i < 3; i++) {
-      diceResults.push(diceRes.dice[0].results[i].result)
-      let netOutcome = thresholds[i] - diceResults[i]
-      failedSum += Math.min(netOutcome, 0)
-      sum += netOutcome
+      const diff = thresholds[i] - diceResults[i];
+      failedSum += Math.min(diff, 0);
+      sum += diff;
     }
-
-    let netOutcome = modificator + ((modificator >= -failedSum || failedSum == 0) ? sum : failedSum);
-    return {diceResults: diceResults, netOutcome: netOutcome};
+    return modificator + ((modificator >= -failedSum || failedSum == 0) ? sum : failedSum);
   }
 
   async attackCheck(dices, threshold, vantage, damageDice, critThreshold) {

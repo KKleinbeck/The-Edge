@@ -36,3 +36,8 @@
     {{/each}}
   </div>
 {{/each}}
+<div style="display: flex; justify-content: end; margin-top: -20px; margin-left: auto; margin-right: 15px; gap: 5px; white-space: nowrap; align-items: center;">
+    {{genName "PracticeHours"}}
+    <span class="output" style="width: 115px;">{{systemData.PracticeHours.used}} / {{systemData.PracticeHours.max}}</span>
+  </div>
+</div>
