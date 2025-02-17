@@ -150,6 +150,7 @@ export class TheEdgeActor extends Actor {
   }
 
   async rollProficiencyCheck(checkData, roll = "roll", transmit = true) {
+    checkData.proficiency = checkData.proficiency.toLowerCase();
     const proficiencyData = Object.values(this.system.proficiencies)
       .find(profClass => checkData.proficiency in profClass)[checkData.proficiency]
     checkData.dices = proficiencyData.dices;
