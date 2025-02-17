@@ -250,7 +250,7 @@ export class TheEdgeActor extends Actor {
   }
   
   async determineOverload() {
-    const weight = this._determineWeight();
+    const weight = this._determineWeight() - this.system.statusEffects.overloadThreshold.status;
     let str = this.system.attributes.str.value;
 
     // Correct for the current overload level
@@ -259,17 +259,17 @@ export class TheEdgeActor extends Actor {
       (a,b) => a - b.value, -1
     ) || 0 // -1 for the phyiscal proficiencies
     if (str <= 0) return false; // We can't possibly do sensible things yet
-    else if (weight <= str) {
-      this._deleteEffect("Overload");
-      return true; // exit without being overloaded
-    }
     
-    const physicalMalus = -Math.max(Math.floor((weight - str) / (str / 2)), 0);
-    if (!currentOverload) currentOverload = await this._getEffectOrCreate("Overload")
-    await currentOverload.update({"system.effects": [
-      {group: "proficiencies", name: "physical", value: -1},
-      {group: "attributes", name: "physical", value: physicalMalus},
-    ], "system.deactivatable": false})
+    const overloadLevel = Math.max(Math.ceil((weight - str) / (str / 2)), 0) +
+      this.system.statusEffects.overload.status;
+    if (overloadLevel <= 0) this._deleteEffect("Overload");
+    else {
+      if (!currentOverload) currentOverload = await this._getEffectOrCreate("Overload")
+      await currentOverload.update({"system.effects": [
+        {group: "proficiencies", name: "physical", value: -1},
+        {group: "attributes", name: "physical", value: -overloadLevel + 1},
+      ], "system.statusEffect": true, "system.gm_description": `${overloadLevel}`})
+    }
     return true
   };
 
@@ -286,19 +286,33 @@ export class TheEdgeActor extends Actor {
         {group: "weapons", name: "all", value: -1},
         {group: "attributes", name: "crd", value: -1},
         {group: "attributes", name: "spd", value: 1}
-      ], "system.deactivatable": false})
+      ], "system.statusEffect": true, "system.gm_description": zone - 1})
     } else {
       await currentStrain.update({"system.effects": [
         {group: "weapons", name: "all", value: -3},
         {group: "attributes", name: "crd", value: -2},
         {group: "attributes", name: "social", value: -1},
         {group: "attributes", name: "mental", value: -1}
-      ], "system.deactivatable": false})
+      ], "system.statusEffect": true, "system.gm_description": zone - 1})
     }
   }
 
   async updatePain() {
-    const damageTotal = this.system.health.max.value - this.system.health.value;
+    const res = 5 + this.system.attributes.res.value;
+    const damageTotal = this.system.health.max.value - this.system.health.value -
+      this.system.statusEffects.painThreshold.status;
+    const levelPain = Math.floor(damageTotal / res) + this.system.statusEffects.pain.status;
+    if (levelPain <= 0) { await this._deleteEffect("Pain") }
+    else {
+      const currentPain = await this._getEffectOrCreate("Pain");
+      await currentPain.update({"system.effects": [
+        {group: "proficiencies", name: "all", value: -levelPain},
+        {group: "weapons", name: "all", value: -levelPain}
+        ], "system.statusEffect": true, "system.gm_description": `${levelPain}`
+      })
+    }
+
+    // Injuries
     const damageBodyParts = {arms: 0, legs: 0, torso: 0, head: 0};
     const wounds = this.itemTypes["Wounds"];
     for (const wound of wounds) {
@@ -320,40 +334,30 @@ export class TheEdgeActor extends Actor {
       }
     }
 
-    const res = 5 + this.system.attributes.res.value;
-    if (damageTotal < res) { await this._deleteEffect("Pain") }
-    else {
-      const currentPain = await this._getEffectOrCreate("Pain");
-      const n = Math.floor(damageTotal / res);
-      await currentPain.update({"system.effects": [
-        {group: "proficiencies", name: "all", value: -n}, {group: "weapons", name: "all", value: -n}
-        ], "system.deactivatable": false
-      })
-    }
-
     for (const [bodyPart, damage] of Object.entries(damageBodyParts)) {
-      if (damage < res) { await this._deleteEffect(`Injuries ${bodyPart}`) }
+      const n = Math.floor(damage / res) + this.system.statusEffects[`injuries ${bodyPart.toLowerCase()}`].status;
+      if (n <= 0) { await this._deleteEffect(`Injuries ${bodyPart}`) }
       else {
         const injury = await this._getEffectOrCreate(`Injuries ${bodyPart}`);
-        const n = Math.floor(damage / res);
         await injury.update({"system.effects": [
             {group: "attributes", name: THE_EDGE.injury_map[bodyPart], value: -n}
-          ], "system.deactivatable": false,
+          ], "system.statusEffect": true, "system.gm_description": `${n}`,
         })
       }
     }
   }
 
   async updateBloodloss() {
-    const bl = this.system.bloodLoss;
     let res = this.system.attributes.res.advances + this.system.attributes.res.status;
     let currentBloodLoss = this._getEffect("Vertigo");
     if (currentBloodLoss) res -= currentBloodLoss?.system?.effects[0].value || 0;
     if (res <= 1) return; // Cannot possibly do sensible things right now
 
-    const bloodlossEff = Math.max(bl.value - bl.threshold.value - res + 1, 0);
-    const stepSize = bl.effectStep.value + Math.floor(res / 2);
-    const level = Math.ceil(bloodlossEff / stepSize);
+    const bloodloss = this.system.bloodLoss.value;
+    const statusThreshold = this.system.statusEffects.bloodlossThreshold.status;
+    const bloodlossEff = Math.max(bloodloss - statusThreshold - res + 1, 0);
+    const stepSize = this.system.statusEffects.bloodlossStepSize.status + Math.floor(res / 2);
+    const level = Math.ceil(bloodlossEff / stepSize) + this.system.statusEffects.vertigo.status;
     if (level == 0) {
       await this._deleteEffect("Vertigo");
       return;
@@ -363,7 +367,7 @@ export class TheEdgeActor extends Actor {
     if (currentBloodLoss.system.effects[0].value != -level) {
       await currentBloodLoss.update({"system.effects": [
         {group: "attributes", name: "mental", value: -level},
-      ], "system.deactivatable": false})
+      ], "system.statusEffect": true, "system.gm_description": `${level}`})
     }
   }
 
@@ -375,10 +379,11 @@ export class TheEdgeActor extends Actor {
         update[elem] = 0;
       }
     }
-    for (const elems of Object.values(THE_EDGE.effect_map["others"])) {
-      for (const elem of Object.values(elems)) {
-        update[elem] = 0;
-      }
+    for (const elems of Object.values(THE_EDGE.effect_map.statusEffects)) {
+      for (const elem of Object.values(elems)) update[elem] = 0;
+    }
+    for (const elems of Object.values(THE_EDGE.effect_map.others)) {
+      for (const elem of Object.values(elems)) update[elem] = 0;
     }
     const critDice = {
       attributes: {crit: [1], critFail: [20]},

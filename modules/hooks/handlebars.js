@@ -93,8 +93,10 @@ export default function() {
       const overload = Math.max(Math.ceil((weight - str) / (str/2)), 0);
       return `(${LocalisationServer.localise("Overload")}: ${overload})`
     },
-    getNextWeightClass: (weight, str) => {
-      if (str == 0) return "";
+    getNextWeightClass: (weight, sys) => {
+      const str = sys.attributes.str.value;
+      const threshold = sys.statusEffects.overloadThreshold.status;
+      weight -= threshold;
       if (weight < str) return `${Math.floor(10 * (str-weight))/10}kg ${LocalisationServer.localise("to next level")}`
       const overload = Math.ceil((weight - str) / (str/2));
       let remaining = overload * (str/2) - (weight - str)

@@ -44,7 +44,7 @@ Hooks.once("init", async function() {
           THE_EDGE.effect_map[parts[0]][parts[1]].push(effect);
         } else THE_EDGE.effect_map[parts[0]][parts[1]] = [effect];
       }
-      THE_EDGE.effect_map[parts[0]].all.push(effect);
+      THE_EDGE.effect_map[parts[0]].all?.push(effect);
     } else {
       THE_EDGE.effect_map["others"][parts[0] + " - " + parts[1]] = [effect];
     }

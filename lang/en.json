@@ -379,6 +379,22 @@
     "CRIT": "Critical roll dice",
     "CRITFAIL": "Critical fail dice"
   },
+  "SETTINGS": {
+    "SimpleMacroShorthandN": "Shortened Macro Syntax",
+    "SimpleMacroShorthandL": "Enable a shortened macro syntax which allows referencing attributes directly, for example @str instead of @attributes.str.value. Disable this setting if you need the ability to reference the full attribute model, for example @attributes.str.value.",
+    "SimpleInitFormulaN": "Initiative Formula",
+    "SimpleInitFormulaL": "Enter an initiative formula, such as d20+d@attributes.str.value"
+  },
+  "SIMPLE": {
+    "NotifyInitFormulaUpdated": "Initiative formula was updated to",
+    "NotifyInitFormulaInvalid": "Initiative formula was invalid",
+    "NotifyGroupDuplicate": "Attribute group already exists.",
+    "NotifyGroupAttrDuplicate": "Attribute group already exists as an attribute.",
+    "NotifyGroupAlphanumeric": "Attribute group names may not contain spaces or periods.",
+    "NotifyGroupReserved": "Attribute group \"{key}\" is reserved and cannot be used.",
+    "NotifyAttrDuplicate": "Attribute key already exists as a group.",
+    "NotifyAttrInvalid": "Attribute keys may not contain spaces or periods."
+  },
   "SKILL": {
     "DECREASE": "Decrease skill level",
     "INCREASE": "Increase skill level",
@@ -490,8 +506,8 @@
   "BIOLOGY": "Biology",
   "BLEEDING": "Bleeding",
   "BLOOD LOSS": "Blood loss",
-  "BLOODLOSS - THRESHOLD": "Blood loss threshold",
-  "BLOODLOSS - EFFECTSTEP": "Blood loss step size",
+  "BLOODLOSSTHRESHOLD": "Blood loss - threshold",
+  "BLOODLOSSSTEPSIZE": "Blood loss - step size",
   "BLOOD TYPE": "Blood type",
   "BLOOD VOLUMN": "Blood Volumn",
   "BODY": "Body",
@@ -521,7 +537,6 @@
   "DISTANCE": "Distance",
   "EFFECT": "Effect",
   "EFFECTS": "Effects",
-  "OVERLOAD": "Overload",
   "EXPLANATIONS": "Explanations",
   "FAILURE": "Failure",
   "FAILURE CHECK FAILED": "Confirmed critical failure",
@@ -573,7 +588,10 @@
   "NOTES": "Notes",
   "OR": "or",
   "OTHERS": "Others",
+  "OVERLOAD": "Overload",
+  "OVERLOADTHRESHOLD": "Overload - threshold",
   "PAIN": "Pain",
+  "PAINTHRESHOLD": "Pain - threshold",
   "PENETRATION": "Penetration",
   "PERMANENT": "Permanent",
   "POCKETS": "Pockets",
@@ -603,6 +621,7 @@
   "SPEED": "Speed",
   "STA": "Sta",
   "STATUS": "Status",
+  "STATUSEFFECTS": "Status effects",
   "STATUS EFFECTS": "Status effects",
   "STRAIN": "Strain",
   "SUCCESS": "Success",
@@ -621,19 +640,5 @@
   "WEIGHT": "Weight",
   "WOUND": "Wound",
   "WITH": "With",
-  "ZONE": "Zone",
-
-  "SETTINGS.SimpleMacroShorthandN": "Shortened Macro Syntax",
-  "SETTINGS.SimpleMacroShorthandL": "Enable a shortened macro syntax which allows referencing attributes directly, for example @str instead of @attributes.str.value. Disable this setting if you need the ability to reference the full attribute model, for example @attributes.str.value.",
-  "SETTINGS.SimpleInitFormulaN": "Initiative Formula",
-  "SETTINGS.SimpleInitFormulaL": "Enter an initiative formula, such as d20+d@attributes.str.value",
-
-  "SIMPLE.NotifyInitFormulaUpdated": "Initiative formula was updated to",
-  "SIMPLE.NotifyInitFormulaInvalid": "Initiative formula was invalid",
-  "SIMPLE.NotifyGroupDuplicate": "Attribute group already exists.",
-  "SIMPLE.NotifyGroupAttrDuplicate": "Attribute group already exists as an attribute.",
-  "SIMPLE.NotifyGroupAlphanumeric": "Attribute group names may not contain spaces or periods.",
-  "SIMPLE.NotifyGroupReserved": "Attribute group \"{key}\" is reserved and cannot be used.",
-  "SIMPLE.NotifyAttrDuplicate": "Attribute key already exists as a group.",
-  "SIMPLE.NotifyAttrInvalid": "Attribute keys may not contain spaces or periods."
+  "ZONE": "Zone"
 }

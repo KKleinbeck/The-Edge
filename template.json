@@ -121,11 +121,7 @@
       "min": {"value": 0, "status": 0, "baseline": 60},
       "max": {"value": 0, "status": 0, "baseline": 195}
     },
-    "bloodLoss": {
-      "value": 0,
-      "threshold": {"value": 0, "status": 0},
-      "effectStep": {"value": 0, "status": 0}
-    },
+    "bloodLoss": {"value": 0},
     "heroToken": {
       "max": 2,
       "available": 1
@@ -141,6 +137,19 @@
     "credits": {
       "chids": 0,
       "digital": 0
+    },
+    "statusEffects": {
+      "injuries arms": {"status": 0},
+      "injuries head": {"status": 0},
+      "injuries legs": {"status": 0},
+      "injuries torso": {"status": 0},
+      "pain": {"status": 0},
+      "painThreshold": {"status": 0},
+      "overload": {"status": 0},
+      "overloadThreshold": {"status": 0},
+      "vertigo": {"status": 0},
+      "bloodlossThreshold": {"status": 0},
+      "bloodlossStepSize": {"status": 0}
     },
     "nativeLanguage": "Standard"
   }
@@ -263,7 +272,7 @@
   "Effect": {
     "templates": ["description"],
     "effects": [{"group": "attributes", "name": "end", "value": 0}],
-    "active": true, "deactivatable": true
+    "active": true, "statusEffect": false
   }
 }
 }

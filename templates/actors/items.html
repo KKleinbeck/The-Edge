@@ -84,7 +84,7 @@
   <div style="display: flex; gap: 20px; align-items: center;">
     <div class="section-title">{{genName "Weight"}}</div>
     <div>{{round helpers.weight 2}}</div>
-    <div style="white-space: nowrap;" title="{{getNextWeightClass helpers.weight systemData.attributes.str.value}}">
+    <div style="white-space: nowrap;" title="{{getNextWeightClass helpers.weight systemData}}">
       {{getWeightClass helpers.weight systemData.attributes.str.value}}
     </div>
   </div>

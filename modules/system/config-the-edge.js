@@ -36,7 +36,7 @@ THE_EDGE.injury_map = {"torso": "end", "head": "foc", "arms": "crd", "legs": "sp
 // Entries below are primarily implemented in the_edge.js
 THE_EDGE.core_value_map = {attributes: {}, proficiencies: {}, weapons: {}}
 THE_EDGE.effect_map = {
-  attributes: {all: []}, proficiencies: {all: []}, weapons: {all: []}, others: {}
+  attributes: {all: []}, proficiencies: {all: []}, weapons: {all: []}, statusEffects: {}, others: {}
 }
 
 export default THE_EDGE
