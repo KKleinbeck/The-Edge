@@ -301,6 +301,7 @@ export class TheEdgeActor extends Actor {
     const damageBodyParts = {arms: 0, legs: 0, torso: 0, head: 0};
     const wounds = this.itemTypes["Wounds"];
     for (const wound of wounds) {
+      if (!wound.system.active) continue;
       switch (wound.system.bodyPart) {
         case "Torso":
           damageBodyParts.torso += wound.system.damage;

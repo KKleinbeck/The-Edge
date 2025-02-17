@@ -256,7 +256,10 @@
     "effects": []
   },
   "Credits": {"isChid": true, "value": 0},
-  "Wounds": {"damage": 0, "bleeding": 0, "bodyPart": "", "coordinates": [0, 0], "status": "treatable", "type": "abrasion"},
+  "Wounds": {
+    "damage": 0, "bleeding": 0, "active": true,
+    "bodyPart": "", "coordinates": [0, 0], "status": "treatable", "type": "abrasion"
+  },
   "Effect": {
     "templates": ["description"],
     "effects": [{"group": "attributes", "name": "end", "value": 0}],
