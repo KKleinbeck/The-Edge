@@ -452,9 +452,15 @@ export class TheEdgeActor extends Actor {
     if (!this.fulfillsRequirements(newSkill, true)) return false;
     const ph = this.system.PracticeHours
     let cost = Aux.getSkillCost(newSkill)
-    if (cost < ph.max - ph.used) {
+    if (cost <= ph.max - ph.used) {
       this.update({"system.PracticeHours.used": ph.used + cost})
       return true;
+    } else {
+      const msg = LocalisationServer.parsedLocalisation(
+        "Missing PH", "Notifications",
+        {name: newSkill.name, need: cost, available: ph.max - ph.used}
+      )
+      ui.notifications.notify(msg);
     }
     
     return false

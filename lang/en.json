@@ -309,6 +309,7 @@
     "NO ATTACHABLE ARMOUR": "There is no armour avaible to which this can be attached to.",
     "MISSING ATTACHMENT POINTS": "Cannot attach to this armour. It has {available} attachment points left, but {needed} are needed.",
 
+    "MISSING PH": "Not enough PH to learn {name}. {need} needed, {available} available.",
     "MISSING REQUIREMENTS": "Skill has unmatched requirements. Skill {name} has to be at {value} first.",
     "UNMET REQUIREMENTS": "Skill has unmatched requirements. {name} has to be {value}, but is {valueIs}.",
 
