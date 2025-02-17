@@ -74,6 +74,10 @@ export default class ChatServer {
         );
         break;
       
+      case "POST ITEM":
+        html = await renderTemplate("systems/the_edge/templates/chat/item-description.html", details);
+        break;
+      
       case "POST SKILL":
         html = await renderTemplate("systems/the_edge/templates/chat/skill-description.html", details);
         break;

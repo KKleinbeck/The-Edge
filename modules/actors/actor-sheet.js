@@ -321,6 +321,11 @@ export class TheEdgeActorSheet extends ActorSheet {
         return clsEffect.create({name: LocalisationServer.localise("New effect", "item"), type: "Effect"}, {parent: this.actor});
       case "edit":
         return item.sheet.render(true);
+      case "post":
+        ChatServer.transmitEvent("Post Item",
+          {name: item.name, description: item.system.description}
+        );
+        break;
       case "increase":
         this.actor.addOrCreateVantage(item);
         break;
