@@ -1,6 +1,7 @@
 import Aux from "../system/auxilliaries.js";
 import DiceServer from "../system/dice_server.js";
 import ChatServer from "../system/chat_server.js";
+import DialogChangeDice from "../dialogs/dialog-change-dice.js";
 import ProficiencyConfig from "../system/config-proficiencies.js";
 import LocalisationServer from "../system/localisation_server.js";
 
@@ -205,7 +206,6 @@ export default function() {
           return actor.system.heroToken.available > 0 && (prevRoll != 1 || type == "proficiency");
         },
         callback: async (contextHtml) => {
-          let newContent = "";
           switch (contextHtml[0].dataset.type) {
             case "attribute":
               await heroTokenAttributeCheck(chatMsgCls, actor, sys)
@@ -229,33 +229,81 @@ export default function() {
         icon: "",
         condition: () => {return true;},
         callback: async (contextHtml) => {
-          let oldRoll = 0;
           const newRoll = await DiceServer.genericRoll("1d20");
           const chatDetails = {name: game.user.name, new: newRoll};
           const index = +contextHtml[0].dataset.index;
-          console.log(sys)
           switch (contextHtml[0].dataset.type) {
             case "attribute":
-              oldRoll = sys.diceResult;
+              chatDetails.old = sys.diceResult;
               updateAttributeCheck(chatMsgCls, actor, sys, newRoll);
               chatDetails.check = LocalisationServer.localise(sys.attribute, "attr");
               break;
             case "proficiency":
-              oldRoll = sys.diceResults[index];
+              chatDetails.old = sys.diceResults[index];
               sys.diceResults[index] = newRoll;
               updateProficiencyCheck(chatMsgCls, actor, sys, sys.diceResults);
               chatDetails.check = LocalisationServer.localise(sys.proficiency, "proficiency");
               break;
             case "weapon":
-              oldRoll = sys.rolls[index].res;
+              chatDetails.old = sys.rolls[index].res;
               const newResults = structuredClone(sys.rolls);
               newResults[index].res = newRoll;
               updateWeaponCheck(chatMsgCls, sys, newResults, index);
               chatDetails.check = LocalisationServer.localise("combat", "combat");
               break;
           }
-          chatDetails.old = oldRoll;
           ChatServer.transmitEvent("Reroll", {details: chatDetails});
+        }
+      },
+      {
+        name: LocalisationServer.localise("Change"),
+        classes: "roll-context-menu",
+        icon: "",
+        condition: () => {return game.user.isGM;},
+        callback: async (contextHtml) => {
+          const chatDetails = {name: game.user.name};
+          const index = +contextHtml[0].dataset.index;
+          switch (contextHtml[0].dataset.type) {
+            case "attribute":
+              chatDetails.old = sys.diceResult;
+              chatDetails.check = LocalisationServer.localise(sys.attribute, "attr");
+              DialogChangeDice.start({
+                update: (newRoll) => {
+                  newRoll = Math.max(newRoll, 1);
+                  updateAttributeCheck(chatMsgCls, actor, sys, newRoll),
+                  chatDetails.new = newRoll;
+                  ChatServer.transmitEvent("Reroll", {details: chatDetails});
+                }, old: chatDetails.old
+              })
+              break;
+            case "proficiency":
+              chatDetails.old = sys.diceResults[index];
+              chatDetails.check = LocalisationServer.localise(sys.proficiency, "proficiency");
+              DialogChangeDice.start({
+                update: (newRoll) => {
+                  newRoll = Math.max(newRoll, 1);
+                  sys.diceResults[index] = newRoll;
+                  updateProficiencyCheck(chatMsgCls, actor, sys, sys.diceResults);
+                  chatDetails.new = newRoll;
+                  ChatServer.transmitEvent("Reroll", {details: chatDetails});
+                }, old: chatDetails.old
+              })
+              break;
+            case "weapon":
+              chatDetails.old = sys.rolls[index].res;
+              chatDetails.check = LocalisationServer.localise("combat", "combat");
+              DialogChangeDice.start({
+                update: (newRoll) => {
+                  newRoll = Math.max(newRoll, 1);
+                  const newResults = structuredClone(sys.rolls);
+                  newResults[index].res = newRoll;
+                  updateWeaponCheck(chatMsgCls, sys, newResults, index);
+                  chatDetails.new = newRoll;
+                  ChatServer.transmitEvent("Reroll", {details: chatDetails});
+                }, old: chatDetails.old
+              })
+              break;
+          }
         }
       }
     ])
