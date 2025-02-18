@@ -393,7 +393,9 @@ export class TheEdgeActor extends Actor {
 
     // Iterate through items and apply their effects
     for (const item of this.items) {
-      if (item.type == "Skill" || item.type == "Combatskill") {
+      if (!item.system.active && !item.system.equipped) continue;
+
+      if (item.type == "Skill" || item.type == "Combatskill" || item.type == "Medicalskill") {
         for (let i = 0; i < item.system.level; ++i) {
           for (const effect of item.system.levelEffects[i]) {
             if (this._updateCritDice(effect, critDice)) continue;
@@ -403,10 +405,7 @@ export class TheEdgeActor extends Actor {
           }
           if (!item.system.levelEffects[i]) continue;
         }
-      } else {
-        if (item.type == "Effect" && !item.system.active) continue;
-        if (item.type != "Effect" && !(item.system.equipped)) continue;
-
+      } else if (item.system.effects) {
         for (const effect of item.system.effects) {
           if (this._updateCritDice(effect, critDice)) continue;
           for (const effectPath of THE_EDGE.effect_map[effect.group][effect.name]) {
@@ -685,12 +684,13 @@ export class TheEdgeActor extends Actor {
       const heartRate = this.system.heartRate;
       const update = {};
       update["system.health.value"] = Math.max(health - damage, 0)
+      const hrChange = Math.max(damage - this.system.heartRate.damageThreshold.status, 0);
       if (health > damage) { // increase heartrate upon damage
-        update["system.heartRate.value"] = Math.min(heartRate.value + damage, heartRate.max.value)
+        update["system.heartRate.value"] = Math.min(heartRate.value + hrChange, heartRate.max.value)
       } else if (health > 0) { // Dying damage
-        update["system.heartRate.value"] = Math.max(heartRate.max.value - (damage - health), 0)
+        update["system.heartRate.value"] = Math.max(heartRate.max.value - (hrChange - health), 0)
       } else { // bleeding out
-        update["system.heartRate.value"] = Math.max(heartRate.value - damage, 0)
+        update["system.heartRate.value"] = Math.max(heartRate.value - hrChange, 0)
       }
       await this.update(update)
 

@@ -218,7 +218,6 @@ class ItemSheetSkill extends TheEdgeItemSheet {
     for (const skill of skills) {
       context.coreRequirements.skills[skill.name] = skill.name;
     }
-    console.log(context.definedEffects)
     return context;
   }
 

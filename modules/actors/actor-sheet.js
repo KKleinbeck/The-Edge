@@ -69,6 +69,24 @@ export class TheEdgeActorSheet extends ActorSheet {
       types: ["Weapon", "Armour", "Ammunition", "Gear", "Consumables"],
       weight: weight,
     }
+
+    context.effectDict = {statusEffects: [], effects: [], itemEffects: [], skillEffects: []}
+    for (const item of this.actor.items) {
+      if (item.type ==  "Effect") {
+        if (item.system.statusEffect) context.effectDict.statusEffects.push(item);
+        else context.effectDict.effects.push(item);
+      } else if (item.type == "Skill" || item.type == "Combatskill" || item.type == "Medicalskill") {
+        for (const effect of item.system.levelEffects) {
+          if (effect.length != 0) {
+            context.effectDict.skillEffects.push(item);
+            break;
+          }
+        }
+      } else if (item.system.equipped && item.system.effects.length !== 0) {
+        context.effectDict.itemEffects.push(item);
+      }
+    }
+    context.effectToggle = {statusEffects: false, effects: true, itemEffects: false, skillEffects: true};
     return context;
   }
 
@@ -427,6 +445,9 @@ export class TheEdgeActorSheet extends ActorSheet {
         return this.actor.skillLevelDecrease(skillID);
       case "delete":
         return this.actor.deleteSkill(skillID);
+      case "toggle-active":
+        skill.toggleActive();
+        break;
       case "post":
         ChatServer.transmitEvent("Post Skill",
           {name: skill.name, type: skill.type, description: skill.system.description}
