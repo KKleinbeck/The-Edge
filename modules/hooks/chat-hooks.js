@@ -71,15 +71,16 @@ export default function() {
     updateChatMessage(chatMsgCls, newContent, newSys);
   }
 
-  const heroTokenWeaponCheck = async (chatMsgCls, sys, index) => {
+  const heroTokenWeaponCheck = async (chatMsgCls, actor, sys, index) => {
     const newResults = structuredClone(sys.rolls);
     if (newResults[index].hit) newResults[index].res = 1;
     else newResults[index].res = sys.threshold;
-    updateWeaponCheck(chatMsgCls, sys, newResults, index);
+    updateWeaponCheck(chatMsgCls, actor, sys, newResults, index);
   }
   
-  const updateWeaponCheck = async (chatMsgCls, sys, newResults, index) => {
-    if (newResults[index].res <= sys.threshold || newResults[index].res == 1) {
+  const updateWeaponCheck = async (chatMsgCls, actor, sys, newResults, index) => {
+    if ((newResults[index].res <= sys.threshold || newResults[index].res == 1) &&
+      !actor.diceServer.interpretationParams.weapons.critFail.includes(newResults[index].res)) {
       newResults[index].hit = true;
     } else newResults[index].hit = false;
 
@@ -91,7 +92,8 @@ export default function() {
 
     if (sys.rolls[index].hit) { // Previous roll was a hit
       if (!newResults[index].hit) sys.damage.splice(hitIndex, 1);
-      else if (newResults[index].res == 1 && sys.rolls[index].res != 1) {
+      else if (actor.diceServer.interpretationParams.weapons.crit.includes(newResults[index].res) &&
+        !actor.diceServer.interpretationParams.weapons.crit.includes(sys.rolls[index].res)) {
         sys.damage[hitIndex] += DiceServer.max(sys.damageRoll);
       } else if (newResults[index].res != 1 && sys.rolls[index].res == 1) {
         sys.damage[hitIndex] -= DiceServer.max(sys.damageRoll);
@@ -217,7 +219,7 @@ export default function() {
               break;
             case "weapon":
               const index = +contextHtml[0].dataset.index;
-              await heroTokenWeaponCheck(chatMsgCls, sys, index)
+              await heroTokenWeaponCheck(chatMsgCls, actor, sys, index)
               actor.useHeroToken("weapon");
               break;
           }
@@ -248,7 +250,7 @@ export default function() {
               chatDetails.old = sys.rolls[index].res;
               const newResults = structuredClone(sys.rolls);
               newResults[index].res = newRoll;
-              updateWeaponCheck(chatMsgCls, sys, newResults, index);
+              updateWeaponCheck(chatMsgCls, actor, sys, newResults, index);
               chatDetails.check = LocalisationServer.localise("combat", "combat");
               break;
           }
@@ -297,7 +299,7 @@ export default function() {
                   newRoll = Math.max(newRoll, 1);
                   const newResults = structuredClone(sys.rolls);
                   newResults[index].res = newRoll;
-                  updateWeaponCheck(chatMsgCls, sys, newResults, index);
+                  updateWeaponCheck(chatMsgCls, actor, sys, newResults, index);
                   chatDetails.new = newRoll;
                   ChatServer.transmitEvent("Reroll", {details: chatDetails});
                 }, old: chatDetails.old
