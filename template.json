@@ -117,7 +117,7 @@
     "handedness": "right",
     "size": "normal",
     "heartRate": {
-      "value": 50,
+      "value": 60,
       "min": {"value": 0, "status": 0, "baseline": 60},
       "max": {"value": 0, "status": 0, "baseline": 195},
       "damageThreshold": {"status": 0}

@@ -26,8 +26,6 @@ export class TheEdgeActor extends Actor {
     }
     sys.health.max.value = sys.health.max.baseline + sys.health.max.status +
       sys.attributes.str.advances + Math.floor((sys.attributes.end.advances + sys.attributes.res.advances) / 2);
-    sys.bloodLoss.threshold.value = sys.bloodLoss.threshold.status;
-    sys.bloodLoss.effectStep.value = sys.bloodLoss.effectStep.status;
     
     sys.heartRate.max.value = sys.heartRate.max.baseline + sys.heartRate.max.status +
       sys.attributes.end.value - 2 * Math.floor((sys.age - 21) / 3) - sys.bloodLoss.value;
