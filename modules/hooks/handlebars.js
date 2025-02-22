@@ -76,6 +76,10 @@ export default function() {
       }
       return true;
     },
+    checkDisplayEffects: (name, effects) => {
+      if (name == "effects") return true;
+      return effects.length != 0;
+    },
     getRangeModifier: (rangeChart, distance) => {
       if (distance < 2) return `(${rangeChart["less_2m"][0]} / ${rangeChart["less_2m"][1]})`;
       else if (distance < 20) return `(${rangeChart["less_20m"][0]} / ${rangeChart["less_20m"][1]})`;

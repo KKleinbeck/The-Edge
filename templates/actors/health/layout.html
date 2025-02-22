@@ -1,6 +1,6 @@
 <div class="actor-health groupbox">
   {{#each effectDict as |effects name|}}
-    {{#if (checkNotEmpty effects)}}
+    {{#if (checkDisplayEffects name effects)}}
       <div class="title" style="padding-right: 10px;">
         <div class="section-title">{{genName name}}</div>
         {{#if (checkEqual name "effects")}}
