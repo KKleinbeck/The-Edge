@@ -8,7 +8,7 @@
         <img src="systems/the_edge/icons/fist.png" title="{{item.name}}" width="24" height="24" />
         <div>{{genName "Hand to Hand"}}</div>
       </div>
-      <a class="weapon-d20 d20-black" data-tooltip="{{combatName 'Attack'}} - {{combatName 'Lead attr combatics'}}" data-type="combatics">
+      <a class="weapon-d20 d20-black" data-tooltip="{{combatName 'Attack'}} - {{combatName 'Lead attr combatics'}}" data-type="Combatics">
         <span class="d20-overlay-weapon">{{calcCombaticsPL actor}}</span>
       </a>
     </div>
@@ -20,10 +20,13 @@
             <div>{{item.name}} {{getLoadedAmmunition ../actor item}}</div>
           </div>
           <div class="weapon-id" style="display: flex; flex-wrap: nowrap; gap: 5px; align-items: center;" data-weapon-id="{{item._id}}">
-            <div class="reload" style="background-color: black; font-size: large; font-weight: 500; color: white; width: 25px; height: 25px; text-align: center;">
-              R
-            </div>
-            <a class="weapon-d20 d20-black" data-tooltip="{{combatName 'Attack'}}">
+            {{#if (checkEqual item.system.type "Combatics")}}
+            {{else}}
+              <div class="reload" style="background-color: black; font-size: large; font-weight: 500; color: white; width: 25px; height: 25px; text-align: center;">
+                R
+              </div>
+            {{/if}}
+            <a class="weapon-d20 d20-black" data-tooltip="{{combatName 'Attack'}}" data-type="{{item.system.type}}">
                 <span class="d20-overlay-weapon">{{calcWeaponPL ../actor item._id}}</span>
             </a>
           </div>

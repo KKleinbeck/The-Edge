@@ -174,7 +174,9 @@ export class TheEdgeActorSheet extends ActorSheet {
     const targetIds = Array.from(game.user.targets.map(x => x.id));  //targets is set
     const sceneId = game.user.viewedScene;
     const actor = this.actor;
-    if (target.dataset?.type === "combatics") {
+    const weaponID = target.closest(".weapon-id")?.dataset.weaponId;
+    const weapon = this.actor.items.get(weaponID);
+    if (target.dataset?.type === "Combatics") {
       if (targetIds.length > 1) {
         const msg = LocalisationServer.parsedLocalisation(
           "Too many targets", "Notifications", {weapon: "hand to hand", max: 1}
@@ -182,16 +184,16 @@ export class TheEdgeActorSheet extends ActorSheet {
         ui.notifications.notify(msg)
         return undefined;
       }
+      const threshold = weaponID ? actor._getWeaponPL(weaponID) : actor._getCombaticsPL();
+      const damage = weaponID ? weapon.system.fireModes.Single.damage : actor._getCombaticsDamage();
+      const name = weaponID ? weapon.name : LocalisationServer.localise("Hand to Hand combat", "combat");
       DialogCombatics.start({
-        name: LocalisationServer.localise("Hand to Hand combat", "combat"),
         actor: actor, token: this.token, sceneId: sceneId, targetIds: targetIds,
-        threshold: actor._getCombaticsPL(), damage: actor._getCombaticsDamage()
+        name: name, threshold: threshold, damage: damage
       })
       return undefined;
     }
-    const weaponID = target.closest(".weapon-id").dataset.weaponId
 
-    const weapon = this.actor.items.get(weaponID)
     if (targetIds.length > 1 && !(weapon.system.multipleTargets)) {
       const msg = LocalisationServer.parsedLocalisation(
         "Too many targets", "Notifications", {weapon: weapon.name, max: 1}

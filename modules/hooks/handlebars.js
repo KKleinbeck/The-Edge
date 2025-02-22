@@ -55,6 +55,7 @@ export default function() {
     getProficiencyDice: (a, b, c, d) => { return a.system.proficiencies[b][c].dices[d]; },
     getWeaponProficiency: (a, b, c, d) => { return a.system.weapons[b][c][d]; },
     getLoadedAmmunition: (actor, weapon) => {
+      if (weapon.system.type == "Combatics") return "";
       for (const ammu of actor.itemTypes["Ammunition"]) {
         if (ammu.id == weapon.system.ammunitionID) {
           let asc = ammu.system.capacity;
