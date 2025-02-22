@@ -112,11 +112,8 @@ export default function() {
     }
 
     sys.rolls = newResults;
-    console.log("Hello")
-    console.log(sys)
     const newContent = await renderTemplate(
       "systems/the_edge/templates/chat/weapon_check.html", sys);
-    console.log("World")
     updateChatMessage(chatMsgCls, newContent, sys);
   }
 
