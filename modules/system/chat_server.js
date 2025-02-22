@@ -25,10 +25,6 @@ export default class ChatServer {
         html = await renderTemplate("systems/the_edge/templates/chat/weapon_check.html", details);
         break;
       
-      case "COMBATICSCHECK":
-        html = await renderTemplate("systems/the_edge/templates/chat/combatics.html", details);
-        break;
-      
       case "MEDICINE":
         html = await renderTemplate("systems/the_edge/templates/chat/medicine.html", details);
         break;

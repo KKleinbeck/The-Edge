@@ -33,7 +33,7 @@ export default class DialogCombatics extends Dialog{
           let details = {
             name: checkData.name, rolls: [{res: diceRes[0], hit: hits[0]}], damage: damage,
             actorId: checkData.actor.id, damageRoll: modificators.fireModeModifier.damage,
-            tempModificator: tempModificator
+            tempModificator: tempModificator, weaponType: "Melee"
           };
           foundry.utils.mergeObject(details, modificators)
           for (const id of checkData.targetIds) {
@@ -41,7 +41,7 @@ export default class DialogCombatics extends Dialog{
             let target = Aux.getActor(undefined, id);
             await target.applyDamage(damage[0], crits[0], "HandToHand", checkData.name)
           }
-          ChatServer.transmitEvent("CombaticsCheck", details);
+          ChatServer.transmitEvent("WeaponCheck", details);
         }
       },
       cancel: {

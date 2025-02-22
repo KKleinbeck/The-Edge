@@ -1,4 +1,8 @@
-<h3>{{combatName precision}} {{genName "shot"}} - {{name}}</h3>
+{{#if (checkEqual weaponType "Melee")}}
+  <h3>{{name}}</h3>
+{{else}}
+  <h3>{{combatName precision}} {{genName "shot"}} - {{name}}</h3>
+{{/if}}
 <div class="centered-row">
   <b>{{genName "Check"}}: </b>
   {{#each rolls as |roll|}}
@@ -36,23 +40,26 @@
   <b>{{genName "with"}} {{genName vantage}}</b>
 </div>
 {{/if}}
-<div class="centered-row">
-  <b>{{combatName "Range"}}: </b>
-  <span>{{combatName range}} ({{rangeModifier}} PL)</span>
-</div>
-<div class="centered-row">
-  <b>{{combatName "size"}}: </b>
-  <span>{{combatName size}} ({{sizeModifier}} PL)</span>
-</div>
-<div class="centered-row">
-  <b>{{combatName "movement"}}: </b>
-  <span>{{combatName movement}} ({{movementModifier}} PL)</span>
-</div>
-<div class="centered-row">
-  <b>{{combatName "cover"}}: </b>
-  <span>{{combatName cover}} ({{coverModifier}} PL)</span>
-</div>
-<div class="centered-row">
-  <b>{{combatName "fire selection"}}: </b>
-  <span>{{combatName fireMode}} ({{getEntry fireModeModifier pIndex}} PL)</span>
-</div>
+{{#if (checkEqual weaponType "Melee")}}
+{{else}}
+  <div class="centered-row">
+    <b>{{combatName "Range"}}: </b>
+    <span>{{combatName range}} ({{rangeModifier}} PL)</span>
+  </div>
+  <div class="centered-row">
+    <b>{{combatName "size"}}: </b>
+    <span>{{combatName size}} ({{sizeModifier}} PL)</span>
+  </div>
+  <div class="centered-row">
+    <b>{{combatName "movement"}}: </b>
+    <span>{{combatName movement}} ({{movementModifier}} PL)</span>
+  </div>
+  <div class="centered-row">
+    <b>{{combatName "cover"}}: </b>
+    <span>{{combatName cover}} ({{coverModifier}} PL)</span>
+  </div>
+  <div class="centered-row">
+    <b>{{combatName "fire selection"}}: </b>
+    <span>{{combatName fireMode}} ({{getEntry fireModeModifier pIndex}} PL)</span>
+  </div>
+{{/if}}
