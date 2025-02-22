@@ -457,7 +457,9 @@ export class TheEdgeActorSheet extends ActorSheet {
         break;
       case "roll":
         if (skill.type == "Medicalskill") {
-          DialogProficiency.start({proficiency: skill.system.basis, actor: this.actor})
+          DialogProficiency.start({
+            proficiency: skill.system.basis, actor: this.actor, actorId: this.actor.id
+          })
         }
         break;
     }
