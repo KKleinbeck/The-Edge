@@ -672,7 +672,7 @@ export class TheEdgeActor extends Actor {
   _getCombaticsDamage() {
     const str = this.system.attributes.str.value;
     const crd = this.system.attributes.crd.value;
-    return `1d${Math.floor((str+crd)/4)}+${Math.floor(str / 4)}`;
+    return `1d${str+crd}+${str}`;
   }
   
   async applyDamage(damage, crit, damageType, name, givenLocation = undefined) {
