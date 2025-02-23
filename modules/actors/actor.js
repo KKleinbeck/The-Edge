@@ -858,8 +858,8 @@ export class TheEdgeActor extends Actor {
   hrZone1() {return 5 * Math.floor(this.system.heartRate.max.value * 75 / 500)}
   hrZone2() {return 5 * Math.floor(this.system.heartRate.max.value * 90 / 500)}
 
-  shortRest() {this._rest("1d3 % 2", "1d3-1", "1d5", "short rest")}
-  longRest() {this._rest("2d3kh", "2d6 / 2", "3d5", "long rest")}
+  shortRest() {this._rest("1d3 % 2", "1d3-1", "0", "short rest")}
+  longRest() {this._rest("2d3kh", "2d6 / 2", "1d3-1", "long rest")}
 
   async _rest(coagulationDice, healingDice, bloodRegenDice, type) {
     const wounds = this.itemTypes["Wounds"];
