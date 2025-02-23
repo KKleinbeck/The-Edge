@@ -77,6 +77,11 @@
     },
     "weapons": {
       "weapons": {
+        "general": {
+          "General weapon proficiency": {"advances": 0, "status": 0},
+          "Hand-to-Hand combat": {"advances": 0, "status": 0},
+          "Recoilless Rifles": {"advances": 0, "status": 0}
+        },
         "energy": {
           "Blaster Pistols":      {"advances": 0, "status": 0},
           "Pulse Rifle":          {"advances": 0, "status": 0},
@@ -90,15 +95,7 @@
           "LMGs":             {"advances": 0, "status": 0},
           "Shotguns":         {"advances": 0, "status": 0},
           "Projectile Snipers": {"advances": 0, "status": 0}
-        },
-        "others": {
-          "Combatics": {"advances": 0, "status": 0},
-          "Recoilless Rifles": {"advances": 0, "status": 0}
         }
-      },
-      "generalCombatAdvances": {
-        "energy": 0,
-        "kinetic": 0
       }
     }
   },

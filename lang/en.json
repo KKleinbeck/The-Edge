@@ -74,11 +74,13 @@
     "LMGS": "LMGs",
     "SHOTGUNS": "Shotguns",
     "PROJECTILE SNIPERS": "Projectile Snipers",
-    "COMBATICS": "Combatics",
-    "RECOILLESS RIFLES": "Recoilless Rifles",
 
+    "GENERAL": "General skills",
+    "GENERAL WEAPON PROFICIENCY": "General weapon proficiency",
     "HANDTOHAND": "Melee",
     "HAND TO HAND COMBAT": "Hand to hand combat",
+    "HAND-TO-HAND COMBAT": "Hand to hand combat",
+    "RECOILLESS RIFLES": "Recoilless Rifles",
 
     "ABSORPTION": "Absorption",
     "THRESHOLD": "Threshold",
@@ -248,9 +250,9 @@
     "CONSUMABLES": "Consumables",
     "OTHERS": "Others",
 
+    "GENERAL": "General skills",
     "ENERGY": "Energy Weapons",
     "KINETIC": "Kinetic Weapons",
-    "OTHER": "Other Weapons",
 
     "HAS LEVELS": "Has levels",
     "OFFLINE CURRENCY": "Offline currency",
@@ -318,8 +320,8 @@
     "GAIN": "Gain {gain} PH",
     "COSTS": "Costs {cost} PH",
     "PH MISSING": "Not enough PH to bring {name} to {level}. {need} needed, {available} available.",
-    "CORE VALUE TOO SMALL": "Basic combat proficiency for {name} is too small. Level {level} needed but it is at {basic}.",
-    "CORE VALUE COMBATICS TOO SMALL": "Basic combat proficiency (average str and crd) for Combatics is too small. {level} needed but it is at {basic}.",
+    "CORE VALUE TOO SMALL": "'General weapon proficiency' too small. Level {level} needed but it is at {basic}.",
+    "CORE VALUE COMBATICS TOO SMALL": "Basic combat proficiency (average str and crd) for 'Hand-to-Hand combat' is too small. {level} needed but it is at {basic}.",
 
     "NO ACTORS TO LEVEL UP": "Could not give PH to any character. Make sure they have a player owner."
   },
@@ -546,6 +548,7 @@
   "FALL DISTANCE": "Fall distance",
   "FALL DAMAGE TITLE": "Falling",
   "FEMALE": "Female",
+  "GENERAL": "General",
   "GENERAL WOUND": "General wound",
   "GM NOTES": "GM Notes",
   "HANDEDNESS": "Handedness",
@@ -632,6 +635,8 @@
   "TEMPORARY": "Temporary",
   "THRESHOLD": "threshold",
   "TO NEXT LEVEL": "to next level",
+  "TTL": "Ttl",
+  "TOTAL": "Total",
   "TOTAL DAMAGE": "Total Damage",
   "TOTAL BLEEDING": "Total Bleeding",
   "TYPE": "Type",

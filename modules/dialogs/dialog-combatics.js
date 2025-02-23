@@ -1,7 +1,4 @@
-import DiceServer from "../system/dice_server.js";
 import ChatServer from "../system/chat_server.js";
-import THE_EDGE from "../system/config-the-edge.js";
-import Aux from "../system/auxilliaries.js";
 
 export default class DialogCombatics extends Dialog{
   static get defaultOptions() {
@@ -33,14 +30,10 @@ export default class DialogCombatics extends Dialog{
           let details = {
             name: checkData.name, rolls: [{res: diceRes[0], hit: hits[0]}], damage: damage,
             actorId: checkData.actor.id, damageRoll: modificators.fireModeModifier.damage,
-            tempModificator: tempModificator, weaponType: "Melee"
+            tempModificator: tempModificator, weaponType: "Melee", targetId: checkData.targetId,
+            sceneId: checkData.sceneId, crits: crits, damageType: "kinetic"
           };
           foundry.utils.mergeObject(details, modificators)
-          for (const id of checkData.targetIds) {
-            details["targetId"] = id;
-            let target = Aux.getActor(undefined, id);
-            await target.applyDamage(damage[0], crits[0], "HandToHand", checkData.name)
-          }
           ChatServer.transmitEvent("WeaponCheck", details);
         }
       },

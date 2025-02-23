@@ -123,7 +123,10 @@ class ItemSheetWeapon extends TheEdgeItemSheet {
 
   async getData(options) {
     const context = await super.getData(options);
-    context.helpers = {attrs: THE_EDGE.attrs, weapon_types: Object.keys(THE_EDGE.core_value_map.weapons)};
+    context.helpers = {
+      attrs: THE_EDGE.attrs,
+      weapon_types: Object.keys(THE_EDGE.core_value_map.weapons).filter(x => !x.includes("General"))
+    };
     return context;
   }
 }

@@ -176,7 +176,7 @@ export class TheEdgeActorSheet extends ActorSheet {
     const actor = this.actor;
     const weaponID = target.closest(".weapon-id")?.dataset.weaponId;
     const weapon = this.actor.items.get(weaponID);
-    if (target.dataset?.type === "Combatics") {
+    if (target.dataset?.type === "Hand-to-Hand combat") {
       if (targetIds.length > 1) {
         const msg = LocalisationServer.parsedLocalisation(
           "Too many targets", "Notifications", {weapon: "hand to hand", max: 1}
@@ -188,8 +188,8 @@ export class TheEdgeActorSheet extends ActorSheet {
       const damage = weaponID ? weapon.system.fireModes.Single.damage : actor._getCombaticsDamage();
       const name = weaponID ? weapon.name : LocalisationServer.localise("Hand to Hand combat", "combat");
       DialogCombatics.start({
-        actor: actor, token: this.token, sceneId: sceneId, targetIds: targetIds,
-        name: name, threshold: threshold, damage: damage
+        actor: actor, token: this.token, sceneId: sceneId, targetId: targetIds[0] || undefined,
+        name: name, threshold: threshold, damage: damage, sceneId: sceneId
       })
       return undefined;
     }

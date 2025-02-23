@@ -58,7 +58,7 @@ export class TheEdgeActor extends Actor {
 
   // Generates dict for the charactersheet to parse
   prepareSheet() {
-    let preparedData = { system: { attr: {}, profGroups: [], weapons: {}, generalCombatAdvances: {}} };
+    let preparedData = { system: { attr: {}, profGroups: [], weapons: {} } };
     for (const key of Object.keys(this.system.attributes)) {
       let n = this.system.attributes[key].advances;
       preparedData.system.attr[key] = {
@@ -73,12 +73,6 @@ export class TheEdgeActor extends Actor {
           cost: this._attrCost(n),
           refund: n == 0 ? 0 : this._attrCost(n-1)
         }
-      }
-    }
-    for (const [category, n] of Object.entries(this.system.generalCombatAdvances)) {
-      preparedData.system.generalCombatAdvances[category] = {
-        cost: this._attrCost(n),
-        refund: n == 0 ? 0 : this._attrCost(n-1)
       }
     }
 
@@ -169,7 +163,7 @@ export class TheEdgeActor extends Actor {
   async rollAttackCheck(dices, threshold, vantage, damageDice, damageType) {
     const results = await this.diceServer.attackCheck(
       dices, threshold, vantage, damageDice,
-      Math.floor((this.system.generalCombatAdvances[damageType] || 0) / 2)
+      Math.floor((this.system.weapons.general["General weapon proficiency"].value || 0) / 2)
     );
     return results;
   }
@@ -213,15 +207,7 @@ export class TheEdgeActor extends Actor {
       return;
     }
     if (coreName.includes("weapons")) {
-      const type = coreName.split(".")[2];
-      if (newVal > this.system.generalCombatAdvances[type]) {
-        const msg = LocalisationServer.parsedLocalisation(
-          "Core Value too small", "Notifications",
-          {name: parts[parts.length - 2], level: newVal, basic: this.system.generalCombatAdvances[type]}
-        )
-        ui.notifications.notify(msg)
-        return;
-      } else if (coreName.includes("Combatics")) {
+      if (coreName.includes("Hand-to-Hand combat")) {
         const combaticsBasic = Math.floor(
           (this.system.attributes.str.value + this.system.attributes.crd.value) / 2
         );
@@ -233,6 +219,14 @@ export class TheEdgeActor extends Actor {
           ui.notifications.notify(msg)
           return;
         } 
+      } else if (coreName.includes("General weapon proficiency")) { // Do nothing
+      } else if (newVal > this.system.weapons.general["General weapon proficiency"].value) {
+        const msg = LocalisationServer.parsedLocalisation(
+          "Core Value too small", "Notifications",
+          {name: parts[parts.length - 2], level: newVal, basic: this.system.weapons.general["General weapon proficiency"].value}
+        )
+        ui.notifications.notify(msg)
+        return;
       }
     }
 
@@ -636,16 +630,28 @@ export class TheEdgeActor extends Actor {
     return _existingCopy;
   }
 
-  _getWeaponPL(weaponID) {
-    const weapon = this.items.get(weaponID).system
-
-    let level = 0;
-    for (const type of ["energy", "kinetic", "others"]) {
-      if (this.system.weapons[type][weapon.type] === undefined) continue;
-      level += this.system.weapons[type][weapon.type].advances +
-        this.system.weapons[type][weapon.type].status +
-        Math.floor((this.system.generalCombatAdvances[type] || 0) / 2);
+  getWeaponLevel(weaponType) {
+    const type = THE_EDGE.weapon_damage_types[weaponType];
+    if (type == "general") {
+      return this.system.weapons["general"]["Hand-to-Hand combat"].value;
     }
+    let level = Math.floor((
+      this.system.weapons[type][weaponType].value +
+      this.system.weapons.general["General weapon proficiency"].value
+    ) / 2);
+    const partner = THE_EDGE.weapon_partners[weaponType];
+    if (partner) {
+      const partnerType = THE_EDGE.weapon_damage_types[partner];
+      level += Math.floor(this.system.weapons[partnerType][partner].value / 4);
+    }
+    return level;
+  }
+
+  _getWeaponPL(weaponID) {
+    const weapon = this.items.get(weaponID).system;
+
+    const level = this.getWeaponLevel(weapon.type);
+
     let attr_mod = Math.floor( (
       this.system.attributes[weapon.leadAttr1.name].value - weapon.leadAttr1.value +
       this.system.attributes[weapon.leadAttr2.name].value - weapon.leadAttr2.value
@@ -657,7 +663,8 @@ export class TheEdgeActor extends Actor {
   _getCombaticsPL() {
     const sys = this.system;
     const attr_mod = Math.floor((sys.attributes.str.value + sys.attributes.crd.value) / 4);
-    const level = sys.weapons.others.Combatics.advances + sys.weapons.others.Combatics.status;
+    const level = sys.weapons.general["Hand-to-Hand combat"].advances +
+      sys.weapons.general["Hand-to-Hand combat"].status;
 
     return Math.max(level + attr_mod, 0);
   }

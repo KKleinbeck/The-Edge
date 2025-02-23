@@ -373,6 +373,7 @@ export default function() {
         } else $(ev.currentTarget).remove();
       } else $(ev.currentTarget).remove();
 
+      $(html.find(".rerollable")).removeClass("rerollable"); // No more edits after damage application
       chatMsgCls.update({"content": html.find(".message-content").html()});
     })
   })

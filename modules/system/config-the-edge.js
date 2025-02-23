@@ -38,5 +38,7 @@ THE_EDGE.core_value_map = {attributes: {}, proficiencies: {}, weapons: {}}
 THE_EDGE.effect_map = {
   attributes: {all: []}, proficiencies: {all: []}, weapons: {all: []}, statusEffects: {}, others: {}
 }
+THE_EDGE.weapon_damage_types = {"Recoilless Rifles": "general"}
+THE_EDGE.weapon_partners = {}
 
 export default THE_EDGE

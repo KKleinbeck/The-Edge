@@ -61,6 +61,17 @@ Hooks.once("init", async function() {
     THE_EDGE.effect_map["attributes"]["int"]
   ]
 
+  const generalWeapons = Object.keys(game.model.Actor.character.weapons.general);
+  const energyWeapons = Object.keys(game.model.Actor.character.weapons.energy);
+  const kineticWeapons = Object.keys(game.model.Actor.character.weapons.kinetic);
+  for (let i = 0; i < energyWeapons.length; ++i) {
+    THE_EDGE.weapon_damage_types[generalWeapons[i]] = "general";
+    THE_EDGE.weapon_damage_types[energyWeapons[i]] = "energy";
+    THE_EDGE.weapon_damage_types[kineticWeapons[i]] = "kinetic";
+    THE_EDGE.weapon_partners[energyWeapons[i]] = kineticWeapons[i];
+    THE_EDGE.weapon_partners[kineticWeapons[i]] = energyWeapons[i];
+  }
+
   game.the_edge = {
     TheEdgeActor,
     createWorldbuildingMacro,
