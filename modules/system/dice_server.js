@@ -10,7 +10,7 @@ export default class DiceServer {
       weapons: structuredClone(interpretTemplate),
     }
     this.interpretationParams.attributes.qualityStep = 2;
-    this.interpretationParams.proficiencies.qualityStep = 4;
+    this.interpretationParams.proficiencies.qualityStep = 5;
     this.interpretationParams.weapons.critFailTable = [
       {name: "Spontaneous discharge", frequency: 3}, {name: "Jam", frequency: 5},
       {name: "Optics de-adjusted", frequency: 5}, {name: "Overheating", frequency: 5},
