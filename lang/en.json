@@ -485,6 +485,23 @@
     "DESIGNATED WEAPON": "Some types of ammunition are only useable with specific names. Specify these here by their names (comma separated).",
     "PENETRATION": "The penetration value reduces the armour's threshold."
   },
+  "VANTAGE TEXT": {
+    "ANIMAL WHISPERER": "Animals tend to like you and you like animals. You get benefits when interacting with animals.",
+    "EXCELLENT SENSE OF HEARING": "If applicable, you get benefits on investigation checks.",
+    "EXCELLENT SENSE OF SMELL": "If applicable, you get benefits on investigation checks.",
+    "EXCELLENT VISION": "You can see 15m instead of 10m in dim light and get benefits, if applicable, on investigation checks that might require good eyesight.",
+    "FUNNY": "Once per day you might tell a joke that others will really like.",
+    "FORTUNATE SON": "Once per combat, you can dictate that an enemy chooses a different target than you. It must make sense that the enemy would go for another target.",
+    "GOOD LOOKS": "In some social situations your looks might make the person opposite to you favourably biased. Incompatible with unremarkable looks.",
+    "HOLOGRAPHIC MEMORY": "You remember specific details in full detail, never forgetting anything about them. This can be, for example, city plans, faces, names, numbers and so on.",
+    "LUCKY BASTARD": "Once per day you may reroll 1/2/3 dice in any check.",
+    "MULTI-SPECIES UPBRINGING": "You have a second native language and you know the costums of an alien race.",
+    "REPUTATION": "Choose on (human) territory. Your family name holds a certain amount of reputation in that territory and you might get benefits in specific situations.",
+    "RICH": "Each level gains you 200.000 credits.",
+    "SENSE OF TIME": "You can always tell the time to an accuracy of 10 minutes, even without a reference.",
+    "UNREMARKABLE LOOKS": "Others gain disadvantage on checks that intend to identify you or spot you in a general crowd. Incompatible with good looks.",
+    "WELL CONNECTED": "Each level represents one friend or family member in a high place. This costs 2AP or more per level, depending on the connection."
+  },
   "ACTION COST": "Action cost",
   "ADV": "Adv",
   "ADVANTAGE": "Advantage",
