@@ -299,7 +299,6 @@ export class TheEdgeActor extends Actor {
       const currentPain = await this._getEffectOrCreate("Pain");
       await currentPain.update({"system.effects": [
         {group: "proficiencies", name: "all", value: -levelPain},
-        {group: "weapons", name: "all", value: -levelPain}
         ], "system.statusEffect": true, "system.gm_description": `${levelPain}`
       })
     }
