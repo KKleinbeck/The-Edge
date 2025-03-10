@@ -291,7 +291,7 @@ export class TheEdgeActor extends Actor {
   }
 
   async updatePain() {
-    const res = 5 + this.system.attributes.res.value;
+    const res = 2 * this.system.attributes.res.value;
     const damageTotal = this.system.health.max.value - this.system.health.value -
       this.system.statusEffects.painThreshold.status;
     const levelPain = Math.floor(damageTotal / res) + this.system.statusEffects.pain.status;
@@ -299,6 +299,7 @@ export class TheEdgeActor extends Actor {
     else {
       const currentPain = await this._getEffectOrCreate("Pain");
       await currentPain.update({"system.effects": [
+        {group: "weapons", name: "General weapon proficiency", value: -levelPain},
         {group: "proficiencies", name: "all", value: -levelPain},
         ], "system.statusEffect": true, "system.gm_description": `${levelPain}`
       })
