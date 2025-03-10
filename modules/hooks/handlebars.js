@@ -56,7 +56,7 @@ export default function() {
     getWeaponProficiency: (a, b, c, d) => { return a.system.weapons[b][c][d]; },
     getWeaponLevel: (actor, weaponType) => { return actor.getWeaponLevel(weaponType); },
     getLoadedAmmunition: (actor, weapon) => {
-      if (weapon.system.type == "Combatics") return "";
+      if (weapon.system.type == "Hand-to-Hand combat") return "";
       for (const ammu of actor.itemTypes["Ammunition"]) {
         if (ammu.id == weapon.system.ammunitionID) {
           let asc = ammu.system.capacity;
