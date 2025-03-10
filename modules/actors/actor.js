@@ -206,7 +206,7 @@ export class TheEdgeActor extends Actor {
       ui.notifications.notify(msg)
       return;
     }
-    if (coreName.includes("weapons")) {
+    if (coreName.split(".")[1] === "weapons") {
       if (coreName.includes("Hand-to-Hand combat")) {
         const combaticsBasic = Math.floor(
           (this.system.attributes.str.value + this.system.attributes.crd.value) / 2
