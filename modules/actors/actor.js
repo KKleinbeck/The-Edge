@@ -275,14 +275,15 @@ export class TheEdgeActor extends Actor {
     let currentStrain = await this._getEffectOrCreate("Strain")
     if (zone == 2) {
       await currentStrain.update({"system.effects": [
-        {group: "weapons", name: "all", value: -1},
         {group: "attributes", name: "crd", value: -1},
+        {group: "attributes", name: "foc", value: -1},
         {group: "attributes", name: "spd", value: 1}
       ], "system.statusEffect": true, "system.gm_description": zone - 1})
     } else {
       await currentStrain.update({"system.effects": [
-        {group: "weapons", name: "all", value: -3},
+        {group: "weapons", name: "all", value: -1},
         {group: "attributes", name: "crd", value: -2},
+        {group: "attributes", name: "foc", value: -2},
         {group: "attributes", name: "social", value: -1},
         {group: "attributes", name: "mental", value: -1}
       ], "system.statusEffect": true, "system.gm_description": zone - 1})
