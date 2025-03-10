@@ -114,7 +114,7 @@ export class TheEdgeActorSheet extends ActorSheet {
       if (game.user.isGM) this.actor.regenerateHeroToken();
     });
 
-    // Language skills
+    // Skills
     html.find(".skill-control").click(ev => this._onSkillControl(ev));
 
     // Attribute, proficiency and weapon skill change

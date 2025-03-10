@@ -292,6 +292,7 @@ export class TheEdgeActor extends Actor {
 
   async updatePain() {
     const res = 2 * this.system.attributes.res.value;
+    if (res <= 0) return; // We can't possibly do something sensible at the moment
     const damageTotal = this.system.health.max.value - this.system.health.value -
       this.system.statusEffects.painThreshold.status;
     const levelPain = Math.floor(damageTotal / res) + this.system.statusEffects.pain.status;
