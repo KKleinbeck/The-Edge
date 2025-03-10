@@ -68,6 +68,8 @@ export class TheEdgeActorSheet extends ActorSheet {
       languages: THE_EDGE.languages,
       types: ["Weapon", "Armour", "Ammunition", "Gear", "Consumables"],
       weight: weight,
+      overloadLevel: this.actor.overloadLevel,
+      weightTillNextOverload: this.actor.weightTillNextOverload
     }
 
     context.effectDict = {statusEffects: [], effects: [], itemEffects: [], skillEffects: []}

@@ -94,19 +94,8 @@ export default function() {
     getAmmunitionCount: (a) => {return `(${a.system.capacity.max - a.system.capacity.used} / ${a.system.capacity.max})`},
     getStructurePoints: (a) => {return `(${a.system.structurePoints})`},
     getDmgModifier: (a) => {return `dmg: ${a.system.damage.bonus} / ${a.system.damage.penetration}`},
-    getWeightClass: (weight, str) => {
-      if (str == 0) return "";
-      const overload = Math.max(Math.ceil((weight - str) / (str/2)), 0);
-      return `(${LocalisationServer.localise("Overload")}: ${overload})`
-    },
-    getNextWeightClass: (weight, sys) => {
-      const str = sys.attributes.str.value;
-      const threshold = sys.statusEffects.overloadThreshold.status;
-      weight -= threshold;
-      if (weight < str) return `${Math.floor(10 * (str-weight))/10}kg ${LocalisationServer.localise("to next level")}`
-      const overload = Math.ceil((weight - str) / (str/2));
-      let remaining = overload * (str/2) - (weight - str)
-      return `${Math.floor(10 * remaining)/10}kg ${LocalisationServer.localise("to next level")}`
+    getNextWeightClass: (weightTillNextOverload) => {
+      return `${Math.floor(10 * weightTillNextOverload)/10}kg ${LocalisationServer.localise("to next level")}`
     },
     getWoundCoords: (details) => {
       let colour = details.bleeding > 0 ? "red" : "orange";

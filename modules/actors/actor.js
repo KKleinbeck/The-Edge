@@ -13,6 +13,8 @@ export class TheEdgeActor extends Actor {
   constructor(...args) {
     super(...args);
     this.diceServer = new DiceServer();
+    this.overloadLevel = 0;
+    this.weightTillNextOverload = 0;
   }
 
   /** @inheritdoc */
@@ -114,6 +116,7 @@ export class TheEdgeActor extends Actor {
       herotoken: Array(sys.heroToken.max).fill(false).fill(true, 0, sys.heroToken.available)
     });
 
+    this.determineOverload(); // To set overload values
     return preparedData
   }
 
@@ -252,15 +255,16 @@ export class TheEdgeActor extends Actor {
     ) || 0 // -1 for the phyiscal proficiencies
     if (str <= 0) return false; // We can't possibly do sensible things yet
     
-    const overloadLevel = Math.max(Math.ceil((weight - str) / (str / 2)), 0) +
+    this.overloadLevel = Math.max(Math.ceil((weight - str) / (str / 2)), 0) +
       this.system.statusEffects.overload.status;
-    if (overloadLevel <= 0) this._deleteEffect("Overload");
+    this.weightTillNextOverload = str * (1 + 0.5 * this.overloadLevel) - weight;
+    if (this.overloadLevel <= 0) this._deleteEffect("Overload");
     else {
       if (!currentOverload) currentOverload = await this._getEffectOrCreate("Overload")
       await currentOverload.update({"system.effects": [
         {group: "proficiencies", name: "physical", value: -1},
-        {group: "attributes", name: "physical", value: -overloadLevel + 1},
-      ], "system.statusEffect": true, "system.gm_description": `${overloadLevel}`})
+        {group: "attributes", name: "physical", value: -this.overloadLevel + 1},
+      ], "system.statusEffect": true, "system.gm_description": `${this.overloadLevel}`})
     }
     return true
   };
