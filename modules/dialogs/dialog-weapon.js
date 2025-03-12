@@ -12,7 +12,7 @@ export default class DialogWeapon extends Dialog{
     checkData["distance"] = this.getDistance(checkData.token, checkData.targetIds, checkData.sceneId);
     checkData["smallestSize"] =  this.getSmallestSize(checkData.targetIds, checkData.sceneId);
     const templateParams = foundry.utils.mergeObject(
-      {sizes: THE_EDGE.sizes, movements: THE_EDGE.movements, cover: THE_EDGE.cover},
+      {sizeModifiers: THE_EDGE.sizeModifiers, movements: THE_EDGE.movements, cover: THE_EDGE.cover},
       checkData
     );
     const template = "systems/the_edge/templates/dialogs/weapon.html";
@@ -118,10 +118,10 @@ export default class DialogWeapon extends Dialog{
     let smallest = Infinity;
     let targets = targetIds.map(id => scene.tokens.get(id));
     for (const target of targets) {
-      smallest = Math.min(smallest, THE_EDGE.sizes[target.actor.system.size][0])
+      smallest = Math.min(smallest, target.actor.system.height)
     }
     if (smallest === Infinity) return undefined;
-    return Object.keys(THE_EDGE.sizes).find(key => THE_EDGE.sizes[key][0] === smallest)
+    return Object.entries(THE_EDGE.sizes).find(([_, value]) => value > smallest)[0];
   }
 
   static parseSheet(html, checkData) {
@@ -143,7 +143,7 @@ export default class DialogWeapon extends Dialog{
     let fireMode = html.find('[name="FireSelector"]').val();
 
     let threshold = Math.max(1, checkData.threshold + tempModificator +
-      checkData.rangeChart[range][pIndex] + THE_EDGE.sizes[size][pIndex] +
+      checkData.rangeChart[range][pIndex] + THE_EDGE.sizeModifiers[size][pIndex] +
       THE_EDGE.movements[movement][pIndex] + THE_EDGE.cover[cover] +
       checkData.fireModes[fireMode].mali[pIndex]);
     
@@ -153,7 +153,7 @@ export default class DialogWeapon extends Dialog{
       movement: movement, cover: cover, fireMode: fireMode,
       vantage: html.find('[name="VantageSelector"]').val(),
       rangeModifier: checkData.rangeChart[range][pIndex],
-      sizeModifier: THE_EDGE.sizes[size][pIndex],
+      sizeModifier: THE_EDGE.sizeModifiers[size][pIndex],
       movementModifier: THE_EDGE.movements[movement][pIndex],
       coverModifier: THE_EDGE.cover[cover],
       fireModeModifier: checkData.fireModes[fireMode],

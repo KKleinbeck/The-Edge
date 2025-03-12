@@ -89,7 +89,7 @@ export default function() {
       return `(${rangeChart["more_1km"][0]} / ${rangeChart["more_1km"][1]})`;
     },
     getSizeModifier: (size) => {
-      return `(${THE_EDGE.sizes[size][0]} / ${THE_EDGE.sizes[size][1]})`
+      return `(${THE_EDGE.sizeModifiers[size][0]} / ${THE_EDGE.sizeModifiers[size][1]})`
     },
     getAmmunitionCount: (a) => {return `(${a.system.capacity.max - a.system.capacity.used} / ${a.system.capacity.max})`},
     getStructurePoints: (a) => {return `(${a.system.structurePoints})`},

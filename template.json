@@ -109,10 +109,9 @@
     },
     "age": 21,
     "sex": "female",
-    "height": 0,
+    "height": 170,
     "bloodType": "AB",
     "handedness": "right",
-    "size": "normal",
     "heartRate": {
       "value": 60,
       "min": {"value": 0, "status": 0, "baseline": 60},
