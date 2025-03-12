@@ -415,16 +415,23 @@ export class TheEdgeActorSheet extends ActorSheet {
               let msg = LocalisationServer.localise("Effect already exists", "Notifications")
               ui.notifications.notify(msg)
             } else {
-              const clsEffect = getDocumentClass("Item");
-              let newEffect = await clsEffect.create(
-                {name: item.name, type: "Effect"}, 
-                {parent: this.actor, "system.effects": item.system.effects}
-              );
-              newEffect.update({
-                "system.effects": item.system.effects, "system.description": item.system.description,
-                "system.gm_description": item.system.gm_description
+              console.log(item.system.effects.length)
+              const hasEffects = item.system.effects.length > 0;
+              if (hasEffects) {
+                const clsEffect = getDocumentClass("Item");
+                const newEffect = await clsEffect.create(
+                  {name: item.name, type: "Effect"}, 
+                  {parent: this.actor, "system.effects": item.system.effects}
+                );
+                newEffect.update({
+                  "system.effects": item.system.effects, "system.description": item.system.description,
+                  "system.gm_description": item.system.gm_description
+                })
+                this._render();
+              }
+              ChatServer.transmitEvent("General Consume", {
+                details: {actorName: this.actor.name, item: item.name}, hasEffects: hasEffects
               })
-              this._render();
               item.useOne();
             }
         }
