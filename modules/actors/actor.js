@@ -638,13 +638,12 @@ export class TheEdgeActor extends Actor {
 
   getWeaponLevel(weaponType) {
     const type = THE_EDGE.weapon_damage_types[weaponType];
-    if (type == "general") {
-      return this.system.weapons["general"]["Hand-to-Hand combat"].value;
-    }
     let level = Math.floor((
       this.system.weapons[type][weaponType].value +
       this.system.weapons.general["General weapon proficiency"].value
     ) / 2);
+    if (weaponType == "Hand-to-Hand combat") return level;
+
     const partner = THE_EDGE.weapon_partners[weaponType];
     if (partner) {
       const partnerType = THE_EDGE.weapon_damage_types[partner];
@@ -669,8 +668,8 @@ export class TheEdgeActor extends Actor {
   _getCombaticsPL() {
     const sys = this.system;
     const attr_mod = Math.floor((sys.attributes.str.value + sys.attributes.crd.value) / 4);
-    const level = sys.weapons.general["Hand-to-Hand combat"].advances +
-      sys.weapons.general["Hand-to-Hand combat"].status;
+    const level = Math.floor((sys.weapons.general["Hand-to-Hand combat"].value +
+      sys.weapons.general["General weapon proficiency"].value) / 2);
 
     return Math.max(level + attr_mod, 0);
   }
