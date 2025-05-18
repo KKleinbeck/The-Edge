@@ -70,7 +70,7 @@
                   x
                   <input type="text" name="system.fireModes.{{mode}}.damage" value="{{modifier.damage}}" style="width: 80px"/>
                   {{#each modifier.mali as |mod|}}
-                    <input type="number" name="system.fireModes.{{mode}}.mali" value="{{mod}}" style="width: 25px; text-align: right;" title="{{combatName 'Precision mali'}}"/>
+                    <input type="number" name="system.fireModes.{{mode}}.mali" value="{{mod}}" style="width: 25px; text-align: right;" title="{{combatName (concat 'Precision penalty '@index)}}"/>
                   {{/each}}
                 </div>
               </div>

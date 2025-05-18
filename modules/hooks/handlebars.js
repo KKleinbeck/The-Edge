@@ -35,6 +35,7 @@ export default function() {
     round: (a, b) => { return a.toFixed(b); },
     strCombine: (a, b) => { return a + " " + b; },
 
+    concat: (a, b) => { return a.toString().concat(b.toString()); },
     checkEqual: (a, b) => { return a === b; },
     checkIn: (a, b) => { return b[a] !== undefined; },
     checkInstance: (a, b) => { return b.includes(a); },

@@ -141,7 +141,9 @@
     "SINGLE": "Single Shot",
 
     "AMMUNITION COST": "Ammunition cost",
-    "DAMAGE DICE": "Damage dice",
+    "DAMAGE DICE": "Shots fired (Number of damage rolls)",
+    "PRECISION PENALTY 0": "Precision penalty unaimed shot",
+    "PRECISION PENALTY 1": "Precision penalty aimed shot",
     "PRECISION": "Precision",
     "PRECISION MALI": "Precision mali",
     "AIMED": "Aimed",
