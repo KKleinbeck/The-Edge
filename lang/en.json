@@ -304,6 +304,7 @@
     "AP MISSING": "Not enough Advantage Points to gain {name}. {need} needed, {available} available.",
     "AP MISSING DELETION": "Not enough Advantage Points to delete {name}. {need} needed, {available} available.",
     "AP MISSING DECREMENT": "Not enough Advantage Points to decrement {name}. {need} needed, {available} available.",
+    "NO TOKEN": "There is no player token on the current game scene.",
     "TOO MANY TARGETS": "Too many targets. {weapon} attacks can at most target {max} targets.",
 
     "WRONG COST STRING": "Something wrong with the skill cost {str}. It can only be a single number or one number per level, separated by '/'.",

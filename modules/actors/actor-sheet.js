@@ -178,6 +178,14 @@ export class TheEdgeActorSheet extends ActorSheet {
     const actor = this.actor;
     const weaponID = target.closest(".weapon-id")?.dataset.weaponId;
     const weapon = this.actor.items.get(weaponID);
+    var token = this.token;
+    if (token === null) { token = Aux.getToken(this.actor.id); }
+    if (token === null) {
+        const msg = LocalisationServer.localise("No Token", "Notifications")
+        ui.notifications.notify(msg)
+      return undefined;
+    }
+
     if (target.dataset?.type === "Hand-to-Hand combat") {
       if (targetIds.length > 1) {
         const msg = LocalisationServer.parsedLocalisation(
@@ -190,7 +198,7 @@ export class TheEdgeActorSheet extends ActorSheet {
       const damage = weaponID ? weapon.system.fireModes.Single.damage : actor._getCombaticsDamage();
       const name = weaponID ? weapon.name : LocalisationServer.localise("Hand to Hand combat", "combat");
       DialogCombatics.start({
-        actor: actor, token: this.token, sceneId: sceneId, targetId: targetIds[0] || undefined,
+        actor: actor, token: token, sceneId: sceneId, targetId: targetIds[0] || undefined,
         name: name, threshold: threshold, damage: damage, sceneId: sceneId
       })
       return undefined;
@@ -230,8 +238,8 @@ export class TheEdgeActorSheet extends ActorSheet {
       }
     }
     DialogWeapon.start({
-      name: weapon.name, actor: actor, actorId: actor.id, token: this.token,
-      tokenId: this.token.id, sceneId: sceneId,
+      name: weapon.name, actor: actor, actorId: actor.id, token: token,
+      tokenId: token?.id, sceneId: sceneId,
       ammunition: this.actor.items.get(weapon.system.ammunitionID),
       threshold: threshold, effectModifier: effectModifier,
       damageType: damageType,

@@ -32,6 +32,18 @@ export default class Aux {
     return game.actors.get(actorID);
   }
 
+  static getToken(actorID, sceneID = undefined) {
+    if (!sceneID) {
+      if (!game.canvas.id) return undefined; // This can happen during startup of the game
+      sceneID = game.canvas.id;
+    }
+    const scene = game.scenes.get(sceneID);
+    for (var token of scene.tokens) {
+      if (token.actorId === actorID) return token;
+    }
+    return null
+  }
+
   static _language_cost_table(humanSpoken) {
     return humanSpoken ? [200, 400, 1000, 2000, 3200, 3200] : [600, 3000, 6400]
   }
