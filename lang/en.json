@@ -197,7 +197,9 @@
     "STRONG BURN": "Strong Burn",
 
     "CRIT": "Critical roll dice",
-    "CRITFAIL": "Critical fail dice"
+    "CRITFAIL": "Critical fail dice",
+
+    "WEAPON PROF TOTAL": "50% General proficiency + 50% specific proficiency + 25% neighbour proficiency"
   },
   "CRIT FAIL EVENT": {
     "SPONTANEOUS DISCHARGE": "Weapon Spontaneously discharges and fires again with the currently selected fire mode.<br />Perform a Crd check:<br /> - QL 0 - 3: The shot hits a random structure within a 90deg arc infront of you.<br /> - QL > 3: Perform another attack modified -8+QL against your last target. - FL < 0: Attack a random creature within 20m and a 90deg arch infront of you, with modifier -FL.",

@@ -17,10 +17,18 @@
           <tr>
             <td style="font-weight: bold;">{{combatName weapon}}</td>
             <td align="center"><input class="core-value" data-target="system.weapons.{{groupName}}.{{weapon}}.advances" type="number" value="{{getWeaponProficiency ../../actor groupName weapon 'advances'}}" data-dtype="Number" style="max-height: 22px; text-align: right; width: 28px;"></td>
-            <td align="center"><div class="output" style="max-height: 22px; width: 28px; text-align: right;">{{getWeaponProficiency ../../actor groupName weapon 'status'}}</div></td>
+            <td align="center">
+              <div class="output" style="max-height: 22px; width: 28px; text-align: right;">
+                {{getWeaponProficiency ../../actor groupName weapon 'status'}}
+              </div>
+            </td>
             {{#if (checkEqual groupName "general")}}
             {{else}}
-              <td align="center"><div class="output" style="max-height: 22px; width: 28px; text-align: right;">{{getWeaponLevel ../../actor weapon}}</div></td>
+              <td align="center" title="{{combatName 'Weapon Prof Total'}}">
+                <div class="output" style="max-height: 22px; width: 28px; text-align: right;">
+                  {{getWeaponLevel ../../actor weapon}}
+                </div>
+              </td>
             {{/if}}
           </tr>
         {{/each}}
