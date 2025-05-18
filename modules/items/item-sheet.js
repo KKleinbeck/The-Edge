@@ -129,6 +129,41 @@ class ItemSheetWeapon extends TheEdgeItemSheet {
     };
     return context;
   }
+
+  activateListeners(html) {
+    super.activateListeners(html)
+    html.find(".firing-mode-add").click(ev => this._onModeAdd());
+    html.find(".firing-mode-modify").on("change", ev => this._onModeModify(ev));
+  }
+
+  async _onModeAdd() {
+    const context = await this.getData();
+    const fireModes = context.systemData.fireModes;
+    fireModes.push(
+      {name: "", damage: "1d20", dices: 1, cost: 1, precisionPenalty: [0, 0]}
+    )
+    console.log(fireModes)
+    this.item.update({"system.fireModes": fireModes})
+  }
+
+  async _onModeModify(ev) {
+    const button = ev.currentTarget;
+    const dataHtml = ev.currentTarget.closest(".firing-mode");
+    const index = dataHtml.dataset.index;
+
+    const target = button.dataset.target;
+    const context = await this.getData();
+    const fireModes = context.systemData.fireModes;
+    if (target.includes("precisionPenalty")) {
+      const penaltyIndex = +target.slice(-1);
+      fireModes[+index].precisionPenalty[penaltyIndex] = +button.value
+    } else if (target === "name" || target === "damage") {
+      fireModes[+index][target] = button.value;
+    } else {
+      fireModes[+index][target] = +button.value;
+    }
+    this.item.update({"system.fireModes": fireModes})
+  }
 }
 
 class ItemSheetArmour extends TheEdgeItemSheet {

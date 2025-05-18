@@ -140,6 +140,7 @@
     "BURST": "Burst",
     "SINGLE": "Single Shot",
 
+    "ADD FIRING MODE": "Add firing mode",
     "AMMUNITION COST": "Ammunition cost",
     "DAMAGE DICE": "Shots fired (Number of damage rolls)",
     "PRECISION PENALTY 0": "Precision penalty unaimed shot",
