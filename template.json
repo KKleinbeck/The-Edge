@@ -208,6 +208,7 @@
     "fireModes": [
       {"name": "Single", "damage": "1d20", "cost": 1, "dices": 1, "precisionPenalty": [0, 0]}
     ],
+    "reloadDuration": 1,
     "leadAttr1": {"name": "str", "value": 10},
     "leadAttr2": {"name": "str", "value": 10},
     "rangeChart": {"less_2m": [0, 0], "less_20m": [0, 0], "less_200m": [0, 0], "less_1km": [0, 0], "more_1km": [0, 0]},

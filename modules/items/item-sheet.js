@@ -132,7 +132,8 @@ class ItemSheetWeapon extends TheEdgeItemSheet {
 
   activateListeners(html) {
     super.activateListeners(html)
-    html.find(".firing-mode-add").click(ev => this._onModeAdd());
+    html.find(".firing-mode-add").click(_ => this._onModeAdd());
+    html.find(".firing-mode-delete").click(ev => this._onModeDelete(ev));
     html.find(".firing-mode-modify").on("change", ev => this._onModeModify(ev));
   }
 
@@ -143,6 +144,16 @@ class ItemSheetWeapon extends TheEdgeItemSheet {
       {name: "", damage: "1d20", dices: 1, cost: 1, precisionPenalty: [0, 0]}
     )
     console.log(fireModes)
+    this.item.update({"system.fireModes": fireModes})
+  }
+
+  async _onModeDelete(ev) {
+    const dataHtml = ev.currentTarget.closest(".firing-mode");
+    const index = dataHtml.dataset.index;
+
+    const context = await this.getData();
+    const fireModes = context.systemData.fireModes;
+    fireModes.splice(index, 1)
     this.item.update({"system.fireModes": fireModes})
   }
 

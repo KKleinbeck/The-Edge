@@ -143,10 +143,13 @@
     "ADD FIRING MODE": "Add firing mode",
     "AMMUNITION COST": "Ammunition cost",
     "DAMAGE DICE": "Shots fired (Number of damage rolls)",
+    "DELETE FIRING MODE": "Delete firing mode",
     "PRECISION PENALTY 0": "Precision penalty unaimed shot",
     "PRECISION PENALTY 1": "Precision penalty aimed shot",
     "PRECISION": "Precision",
     "PRECISION MALI": "Precision mali",
+    "RELOAD DURATION": "Reload duration",
+    "RELOAD DURATION DESCRIPTION": "Actions needed to reload",
     "AIMED": "Aimed",
     "UNAIMED": "Unaimed",
     

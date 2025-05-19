@@ -59,33 +59,44 @@
       {{else}}
         <div class="item-columned-page">
           <!-- Fire modes -->
-          <div class="item-fields" style="gap: 10px;">
+          <div class="item-fields" style="gap: 10px; padding: 0;">
             <b>{{combatName "Fire modes"}}</b>
             {{#each systemData.fireModes as |mode|}}
-              <div class="firing-mode" data-index="{{@index}}" style="align-items: center; display: flex; white-space: nowrap; justify-content: space-between; gap: 5px;">
+              <div class="firing-mode" data-index="{{@index}}" style="align-items: center; display: flex; white-space: nowrap; justify-content: space-between; gap: 5px; padding-bottom: 2px;">
                 <input class="firing-mode-modify" data-target="name" type="text" value="{{mode.name}}" style="text-align: left; width: 90px;" title="{{combatName 'Ammunition cost'}}"/>
                 <div style="width: 220px;">
-                  <input class="firing-mode-modify" data-target="cost" type="text" value="{{mode.cost}}" style="width: 25px; text-align: right;" title="{{combatName 'Ammunition cost'}}"/>
-                  <input class="firing-mode-modify" data-target="dices" type="text" value="{{mode.dices}}" style="width: 25px; text-align: right;" title="{{combatName 'damage dice'}}"/>
+                  <input class="firing-mode-modify" data-target="cost" type="number" value="{{mode.cost}}" style="width: 25px; text-align: right;" title="{{combatName 'Ammunition cost'}}"/>
+                  <input class="firing-mode-modify" data-target="dices" type="number" value="{{mode.dices}}" style="width: 25px; text-align: right;" title="{{combatName 'damage dice'}}"/>
                   x
                   <input class="firing-mode-modify" data-target="damage" type="text" value="{{mode.damage}}" style="width: 80px"/>
                   {{#each mode.precisionPenalty as |mod|}}
                     <input class="firing-mode-modify" data-target="{{concat 'precisionPenalty' @index}}" type="number" value="{{mod}}" style="width: 25px; text-align: right;" title="{{combatName (concat 'Precision penalty '@index)}}"/>
                   {{/each}}
+                  {{#if ../systemData.userIsGM}}
+                    <a class="firing-mode-delete" title="{{ combatName 'Delete Firing mode' }}"><i class="fas fa-trash"></i></a>
+                  {{/if}}
                 </div>
               </div>
             {{/each}}
-            <div style="text-align: right; margin-right: 10px;">
-              <a class="firing-mode-add" title="{{ combatName 'Add Firing mode' }}" data-action="create"><i class="fas fa-plus"></i></a>
+            {{#if systemData.userIsGM}}
+            <div style="text-align: right; margin-right: 14px; height: 0;">
+              <a class="firing-mode-add" title="{{ combatName 'Add Firing mode' }}"><i class="fas fa-plus"></i></a>
             </div>
-            <div style="display: flex; flex-flow: nowrap; justify-content: space-between; padding-top: 10px;">
-              <div class="checkbox-container">
-                <input type="checkbox" id="is-elemental" name="system.isElemental" {{#if systemData.isElemental}}checked{{/if}} />
-                <label for="is-elemental">{{combatName "Elemental"}}</label>
+            {{/if}}
+            <div style="display: flex; flex-flow: nowrap; justify-content: space-between; padding-top: 2px; margin-right: 14px;">
+              <div style="flex-flow: wrap;">
+                <div class="checkbox-container">
+                  <input type="checkbox" id="is-elemental" name="system.isElemental" {{#if systemData.isElemental}}checked{{/if}} />
+                  <label for="is-elemental">{{combatName "Elemental"}}</label>
+                </div>
+                <div class="checkbox-container">
+                  <input type="checkbox" id="multiple-targets" name="system.multipleTargets" {{#if systemData.multipleTargets}}checked{{/if}} />
+                  <label for="multiple-targets" title="{{combatName 'Multi target help'}}">{{combatName "multiple targets"}}</label>
+                </div>
               </div>
-              <div class="checkbox-container">
-                <input type="checkbox" id="multiple-targets" name="system.multipleTargets" {{#if systemData.multipleTargets}}checked{{/if}} />
-                <label for="multiple-targets" title="{{combatName 'Multi target help'}}">{{combatName "multiple targets"}}</label>
+              <div style="white-space: nowrap; display: inline-block; align-self: flex-end;">
+                {{combatName 'Reload duration'}}
+                <input type="number" name="system.reloadDuration" value="{{systemData.reloadDuration}}" title="{{combatName 'reload duration description'}}" style="width: 30px; height: 20px; text-align: right; margin: 3px 0 3px 3px;"/>
               </div>
             </div>
           </div>
