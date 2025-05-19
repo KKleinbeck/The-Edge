@@ -95,14 +95,17 @@
           {{combatName "Fire Selection"}}:
         </td>
         <td>
-          <select class="advantage-box" name="FireSelector">
-            {{#each fireModes as |details fireMode|}}
-              {{#if (checkEqual details.damage "N.A.")}}
-              {{else}}
-                <option value="{{fireMode}}">{{combatName fireMode}} ({{getEntry details.mali 0}} / {{getEntry details.mali 1}})</option>
-              {{/if}}
+          {{#if (checkEqual (length fireModes) 1)}}
+            {{#each fireModes as |fireMode|}}
+              {{fireMode.name}} ({{getEntry fireMode.precisionPenalty 0}} / {{getEntry fireMode.precisionPenalty 1}})
             {{/each}}
-          </select>
+          {{else}}
+            <select class="advantage-box" name="FireSelector">
+              {{#each fireModes as |fireMode|}}
+                <option value="{{fireMode.name}}">{{fireMode.name}} ({{getEntry fireMode.precisionPenalty 0}} / {{getEntry fireMode.precisionPenalty 1}})</option>
+              {{/each}}
+            </select>
+          {{/if}}
         </td>
       </tr>
       <tr>

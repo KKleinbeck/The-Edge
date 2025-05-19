@@ -143,7 +143,6 @@ class ItemSheetWeapon extends TheEdgeItemSheet {
     fireModes.push(
       {name: "", damage: "1d20", dices: 1, cost: 1, precisionPenalty: [0, 0]}
     )
-    console.log(fireModes)
     this.item.update({"system.fireModes": fireModes})
   }
 

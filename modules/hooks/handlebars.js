@@ -32,6 +32,7 @@ export default function() {
       if (preface == "less") return "< " + distance;
       return "> " + distance;
     },
+    length: (a) => { return a.length; },
     round: (a, b) => { return a.toFixed(b); },
     strCombine: (a, b) => { return a + " " + b; },
 
