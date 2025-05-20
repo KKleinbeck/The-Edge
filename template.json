@@ -231,6 +231,7 @@
   "Ammunition": {
     "templates": ["stackable", "description"],
     "capacity": {"max": 30, "used": 0},
+    "reloadDuration": 0,
     "type": "energy",
     "whitelist": {
       "energy": {"Blaster Pistols": true, "Pulse Rifle": true, "SABs": true, "Blaster Shockguns": true, "Blaster Snipers": true},
