@@ -1,3 +1,5 @@
+import ChatServer from "../system/chat_server.js";
+
 export default class DialogReload extends Dialog{
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -8,9 +10,10 @@ export default class DialogReload extends Dialog{
   static async start(checkData) {
     const template = "systems/the_edge/templates/dialogs/reload.html";
     let weaponSys = checkData.weapon.system
-    let html = await renderTemplate(template,
-      {ammunition: checkData.ammunition.filter(x => x.id !== weaponSys.ammunitionID)}
-    );
+    let html = await renderTemplate(template, {
+      ammunition: checkData.ammunition.filter(x => x.id !== weaponSys.ammunitionID),
+      weaponReloadDuration: weaponSys.reloadDuration
+    });
 
     const buttons = {}
     if (checkData.ammunition.length > 0 &&
@@ -20,8 +23,9 @@ export default class DialogReload extends Dialog{
           label: game.i18n.localize("DIALOG.SELECT"),
           callback: async (html) => {
             let selectedID = html.find('[name="AmmunitionSelector"]').val();
-            let loadedID = weaponSys.ammunitionID
+            let loadedID = weaponSys.ammunitionID;
 
+            let reloadDuration = weaponSys.reloadDuration;
             for (const ammu of checkData.ammunition) {
               if (ammu.id == loadedID) {
                 // If we currently have a mag loaded, we unload it
@@ -34,12 +38,20 @@ export default class DialogReload extends Dialog{
                 created.update({"system.loaded": true, "system.quantity": 1})
                 await checkData.weapon.update({"system.ammunitionID": created.id})
 
+                reloadDuration += ammu.system.reloadDuration;
+
                 // Remove the copy from the existing item stack
                 if (ammu.system.quantity == 1) {
                   await ammu.delete()
                 } else ammu.update({"system.quantity": ammu.system.quantity - 1});
               }
             }
+            
+            ChatServer.transmitEvent("Reload", {details: {
+              name: checkData.actor.name,
+              weapon: checkData.weapon.name,
+              actions: reloadDuration
+            }})
           }
         }
       })

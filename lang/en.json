@@ -47,6 +47,8 @@
     "PRACTICE MESSAGE": "<b>{actors}</b>: finally stand down time after a cruesome meat grinder.<br />The next battle comes soon, but there is enough time for <b>{phGain}</b> hours of practice.",
 
     "FIRING EMPTY WEAPON": "{name} tried to fire an empty weapon. All they got in return is the sound of the trigger clicking.",
+    "RELOAD 1 ACTION": "{name} reloaded {weapon}, taking {actions} action.",
+    "RELOAD MULTIPLE ACTIONS": "{name} reloaded {weapon}, taking {actions} actions.",
 
     "BLIND ROLL": "Blind roll",
     "PUBLIC ROLL": "Public roll",
@@ -516,6 +518,7 @@
     "WELL CONNECTED": "Each level represents one friend or family member in a high place. This costs 2AP or more per level, depending on the connection."
   },
   "ACTION COST": "Action cost",
+  "ACTIONS": "Actions",
   "ADV": "Adv",
   "ADVANTAGE": "Advantage",
   "ADVANTAGES": "Advantages",
