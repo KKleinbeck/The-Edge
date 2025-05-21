@@ -3,7 +3,13 @@
   --minColumnWidth40: 264px;
   --minColumnWidth60: 396px;
   --minColumnWidth70: 462px;
+
+  --color-underline-header: #bd9f09;
+  --font-main-color: #e4e7fe;
+  --color-text-light-highlight: #FFF;
 }
+
+
 
 @font-face {
   font-family: "Titillium-Regular";
@@ -29,6 +35,55 @@ body {
 }
 h1, h2, h3, h4, h5, h6, h7, b {
   font-family: "Titillium-Bold";
+  color: var(--font-main-color);
+}
+h1, h2, h3, h4 {
+  border-bottom-width: 1.5px;
+}
+
+.chat-message {
+  background-image: url("../assets/background.png") !important;
+  color: var(--font-main-color) !important;
+}
+.message-metadata {
+  color: var(--font-main-color) !important;
+}
+.window-app {
+  color: var(--font-main-color) !important;
+}
+.window-content {
+  background-image: url("../assets/background.png") !important;
+  color: var(--font-main-color) !important;
+}
+input {
+  height: 24px !important;
+  background-color: rgba(255,255,255, 0.2) !important;
+  border-color: rgb(86, 86, 253) !important;
+  border-width: 1.333px !important;
+  border-radius: 5px !important;
+  font-family: "Titillium-Regular";
+  color: var(--font-main-color) !important;
+}
+img {
+  border: none;
+}
+nav {
+  margin: 8px 0px 12px 0px !important;
+  border-width: 1.333px !important;
+  border-color: #FFF !important;
+}
+option {
+  background-color: #2A395A;
+}
+optgroup{
+  background-color: #2A395A;
+}
+select {
+  background-image: url("../assets/background.png") !important;
+  color: var(--font-main-color) !important;
+}
+textarea {
+  background-image: url("../assets/background.png") !important;
 }
 
 .the_edge {
@@ -48,6 +103,11 @@ h1, h2, h3, h4, h5, h6, h7, b {
  position: absolute;
  overflow-y: auto;
  width: 100%;
+}
+.sheet-tabs .item {
+  padding: 2px 12px 2px 12px !important;
+  height: 30px !important;
+  line-height: 24px !important;
 }
 .the_edge .character-editor-wrap {
   height: 15vh;
@@ -114,8 +174,8 @@ h1, h2, h3, h4, h5, h6, h7, b {
   margin-left: 5px;
   margin-right: 5px;
   padding: 0;
-  width: 33px;
-  height: 51px;
+  width: 45px;
+  height: 65px;
   background-size: contain;
   background-repeat: no-repeat;
   display: inline-block;
@@ -155,11 +215,12 @@ h1, h2, h3, h4, h5, h6, h7, b {
   position: absolute; /* Position the text absolutely inside the parent */
   top: 40%; /* Center the text vertically */
   left: 50%; /* Center the text horizontally */
-  transform: translate(-50%, -40%); /* Adjust for perfect centering */
+  transform: translate(-55%, -40%); /* Adjust for perfect centering */
   z-index: 1; /* Ensure the text is above the background */
   text-transform: uppercase; /* Makes the text all capital letters */
   font-weight: bold; /* Optional: Make the title bold */
   font-size: 12px;
+  color: #000;
 }
 .the_edge .centered-row {
   display: flex;
@@ -310,7 +371,7 @@ h1, h2, h3, h4, h5, h6, h7, b {
   text-align: right;
 }
 .the_edge .proficiency-column .output {
-  max-height: 22;
+  max-height: 20;
   max-width: 25px;
   margin-right: 2px;
   text-align: right;
@@ -318,13 +379,13 @@ h1, h2, h3, h4, h5, h6, h7, b {
 .the_edge .prof-d20 {
   border: none;
   margin: 0;
+  margin-top: 5px;
   padding: 0;
   width: 15px;
   height: 18px;
   background-size: contain;
   background-repeat: no-repeat;
   display: inline-block;
-  position: relative;
 }
 .the_edge .d20-overlay-proficiency {
   white-space: nowrap;
@@ -419,9 +480,9 @@ h1, h2, h3, h4, h5, h6, h7, b {
 }
 .the_edge .output {
   display: inline-block;
-  background-color: #e0e0e0; /* Grey background */
-  border: 1px solid #000; /* Black border */
-  border-radius: 5px; /* Rounded corners */
+  background-color: rgba(0,0,0,0.05);
+  border: 1.333px solid rgb(119, 119, 249);
+  border-radius: 5px;
   padding: 1px 3px; /* Padding inside the box */
   font-size: 14px; /* Adjust font size as needed */
   width: 100%;
@@ -690,7 +751,7 @@ h1, h2, h3, h4, h5, h6, h7, b {
   justify-content: space-between;
   margin-top: 3px;
   margin-bottom: 7px;
-  border-bottom: 1px solid var(--color-underline-header);
+  border-bottom: 1.5px solid var(--color-underline-header);
 }
 .the_edge .section-title {
   font-size: 1.15em;

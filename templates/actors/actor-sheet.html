@@ -3,49 +3,55 @@
   <header class="sheet-header">
     <img class="profile-img" src="{{data.img}}" data-edit="img" title="{{data.name}}"/>
     <div class="header-fields">
-      <h1 class="charname">
-        <input name="name" type="text" value="{{data.name}}" placeholder="Name" />
-      </h1>
-      <div class="columned-page">
-        <div class="page-centered">
-          <div class="attribute-title">{{genName "health"}}</div>
-          <div style="display: flex; align-items: center; gap: 4px;">
-            <input 
-              name="system.health.value" type="number" value="{{systemData.health.value}}"
-              style="width: 54px; max-height: 23px; text-align: center;" max="{{systemData.health.max.value}}"
-            />
-            <span> / </span>
-            <span class="output" style="width: 54px; max-height: 23px;">{{systemData.health.max.value}}</span>
-          </div>
-        </div>
-        <div class="page-centered">
-          <div class="attribute-title">{{genName "Heartrate"}}</div>
-          <div style="display: flex; align-items: center; gap: 4px;">
-            <input
-              name="system.heartRate.value" type="number" value="{{systemData.heartRate.value}}"
-              style="width: 54px; max-height: 23px; text-align: center;"
-            />
-            <span class="output" style="width: 74px; max-height: 23px;">{{systemData.heartRate.min.value}} &ndash; {{systemData.heartRate.max.value}}</span>
-          </div>
-        </div>
-        {{#if (checkEqual helpers.armourProtection 0)}}
-        {{else}}
-          <div class="page-centered">
-            <div class="attribute-title">{{genName "Armour"}}</div>
-            <div style="display: flex; align-items: center; gap: 4px;">
-              <span class="output" style="width: 74px; max-height: 23px;">{{helpers.armourProtection}}</span>
+      <div style="display: flex; align-items: center;">
+        <div style="flex-grow: 5">
+          <h1 class="charname">
+            <input name="name" type="text" value="{{data.name}}" placeholder="Name" style="min-height: 38px;"/>
+          </h1>
+          <div class="columned-page">
+            <div class="page-centered">
+              <div class="attribute-title">{{genName "health"}}</div>
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <input 
+                  name="system.health.value" type="number" value="{{systemData.health.value}}"
+                  style="width: 54px; max-height: 23px; text-align: center;" max="{{systemData.health.max.value}}"
+                />
+                <span> / </span>
+                <span class="output" style="width: 54px; max-height: 23px;">{{systemData.health.max.value}}</span>
+              </div>
             </div>
-          </div>
-        {{/if}}
-        <div class="page-centered">
-          <!-- <p class="attribute-title">{{genName "herotoken"}}</p> -->
-          {{#each prepare.herotoken as |token|}}
-            {{#if token}}
-            <a class="token-img hero-token" data-tooltip="Hero Token"></a>
+            <div class="page-centered">
+              <div class="attribute-title">{{genName "Heartrate"}}</div>
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <input
+                  name="system.heartRate.value" type="number" value="{{systemData.heartRate.value}}"
+                  style="width: 54px; max-height: 23px; text-align: center;"
+                />
+                <span class="output" style="width: 74px; max-height: 23px;">{{systemData.heartRate.min.value}} &ndash; {{systemData.heartRate.max.value}}</span>
+              </div>
+            </div>
+            {{#if (checkEqual helpers.armourProtection 0)}}
             {{else}}
-            <a class="token-img hero-token-spent"></a>
+              <div class="page-centered">
+                <div class="attribute-title">{{genName "Armour"}}</div>
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <span class="output" style="width: 74px; max-height: 23px;">{{helpers.armourProtection}}</span>
+                </div>
+              </div>
             {{/if}}
-          {{/each}}
+          </div>
+        </div>
+        <div style="margin-left: 15px;">
+          <div class="page-centered">
+            <!-- <p class="attribute-title">{{genName "herotoken"}}</p> -->
+            {{#each prepare.herotoken as |token|}}
+              {{#if token}}
+              <a class="token-img hero-token" data-tooltip="Hero Token"></a>
+              {{else}}
+              <a class="token-img hero-token-spent"></a>
+              {{/if}}
+            {{/each}}
+          </div>
         </div>
       </div>
       <div class="columned-page">

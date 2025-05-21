@@ -19,7 +19,7 @@
               <input class="core-value input-flow" data-target="system.proficiencies.{{category}}.{{proficiency}}.advances" type="number" value="{{getProficiency ../../../actor category proficiency 'advances'}}" data-dtype="Number" style="max-height: 20px;">
             </div>
             <div class="proficiency-column">
-              <span class="output" style="width:27px; min-height: 20px; text-align: right;">{{getProficiency ../../../actor category proficiency 'status'}}</span>
+              <span class="output" style="width:27px; max-height: 21px; text-align: right;">{{getProficiency ../../../actor category proficiency 'status'}}</span>
             </div>
             <div class="proficiency-column-dice">
               <a class="prof-d20 d20-{{getProficiencyDice ../../../actor category proficiency 0}}" prof-name="{{proficiency}}" data-tooltip="{{getProficiencyDice ../../../actor category proficiency 0}}"></a>
