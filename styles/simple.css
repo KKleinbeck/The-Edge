@@ -42,7 +42,20 @@ h1, h2, h3, h4 {
 }
 
 .chat-message {
+  padding: 0;
+  margin-bottom: 5px;
+  background-image: none !important;
+  border: none;
+}
+.message-content {
   background-image: url("../assets/background.png") !important;
+  border: 1.333px solid #bd9f09;
+  border-radius: 4px;
+  padding: 5px;
+  color: var(--font-main-color) !important;
+}
+.message-header {
+  margin-top: 5px;
   color: var(--font-main-color) !important;
 }
 .message-metadata {
@@ -53,6 +66,11 @@ h1, h2, h3, h4 {
 }
 .window-content {
   background-image: url("../assets/background.png") !important;
+  color: var(--font-main-color) !important;
+}
+
+button {
+  background-color: #2A395A;
   color: var(--font-main-color) !important;
 }
 input {
