@@ -38,6 +38,7 @@ export const preloadHandlebarsTemplates = async function() {
     // Chat templates
     "systems/the_edge/templates/chat/meta-damage.html",
     "systems/the_edge/templates/chat/meta-apply-damage.html",
+    "systems/the_edge/templates/chat/meta-protection-log.html",
     "systems/the_edge/templates/dialogs/meta-chat-options.html",
   ];
 

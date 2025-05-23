@@ -1,4 +1,5 @@
 import LocalisationServer from "../system/localisation_server.js";
+import ChatServer from "../system/chat_server.js";
 import THE_EDGE from "../system/config-the-edge.js";
 
 export default class DialogDamage extends Dialog{
@@ -94,9 +95,18 @@ class DialogGenericWound extends Dialog{
         callback: async (html) => {
           const damage = parseInt(html.find('[name="damage"]').val());
           const type = html.find('[name="type"]').val();
-          checkData.actor.applyDamage(
+          var partialLog = await checkData.actor.applyDamage(
             damage, false, type, LocalisationServer.localise("New wound"), checkData.location
           );
+
+          const protectionLog = {};
+          for (const [key, value] of Object.entries(partialLog)) protectionLog[key] = [value];
+
+          console.log(protectionLog)
+          ChatServer.transmitEvent("Generic damage", {
+            actor: checkData.actor.name, damage: damage,
+            type: type, protection: protectionLog
+          })
         }
       },
       cancel: {label: LocalisationServer.localise("cancel", "dialog")}
