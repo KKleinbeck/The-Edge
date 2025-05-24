@@ -1,0 +1,31 @@
+<form class="flexcol {{cssClass}}" autocomplete="off">
+  {{!-- Sheet Header --}}
+  <header class="sheet-header">
+    <h1 class="charname">
+      <input name="name" type="text" value="{{data.name}}" placeholder="Name" />
+    </h1>
+  </header>
+
+  {{log items}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    {{#each itemTypes as |items type|}}
+      <a class="item" data-tab="{{type}}">{{itemName type}}</a>
+    {{/each}}
+  </nav>
+
+  <section class="sheet-body" style="position: relative;">
+    {{#each itemTypes as |items type|}}
+      <div class="tab tab-scroll" data-group="primary" data-tab="{{type}}">
+        <div class="store-grid">
+          {{#each items as |item|}}
+            <div class="store-item">
+              {{#if (checkEqual type "Weapon")}}
+                {{> systems/the_edge/templates/actors/store/meta-weapon.html}}
+              {{/if}}
+            </div>
+          {{/each}}
+       </div>
+      </div>
+    {{/each}}
+  </section>
+</form>

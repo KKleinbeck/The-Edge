@@ -756,6 +756,24 @@ h1, h2, h3, h4, h5, h6, h7, b {
     margin-top: 0px;
 }
 
+.the_edge .store-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 10px;
+}
+
+.the_edge .store-item {
+  border: 1.333px solid #000; /* Black border */
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.the_edge .store-currency {
+  width: 24px;
+  border: none;
+}
+
 .right-aligned-text {
     text-align: right; /* Flushed to the right */
 }

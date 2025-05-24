@@ -13,7 +13,21 @@ import LocalisationServer from "../system/localisation_server.js";
 import ChatServer from "../system/chat_server.js";
 import Aux from "../system/auxilliaries.js";
 
+
 export class TheEdgeActorSheet extends ActorSheet {
+  static setupSheets() {
+    Actors.unregisterSheet("core", ActorSheet);
+    Actors.registerSheet("the_edge", TheEdgeActorSheet, { makeDefault: true });
+    Actors.registerSheet("the_edge", ActorSheetCharacter, { makeDefault: true, types: ["character"] });
+    Actors.registerSheet("the_edge", ActorSheetStore, { makeDefault: true, types: ["Store"] });
+
+    Actors.unregisterSheet("the_edge", TheEdgeActorSheet, {
+      types: ["character"]
+    });
+  }
+}
+
+class ActorSheetCharacter extends TheEdgeActorSheet {
 
   /** @inheritdoc */
   static get defaultOptions() {
@@ -554,4 +568,34 @@ export class TheEdgeActorSheet extends ActorSheet {
       return false
     })
   }
+}
+
+class ActorSheetStore extends TheEdgeActorSheet {
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      classes: ["the_edge", "sheet", "actor"],
+      template: "systems/the_edge/templates/actors/store/actor-sheet.html",
+      width: 700,
+      height: 600,
+      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body"}],
+      dragDrop: [{dragSelector: ".item-list .item", dropSelector: null}]
+    });
+  }
+
+  activateListeners(html) {
+    super.activateListeners(html);
+  }
+
+  async getData(options) {
+    const context = await super.getData(options);
+    context.systemData = context.data.system;
+
+    context.itemTypes = {}
+    for (const [type, items] of Object.entries(this.actor.itemTypes)) {
+      if (items.length > 0 && "value" in game.model.Item[type]) context.itemTypes[type] = items;
+    }
+    return context;
+  }
+
+  // TODO: prevent item drop when not sellable
 }

@@ -20,6 +20,7 @@ export class TheEdgeActor extends Actor {
   /** @inheritdoc */
   prepareDerivedData() {
     super.prepareDerivedData();
+    if (this.type !== "character") return;
 
     const sys = this.system;
     for (const coreValPath of Object.values(foundry.utils.flattenObject(THE_EDGE.core_value_map))) {

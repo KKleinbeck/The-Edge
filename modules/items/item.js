@@ -47,12 +47,6 @@ export class TheEdgeItem extends Item {
     return !!this.getFlag("the_edge", "isTemplate");
   }
 
-  static setupSubClasses() {
-    game.the_edge.config.ItemSubClasses = {
-      armour: ArmourItemTheEdge
-    }
-  }
-
   async toggleActive() {
     if (this.system.active === undefined) return undefined;
     await this.update({"system.active": !this.system.active})
