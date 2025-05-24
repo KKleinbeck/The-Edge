@@ -102,7 +102,6 @@ class DialogGenericWound extends Dialog{
           const protectionLog = {};
           for (const [key, value] of Object.entries(partialLog)) protectionLog[key] = [value];
 
-          console.log(protectionLog)
           ChatServer.transmitEvent("Generic damage", {
             actor: checkData.actor.name, damage: damage,
             type: type, protection: protectionLog
