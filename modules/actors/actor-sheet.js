@@ -19,7 +19,7 @@ export class TheEdgeActorSheet extends ActorSheet {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["the_edge", "sheet", "actor"],
-      template: "systems/the_edge/templates/actors/actor-sheet.html",
+      template: "systems/the_edge/templates/actors/character/actor-sheet.html",
       width: 700,
       height: 600,
       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "attributes"}],

@@ -149,6 +149,12 @@
       "bloodlossStepSize": {"status": 0}
     },
     "nativeLanguage": "Standard"
+  },
+  "Store": {
+    "credits": {
+      "chids": 0,
+      "digital": 0
+    }
   }
 },
 "Item": {
