@@ -18,10 +18,15 @@
       <div class="tab tab-scroll" data-group="primary" data-tab="{{type}}">
         <div class="store-grid">
           {{#each items as |item|}}
-            <div class="store-item">
-              {{#if (checkEqual type "Weapon")}}
-                {{> systems/the_edge/templates/actors/store/meta-weapon.html}}
-              {{/if}}
+            <div class="store-item store-item-glow">
+              <div class="item-information" data-item-id="{{item._id}}">
+                {{> systems/the_edge/templates/actors/store/meta-header.html}}
+
+                {{#if (checkEqual type "Weapon")}}
+                  {{> systems/the_edge/templates/actors/store/meta-weapon.html}}
+                {{/if}}
+              </div>
+              {{> systems/the_edge/templates/actors/store/meta-buy.html}}
             </div>
           {{/each}}
        </div>

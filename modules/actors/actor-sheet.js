@@ -584,6 +584,8 @@ class ActorSheetStore extends TheEdgeActorSheet {
 
   activateListeners(html) {
     super.activateListeners(html);
+
+    html.find(".item-information").on("click", ev => this._on_edit_item(ev));
   }
 
   async getData(options) {
@@ -597,5 +599,11 @@ class ActorSheetStore extends TheEdgeActorSheet {
     return context;
   }
 
+  _on_edit_item(event) {
+    const button = event.currentTarget;
+    console.log(button.dataset)
+    const item = this.actor.items.get(button.dataset?.itemId);
+    item.sheet.render(true);
+  }
   // TODO: prevent item drop when not sellable
 }
