@@ -601,7 +601,6 @@ class ActorSheetStore extends TheEdgeActorSheet {
 
   _on_edit_item(event) {
     const button = event.currentTarget;
-    console.log(button.dataset)
     const item = this.actor.items.get(button.dataset?.itemId);
     item.sheet.render(true);
   }

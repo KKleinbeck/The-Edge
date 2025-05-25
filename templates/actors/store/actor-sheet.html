@@ -6,7 +6,6 @@
     </h1>
   </header>
 
-  {{log items}}
   <nav class="sheet-tabs tabs" data-group="primary">
     {{#each itemTypes as |items type|}}
       <a class="item" data-tab="{{type}}">{{itemName type}}</a>
@@ -24,6 +23,9 @@
 
                 {{#if (checkEqual type "Weapon")}}
                   {{> systems/the_edge/templates/actors/store/meta-weapon.html}}
+                {{/if}}
+                {{#if (checkEqual type "Ammunition")}}
+                  {{> systems/the_edge/templates/actors/store/meta-ammunition.html}}
                 {{/if}}
               </div>
               {{> systems/the_edge/templates/actors/store/meta-buy.html}}

@@ -30,6 +30,7 @@ export const preloadHandlebarsTemplates = async function() {
     "systems/the_edge/templates/actors/character/health/layout.html",
 
     // Store templates
+    "systems/the_edge/templates/actors/store/meta-ammunition.html",
     "systems/the_edge/templates/actors/store/meta-buy.html",
     "systems/the_edge/templates/actors/store/meta-header.html",
     "systems/the_edge/templates/actors/store/meta-weapon.html",

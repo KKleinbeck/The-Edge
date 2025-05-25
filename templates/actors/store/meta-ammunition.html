@@ -1,0 +1,24 @@
+<div style="display: table;">
+  <div style="display: table-row;">
+    <div style="display: table-cell;"><b>{{genName "Capacity"}}:</b></div>
+    <div style="display: table-cell; padding-left: 10px;">{{system.capacity.max}}</div>
+  </div>
+
+  <div style="display: table-row;">
+    <div style="display: table-cell;"><b>{{genName "Type"}}:</b></div>
+    <div style="display: table-cell; padding-left: 10px;">{{system.type}}</div>
+  </div>
+
+  <div style="display: table-row;">
+    <div style="display: table-cell;"><b>{{genName "Damage"}}:</b></div>
+    <div style="display: table-cell; padding-left: 10px;">{{system.damage.bonus}} {{genName "Bonus"}}</div>
+  </div>
+  <div style="display: table-row;">
+    <div style="display: table-cell;"></div>
+    <div style="display: table-cell; padding-left: 10px;">{{system.damage.penetration}} {{genName "penetration"}}</div>
+  </div>
+</div>
+{{#unless (checkEqual system.designatedWeapons "")}}
+  <b>{{genName "Designated Weapons"}}:</b>
+  <div style="padding-left: 10px;">{{system.designatedWeapons}}</div>
+{{/unless}}
