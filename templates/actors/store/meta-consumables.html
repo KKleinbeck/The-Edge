@@ -1,0 +1,50 @@
+<div style="display: table;">
+  <div style="display: table-row;">
+    <div style="display: table-cell;"><b>{{genName "Type"}}:</b></div>
+    <div style="display: table-cell; padding-left: 10px;">{{itemName system.subtype}}</div>
+  </div>
+
+  {{#if (checkEqual system.subtype "medicine")}}
+    <div style="display: table-row;">
+      <div style="display: table-cell;"><b>{{genName "Effect"}}:</b></div>
+      <div style="display: table-cell; padding-left: 10px;">{{system.subtypes.medicine.effect}}</div>
+    </div>
+
+    <div style="display: table-row;">
+      <div style="display: table-cell;"><b>{{genName "Healing"}}:</b></div>
+      <div style="display: table-cell; padding-left: 10px;">{{system.subtypes.medicine.healing}}</div>
+    </div>
+
+    <div style="display: table-row;">
+      <div style="display: table-cell;"><b>{{genName "Coagulation"}}:</b></div>
+      <div style="display: table-cell; padding-left: 10px;">{{system.subtypes.medicine.coagulation}}</div>
+    </div>
+  {{/if}}
+  {{#if (checkEqual system.subtype "grenade")}}
+    <div style="display: table-row;">
+      <div style="display: table-cell;"><b>{{genName "Damage"}}:</b></div>
+      <div style="display: table-cell; padding-left: 10px;">{{system.subtypes.grenade.damage}}</div>
+    </div>
+
+    <div style="display: table-row;">
+      <div style="display: table-cell;"><b>{{combatName "Blast distance"}}:</b></div>
+      <div style="display: table-cell; padding-left: 10px;">{{system.subtypes.grenade.blastDistance}}</div>
+    </div>
+
+    <div style="display: table-row;">
+      <div style="display: table-cell;"><b>{{genName "Type"}}:</b></div>
+      <div style="display: table-cell; padding-left: 10px;">{{system.subtypes.grenade.type}}</div>
+    </div>
+  {{/if}}
+</div>
+
+{{#if (checkEqual system.subtype "grenade")}}
+  {{#if (anyObjectValues system.subtypes.grenade.effects)}}
+    <b>{{genName "Effect"}}:</b>
+    <div style="padding-left: 10px;">
+      {{#each (getActiveGrenadeEffects system.subtypes.grenade.effects) as |effect|}}
+        {{combatName effect}}{{#unless @last}}, {{/unless}}
+      {{/each}}
+    </div>
+  {{/if}}
+{{/if}}

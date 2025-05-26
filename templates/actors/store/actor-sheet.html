@@ -30,6 +30,9 @@
                 {{#if (checkEqual type "Armour")}}
                   {{> systems/the_edge/templates/actors/store/meta-armour.html}}
                 {{/if}}
+                {{#if (checkEqual type "Consumables")}}
+                  {{> systems/the_edge/templates/actors/store/meta-consumables.html}}
+                {{/if}}
               </div>
               {{> systems/the_edge/templates/actors/store/meta-buy.html}}
             </div>

@@ -53,7 +53,15 @@ export default function() {
     add: (a, b) => { return a + b; },
     sub: (a, b) => { return a - b; },
     capitalise: (a) => { return a.charAt(0).toUpperCase() + a.slice(1); },
+    anyObjectValues: (a) => { return Object.values(a).some(x => x); },
 
+    getActiveGrenadeEffects: (a) => {
+      const effects = [];
+      for (const [key, value] of Object.entries(a)) {
+        if (value) effects.push(key);
+      }
+      return effects;
+    },
     getProficiency: (a, b, c, d) => { return a.system.proficiencies[b][c][d]; },
     getProficiencyDice: (a, b, c, d) => { return a.system.proficiencies[b][c].dices[d]; },
     getWeaponProficiency: (a, b, c, d) => { return a.system.weapons[b][c][d]; },
