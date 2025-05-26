@@ -25,6 +25,55 @@ export class TheEdgeActorSheet extends ActorSheet {
       types: ["character"]
     });
   }
+
+  async _onDropItem(event, data) {
+    const item = (await Item.implementation.fromDropData(data)).toObject();
+    switch (item.type) {
+      case "Weapon":
+      case "Armour":
+        return super._onDropItem(event, data)
+
+      case "Ammunition":
+      case "Gear":
+      case "Consumables":
+        return this._onDropStackableItem(event, data, item)
+      
+      case "Advantage":
+      case "Disadvantage":
+        this.actor.addOrCreateVantage(item);
+        break;
+      
+      case "Skill":
+      case "Combatskill":
+      case "Medicalskill":
+      case "Languageskill":
+        const createNew = this.actor.learnSkill(item);
+        return createNew ? super._onDropItem(event, data) : undefined;
+      
+      case "Credits":
+        if (item.system.isChid) {
+          this.actor.update({"system.credits.chids": this.actor.system.credits.chids + item.system.value})
+        } else this.actor.update({"system.credits.digital": this.actor.system.credits.digital + item.system.value})
+        return false;
+
+      case "Effect":
+        return super._onDropItem(event, data)
+    }
+    // return this.actor.createEmbeddedDocuments("Item", itemData);
+  }
+
+  _itemExists(item) {
+    return this.actor.findItem(item);
+  }
+
+  _onDropStackableItem(event, data, item) {
+    let _existingCopy = this._itemExists(item) 
+    if (_existingCopy) {
+      _existingCopy.update({"system.quantity": _existingCopy.system.quantity + 1});
+      return _existingCopy;
+    }
+    return super._onDropItem(event, data)
+  }
 }
 
 class ActorSheetCharacter extends TheEdgeActorSheet {
@@ -297,55 +346,6 @@ class ActorSheetCharacter extends TheEdgeActorSheet {
     return [];
   }
 
-  async _onDropItem(event, data) {
-    const item = (await Item.implementation.fromDropData(data)).toObject();
-    switch (item.type) {
-      case "Weapon":
-      case "Armour":
-        return super._onDropItem(event, data)
-
-      case "Ammunition":
-      case "Gear":
-      case "Consumables":
-        return this._onDropStackableItem(event, data, item)
-      
-      case "Advantage":
-      case "Disadvantage":
-        this.actor.addOrCreateVantage(item);
-        break;
-      
-      case "Skill":
-      case "Combatskill":
-      case "Medicalskill":
-      case "Languageskill":
-        const createNew = this.actor.learnSkill(item);
-        return createNew ? super._onDropItem(event, data) : undefined;
-      
-      case "Credits":
-        if (item.system.isChid) {
-          this.actor.update({"system.credits.chids": this.actor.system.credits.chids + item.system.value})
-        } else this.actor.update({"system.credits.digital": this.actor.system.credits.digital + item.system.value})
-        return false;
-
-      case "Effect":
-        return super._onDropItem(event, data)
-    }
-    // return this.actor.createEmbeddedDocuments("Item", itemData);
-  }
-
-  _itemExists(item) {
-    return this.actor.findItem(item);
-  }
-
-  _onDropStackableItem(event, data, item) {
-    let _existingCopy = this._itemExists(item) 
-    if (_existingCopy) {
-      _existingCopy.update({"system.quantity": _existingCopy.system.quantity + 1});
-      return _existingCopy;
-    }
-    return super._onDropItem(event, data)
-  }
-
   async _onItemControl(event) {
     event.preventDefault();
 
@@ -580,6 +580,23 @@ class ActorSheetStore extends TheEdgeActorSheet {
       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body"}],
       dragDrop: [{dragSelector: ".item-list .item", dropSelector: null}]
     });
+  }
+
+  async _onDropItem(event, data) {
+    const item = (await Item.implementation.fromDropData(data)).toObject();
+    switch (item.type) {
+      case "Weapon":
+      case "Armour":
+        return super._onDropItem(event, data)
+
+      case "Ammunition":
+      case "Gear":
+      case "Consumables":
+        return this._onDropStackableItem(event, data, item)
+      
+      default:
+        return;
+    }
   }
 
   activateListeners(html) {

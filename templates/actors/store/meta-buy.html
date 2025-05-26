@@ -1,5 +1,8 @@
 <div class="store-buy">
   <button class="store-buy-inner">
     {{genName "Buy"}}
+    {{#if (checkHasMultipleStacked system)}}
+      1 {{genName "of"}} {{system.quantity}}
+    {{/if}}
   </button>
 </div>

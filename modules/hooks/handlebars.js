@@ -92,6 +92,10 @@ export default function() {
       if (name == "effects") return true;
       return effects.length != 0;
     },
+    checkHasMultipleStacked: (systemData) => {
+      if ("quantity" in systemData && systemData.quantity > 1) return true;
+      return false;
+    },
     getRangeModifier: (rangeChart, distance) => {
       if (distance < 2) return `(${rangeChart["less_2m"][0]} / ${rangeChart["less_2m"][1]})`;
       else if (distance < 20) return `(${rangeChart["less_20m"][0]} / ${rangeChart["less_20m"][1]})`;
