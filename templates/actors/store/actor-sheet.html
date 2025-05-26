@@ -27,6 +27,9 @@
                 {{#if (checkEqual type "Ammunition")}}
                   {{> systems/the_edge/templates/actors/store/meta-ammunition.html}}
                 {{/if}}
+                {{#if (checkEqual type "Armour")}}
+                  {{> systems/the_edge/templates/actors/store/meta-armour.html}}
+                {{/if}}
               </div>
               {{> systems/the_edge/templates/actors/store/meta-buy.html}}
             </div>
