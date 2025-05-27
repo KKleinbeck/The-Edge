@@ -154,7 +154,10 @@
     "credits": {
       "chids": 0,
       "digital": 0
-    }
+    },
+    "tradeFactor": 1,
+    "isStorage": false,
+    "buysFromPlayer": false
   }
 },
 "Item": {

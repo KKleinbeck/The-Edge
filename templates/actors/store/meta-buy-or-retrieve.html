@@ -1,6 +1,10 @@
 <div class="store-buy">
   <button class="store-buy-inner">
-    {{genName "Buy"}}
+    {{#if isStorage}}
+      {{genName "Retrieve"}}
+    {{else}}
+      {{genName "Buy"}}
+    {{/if}}
     {{#if (checkHasMultipleStacked system)}}
       1 {{genName "of"}} {{system.quantity}}
     {{/if}}

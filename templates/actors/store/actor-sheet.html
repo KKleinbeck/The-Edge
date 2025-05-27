@@ -1,15 +1,31 @@
 <form class="flexcol {{cssClass}}" autocomplete="off">
   {{!-- Sheet Header --}}
-  <header class="sheet-header">
+  <header class="sheet-header" style="max-height: 70px;">
     <h1 class="charname">
       <input name="name" type="text" value="{{data.name}}" placeholder="Name" />
     </h1>
+    <div style="padding-left: 30px;">
+      <div style="display: flex; align-items: center; gap: 5px;">
+        <b style="flex: 1;">{{#if systemData.isStorage}}{{genName "Storage"}}{{else}}{{genName "Shop"}}{{/if}}</b>
+        <label for="credits-chids" style="flex: 1; text-align: right;">Chids</label>
+        <input name="system.credits.chids" type="number" value="{{systemData.credits.chids}}" id="credits-chids" style="flex: 1; text-align: right;">
+        <label for="credits-chids" style="flex: 1; text-align: right;">{{genName "digital"}}</label>
+        <input name="system.credits.digital" type="number" value="{{systemData.credits.digital}}" id="credits-digital" style="flex: 1; text-align: right;">
+      </div>
+      <div style="display: flex; align-items: center; padding-top: 10px;">
+        <input type="checkbox" name="system.isStorage" id="toggle-storage" {{#if systemData.isStorage}}checked{{/if}}/>
+        <label for="toggle-storage">{{genName "make storage"}}</label>
+      </div>
+    </div>
   </header>
 
   <nav class="sheet-tabs tabs" data-group="primary">
     {{#each itemTypes as |items type|}}
       <a class="item" data-tab="{{type}}">{{itemName type}}</a>
     {{/each}}
+    {{#if systemData.buysFromPlayer}}
+      <a class="item" data-tab="player-items">{{genName "Player Items"}}</a>
+    {{/if}}
   </nav>
 
   <section class="sheet-body" style="position: relative;">
@@ -19,7 +35,7 @@
           {{#each items as |item|}}
             <div class="store-item store-item-glow">
               <div class="item-information" data-item-id="{{item._id}}">
-                {{> systems/the_edge/templates/actors/store/meta-header.html}}
+                {{> systems/the_edge/templates/actors/store/meta-header.html isStorage=../../systemData.isStorage}}
 
                 {{#if (checkEqual type "Weapon")}}
                   {{> systems/the_edge/templates/actors/store/meta-weapon.html}}
@@ -34,11 +50,16 @@
                   {{> systems/the_edge/templates/actors/store/meta-consumables.html}}
                 {{/if}}
               </div>
-              {{> systems/the_edge/templates/actors/store/meta-buy.html}}
+              {{> systems/the_edge/templates/actors/store/meta-buy-or-retrieve.html isStorage=../../systemData.isStorage}}
             </div>
           {{/each}}
        </div>
       </div>
     {{/each}}
+    {{#if systemData.buysFromPlayer}}
+      <div class="tab tab-scroll" data-group="primary" data-tab="player-items">
+        {{> systems/the_edge/templates/actors/store/buy-from-player.html}}
+      </div>
+    {{/if}}
   </section>
 </form>
