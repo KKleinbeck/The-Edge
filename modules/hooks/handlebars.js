@@ -54,6 +54,7 @@ export default function() {
     sub: (a, b) => { return a - b; },
     capitalise: (a) => { return a.charAt(0).toUpperCase() + a.slice(1); },
     anyObjectValues: (a) => { return Object.values(a).some(x => x); },
+    storePrice: (a, b) => { return Math.round(a * b / 10) * 10; },
 
     getActiveGrenadeEffects: (a) => {
       const effects = [];

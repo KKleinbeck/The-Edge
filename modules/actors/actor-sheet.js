@@ -608,6 +608,7 @@ class ActorSheetStore extends TheEdgeActorSheet {
   async getData(options) {
     const context = await super.getData(options);
     context.systemData = context.data.system;
+    context.systemData.userIsGM = game.user.isGM;
 
     context.itemTypes = {}
     for (const [type, items] of Object.entries(this.actor.itemTypes)) {
