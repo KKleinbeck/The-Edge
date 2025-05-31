@@ -52,6 +52,7 @@ export default function() {
     log: (a) => console.log(a),
     add: (a, b) => { return a + b; },
     sub: (a, b) => { return a - b; },
+    div: (a, b) => { return a / b; },
     capitalise: (a) => { return a.charAt(0).toUpperCase() + a.slice(1); },
     anyObjectValues: (a) => { return Object.values(a).some(x => x); },
     storePrice: (a, b) => { return Math.round(a * b / 10) * 10; },

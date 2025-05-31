@@ -1,0 +1,26 @@
+{{#each playerItemTypes as |items type|}}
+  <h3>{{itemName type}}</h3>
+  <div class="store-grid">
+    {{#each items as |item|}}
+      <div class="store-item store-item-glow">
+        <div class="item-information" data-item-id="{{item._id}}">
+          {{> systems/the_edge/templates/actors/store/meta-header.html isStorage=../../systemData.isStorage tradeFactor=(div 1 ../../systemData.tradeFactor)}}
+
+          {{#if (checkEqual type "Weapon")}}
+            {{> systems/the_edge/templates/actors/store/meta-weapon.html}}
+          {{/if}}
+          {{#if (checkEqual type "Ammunition")}}
+            {{> systems/the_edge/templates/actors/store/meta-ammunition.html}}
+          {{/if}}
+          {{#if (checkEqual type "Armour")}}
+            {{> systems/the_edge/templates/actors/store/meta-armour.html}}
+          {{/if}}
+          {{#if (checkEqual type "Consumables")}}
+            {{> systems/the_edge/templates/actors/store/meta-consumables.html}}
+          {{/if}}
+        </div>
+        {{> systems/the_edge/templates/actors/store/meta-sell-or-store.html isStorage=../../systemData.isStorage}}
+      </div>
+    {{/each}}
+  </div>
+{{/each}}
