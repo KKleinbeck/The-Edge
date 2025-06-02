@@ -781,6 +781,8 @@ h1, h2, h3, h4, h5, h6, h7, b {
 }
 .the_edge .store-buy-inner {
   min-width: 30px;
+  text-align: center;
+  cursor: pointer; 
   box-sizing: content-box;
   width: fit-content;
   padding: 0;

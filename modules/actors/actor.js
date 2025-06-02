@@ -637,6 +637,18 @@ export class TheEdgeActor extends Actor {
     return _existingCopy;
   }
 
+  pay(price) {
+    this.update({"system.credits.digital": this.system.credits.digital - price});
+    return [0, price];
+  }
+
+  getCredits(chids, digital) {
+    this.update({
+      "system.credits.chids": this.system.credits.chids + chids,
+      "system.credits.digital": this.system.credits.digital + digital
+    });
+  }
+
   getWeaponLevel(weaponType) {
     const type = THE_EDGE.weapon_damage_types[weaponType];
     let level = Math.floor((

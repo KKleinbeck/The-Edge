@@ -2,9 +2,9 @@
   <h3>{{itemName type}}</h3>
   <div class="store-grid">
     {{#each items as |item|}}
-      <div class="store-item store-item-glow">
-        <div class="item-information" data-item-id="{{item._id}}">
-          {{> systems/the_edge/templates/actors/store/meta-header.html isStorage=../../systemData.isStorage tradeFactor=(div 1 ../../systemData.tradeFactor)}}
+      <div class="store-item store-item-glow" data-item-id="{{item._id}}" data-price="{{storePrice item.system.value (div 1 ../../tradeFactor)}}" data-parent-id="{{item.parent.id}}">
+        <div class="item-information">
+          {{> systems/the_edge/templates/actors/store/meta-header.html isStorage=../../systemData.isStorage tradeFactor=(div 1 ../../tradeFactor)}}
 
           {{#if (checkEqual type "Weapon")}}
             {{> systems/the_edge/templates/actors/store/meta-weapon.html}}

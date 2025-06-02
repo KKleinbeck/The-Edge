@@ -6,11 +6,19 @@
     </h1>
     <divi style="flex: 2">
       <div style="display: flex; align-items: center; gap: 5px;">
-        <b style="flex: 1;">{{#if systemData.isStorage}}{{genName "Storage"}}{{else}}{{genName "Shop"}}{{/if}}</b>
+        <b style="flex: 1; text-align: right;">{{#if systemData.isStorage}}{{genName "Storage"}}{{else}}{{genName "Shop"}}{{/if}}</b>
         <label for="credits-chids" style="flex: 1; text-align: right;">Chids</label>
-        <input name="system.credits.chids" type="number" value="{{systemData.credits.chids}}" id="credits-chids" style="flex: 1; text-align: right;">
+        {{#if systemData.userIsGM}}
+          <input name="system.credits.chids" type="number" value="{{systemData.credits.chids}}" id="credits-chids" style="flex: 1; text-align: right;">
+        {{else}}
+          <div class="output" style="flex: 1; text-align: right;">{{systemData.credits.chids}}</div>
+        {{/if}}
         <label for="credits-chids" style="flex: 1; text-align: right;">{{genName "digital"}}</label>
-        <input name="system.credits.digital" type="number" value="{{systemData.credits.digital}}" id="credits-digital" style="flex: 1; text-align: right;">
+        {{#if systemData.userIsGM}}
+          <input name="system.credits.digital" type="number" value="{{systemData.credits.digital}}" id="credits-digital" style="flex: 1; text-align: right;">
+        {{else}}
+          <div class="output" style="flex: 1; text-align: right;">{{systemData.credits.digital}}</div>
+        {{/if}}
       </div>
       {{#if systemData.userIsGM}}
         <div style="display: flex; padding-top: 10px; justify-content: space-between;">
@@ -45,9 +53,12 @@
       <div class="tab tab-scroll" data-group="primary" data-tab="{{type}}">
         <div class="store-grid">
           {{#each items as |item|}}
-            <div class="store-item store-item-glow">
-              <div class="item-information" data-item-id="{{item._id}}">
-                {{> systems/the_edge/templates/actors/store/meta-header.html isStorage=../../systemData.isStorage tradeFactor=../../systemData.tradeFactor}}
+            <div class="store-item store-item-glow" data-item-id="{{item._id}}" data-price="{{storePrice item.system.value ../../systemData.tradeFactor}}">
+              <div class="item-information">
+                {{> systems/the_edge/templates/actors/store/meta-header.html
+                  isStorage=../../systemData.isStorage
+                  tradeFactor=../../systemData.tradeFactor
+                }}
 
                 {{#if (checkEqual type "Weapon")}}
                   {{> systems/the_edge/templates/actors/store/meta-weapon.html}}
@@ -62,7 +73,10 @@
                   {{> systems/the_edge/templates/actors/store/meta-consumables.html}}
                 {{/if}}
               </div>
-              {{> systems/the_edge/templates/actors/store/meta-buy-or-retrieve.html isStorage=../../systemData.isStorage}}
+              {{> systems/the_edge/templates/actors/store/meta-buy-or-retrieve.html
+                isStorage=../../systemData.isStorage
+                userIsGM=../../systemData.userIsGM
+              }}
             </div>
           {{/each}}
        </div>
@@ -70,7 +84,7 @@
     {{/each}}
     {{#if systemData.buysFromPlayer}}
       <div class="tab tab-scroll" data-group="primary" data-tab="player-items">
-        {{> systems/the_edge/templates/actors/store/buy-from-player.html}}
+        {{> systems/the_edge/templates/actors/store/buy-from-player.html tradeFactor=systemData.tradeFactor}}
       </div>
     {{/if}}
   </section>

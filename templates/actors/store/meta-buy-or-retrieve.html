@@ -1,5 +1,8 @@
-<div class="store-buy">
-  <button class="store-buy-inner">
+<div class="store-buy" style="align-items: center; justify-content: space-between;">
+  {{#if userIsGM}}
+    <a class="delete" title="{{ itemName 'Delete' }}" data-action="delete"><i class="fas fa-trash"></i></a>
+  {{/if}}
+  <button class="store-buy-inner buy-or-retrieve">
     {{#if isStorage}}
       {{genName "Retrieve"}}
     {{else}}
