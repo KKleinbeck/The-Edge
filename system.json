@@ -2,7 +2,7 @@
   "id": "the_edge",
   "version": "0.7.2",
   "title": "The Edge",
-  "url": "https://github.com/KKleinbeck/The-Edge.git",
+  "url": "https://github.com/KKleinbeck/The-Edge",
   "description": "A Sci-Fi centric rule system, heavily inspired by the DSA ruleset.",
   "license": "LICENSE.txt",
   "authors": [
@@ -33,6 +33,8 @@
     "distance": 1,
     "units": "m"
   },
+  "primaryTokenAttribute": "health.value",
+  "secondaryTokenAttribute": "heartRate.value",
   "manifest": "https://raw.githubusercontent.com/KKleinbeck/The-Edge/master/system.json",
-  "download": ""
+  "download": "https://github.com/KKleinbeck/The-Edge/archive/refs/tags/0.7.2.zip"
 }
