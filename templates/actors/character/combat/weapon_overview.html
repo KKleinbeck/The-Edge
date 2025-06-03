@@ -5,7 +5,7 @@
   <div class="loadout-container">
     <div class="loadout-box">
       <div class="item-control item loadout-name" data-action="edit" style="cursor: pointer;" data-item-id="{{item._id}}">
-        <img src="systems/the_edge/icons/fist.png" title="{{item.name}}" width="24" height="24" />
+        <img class="item-img" src="systems/the_edge/icons/fist.png" title="{{item.name}}" width="24" height="24" />
         <div>{{genName "Hand to Hand"}}</div>
       </div>
       <a class="weapon-d20 d20-black" data-tooltip="{{combatName 'Attack'}} - {{combatName 'Lead attr combatics'}}" data-type="Hand-to-Hand combat">
@@ -16,7 +16,7 @@
       {{#if (checkEqual item.type 'Weapon')}}
         <div class="loadout-box">
           <div class="item-control item loadout-name" data-action="edit" style="cursor: pointer;" data-item-id="{{item._id}}">
-            <img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
+            <img class="item-img" src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
             <div>{{item.name}} {{getLoadedAmmunition ../actor item}}</div>
           </div>
           <div class="weapon-id" style="display: flex; flex-wrap: nowrap; gap: 5px; align-items: center;" data-weapon-id="{{item._id}}">

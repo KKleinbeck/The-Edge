@@ -158,6 +158,9 @@ textarea {
   justify-content: flex-start;
   margin-bottom: 10px;
 }
+.the_edge .item-img {
+  background-color: #FFF;
+}
 .the_edge .sheet-header .profile-img {
   flex: 0 0 150px;
   height: 150px;
