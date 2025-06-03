@@ -20,6 +20,7 @@ export class TheEdgeActor extends Actor {
   /** @inheritdoc */
   prepareDerivedData() {
     super.prepareDerivedData();
+    if (this.type !== "character") return;
 
     const sys = this.system;
     for (const coreValPath of Object.values(foundry.utils.flattenObject(THE_EDGE.core_value_map))) {
@@ -634,6 +635,18 @@ export class TheEdgeActor extends Actor {
       }
     }
     return _existingCopy;
+  }
+
+  pay(price) {
+    this.update({"system.credits.digital": this.system.credits.digital - price});
+    return [0, price];
+  }
+
+  getCredits(chids, digital) {
+    this.update({
+      "system.credits.chids": this.system.credits.chids + chids,
+      "system.credits.digital": this.system.credits.digital + digital
+    });
   }
 
   getWeaponLevel(weaponType) {

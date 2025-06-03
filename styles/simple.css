@@ -835,6 +835,39 @@ textarea {
     margin-top: 0px;
 }
 
+.the_edge .store-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 10px;
+}
+.the_edge .store-item {
+  border: 1.333px solid #000; /* Black border */
+  border-radius: 5px;
+  padding: 10px;
+  transition: all 0.2s ease-in-out;
+}
+.the_edge .store-item-glow:hover {
+  box-shadow: 0 5px 15px rgba(145, 92, 182, .4);
+}
+.the_edge .store-currency {
+  width: 24px;
+  border: none;
+}
+.the_edge .store-buy {
+  display: flex;
+  justify-content: end;
+}
+.the_edge .store-buy-inner {
+  min-width: 30px;
+  text-align: center;
+  cursor: pointer; 
+  box-sizing: content-box;
+  width: fit-content;
+  padding: 0;
+  line-height: 20px;
+}
+
 .right-aligned-text {
     text-align: right; /* Flushed to the right */
 }

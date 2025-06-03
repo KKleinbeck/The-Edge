@@ -1,0 +1,34 @@
+<div style="display: table;">
+  <div style="display: table-row;">
+    <div style="display: table-cell;"><b>{{combatName "Structure Points"}}:</b></div>
+    <div style="display: table-cell; padding-left: 10px;">{{system.structurePoints}}</div>
+  </div>
+
+  <div style="display: table-row;">
+    <div style="display: table-cell;"><b>{{combatName "Attachment points"}}:</b></div>
+    <div style="display: table-cell; padding-left: 10px;">{{system.attachmentPoints.max}}</div>
+  </div>
+
+  <div style="display: table-row;">
+    <div style="display: table-cell;"><b>{{itemName "Body Part"}}:</b></div>
+    <div style="display: table-cell; padding-left: 10px;">{{actorName system.bodyPart}}</div>
+  </div>
+  <div style="display: table-row;">
+    <div style="display: table-cell;"></div>
+    <div style="display: table-cell; padding-left: 10px;">({{combatName system.layer}})</div>
+  </div>
+</div>
+
+<b>{{combatName "Damage modifiers"}}:</b>
+<div style="display: table; margin-left: auto; margin-right: auto;" title="{{combatName 'absorption'}} / {{combatName 'threshold'}}">
+  <div style="display: table-row;">
+    <div style="display: table-cell; padding: 0 5px 0 5px;">{{combatName "Energy"}}</div>
+    <div style="display: table-cell; padding: 0 5px 0 5px;">{{combatName "Kinetic"}}</div>
+    <div style="display: table-cell; padding: 0 5px 0 5px;">{{combatName "Elemental"}}</div>
+  </div>
+  <div style="display: table-row;">
+    <div style="display: table-cell; text-align: center;">{{system.protection.energy.absorption}} / {{system.protection.energy.threshold}}</div>
+    <div style="display: table-cell; text-align: center;">{{system.protection.kinetic.absorption}} / {{system.protection.kinetic.threshold}}</div>
+    <div style="display: table-cell; text-align: center;">{{system.protection.elemental.absorption}} / {{system.protection.elemental.threshold}}</div>
+  </div>
+</div>

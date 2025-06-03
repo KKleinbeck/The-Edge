@@ -1,0 +1,91 @@
+<form class="flexcol {{cssClass}}" autocomplete="off">
+  {{!-- Sheet Header --}}
+  <header class="sheet-header" style="display: flex; max-height: 70px; gap: 30px; padding: 0 5px 0 5px;">
+    <h1 class="charname" style="flex: 1;">
+      <input name="name" type="text" value="{{data.name}}" placeholder="Name" />
+    </h1>
+    <divi style="flex: 2">
+      <div style="display: flex; align-items: center; gap: 5px;">
+        <b style="flex: 1; text-align: right;">{{#if systemData.isStorage}}{{genName "Storage"}}{{else}}{{genName "Shop"}}{{/if}}</b>
+        <label for="credits-chids" style="flex: 1; text-align: right;">Chids</label>
+        {{#if systemData.userIsGM}}
+          <input name="system.credits.chids" type="number" value="{{systemData.credits.chids}}" id="credits-chids" style="flex: 1; text-align: right;">
+        {{else}}
+          <div class="output" style="flex: 1; text-align: right;">{{systemData.credits.chids}}</div>
+        {{/if}}
+        <label for="credits-chids" style="flex: 1; text-align: right;">{{genName "digital"}}</label>
+        {{#if systemData.userIsGM}}
+          <input name="system.credits.digital" type="number" value="{{systemData.credits.digital}}" id="credits-digital" style="flex: 1; text-align: right;">
+        {{else}}
+          <div class="output" style="flex: 1; text-align: right;">{{systemData.credits.digital}}</div>
+        {{/if}}
+      </div>
+      {{#if systemData.userIsGM}}
+        <div style="display: flex; padding-top: 10px; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 5px;">
+            <input type="checkbox" name="system.isStorage" id="toggle-storage" {{#if systemData.isStorage}}checked{{/if}}/>
+            <label for="toggle-storage">{{genName "make storage"}}</label>
+          </div>
+          <div style="display: flex; align-items: center; gap: 5px;">
+            <input type="checkbox" name="system.buysFromPlayer" id="toggle-buys-from-player" {{#if systemData.buysFromPlayer}}checked{{/if}}/>
+            <label for="toggle-buys-from-player">{{genName "buys from player"}}</label>
+          </div>
+          <div style="display: flex; align-items: center; gap: 5px;">
+            <label for="tradeFactor">{{genName "trade factor"}}</label>
+            <input type="number" name="system.tradeFactor" id="tradeFactor" value="{{systemData.tradeFactor}}" style="width: 40px; text-align: right;"/>
+          </div>
+        </div>
+      {{/if}}
+    </div>
+  </header>
+
+  <nav class="sheet-tabs tabs" data-group="primary">
+    {{#each itemTypes as |items type|}}
+      <a class="item" data-tab="{{type}}">{{itemName type}}</a>
+    {{/each}}
+    {{#if systemData.buysFromPlayer}}
+      <a class="item" data-tab="player-items">{{genName "Player Items"}}</a>
+    {{/if}}
+  </nav>
+
+  <section class="sheet-body" style="position: relative;">
+    {{#each itemTypes as |items type|}}
+      <div class="tab tab-scroll" data-group="primary" data-tab="{{type}}">
+        <div class="store-grid">
+          {{#each items as |item|}}
+            <div class="store-item store-item-glow" data-item-id="{{item._id}}" data-price="{{storePrice item.system.value ../../systemData.tradeFactor}}">
+              <div class="item-information">
+                {{> systems/the_edge/templates/actors/store/meta-header.html
+                  isStorage=../../systemData.isStorage
+                  tradeFactor=../../systemData.tradeFactor
+                }}
+
+                {{#if (checkEqual type "Weapon")}}
+                  {{> systems/the_edge/templates/actors/store/meta-weapon.html}}
+                {{/if}}
+                {{#if (checkEqual type "Ammunition")}}
+                  {{> systems/the_edge/templates/actors/store/meta-ammunition.html}}
+                {{/if}}
+                {{#if (checkEqual type "Armour")}}
+                  {{> systems/the_edge/templates/actors/store/meta-armour.html}}
+                {{/if}}
+                {{#if (checkEqual type "Consumables")}}
+                  {{> systems/the_edge/templates/actors/store/meta-consumables.html}}
+                {{/if}}
+              </div>
+              {{> systems/the_edge/templates/actors/store/meta-buy-or-retrieve.html
+                isStorage=../../systemData.isStorage
+                userIsGM=../../systemData.userIsGM
+              }}
+            </div>
+          {{/each}}
+       </div>
+      </div>
+    {{/each}}
+    {{#if systemData.buysFromPlayer}}
+      <div class="tab tab-scroll" data-group="primary" data-tab="player-items">
+        {{> systems/the_edge/templates/actors/store/buy-from-player.html tradeFactor=systemData.tradeFactor}}
+      </div>
+    {{/if}}
+  </section>
+</form>

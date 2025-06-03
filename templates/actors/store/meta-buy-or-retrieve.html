@@ -1,0 +1,15 @@
+<div class="store-buy" style="align-items: center; justify-content: space-between;">
+  {{#if userIsGM}}
+    <a class="delete" title="{{ itemName 'Delete' }}" data-action="delete"><i class="fas fa-trash"></i></a>
+  {{/if}}
+  <button class="store-buy-inner buy-or-retrieve">
+    {{#if isStorage}}
+      {{genName "Retrieve"}}
+    {{else}}
+      {{genName "Buy"}}
+    {{/if}}
+    {{#if (checkHasMultipleStacked system)}}
+      1 {{genName "of"}} {{system.quantity}}
+    {{/if}}
+  </button>
+</div>

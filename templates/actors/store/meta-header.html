@@ -1,0 +1,9 @@
+<h3 style="display: flex; justify-content: space-between; align-items: center;">
+  {{name}}
+  {{#unless isStorage}}
+    <div style="display: flex; align-items: center; gap: 5px;">
+      {{storePrice system.value tradeFactor}}
+      <img class="store-currency" src="systems/the_edge/icons/credits.png" title="{{name}}"/>
+    </div>
+  {{/unless}}
+</h3>

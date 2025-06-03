@@ -44,6 +44,20 @@ export default class Aux {
     return null
   }
 
+  static getPlayerTokens() {
+    const sceneID = game.canvas.id;
+    const scene = game.scenes.get(sceneID);
+
+    const tokens = [];
+    const userID = game.user.id;
+    for (var token of scene.tokens) {
+      if (token.actor.type === "character" && token.actor.ownership[userID] === 3) {
+        tokens.push(token);
+      }
+    }
+    return tokens;
+  }
+
   static _language_cost_table(humanSpoken) {
     return humanSpoken ? [200, 400, 1000, 2000, 3200, 3200] : [600, 3000, 6400]
   }

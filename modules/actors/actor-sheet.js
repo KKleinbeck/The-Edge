@@ -13,13 +13,76 @@ import LocalisationServer from "../system/localisation_server.js";
 import ChatServer from "../system/chat_server.js";
 import Aux from "../system/auxilliaries.js";
 
+
 export class TheEdgeActorSheet extends ActorSheet {
+  static setupSheets() {
+    Actors.unregisterSheet("core", ActorSheet);
+    Actors.registerSheet("the_edge", TheEdgeActorSheet, { makeDefault: true });
+    Actors.registerSheet("the_edge", ActorSheetCharacter, { makeDefault: true, types: ["character"] });
+    Actors.registerSheet("the_edge", ActorSheetStore, { makeDefault: true, types: ["Store"] });
+
+    Actors.unregisterSheet("the_edge", TheEdgeActorSheet, {
+      types: ["character"]
+    });
+  }
+
+  async _onDropItem(event, data) {
+    const item = (await Item.implementation.fromDropData(data)).toObject();
+    switch (item.type) {
+      case "Weapon":
+      case "Armour":
+        return super._onDropItem(event, data)
+
+      case "Ammunition":
+      case "Gear":
+      case "Consumables":
+        return this._onDropStackableItem(event, data, item)
+      
+      case "Advantage":
+      case "Disadvantage":
+        this.actor.addOrCreateVantage(item);
+        break;
+      
+      case "Skill":
+      case "Combatskill":
+      case "Medicalskill":
+      case "Languageskill":
+        const createNew = this.actor.learnSkill(item);
+        return createNew ? super._onDropItem(event, data) : undefined;
+      
+      case "Credits":
+        if (item.system.isChid) {
+          this.actor.update({"system.credits.chids": this.actor.system.credits.chids + item.system.value})
+        } else this.actor.update({"system.credits.digital": this.actor.system.credits.digital + item.system.value})
+        return false;
+
+      case "Effect":
+        return super._onDropItem(event, data)
+    }
+    // return this.actor.createEmbeddedDocuments("Item", itemData);
+  }
+
+  _itemExists(item) {
+    return this.actor.findItem(item);
+  }
+
+  _onDropStackableItem(event, data, item) {
+    const existingCopy = this._itemExists(item);
+    if (existingCopy) {
+      existingCopy.update({"system.quantity": existingCopy.system.quantity + 1});
+      return existingCopy;
+    }
+    return super._onDropItem(event, data)
+  }
+}
+
+class ActorSheetCharacter extends TheEdgeActorSheet {
 
   /** @inheritdoc */
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["the_edge", "sheet", "actor"],
-      template: "systems/the_edge/templates/actors/actor-sheet.html",
+      template: "systems/the_edge/templates/actors/character/actor-sheet.html",
       width: 700,
       height: 600,
       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "attributes"}],
@@ -283,55 +346,6 @@ export class TheEdgeActorSheet extends ActorSheet {
     return [];
   }
 
-  async _onDropItem(event, data) {
-    const item = (await Item.implementation.fromDropData(data)).toObject();
-    switch (item.type) {
-      case "Weapon":
-      case "Armour":
-        return super._onDropItem(event, data)
-
-      case "Ammunition":
-      case "Gear":
-      case "Consumables":
-        return this._onDropStackableItem(event, data, item)
-      
-      case "Advantage":
-      case "Disadvantage":
-        this.actor.addOrCreateVantage(item);
-        break;
-      
-      case "Skill":
-      case "Combatskill":
-      case "Medicalskill":
-      case "Languageskill":
-        const createNew = this.actor.learnSkill(item);
-        return createNew ? super._onDropItem(event, data) : undefined;
-      
-      case "Credits":
-        if (item.system.isChid) {
-          this.actor.update({"system.credits.chids": this.actor.system.credits.chids + item.system.value})
-        } else this.actor.update({"system.credits.digital": this.actor.system.credits.digital + item.system.value})
-        return false;
-
-      case "Effect":
-        return super._onDropItem(event, data)
-    }
-    // return this.actor.createEmbeddedDocuments("Item", itemData);
-  }
-
-  _itemExists(item) {
-    return this.actor.findItem(item);
-  }
-
-  _onDropStackableItem(event, data, item) {
-    let _existingCopy = this._itemExists(item) 
-    if (_existingCopy) {
-      _existingCopy.update({"system.quantity": _existingCopy.system.quantity + 1});
-      return _existingCopy;
-    }
-    return super._onDropItem(event, data)
-  }
-
   async _onItemControl(event) {
     event.preventDefault();
 
@@ -423,7 +437,6 @@ export class TheEdgeActorSheet extends ActorSheet {
               let msg = LocalisationServer.localise("Effect already exists", "Notifications")
               ui.notifications.notify(msg)
             } else {
-              console.log(item.system.effects.length)
               const hasEffects = item.system.effects.length > 0;
               if (hasEffects) {
                 const clsEffect = getDocumentClass("Item");
@@ -554,4 +567,150 @@ export class TheEdgeActorSheet extends ActorSheet {
       return false
     })
   }
+}
+
+class ActorSheetStore extends TheEdgeActorSheet {
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      classes: ["the_edge", "sheet", "actor"],
+      template: "systems/the_edge/templates/actors/store/actor-sheet.html",
+      width: 700,
+      height: 600,
+      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body"}],
+      dragDrop: [{dragSelector: ".item-list .item", dropSelector: null}]
+    });
+  }
+
+  async _onDropItem(event, data) {
+    const item = (await Item.implementation.fromDropData(data)).toObject();
+    switch (item.type) {
+      case "Weapon":
+      case "Armour":
+        return super._onDropItem(event, data)
+
+      case "Ammunition":
+      case "Gear":
+      case "Consumables":
+        return this._onDropStackableItem(event, data, item)
+      
+      default:
+        return;
+    }
+  }
+
+  activateListeners(html) {
+    super.activateListeners(html);
+
+    html.find(".item-information").on("click", ev => this._on_edit_item(ev));
+    html.find(".delete").on("click", ev => this._on_item_delete(ev));
+    html.find(".buy-or-retrieve").on("click", ev => this._on_retrieve_item(ev));
+    html.find(".sell-or-store").on("click", ev => this._on_deposite_item(ev));
+  }
+
+  canUserModify() { return true; }
+
+  async getData(options) {
+    const context = await super.getData(options);
+    context.systemData = context.data.system;
+    context.systemData.userIsGM = game.user.isGM;
+
+    context.itemTypes = {};
+    for (const [type, items] of Object.entries(this.actor.itemTypes)) {
+      if (items.length > 0 && "value" in game.model.Item[type]) context.itemTypes[type] = items;
+    }
+
+    const playerTokens = Aux.getPlayerTokens();
+    context.playerItemTypes = {};
+    for (const token of playerTokens) {
+      for (const [type, items] of Object.entries(token.actor.itemTypes)) {
+        if (items.length > 0 && "value" in game.model.Item[type]) {
+          context.playerItemTypes[type] = items.filter(
+            x => (!("equipped" in x.system) || !x.system.equipped) &&
+                 (!("loaded" in x.system) || !x.system.loaded)
+          );
+        }
+      }
+    }
+
+    return context;
+  }
+
+  _on_edit_item(event) {
+    const target = event.currentTarget;
+    const itemInformation = target.closest(".store-item").dataset;
+    if ("parentId" in itemInformation) {
+      const actor = game.actors.get(itemInformation.parentId);
+      const item = actor.items.get(itemInformation.itemId);
+      item.sheet.render(true);
+    } else {
+      const item = this.actor.items.get(itemInformation.itemId);
+      item.sheet.render(true);
+    }
+  }
+
+  _on_item_delete(event) {
+    const target = event.currentTarget;
+    const itemInformation = target.closest(".store-item").dataset;
+    const item = this.actor.items.get(itemInformation.itemId);
+    item.delete();
+  }
+
+  _on_retrieve_item(event) {
+    const playerTokens = Aux.getPlayerTokens();
+    if (!playerTokens) return;
+
+    // TODO: Select which actor buys the item
+    const actor = playerTokens[0].actor;    
+    const credits = actor.system.credits.chids + actor.system.credits.digital;
+
+    const target = event.currentTarget;
+    const itemInformation = target.closest(".store-item").dataset;
+    const price = +itemInformation.price;
+
+    if (credits >= price) {
+      const item = this.actor.items.get(itemInformation?.itemId);
+      const [chids, digital] = actor.pay(price);
+      this.actor.getCredits(chids, digital);
+
+      const existingCopy = actor.findItem(item);
+      if (existingCopy && "quantity" in item.system) {
+        existingCopy.update({"system.quantity": existingCopy.system.quantity + 1});
+      } else {
+        const itemCls = getDocumentClass("Item");
+        itemCls.create({name: item.name, type: item.type, system: item.system}, {parent: actor});
+      }
+
+      if (item.system.quantity > 1) item.update({"system.quantity": item.system.quantity - 1});
+      else item.delete();
+    }
+  }
+
+  _on_deposite_item(event) {
+    const credits = this.actor.system.credits.chids + this.actor.system.credits.digital;
+
+    const target = event.currentTarget;
+    const itemInformation = target.closest(".store-item").dataset;
+    const price = +itemInformation.price;
+    if (credits >= price) {
+      const actor = game.actors.get(itemInformation.parentId);
+      const [chids, digital] = this.actor.pay(price);
+      actor.getCredits(chids, digital);
+
+      const item = actor.items.get(itemInformation.itemId);
+
+      const existingCopy = this.actor.findItem(item);
+      if (existingCopy && "quantity" in item.system) {
+        existingCopy.update({"system.quantity": existingCopy.system.quantity + 1});
+      } else {
+        const itemCls = getDocumentClass("Item");
+        itemCls.create({name: item.name, type: item.type, system: item.system}, {parent: this.actor});
+      }
+      
+      if (item.system.quantity > 1) item.update({"system.quantity": item.system.quantity - 1});
+      else item.delete();
+      
+      // TODO: find a way to redraw
+    }
+  }
+  // TODO: prevent item drop when not sellable
 }

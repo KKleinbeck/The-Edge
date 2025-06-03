@@ -8,6 +8,7 @@ export default function() {
     if (actorData.token) {
       actor = Aux.getActor(actorData.token.actorId, actorData.token.id)
     }
+    if (actor.type !== "chracter") return;
     if (Aux.hasRaceCondDanger(`renderActor${actor.id}`)) return undefined;
 
     await new Promise(r => setTimeout(r, 100));

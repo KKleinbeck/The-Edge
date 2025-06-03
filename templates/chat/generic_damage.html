@@ -1,11 +1,9 @@
-<h3>{{actor}} {{genName "Fall Damage"}}</h3>
-<div class="centered-row">
-  <b>{{genName "height"}}: </b>
-  {{height}}m
-</div>
+<h3>{{actor}} {{genName "received Damage"}}</h3>
 <div class="centered-row">
   <b>{{genName "damage"}}: </b>
   <a class="attr-d20-chat damage-box">
     <span class="d20-overlay-weapon" data-tooltip="{{damageRoll}}">{{damage}}</span>
   </a>
 </div>
+<b>{{genName "type"}}: </b>{{combatName type}}
+{{> systems/the_edge/templates/chat/meta-protection-log.html}}

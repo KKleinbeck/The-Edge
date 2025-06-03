@@ -8,26 +8,36 @@ export const preloadHandlebarsTemplates = async function() {
   // Define template paths to load
   const templatePaths = [
     // Actor templates
-    "systems/the_edge/templates/actors/biography.html",
-    "systems/the_edge/templates/actors/items.html",
+    "systems/the_edge/templates/actors/character/biography.html",
+    "systems/the_edge/templates/actors/character/items.html",
     //Attributes
-    "systems/the_edge/templates/actors/attributes/layout.html",
-    "systems/the_edge/templates/actors/attributes/main_attributes.html",
-    "systems/the_edge/templates/actors/attributes/languages.html",
-    "systems/the_edge/templates/actors/attributes/conditioning.html",
-    "systems/the_edge/templates/actors/attributes/skills.html",
-    "systems/the_edge/templates/actors/attributes/vantages.html",
-    "systems/the_edge/templates/actors/attributes/progress.html",
+    "systems/the_edge/templates/actors/character/attributes/layout.html",
+    "systems/the_edge/templates/actors/character/attributes/main_attributes.html",
+    "systems/the_edge/templates/actors/character/attributes/languages.html",
+    "systems/the_edge/templates/actors/character/attributes/conditioning.html",
+    "systems/the_edge/templates/actors/character/attributes/skills.html",
+    "systems/the_edge/templates/actors/character/attributes/vantages.html",
+    "systems/the_edge/templates/actors/character/attributes/progress.html",
     //Proficiencies
-    "systems/the_edge/templates/actors/proficiencies/layout.html",
+    "systems/the_edge/templates/actors/character/proficiencies/layout.html",
     //Combat
-    "systems/the_edge/templates/actors/combat/layout.html",
-    "systems/the_edge/templates/actors/combat/proficiencies.html",
-    "systems/the_edge/templates/actors/combat/combat_skills.html",
-    "systems/the_edge/templates/actors/combat/medical_skills.html",
-    "systems/the_edge/templates/actors/combat/weapon_overview.html",
+    "systems/the_edge/templates/actors/character/combat/layout.html",
+    "systems/the_edge/templates/actors/character/combat/proficiencies.html",
+    "systems/the_edge/templates/actors/character/combat/combat_skills.html",
+    "systems/the_edge/templates/actors/character/combat/medical_skills.html",
+    "systems/the_edge/templates/actors/character/combat/weapon_overview.html",
     //Health
-    "systems/the_edge/templates/actors/health/layout.html",
+    "systems/the_edge/templates/actors/character/health/layout.html",
+
+    // Store templates
+    "systems/the_edge/templates/actors/store/buy-from-player.html",
+    "systems/the_edge/templates/actors/store/meta-ammunition.html",
+    "systems/the_edge/templates/actors/store/meta-armour.html",
+    "systems/the_edge/templates/actors/store/meta-buy-or-retrieve.html",
+    "systems/the_edge/templates/actors/store/meta-consumables.html",
+    "systems/the_edge/templates/actors/store/meta-header.html",
+    "systems/the_edge/templates/actors/store/meta-sell-or-store.html",
+    "systems/the_edge/templates/actors/store/meta-weapon.html",
 
     // Item templates
     "systems/the_edge/templates/items/meta-attachments.html",
@@ -38,6 +48,7 @@ export const preloadHandlebarsTemplates = async function() {
     // Chat templates
     "systems/the_edge/templates/chat/meta-damage.html",
     "systems/the_edge/templates/chat/meta-apply-damage.html",
+    "systems/the_edge/templates/chat/meta-protection-log.html",
     "systems/the_edge/templates/dialogs/meta-chat-options.html",
   ];
 

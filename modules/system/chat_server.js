@@ -17,6 +17,11 @@ export default class ChatServer {
         html = LocalisationServer.parsedLocalisation(id, "Chat", details)
         break;
       
+      case "GENERIC DAMAGE":
+        console.log(details)
+        html = await renderTemplate("systems/the_edge/templates/chat/generic_damage.html", details);
+        break;
+      
       case "PROFICIENCYCHECK":
         html = await renderTemplate("systems/the_edge/templates/chat/proficiency_check.html", details);
         break;

@@ -1,6 +1,6 @@
 {
 "Actor": {
-  "types": ["character"],
+  "types": ["character", "Store"],
   "templates": {
     "attributes": {
       "attributes": {
@@ -149,6 +149,15 @@
       "bloodlossStepSize": {"status": 0}
     },
     "nativeLanguage": "Standard"
+  },
+  "Store": {
+    "credits": {
+      "chids": 0,
+      "digital": 0
+    },
+    "tradeFactor": 1,
+    "isStorage": false,
+    "buysFromPlayer": false
   }
 },
 "Item": {

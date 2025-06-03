@@ -52,8 +52,18 @@ export default function() {
     log: (a) => console.log(a),
     add: (a, b) => { return a + b; },
     sub: (a, b) => { return a - b; },
+    div: (a, b) => { return a / b; },
     capitalise: (a) => { return a.charAt(0).toUpperCase() + a.slice(1); },
+    anyObjectValues: (a) => { return Object.values(a).some(x => x); },
+    storePrice: (a, b) => { return Math.round(a * b / 10) * 10; },
 
+    getActiveGrenadeEffects: (a) => {
+      const effects = [];
+      for (const [key, value] of Object.entries(a)) {
+        if (value) effects.push(key);
+      }
+      return effects;
+    },
     getProficiency: (a, b, c, d) => { return a.system.proficiencies[b][c][d]; },
     getProficiencyDice: (a, b, c, d) => { return a.system.proficiencies[b][c].dices[d]; },
     getWeaponProficiency: (a, b, c, d) => { return a.system.weapons[b][c][d]; },
@@ -83,6 +93,10 @@ export default function() {
     checkDisplayEffects: (name, effects) => {
       if (name == "effects") return true;
       return effects.length != 0;
+    },
+    checkHasMultipleStacked: (systemData) => {
+      if ("quantity" in systemData && systemData.quantity > 1) return true;
+      return false;
     },
     getRangeModifier: (rangeChart, distance) => {
       if (distance < 2) return `(${rangeChart["less_2m"][0]} / ${rangeChart["less_2m"][1]})`;

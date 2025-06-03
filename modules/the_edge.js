@@ -5,7 +5,6 @@ import { TheEdgeItem } from "./items/item.js";
 import { TheEdgeItemSheet } from "./items/item-sheet.js";
 import { TheEdgeActorSheet } from "./actors/actor-sheet.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
-import { createWorldbuildingMacro } from "./macro.js";
 import { TheEdgeToken, TheEdgeTokenDocument } from "./token.js";
 
 Hooks.once("init", async function() {
@@ -73,8 +72,7 @@ Hooks.once("init", async function() {
   }
 
   game.the_edge = {
-    TheEdgeActor,
-    createWorldbuildingMacro,
+    // createWorldbuildingMacro,
     config: THE_EDGE,
   };
 
@@ -91,8 +89,7 @@ Hooks.once("init", async function() {
   }
 
   // Register sheet application classes
-  Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("the_edge", TheEdgeActorSheet, { makeDefault: true });
+  TheEdgeActorSheet.setupSheets()
   TheEdgeItemSheet.setupSheets()
 
   // Register system settings
@@ -144,10 +141,6 @@ Hooks.once("init", async function() {
   // Preload template partials
   await preloadHandlebarsTemplates();
 });
-
-Hooks.on("ready", async() => {
-  TheEdgeItem.setupSubClasses()
-})
 
 /**
  * Macrobar hook.

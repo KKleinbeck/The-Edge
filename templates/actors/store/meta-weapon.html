@@ -1,0 +1,12 @@
+<b>{{combatName "Fire modes"}}:</b>
+<div style="display: table;">
+  {{#each system.fireModes as |mode|}}
+    <div style="display: table-row;">
+      <div style="display: table-cell; padding-left: 10px;">{{mode.name}}</div>
+      <div style="display: table-cell; padding-left:  7px;">{{mode.dices}} x {{mode.damage}}</div>
+      <div style="display: table-cell; padding-left:  7px;", title="{{combatName 'accuracy'}}">
+        (-{{getEntry mode.precisionPenalty 0}}, -{{getEntry mode.precisionPenalty 1}})
+      </div>
+    </div>
+  {{/each}}
+</div>
