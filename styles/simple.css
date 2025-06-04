@@ -6,7 +6,10 @@
 
   --color-underline-header: #bd9f09;
   --font-main-color: #e4e7fe;
+  --font-secondary-color: #ccc;
   --color-text-light-highlight: #FFF;
+  --color-background-night-black: #2A395A;
+  --color-background-light-night-black: #2A507A;
 }
 
 
@@ -61,6 +64,24 @@ h1, h2, h3, h4 {
 .message-metadata {
   color: var(--font-main-color) !important;
 }
+.form-group span.units {
+  color: var(--font-main-color) !important;
+}
+.form-group.slim .form-fields > label {
+  color: var(--font-main-color) !important;
+}
+.hint {
+  color: var(--font-main-color) !important;
+}
+.notes {
+  color: var(--font-main-color) !important;
+}
+.prosemirror menu button:hover, .prosemirror menu button.active {
+  background-color: var(--color-background-light-night-black) !important;
+}
+.prosemirror menu .pm-dropdown {
+  background-color: var(--color-background-night-black);
+}
 .window-app {
   color: var(--font-main-color) !important;
 }
@@ -70,7 +91,7 @@ h1, h2, h3, h4 {
 }
 
 button {
-  background-color: #2A395A;
+  background-color: var(--color-background-night-black);
   color: var(--font-main-color) !important;
 }
 input {
@@ -81,6 +102,9 @@ input {
   border-radius: 5px !important;
   font-family: "Titillium-Regular";
   color: var(--font-main-color) !important;
+}
+input::placeholder {
+  color: var(--font-secondary-color);
 }
 img {
   border: none;

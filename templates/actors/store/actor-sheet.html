@@ -1,10 +1,10 @@
 <form class="flexcol {{cssClass}}" autocomplete="off">
   {{!-- Sheet Header --}}
   <header class="sheet-header" style="display: flex; max-height: 70px; gap: 30px; padding: 0 5px 0 5px;">
-    <h1 class="charname" style="flex: 1;">
-      <input name="name" type="text" value="{{data.name}}" placeholder="Name" />
+    <h1 class="charname" style="flex: 2;">
+      <input name="name" type="text" value="{{data.name}}" placeholder="Name" style="min-height: 38px;"/>
     </h1>
-    <divi style="flex: 2">
+    <divi style="flex: 3">
       <div style="display: flex; align-items: center; gap: 5px;">
         <b style="flex: 1; text-align: right;">{{#if systemData.isStorage}}{{genName "Storage"}}{{else}}{{genName "Shop"}}{{/if}}</b>
         <label for="credits-chids" style="flex: 1; text-align: right;">Chids</label>

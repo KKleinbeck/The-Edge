@@ -45,7 +45,11 @@
           <div class="item-fields" style="gap: 10px; text-align: center;">
             <div style="align-items: center; display: flex; flex-flow: nowrap; gap: 5px;">
               <b>{{genName "Damage"}}</b>
-              <input type="text" name="system.fireModes.Single.damage" value="{{systemData.fireModes.Single.damage}}" style="width: 80px"/>
+              {{#each systemData.fireModes as |mode|}}
+                {{#if @first}}
+                  <input class="firing-mode firing-mode-modify" data-index="{{@index}}" type="text" data-target="damage" value="{{mode.damage}}" style="width: 80px"/>
+                {{/if}}
+              {{/each}}
             </div>
             <div class="checkbox-container">
               <input type="checkbox" id="is-elemental" name="system.isElemental" {{#if systemData.isElemental}}checked{{/if}} style="margin-left: 0px;"/>
