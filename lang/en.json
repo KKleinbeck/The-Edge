@@ -2,6 +2,7 @@
   "ACTOR": {
     "BODY PART": "Body part",
     "TORSO": "Torso",
+    "TORSO_ARMS": "Torso & Arms",
     "ARMS": "Arms",
     "LEGS": "Legs",
     "BELOW_NECK": "Below neck",

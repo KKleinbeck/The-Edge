@@ -1,5 +1,6 @@
 import LocalisationServer from "../system/localisation_server.js";
 import Aux from "../system/auxilliaries.js";
+import THE_EDGE from "../system/config-the-edge.js";
 
 /**
  * Extend the base Item document to support attributes and groups with a custom template creation dialog.
@@ -67,7 +68,8 @@ export class TheEdgeItem extends Item {
 export class ArmourItemTheEdge extends TheEdgeItem {
   static async protect(damage, damageType, location, protectionLog) {
     const protectedLoc = this.system.bodyPart;
-    const isProtective = protectedLoc === "Entire" || (location === protectedLoc) || (location !== "Head" && protectedLoc === "Below_Neck")
+    const isProtective = THE_EDGE.cover_map[protectedLoc].includes(location);
+    console.log(location, protectedLoc, isProtective)
     if (!isProtective) return damage;
 
     // Process inner armour first

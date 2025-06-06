@@ -18,7 +18,6 @@ export default class ChatServer {
         break;
       
       case "GENERIC DAMAGE":
-        console.log(details)
         html = await renderTemplate("systems/the_edge/templates/chat/generic_damage.html", details);
         break;
       

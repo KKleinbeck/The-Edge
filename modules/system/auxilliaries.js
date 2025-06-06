@@ -125,7 +125,7 @@ export default class Aux {
       else {
         let rand = Math.random();
         if (rand < 0.15) locationDescription = "Legs" + ["Left", "Right"].random(); // 15%
-        else if (rand < 0.30) locationDescription = "Arms" + ["Left", "Right"].random(); // 30%
+        else if (rand < 0.30) locationDescription = "Arms" + ["Left", "Right"].random(); // 15%
         else locationDescription = "Torso"; // 65%, as p(crit) == 5%
       }
     } else {

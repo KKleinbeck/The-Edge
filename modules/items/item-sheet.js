@@ -185,7 +185,7 @@ class ItemSheetArmour extends TheEdgeItemSheet {
 
   async getData(options) {
     const context = await super.getData(options);
-    context.helpers = {bodyParts: THE_EDGE.body_parts};
+    context.helpers = {bodyParts: Object.keys(THE_EDGE.cover_map)};
     return context;
   }
 

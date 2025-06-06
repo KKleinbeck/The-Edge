@@ -7,7 +7,6 @@ THE_EDGE.sizes = {tiny: 30, small: 130, normal: 250, large: 500, giant: Infinity
 THE_EDGE.sizeModifiers = {"normal": [0, 0], "tiny": [-8, -4], "small": [-4, -2],  "large": [2, 4], "giant": [4, 8]}
 THE_EDGE.movements = {"stationary": [0, 0], "moderate": [-1, -1], "fast": [-2, -2], "erradic": [-4, -4]}
 THE_EDGE.cover = {"no cover": 0, "half cover": -2, "three quarters": -4, "full cover": -20}
-THE_EDGE.body_parts = ["Torso", "Arms", "Legs", "Below_Neck", "Head", "Entire"]
 THE_EDGE.consumables_subtypes = ["Food", "Grenade", "SkinPack", "FleshPack", "Drugs", "Generic"]
 THE_EDGE.wounds_pixel_coords = {
   "female": {
@@ -26,6 +25,14 @@ THE_EDGE.wounds_pixel_coords = {
     "LegsLeft":  {"coords": [[30.5,57.0], [28.5,84.0]], "radius":  1},
     "LegsRight": {"coords": [[65.0,57.0], [67.0,84.0]], "radius":  1}
   }
+}
+THE_EDGE.cover_map = {
+  Torso: ["Torso"],
+  Torso_Arms: ["Torso", "ArmsLeft", "ArmsRight"],
+  Legs: ["LegsLeft", "LegsRight"],
+  Below_Neck: ["Torso", "ArmsLeft", "ArmsRight", "LegsLeft", "LegsRight"],
+  Head: ["Head"],
+  Entire: ["Head", "Torso", "ArmsLeft", "ArmsRight", "LegsLeft", "LegsRight"]
 }
 THE_EDGE.bleeding_threshold = {
   "energy": 25, "kinetic": 10, "elemental": 50, "fall": 15, "impact": 15, "HandToHand": 25
