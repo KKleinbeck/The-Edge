@@ -361,6 +361,7 @@ export default function() {
         return ;
       }
 
+      console.log(html.html())
       const sys = message.message.system;
       if (sys.targetId) {
         const scene = game.scenes.get(sys.sceneId);
@@ -374,6 +375,7 @@ export default function() {
       } else $(ev.currentTarget).remove();
 
       $(html.find(".rerollable")).removeClass("rerollable"); // No more edits after damage application
+      $(html.find(".message-header")).remove(); // Remove old header bar
       chatMsgCls.update({"content": html.find(".message-content").html()});
     })
   })
