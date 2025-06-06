@@ -3,9 +3,14 @@
   {{#each system.fireModes as |mode|}}
     <div style="display: table-row;">
       <div style="display: table-cell; padding-left: 10px;">{{mode.name}}</div>
-      <div style="display: table-cell; padding-left:  7px;">{{mode.dices}} x {{mode.damage}}</div>
-      <div style="display: table-cell; padding-left:  7px;", title="{{combatName 'accuracy'}}">
-        (-{{getEntry mode.precisionPenalty 0}}, -{{getEntry mode.precisionPenalty 1}})
+      <div style="display: table-cell; padding-left: 10px;" title="{{genName 'damage'}}">{{mode.dices}}x</div>
+      <div style="display: table-cell; padding-left:  7px;" title="{{genName 'damage'}}">{{mode.damage}}</div>
+    </div>
+    <div style="display: table-row;">
+      <div style="display: table-cell; padding-left: 10px;"></div>
+      <div style="display: table-cell; padding-left: 10px;"></div>
+      <div style="display: table-cell; padding-left:  7px;" title="{{combatName 'accuracy'}}">
+        ({{getEntry mode.precisionPenalty 0}}, {{getEntry mode.precisionPenalty 1}})
       </div>
     </div>
   {{/each}}

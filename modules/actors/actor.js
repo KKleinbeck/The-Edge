@@ -256,9 +256,9 @@ export class TheEdgeActor extends Actor {
     ) || 0 // -1 for the phyiscal proficiencies
     if (str <= 0) return false; // We can't possibly do sensible things yet
     
-    this.overloadLevel = Math.max(Math.ceil((weight - str) / (str / 2)), 0) +
+    this.overloadLevel = Math.max(Math.ceil((weight - 1.5 * str) / (str / 2)), 0) +
       this.system.statusEffects.overload.status;
-    this.weightTillNextOverload = str * (1 + 0.5 * this.overloadLevel) - weight;
+    this.weightTillNextOverload = str * (1.5 + 0.5 * this.overloadLevel) - weight;
     if (this.overloadLevel <= 0) this._deleteEffect("Overload");
     else {
       if (!currentOverload) currentOverload = await this._getEffectOrCreate("Overload")

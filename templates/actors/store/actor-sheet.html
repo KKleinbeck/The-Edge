@@ -49,37 +49,25 @@
   </nav>
 
   <section class="sheet-body" style="position: relative;">
-    {{#each itemTypes as |items type|}}
+    {{#each itemTypes as |group type|}}
       <div class="tab tab-scroll" data-group="primary" data-tab="{{type}}">
-        <div class="store-grid">
-          {{#each items as |item|}}
-            <div class="store-item store-item-glow" data-item-id="{{item._id}}" data-price="{{storePrice item.system.value ../../systemData.tradeFactor}}">
-              <div class="item-information">
-                {{> systems/the_edge/templates/actors/store/meta-header.html
-                  isStorage=../../systemData.isStorage
-                  tradeFactor=../../systemData.tradeFactor
-                }}
-
-                {{#if (checkEqual type "Weapon")}}
-                  {{> systems/the_edge/templates/actors/store/meta-weapon.html}}
-                {{/if}}
-                {{#if (checkEqual type "Ammunition")}}
-                  {{> systems/the_edge/templates/actors/store/meta-ammunition.html}}
-                {{/if}}
-                {{#if (checkEqual type "Armour")}}
-                  {{> systems/the_edge/templates/actors/store/meta-armour.html}}
-                {{/if}}
-                {{#if (checkEqual type "Consumables")}}
-                  {{> systems/the_edge/templates/actors/store/meta-consumables.html}}
-                {{/if}}
-              </div>
-              {{> systems/the_edge/templates/actors/store/meta-buy-or-retrieve.html
-                isStorage=../../systemData.isStorage
-                userIsGM=../../systemData.userIsGM
-              }}
+        {{#if (checkEqual type "Weapon")}}
+          {{log group}}
+          {{#each group as |items subtype|}}
+            <h3>{{subtype}}</h3>
+            <div class="store-grid">
+              {{#each items as |item|}}
+                {{> systems/the_edge/templates/actors/store/meta-item.html id=item._id storeDetails=../../../systemData}}
+              {{/each}}
             </div>
           {{/each}}
-       </div>
+        {{else}}
+          <div class="store-grid">
+            {{#each group as |item|}}
+              {{> systems/the_edge/templates/actors/store/meta-item.html id=item._id storeDetails=../../systemData}}
+            {{/each}}
+          </div>
+        {{/if}}
       </div>
     {{/each}}
     {{#if systemData.buysFromPlayer}}

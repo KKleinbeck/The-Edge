@@ -616,8 +616,22 @@ class ActorSheetStore extends TheEdgeActorSheet {
 
     context.itemTypes = {};
     for (const [type, items] of Object.entries(this.actor.itemTypes)) {
-      if (items.length > 0 && "value" in game.model.Item[type]) context.itemTypes[type] = items;
+      if (items.length == 0) continue;
+
+      if (type == "Weapon") {
+        context.itemTypes.Weapon = {};
+
+        for (const item of items) {
+          if (!(item.system.type in context.itemTypes.Weapon)) {
+            context.itemTypes.Weapon[item.system.type] = [item];
+          } else {
+            context.itemTypes.Weapon[item.system.type].push(item);
+          }
+        }
+      }
+      else if ("value" in game.model.Item[type]) context.itemTypes[type] = items;
     }
+    console.log(context.itemTypes)
 
     const playerTokens = Aux.getPlayerTokens();
     context.playerItemTypes = {};
