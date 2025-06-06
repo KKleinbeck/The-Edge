@@ -71,7 +71,7 @@
     {{/each}}
     {{#if systemData.buysFromPlayer}}
       <div class="tab tab-scroll" data-group="primary" data-tab="player-items">
-        {{> systems/the_edge/templates/actors/store/buy-from-player.html tradeFactor=systemData.tradeFactor}}
+        {{> systems/the_edge/templates/actors/store/buy-from-player.html storeDetails=systemData}}
       </div>
     {{/if}}
   </section>

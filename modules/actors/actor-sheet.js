@@ -670,7 +670,7 @@ class ActorSheetStore extends TheEdgeActorSheet {
 
   _on_retrieve_item(event) {
     const playerTokens = Aux.getPlayerTokens();
-    if (!playerTokens) return;
+    if (!playerTokens || playerTokens.length == 0) return;
 
     // TODO: Select which actor buys the item
     const actor = playerTokens[0].actor;    
