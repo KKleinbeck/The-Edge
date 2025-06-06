@@ -561,8 +561,8 @@ class ActorSheetCharacter extends TheEdgeActorSheet {
       if (armour.system.layer == "Outer") return false;
       if (armour.system.attachmentPoints.max - armour.system.attachmentPoints.used < size) return false;
 
-      else if (armour.system.bodyPart == bodyTarget) return true
-      else if (armour.system.bodyPart == "Entire") return true
+      else if (armour.system.bodyPart.includes(bodyTarget)) return true;
+      else if (armour.system.bodyPart == "Entire") return true;
       else if (armour.system.bodyPart == "Below_Neck" && bodyTarget != "Head") return true;
       return false
     })
