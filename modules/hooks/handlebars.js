@@ -1,4 +1,5 @@
 import LocalisationServer from "../system/localisation_server.js";
+import Aux from "../system/auxilliaries.js";
 import THE_EDGE from "../system/config-the-edge.js";
 
 export default function() {
@@ -110,6 +111,12 @@ export default function() {
     },
     getAmmunitionCount: (a) => {return `(${a.system.capacity.max - a.system.capacity.used} / ${a.system.capacity.max})`},
     getStructurePoints: (a) => {return `(${a.system.structurePoints})`},
+    getAttachmentDetails: (actorId, tokenId, shellId) => {
+      const actor = Aux.getActor(actorId, tokenId);
+
+      const shell = actor.items.get(shellId);
+      return `${shell.name} (${shell.system.structurePoints})`;
+    },
     getDmgModifier: (a) => {return `dmg: ${a.system.damage.bonus} / ${a.system.damage.penetration}`},
     getNextWeightClass: (weightTillNextOverload) => {
       return `${Math.floor(10 * weightTillNextOverload)/10}kg ${LocalisationServer.localise("to next level")}`

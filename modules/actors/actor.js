@@ -801,9 +801,9 @@ export class TheEdgeActor extends Actor {
       ui.notifications.notify(msg)
     }
     // Hack relevant information into the shells attachment list, needed in item.js upon breaking
-    shell.update({"system.equipped": true, "system.attachments": [{actorId: this.id, tokenId, armourId: armour._id}]});
+    shell.update({"system.equipped": true, "system.attachments": [{actorId: this.id, tokenId: tokenId, armourId: armour._id}]});
     const attachments = armour.system.attachments;
-    attachments.push({actorId: this.id, tokenId, shellId: shell._id, shell: shell});
+    attachments.push({actorId: this.id, tokenId: tokenId, shellId: shell._id, shell: shell});
     armour.update({
       "system.attachments": attachments,
       "system.attachmentPoints.used": armour.system.attachmentPoints.used + shell.system.attachmentPoints.max

@@ -43,7 +43,6 @@ export default class ChatServer {
         break;
       
       case "RELOAD":
-        console.log(details)
         html = await renderTemplate("systems/the_edge/templates/chat/reload.html", details);
         break;
       

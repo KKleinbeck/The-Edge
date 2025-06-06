@@ -51,7 +51,7 @@
                 <div class="item-control" data-action="edit" style="cursor: pointer; display: flex; align-items: center;">
                   <a class="item-control" style="padding: 0px 8px;"><i class="fas fa-turn-up" style="transform: rotate(90deg);"></i></a>
                   <img src="{{attachment.shell.img}}" title="{{attachment.shell.name}}" width="24" height="24" />
-                  <b>({{genName "Attachment"}}) {{attachment.shell.name}} {{getStructurePoints attachment.shell}}</b>
+                  <b>({{genName "Attachment"}}) {{getAttachmentDetails attachment.actorId attachment.tokenId attachment.shellId}}</b>
                 </div>
                 <div class="item-controls">
                   <a class="item-control" title="{{ itemName 'Unequip' }}" data-action="toggle-equip"><i class="far fa-check-circle"></i></a>

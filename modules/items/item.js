@@ -69,7 +69,6 @@ export class ArmourItemTheEdge extends TheEdgeItem {
   static async protect(damage, damageType, location, protectionLog) {
     const protectedLoc = this.system.bodyPart;
     const isProtective = THE_EDGE.cover_map[protectedLoc].includes(location);
-    console.log(location, protectedLoc, isProtective)
     if (!isProtective) return damage;
 
     // Process inner armour first
