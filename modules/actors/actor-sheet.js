@@ -364,7 +364,7 @@ class ActorSheetCharacter extends TheEdgeActorSheet {
         const clsEffect = getDocumentClass("Item");
         return clsEffect.create({name: LocalisationServer.localise("New effect", "item"), type: "Effect"}, {parent: this.actor});
       case "edit":
-        return item.sheet.render(true);
+        return item?.sheet.render(true);
       case "post":
         ChatServer.transmitEvent("Post Item",
           {name: item.name, description: item.system.description}
