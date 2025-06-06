@@ -326,7 +326,8 @@ class ItemSheetSkill extends TheEdgeItemSheet {
     // The next line also sets the name to something sensible if the group changes
     const context = await this.getData();
     if (target == "group") {
-      effects[index].name = Object.keys(context.definedEffects[button.value])[0];
+      if (button.value == "others") targetList[level][index].name = Object.keys(context.definedEffects["others"])[0];
+      else targetList[level][index].name = Object.keys(context.coreRequirements[button.value])[0];
     }
     if (type == "levelEffects") this.item.update({"system.levelEffects": targetList});
     if (type == "requirements") this.item.update({"system.requirements": targetList});
