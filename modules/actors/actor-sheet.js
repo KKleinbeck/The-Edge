@@ -631,7 +631,6 @@ class ActorSheetStore extends TheEdgeActorSheet {
       }
       else if ("value" in game.model.Item[type]) context.itemTypes[type] = items;
     }
-    console.log(context.itemTypes)
 
     const playerTokens = Aux.getPlayerTokens();
     context.playerItemTypes = {};

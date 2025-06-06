@@ -52,7 +52,6 @@
     {{#each itemTypes as |group type|}}
       <div class="tab tab-scroll" data-group="primary" data-tab="{{type}}">
         {{#if (checkEqual type "Weapon")}}
-          {{log group}}
           {{#each group as |items subtype|}}
             <h3>{{subtype}}</h3>
             <div class="store-grid">
