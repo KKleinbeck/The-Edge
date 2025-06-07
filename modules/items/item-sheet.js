@@ -245,7 +245,7 @@ class ItemSheetVantage extends TheEdgeItemSheet {
   }
 
   get template() {
-    return `systems/the_edge/templates/items/item-vantage.html`;
+    return `systems/the_edge/templates/items/item-Vantage.html`;
   }
 }
 
@@ -347,7 +347,7 @@ class ItemSheetSkill extends TheEdgeItemSheet {
   }
 
   get template() {
-    return `systems/the_edge/templates/items/item-skill.html`;
+    return `systems/the_edge/templates/items/item-Skill.html`;
   }
 }
 
@@ -385,7 +385,7 @@ class ItemSheetConsumables extends ItemSheetSkill {
   }
 
   get template() {
-    return `systems/the_edge/templates/items/item-consumables.html`;
+    return `systems/the_edge/templates/items/item-Consumables.html`;
   }
 }
 
@@ -444,6 +444,6 @@ class ItemSheetEffect extends TheEdgeItemSheet {
   }
 
   get template() {
-    return `systems/the_edge/templates/items/item-effect.html`;
+    return `systems/the_edge/templates/items/item-Effect.html`;
   }
 }
