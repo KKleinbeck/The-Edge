@@ -90,6 +90,10 @@ h1, h2, h3, h4 {
   color: var(--font-main-color) !important;
 }
 
+#module-management .package-list .package-title, #module-management .package-list .package-metadata, #module-management .package-list .package-description {
+    color: var(--font-main-color);
+}
+
 button {
   background-color: var(--color-background-night-black);
   color: var(--font-main-color) !important;
