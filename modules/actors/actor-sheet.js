@@ -628,7 +628,6 @@ class ActorSheetStore extends TheEdgeActorSheet {
             context.itemTypes.Weapon[item.system.type].push(item);
           }
         }
-        console.log(context.itemTypes.Weapon)
       } else if (type == "Consumables") {
         context.itemTypes.Consumables = {};
 
@@ -639,7 +638,6 @@ class ActorSheetStore extends TheEdgeActorSheet {
             context.itemTypes.Consumables[item.system.subtype].push(item);
           }
         }
-        console.log(context.itemTypes.Consumables)
       } else if ("value" in game.model.Item[type]) context.itemTypes[type] = items;
     }
 

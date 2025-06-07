@@ -361,7 +361,6 @@ export default function() {
         return ;
       }
 
-      console.log(html.html())
       const sys = message.message.system;
       if (sys.targetId) {
         const scene = game.scenes.get(sys.sceneId);
