@@ -1,6 +1,5 @@
 {
   "id": "the_edge",
-  "version": "0.8.2",
   "title": "The Edge",
   "url": "https://github.com/KKleinbeck/The-Edge",
   "description": "A Sci-Fi centric rule system, heavily inspired by the DSA ruleset.",
@@ -35,6 +34,7 @@
   },
   "primaryTokenAttribute": "health.value",
   "secondaryTokenAttribute": "heartRate.value",
+  "version": "v0.8.3",
   "manifest": "https://raw.githubusercontent.com/KKleinbeck/The-Edge/master/system.json",
-  "download": "https://github.com/KKleinbeck/The-Edge/archive/refs/tags/0.8.1.zip"
+  "download": "https://github.com/KKleinbeck/The-Edge/archive/refs/tags/v0.8.3.zip"
 }

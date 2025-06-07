@@ -281,6 +281,18 @@
     "GENERIC": "Generic",
     "USE": "Use",
 
+    "BLASTER PISTOLS": "Blaster Pistols",
+    "PULSE RIFLE": "Pulse Rifle",
+    "SABS": "SABs",
+    "BLASTER SHOCKGUNS": "Blaster Shockguns",
+    "BLASTER SNIPERS": "Blaster Snipers",
+    "KINETIC PISTOLS": "Kinetic Pistols",
+    "SLUG THROWERS": "Slug Throwers",
+    "LMGS": "LMGs",
+    "SHOTGUNS": "Shotguns",
+    "PROJECTILE SNIPERS": "Projectile Snipers",
+    "HAND-TO-HAND COMBAT": "Melee weapons",
+
     "HEALS": "Heals",
     "HEALED": "Healed damage",
     "REGEN BLOODLOSS": "Regenerated bloodloss",

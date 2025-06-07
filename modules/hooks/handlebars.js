@@ -46,6 +46,7 @@ export default function() {
       if (!a) return false;
       return Object.keys(a).length !== 0;
     },
+    checkSubtypedItem: (a) => { return (a == "Weapon" || a == "Consumables");},
     checkAttachment: (a) => { return a.system?.layer === "Outer"; },
     getSys: (a, b, c, d) => { return a.system[b][c][d]; },
     getSys5: (a, b, c, d, e) => { return a.system[b][c][d][e]; },

@@ -51,9 +51,9 @@
   <section class="sheet-body" style="position: relative;">
     {{#each itemTypes as |group type|}}
       <div class="tab tab-scroll" data-group="primary" data-tab="{{type}}">
-        {{#if (checkEqual type "Weapon")}}
+        {{#if (checkSubtypedItem type)}}
           {{#each group as |items subtype|}}
-            <h3>{{subtype}}</h3>
+            <h3>{{itemName subtype}}</h3>
             <div class="store-grid">
               {{#each items as |item|}}
                 {{> systems/the_edge/templates/actors/store/meta-item.html id=item._id storeDetails=../../../systemData}}
