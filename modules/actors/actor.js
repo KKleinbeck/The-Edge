@@ -569,7 +569,7 @@ export class TheEdgeActor extends Actor {
 
     if (existingCopy) {
       const sys = existingCopy.system
-      if (sys.hasLevels && sys.maxLevel > sys.level) {
+      if (sys.maxLevel > sys.level) {
         await existingCopy.update({"system.level": sys.level + 1})
       }
     } else {
