@@ -699,7 +699,9 @@ class ActorSheetStore extends TheEdgeActorSheet {
         existingCopy.update({"system.quantity": existingCopy.system.quantity + 1});
       } else {
         const itemCls = getDocumentClass("Item");
-        itemCls.create({name: item.name, type: item.type, system: item.system}, {parent: actor});
+        const newSystem = {...item.system};
+        newSystem.quantity = 1;
+        itemCls.create({name: item.name, type: item.type, system: newSystem}, {parent: actor});
       }
 
       if (item.system.quantity > 1) item.update({"system.quantity": item.system.quantity - 1});
@@ -725,7 +727,9 @@ class ActorSheetStore extends TheEdgeActorSheet {
         existingCopy.update({"system.quantity": existingCopy.system.quantity + 1});
       } else {
         const itemCls = getDocumentClass("Item");
-        itemCls.create({name: item.name, type: item.type, system: item.system}, {parent: this.actor});
+        const newSystem = {...item.system};
+        newSystem.quantity = 1;
+        itemCls.create({name: item.name, type: item.type, system: newSystem}, {parent: this.actor});
       }
       
       if (item.system.quantity > 1) item.update({"system.quantity": item.system.quantity - 1});
