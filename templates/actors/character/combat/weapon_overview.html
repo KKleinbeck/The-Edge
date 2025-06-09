@@ -16,8 +16,8 @@
       {{#if (checkEqual item.type 'Weapon')}}
         <div class="loadout-box">
           <div class="item-control item loadout-name" data-action="edit" style="cursor: pointer;" data-item-id="{{item._id}}">
-            <img class="item-img" src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
-            <div>{{item.name}} {{getLoadedAmmunition ../actor item}}</div>
+            <img class="item-img" src="{{item.img}}" title="{{item.name}}" style="width: 24px; height: 24px;" />
+            <div style="min-height: 24px;">{{item.name}} {{getLoadedAmmunition ../actor item}}</div>
           </div>
           <div class="weapon-id" style="display: flex; flex-wrap: nowrap; gap: 5px; align-items: center;" data-weapon-id="{{item._id}}">
             {{#if (checkEqual item.system.type "Hand-to-Hand combat")}}
