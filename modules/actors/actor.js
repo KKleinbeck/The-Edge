@@ -117,7 +117,6 @@ export class TheEdgeActor extends Actor {
       herotoken: Array(sys.heroToken.max).fill(false).fill(true, 0, sys.heroToken.available)
     });
 
-    this.determineOverload(); // To set overload values
     return preparedData
   }
 
