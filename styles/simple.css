@@ -129,6 +129,7 @@ select {
   color: var(--font-main-color) !important;
 }
 textarea {
+  color: var(--font-main-color) !important;
   background-image: url("../assets/background.png") !important;
 }
 

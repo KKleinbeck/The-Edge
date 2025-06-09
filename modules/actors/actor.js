@@ -469,6 +469,7 @@ export class TheEdgeActor extends Actor {
   }
 
   fulfillsRequirements(skill, newSkill = false) {
+    if (skill.type == "Languageskill") return true;
     const level = skill.system.level - newSkill;
     const requirements = skill.system.requirements[level];
     if (requirements === undefined || requirements.length == 0) return true;

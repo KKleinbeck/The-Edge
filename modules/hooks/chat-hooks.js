@@ -120,8 +120,9 @@ export default function() {
   const parseGivePH = (message, matches, chatData) => {
     const user = game.users.get(chatData.user);
     if (!user.isGM) {
-      const msg = LocalisationServer.localise("givePH permission", "chat")
-      ui.notifications.notify(msg)
+      const msg = LocalisationServer.localise("givePH permission", "chat");
+      ui.notifications.notify(msg);
+      chatData.content = msg;
       return false;
     }
 
@@ -134,7 +135,7 @@ export default function() {
     const actors = [];
     if (name == "all") {
       for (const actor of game.actors) {
-        if (actor.hasPlayerOwner) {
+        if (actor.hasPlayerOwner && actor.type == "character") {
           actors.push(actor.name);
           actor.update({"system.PracticeHours.max": actor.system.PracticeHours.max + ph});
         }

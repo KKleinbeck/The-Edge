@@ -52,7 +52,7 @@ export default function() {
     getSys5: (a, b, c, d, e) => { return a.system[b][c][d][e]; },
     getEntry: (a, b) => { return a[b]; },
     log: (a) => console.log(a),
-    add: (a, b) => { return a + b; },
+    add: (a, b) => { return +a + +b; },
     sub: (a, b) => { return a - b; },
     div: (a, b) => { return a / b; },
     capitalise: (a) => { return a.charAt(0).toUpperCase() + a.slice(1); },
