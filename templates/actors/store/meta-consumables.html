@@ -1,9 +1,4 @@
 <div style="display: table;">
-  <div style="display: table-row;">
-    <div style="display: table-cell;"><b>{{genName "Type"}}:</b></div>
-    <div style="display: table-cell; padding-left: 10px;">{{itemName system.subtype}}</div>
-  </div>
-
   {{#if (checkEqual system.subtype "medicine")}}
     <div style="display: table-row;">
       <div style="display: table-cell;"><b>{{genName "Effect"}}:</b></div>
@@ -37,7 +32,6 @@
     </div>
   {{/if}}
 </div>
-
 {{#if (checkEqual system.subtype "grenade")}}
   {{#if (anyObjectValues system.subtypes.grenade.effects)}}
     <b>{{genName "Effect"}}:</b>
