@@ -280,8 +280,7 @@ export class TheEdgeActor extends Actor {
     if (zone == 2) {
       await currentStrain.update({"system.effects": [
         {group: "attributes", name: "crd", value: -1},
-        {group: "attributes", name: "foc", value: -1},
-        {group: "attributes", name: "spd", value: 1}
+        {group: "attributes", name: "foc", value: -1}
       ], "system.statusEffect": true, "system.gm_description": zone - 1})
     } else {
       await currentStrain.update({"system.effects": [
@@ -842,6 +841,18 @@ export class TheEdgeActor extends Actor {
     
     ChatServer.transmitEvent("strainUpdate",
       {strains: strains, communication: communication, hrChange: hrChange})
+  }
+
+  async applyStrains(strains) {
+    const hr = this.system.heartRate;
+    var hrChange = strains.sum();
+    const threshold = hrChange < 0 ? hr.min.value : hr.max.value;
+    const clamper = hrChange < 0 ? Math.max : Math.min;
+
+    const hrNew = clamper(hr.value + hrChange, threshold);
+    hrChange = hrNew - hr.value;
+    await this.update({"system.heartRate.value": hrNew});
+    return hrChange;
   }
 
   _getEffect(name) {

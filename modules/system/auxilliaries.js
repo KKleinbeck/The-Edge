@@ -76,6 +76,37 @@ export default class Aux {
     return undefined;
   }
 
+  static parseHrCostStr(costStr, skillName, hrValue, hrLimit, hrZone) {
+    let cost = costStr.replace(/\s+/g, '') // w.o. whitespace
+    let levels = cost.split("/");
+
+    if (levels.length != 1 && levels.length != 3) {
+      let msg = LocalisationServer.parsedLocalisation("Wrong hr cost string", "Notifications", {skill: skillName});
+      ui.notifications.notify(msg);
+      return undefined;
+    }
+
+    const relevantLevel = levels.length == 1 ? levels[0] : levels[hrZone - 1];
+    if (relevantLevel.toUpperCase() == "N.A.") {
+      let msg = LocalisationServer.parsedLocalisation("Invalid HR zone", "Notifications", {skill: skillName, zone: hrZone});
+      ui.notifications.notify(msg);
+      return undefined;
+    }
+
+    const regex = /^(\d+)(%?)(?:\((\d+)\))?$/;
+    const match = relevantLevel.match(regex);
+
+    if (!match) {
+      let msg = LocalisationServer.parsedLocalisation("wrong hr cost format", "Notifications", {skill: skillName, str: relevantLevel});
+      ui.notifications.notify(msg);
+      return undefined;
+    }
+    var hrChange = parseInt(match[1]);
+    if (match[2] === '%') hrChange = Math.floor((hrLimit - hrValue) * hrChange / 100);
+    if (match[3]) hrChange = Math.max(hrChange, parseInt(match[3]));
+    return hrChange;
+  }
+
   static getSkillCost(skill, mode = undefined) {
     let level = skill.system.level;
     if (skill.type == "Languageskill") {

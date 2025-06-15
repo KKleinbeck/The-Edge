@@ -179,13 +179,12 @@ textarea {
   margin-bottom: 10px;
 }
 .the_edge .sheet-header-item {
-  flex: 0 0 100px;
+  flex: 0 0 110px;
   overflow: hidden;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: flex-start;
-  margin-bottom: 10px;
 }
 .the_edge .item-img {
   background-color: #FFF;
@@ -498,6 +497,16 @@ textarea {
   flex: 1;
   height: 50px;
   text-align: center;
+}
+.the_edge .sheet-header-item .skill-header-fields {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  justify-content: end;
+  padding-bottom: 2px;
+}
+.the_edge .sheet-header-item .skill-header-fields .item {
+  max-height: 22px;
 }
 .the_edge .sheet-header h1.charname {
   height: 40px;

@@ -486,6 +486,13 @@ class ActorSheetCharacter extends TheEdgeActorSheet {
         );
         break;
       case "roll":
+        const hrChange = Aux.parseHrCostStr(
+          skill.system.hrCost, skill.name,
+          this.actor.system.heartRate.value,
+          this.actor.system.heartRate.max.value,
+          this.actor.getHRZone()
+        )
+        if (hrChange) this.actor.applyStrains([hrChange]);
         if (skill.type == "Medicalskill") {
           DialogProficiency.start({
             proficiency: skill.system.basis, actor: this.actor, actorId: this.actor.id
