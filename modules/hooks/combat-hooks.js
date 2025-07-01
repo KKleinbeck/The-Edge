@@ -3,6 +3,8 @@ import DialogCombatActions from "../dialogs/dialog-combat-actions.js";
 
 export default function() {
   Hooks.on("renderCombatTracker", (combatTracker, html, details) => {
+    game.the_edge.combat_log.render(true);
+
     html.find(".combat-control").click(async ev => {
       if (Aux.hasRaceCondDanger("combat-control")) return undefined;
       const target = ev.currentTarget;

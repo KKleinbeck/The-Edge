@@ -1,5 +1,6 @@
 import initHooks from "./hooks/init.js";
 import THE_EDGE from "./system/config-the-edge.js"
+import CombatLog from "./applications/combat-log.js";
 import { TheEdgeActor } from "./actors/actor.js";
 import { TheEdgeItem } from "./items/item.js";
 import { TheEdgeItemSheet } from "./items/item-sheet.js";
@@ -74,6 +75,8 @@ Hooks.once("init", async function() {
   game.the_edge = {
     // createWorldbuildingMacro,
     config: THE_EDGE,
+    strain_log: [],
+    combat_log: new CombatLog()
   };
 
   // Define custom Document classes

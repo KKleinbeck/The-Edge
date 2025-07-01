@@ -50,6 +50,13 @@ h1, h2, h3, h4 {
   background-image: none !important;
   border: none;
 }
+.combat-log {
+  background-color: rgba(42, 80, 122, 0.2);
+}
+.combat-log .window-content {
+  background-color: rgba(42, 80, 122, 0.2) !important;
+  background-image: none !important;
+}
 .message-content {
   background-image: url("../assets/background.png") !important;
   border: 1.333px solid #bd9f09;

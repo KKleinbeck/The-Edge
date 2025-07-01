@@ -492,7 +492,11 @@ class ActorSheetCharacter extends TheEdgeActorSheet {
           this.actor.system.heartRate.max.value,
           this.actor.getHRZone()
         )
-        if (hrChange) this.actor.applyStrains([hrChange]);
+        if (hrChange) {
+          if (game.combat) game.the_edge.combat_log.addAction(skill.name, hrChange);
+          else this.actor.applyStrains([hrChange]);
+        }
+        
         if (skill.type == "Medicalskill") {
           DialogProficiency.start({
             proficiency: skill.system.basis, actor: this.actor, actorId: this.actor.id

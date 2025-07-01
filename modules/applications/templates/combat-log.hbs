@@ -1,0 +1,25 @@
+<div class="combat-log">
+  {{#if (checkNotEmpty strain)}}
+    <div style="display: table; padding-bottom: 10px;">
+      <div style="display: table-row;">
+        <div style="display: table-cell;"><b>{{genName 'name'}}</b></div>
+        <div style="display: table-cell; text-align: right; width: 100%;"><b>{{genName 'HR'}}</b></div>
+        <div style="display: table-cell; min-width: 17px;"></div>
+      </div>
+      {{#each strain as |action|}}
+        <div style="display: table-row; white-space: nowrap;">
+          <div style="display: table-cell;">{{action.name}}</div>
+          <div style="display: table-cell; text-align: right;">{{action.hrChange}}</div>
+          <div style="display: table-cell; text-align: right;">
+            <a data-action="undoAction" data-index="{{@index}}"><i class="fa-solid fa-xmark" title="{{genName 'Remove'}}"></i></a>
+          </div>
+        </div>
+      {{/each}}
+    </div>
+  {{/if}}
+  <div style="display: flex;">
+    <button data-action="addAction" data-details="strain" data-level="1">SL 1</button>
+    <button data-action="addAction" data-details="strain" data-level="2">SL 2</button>
+    <button data-action="addAction" data-details="strain" data-level="3">SL 3</button>
+  </div>
+</div>
