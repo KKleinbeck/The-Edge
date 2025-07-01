@@ -1,4 +1,5 @@
 import LocalisationServer from "../system/localisation_server.js";
+import Aux from "../system/auxilliaries.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api
 
@@ -29,6 +30,13 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
   async _prepareContext(options) {
     const context = {};
     context.strain = game.the_edge.strain_log;
+    if (game.combat && game.combat.combatant) {
+      const combatant = game.combat.combatant;
+      const combatantToken = Aux.getActor(
+        combatant.actorId, combatant.tokenId, combatant.sceneId
+      );
+      context.skills = combatantToken.itemTypes["Combatskill"];
+    }
     return context;
   }
 
@@ -51,7 +59,6 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
 
   static _undoAction(event, target) {
     const index = +target.dataset.index;
-    console.log("TEst", index)
     game.the_edge.strain_log.splice(index, 1);
     this.render();
   }

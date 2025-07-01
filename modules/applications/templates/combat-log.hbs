@@ -18,8 +18,17 @@
     </div>
   {{/if}}
   <div style="display: flex;">
+    <button data-action="addAction" data-details="strain" data-level="0">SL 0</button>
     <button data-action="addAction" data-details="strain" data-level="1">SL 1</button>
     <button data-action="addAction" data-details="strain" data-level="2">SL 2</button>
     <button data-action="addAction" data-details="strain" data-level="3">SL 3</button>
   </div>
+  {{#if (checkNotEmpty skills)}}
+    <select class="skill-selection">
+      <option value="" selected>{{genName "Select Skill"}}</option>
+      {{#each skills as |skill|}}
+        <option value="{{skill._id}}">{{skill.name}}</option>
+      {{/each}}
+    </select>
+  {{/if}}
 </div>

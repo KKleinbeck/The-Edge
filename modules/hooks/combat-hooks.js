@@ -1,5 +1,4 @@
 import Aux from "../system/auxilliaries.js";
-import DialogCombatActions from "../dialogs/dialog-combat-actions.js";
 
 export default function() {
   Hooks.on("renderCombatTracker", (combatTracker, html, details) => {
@@ -10,11 +9,12 @@ export default function() {
       const target = ev.currentTarget;
       if (target.dataset.control != "nextTurn") return undefined;
 
-      let actorID = details.combat.combatant.actorId;
-      let tokenID = details.combat.combatant.tokenId;
-      let actor = Aux.getActor(actorID, tokenID);
+      const actorID = details.combat.combatant.actorId;
+      const tokenID = details.combat.combatant.tokenId;
+      const sceneID = details.combat.combatant.scneeId;
+      const actor = Aux.getActor(actorID, tokenID, sceneID);
+      // TODO: actor.applyStrain();
       actor.applyBloodLoss();
-      DialogCombatActions.start({actor: actor})
     })
   })
 }

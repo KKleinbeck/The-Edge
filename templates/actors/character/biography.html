@@ -21,7 +21,7 @@
     </div>
     <div style="white-space: nowrap;">
       <label for="Blood Type Selector">{{genName "Blood type"}}</label>
-      <select class="selection-box" id="BloodType" name="system.bloodType" id="Blood Type Selector">
+      <select class="selection-box" name="system.bloodType" id="Blood Type Selector">
         <option value="AB" {{#if (checkEqual systemData.bloodType 'AB')}}selected{{/if}}>AB</option>
         <option value="B" {{#if (checkEqual systemData.bloodType 'B')}}selected{{/if}}>B</option>
         <option value="A" {{#if (checkEqual systemData.bloodType 'A')}}selected{{/if}}>A</option>
