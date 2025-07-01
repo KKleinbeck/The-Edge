@@ -742,14 +742,14 @@ export class TheEdgeActor extends Actor {
     ChatServer.transmitEvent("impact", {actor: this.name, speed: speed, damage: damage, damageRoll: damageRoll});
   }
 
-  async _applyImpactOrFallDamage(n, damage, name, description, location = undefined) {
+  async _applyImpactOrFallDamage(n, damage, damageType, description, location = undefined) {
     const nApproxWounds = Aux.randomInt(Math.ceil(n/3), n);
     const approxIncr = Math.ceil(damage / nApproxWounds)
     for (let i = 0; i < 2*nApproxWounds; i++) {
       const nextDamage = Math.min(damage, Math.floor(approxIncr / 2) + Aux.randomInt(1, approxIncr));
       await this.applyDamage(
-        nextDamage, false, name,
-        LocalisationServer.localise(`${name} damage title`) + " " + description,
+        nextDamage, false, damageType,
+        LocalisationServer.localise(`${damageType} damage title`) + " " + description,
         location
       );
       damage -= Math.ceil(nextDamage);

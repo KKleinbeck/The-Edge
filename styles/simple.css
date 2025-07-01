@@ -57,6 +57,15 @@ h1, h2, h3, h4 {
   background-color: rgba(42, 80, 122, 0.2) !important;
   background-image: none !important;
 }
+.filepicker .display-modes a {
+  background-color: var(--color-background-light-night-black) !important;
+}
+.filepicker .favorites .path {
+  background-color: var(--color-background-light-night-black) !important;
+}
+.journal-entry-content {
+  background-image: url("../assets/background.png") !important;
+}
 .message-content {
   background-image: url("../assets/background.png") !important;
   border: 1.333px solid #bd9f09;
@@ -88,6 +97,13 @@ h1, h2, h3, h4 {
 }
 .prosemirror menu .pm-dropdown {
   background-color: var(--color-background-night-black);
+}
+.standard-form .form-group > label {
+  color: var(--font-main-color) !important;
+}
+.table-description {
+  color: var(--font-main-color) !important;
+  font-size: 14px;
 }
 .window-app {
   color: var(--font-main-color) !important;

@@ -117,6 +117,10 @@ class ActorSheetCharacter extends TheEdgeActorSheet {
         armourProtection += attachment.shell.system.structurePoints;
       }
     }
+    const equippedWeapons = this.actor.itemTypes["Weapon"]?.filter(
+      a => a.system.equipped
+    );
+
     const credits = this.actor.itemTypes["Credits"]
     const creditsOffline = credits.find(c => c.system?.isSchid)?.system?.value || 0;
     const creditsDigital = credits.find(c => !c.system?.isSchid)?.system?.value || 0;
@@ -124,6 +128,7 @@ class ActorSheetCharacter extends TheEdgeActorSheet {
     const wounds = this.actor.itemTypes["Wounds"];
     context.helpers = {
       armourProtection: armourProtection,
+      equippedWeapons: equippedWeapons,
       bodyParts: ["Torso", "Head", "Arms", "Legs"],
       bleeding: wounds.map(x => x.system.bleeding).sum(),
       credits: {"Schids": creditsOffline, "digital": creditsDigital},

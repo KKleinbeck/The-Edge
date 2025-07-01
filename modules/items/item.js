@@ -81,7 +81,7 @@ export class ArmourItemTheEdge extends TheEdgeItem {
     }
 
     if (damageType == "HandToHand" || damageType == "fall" || damageType == "impact") {
-      damage = "kinetic";
+      damageType = "kinetic";
     }
     const protection = this.system.protection[damageType];
     protectionLog[this.name] = Math.min(damage, protection.absorption);
