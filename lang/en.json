@@ -435,15 +435,16 @@
     "SKILL": "Skill"
   },
   "TEXT": {
-    "EFFECTS": "Add a status modifiery to your attributes, proficiencies, weapon proficiencies and other character attributes.\nFor this write 'Attributes.NAME', 'Proficiencies.NAME', 'Weapons.NAME'. This is generally case-insensitive, except for specific proficiency and weapon names. You can also use group names, for example 'attributes.physical' or 'weapons.Energy'. Furthermore there is an 'all' specifier to affect everything.\nOther modifiers: 'health', 'heartRate.[min,max]', 'bloodVolumn'.",
-    "NO STRAIN": "Examples: Standing, sitting, lying, aiming.",
-    "STRAIN L1": "Examples: Walking, striding, throwing, firing a weapon, normal swimming",
-    "STRAIN L2": "Examples: Running, jumping, climbing, fast swimming",
-    "STRAIN L3": "Examples: Sprinting, maximal physical efforts, melee combat"
+    "EFFECTS": "Add a status modifiery to your attributes, proficiencies, weapon proficiencies and other character attributes.\nFor this write 'Attributes.NAME', 'Proficiencies.NAME', 'Weapons.NAME'. This is generally case-insensitive, except for specific proficiency and weapon names. You can also use group names, for example 'attributes.physical' or 'weapons.Energy'. Furthermore there is an 'all' specifier to affect everything.\nOther modifiers: 'health', 'heartRate.[min,max]', 'bloodVolumn'."
   },
   "TOOLTIP": {
     "DESIGNATED WEAPON": "Some types of ammunition are only useable with specific names. Specify these here by their names (comma separated).",
-    "PENETRATION": "The penetration value reduces the armour's threshold."
+    "PENETRATION": "The penetration value reduces the armour's threshold.",
+
+    "STRAIN LEVEL 0": "Resting for an action",
+    "STRAIN LEVEL 1": "Examples: Walking, striding, throwing, firing a weapon, normal swimming",
+    "STRAIN LEVEL 2": "Examples: Running, jumping, climbing, fast swimming",
+    "STRAIN LEVEL 3": "Examples: Sprinting, maximal physical efforts, melee combat"
   },
   "ACTION COST": "Action cost",
   "ACTIONS": "Actions",

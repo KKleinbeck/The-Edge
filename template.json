@@ -205,8 +205,7 @@
       "level": 1,
       "maxLevel": 1,
       "active": true,
-      "cost": "0",
-      "hrCost": "0"
+      "cost": "0"
     }
   },
   "htmlFields": ["description"],
@@ -255,7 +254,7 @@
   "Advantage": {"templates": ["description"], "AP": 0, "level": 1, "maxLevel": 1},
   "Disadvantage": {"templates": ["description"], "AP": 0, "level": 1, "maxLevel": 1},
   "Skill": {"templates": ["description", "skill"]},
-  "Combatskill": {"templates": ["description", "skill"]},
+  "Combatskill": {"templates": ["description", "skill"], "hrCost": "0"},
   "Medicalskill": {"templates": ["description", "skill"], "basis": "Medicine"},
   "Languageskill": {"templates": ["description"], "level": 1, "humanSpoken": true},
   "Gear": {"templates": ["description", "stackable"]},

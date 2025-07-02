@@ -549,7 +549,7 @@ class ActorSheetCharacter extends TheEdgeActorSheet {
     this.actor.changeCoreValue(name, field.val());
   }
 
-  // Thrash code which contains a useful template though
+  // Trash code which contains a useful template though
   _onItemRoll(event) {
     let button = $(event.currentTarget);
     const li = button.parents(".item");

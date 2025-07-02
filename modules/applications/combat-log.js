@@ -30,13 +30,10 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
   async _prepareContext(options) {
     const context = {};
     context.strain = game.the_edge.strain_log;
-    if (game.combat && game.combat.combatant) {
-      const combatant = game.combat.combatant;
-      const combatantToken = Aux.getActor(
-        combatant.actorId, combatant.tokenId, combatant.sceneId
-      );
-      context.skills = combatantToken.itemTypes["Combatskill"];
-    }
+    
+    const combatant = Aux.getCombatant();
+    if (combatant) context.skills = combatant.itemTypes["Combatskill"];
+
     return context;
   }
 
@@ -48,13 +45,31 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
   static _addAction(event, target) {
     switch (target.dataset.details) {
       case "strain":
+        const strainLevel = target.dataset.level;
+        const combatant = Aux.getCombatant();
+        const hrChange = combatant ? combatant.getHrChangeFromStrain(+strainLevel) : 0;
         game.the_edge.strain_log.push({
           name: LocalisationServer.localise("Strain level", "Combat") +
             " " + target.dataset.level,
-          hrChange: 0
+          hrChange: hrChange
         });
     }
     this.render();
+  }
+
+  _onRender(context, options) {
+    this.element.querySelector("select[name=skill-picker]").addEventListener("change", ev => {
+      const combatant = Aux.getCombatant();
+      const skillId = ev.target.value;
+      if (combatant && skillId) {
+        const skill = combatant.items.get(skillId);
+        const hrChange = Aux.skillHrChange(skill, combatant);
+        if (hrChange) {
+          game.the_edge.strain_log.push({name: skill.name, hrChange: hrChange});
+          this.render();
+        }
+      }
+    });
   }
 
   static _undoAction(event, target) {

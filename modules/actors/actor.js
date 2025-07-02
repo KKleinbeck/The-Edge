@@ -818,6 +818,12 @@ export class TheEdgeActor extends Actor {
     this.update({"system.bloodLoss.value": sys.bloodLoss.value + bloodLoss});
   }
 
+  getHrChangeFromStrain(strain) {
+    const zone = this.getHRZone();
+    if (strain < zone) return 2 * (strain - zone);
+    return 4 * (strain - zone + 1);
+  }
+
   async applyCombatStrain(strains, communication) {
     let zone = this.getHRZone();
     let maxStrain = Math.max(...strains);

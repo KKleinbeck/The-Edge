@@ -18,16 +18,16 @@
     </div>
   {{/if}}
   <div style="display: flex;">
-    <button data-action="addAction" data-details="strain" data-level="0">SL 0</button>
-    <button data-action="addAction" data-details="strain" data-level="1">SL 1</button>
-    <button data-action="addAction" data-details="strain" data-level="2">SL 2</button>
-    <button data-action="addAction" data-details="strain" data-level="3">SL 3</button>
+    <button data-action="addAction" data-details="strain" data-level="0" title="{{tooltipText 'Strain Level 0'}}">SL 0</button>
+    <button data-action="addAction" data-details="strain" data-level="1" title="{{tooltipText 'Strain Level 1'}}">SL 1</button>
+    <button data-action="addAction" data-details="strain" data-level="2" title="{{tooltipText 'Strain Level 2'}}">SL 2</button>
+    <button data-action="addAction" data-details="strain" data-level="3" title="{{tooltipText 'Strain Level 3'}}">SL 3</button>
   </div>
   {{#if (checkNotEmpty skills)}}
-    <select class="skill-selection">
-      <option value="" selected>{{genName "Select Skill"}}</option>
+    <select class="skill-picker" name="skill-picker">
+      <option class="skill-option" value="" selected>{{genName "Select Skill"}}</option>
       {{#each skills as |skill|}}
-        <option value="{{skill._id}}">{{skill.name}}</option>
+        <option class="skill-option" value="{{skill._id}}">{{skill.name}}</option>
       {{/each}}
     </select>
   {{/if}}

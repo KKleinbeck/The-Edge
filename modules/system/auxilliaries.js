@@ -32,6 +32,14 @@ export default class Aux {
     return game.actors.get(actorID);
   }
 
+  static getCombatant() {
+    if (game.combat && game.combat.combatant) {
+      const combatant = game.combat.combatant;
+      return Aux.getActor(combatant.actorId, combatant.tokenId, combatant.sceneId);
+    }
+    return undefined;
+  }
+
   static getToken(actorID, sceneID = undefined) {
     if (!sceneID) {
       if (!game.canvas.id) return undefined; // This can happen during startup of the game
@@ -74,6 +82,15 @@ export default class Aux {
     let msg = LocalisationServer.parsedLocalisation("Wrong cost string", "Notifications", {str: costStr})
     ui.notifications.notify(msg)
     return undefined;
+  }
+
+  static skillHrChange(skill, actor) {
+    return this.parseHrCostStr(
+      skill.system.hrCost, skill.name,
+      actor.system.heartRate.value,
+      actor.system.heartRate.max.value,
+      actor.getHRZone()
+    );
   }
 
   static parseHrCostStr(costStr, skillName, hrValue, hrLimit, hrZone) {
