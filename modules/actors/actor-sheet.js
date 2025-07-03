@@ -263,7 +263,7 @@ class ActorSheetCharacter extends TheEdgeActorSheet {
         return undefined;
       }
       const threshold = weaponID ? actor._getWeaponPL(weaponID) : actor._getCombaticsPL();
-      const damage = weaponID ? weapon.system.fireModes.Single.damage : actor._getCombaticsDamage();
+      const damage = weaponID ? weapon.system.fireModes[0].damage : actor._getCombaticsDamage();
       const name = weaponID ? weapon.name : LocalisationServer.localise("Hand to Hand combat", "combat");
       DialogCombatics.start({
         actor: actor, token: token, sceneId: sceneId, targetId: targetIds[0] || undefined,

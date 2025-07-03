@@ -1,3 +1,4 @@
+import LocalisationServer from "../system/localisation_server.js";
 import ChatServer from "../system/chat_server.js";
 
 export default class DialogCombatics extends Dialog{
@@ -35,6 +36,13 @@ export default class DialogCombatics extends Dialog{
           };
           foundry.utils.mergeObject(details, modificators)
           ChatServer.transmitEvent("WeaponCheck", details);
+
+          // Append to strain_log
+          const hrChange = checkData.actor.getHrChangeFromStrain(3);
+          game.the_edge.combat_log.addAction(
+            LocalisationServer.localise("Hand to hand combat", "combat"),
+            hrChange
+          );
         }
       },
       cancel: {

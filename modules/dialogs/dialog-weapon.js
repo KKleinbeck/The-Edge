@@ -1,4 +1,5 @@
 import ChatServer from "../system/chat_server.js";
+import LocalisationServer from "../system/localisation_server.js";
 import THE_EDGE from "../system/config-the-edge.js";
 
 export default class DialogWeapon extends Dialog{
@@ -66,6 +67,13 @@ export default class DialogWeapon extends Dialog{
           for (const event of failEvents) {
             ChatServer.transmitEvent("Crit Fail Event", {event: event, check: "Combat check"})
           }
+
+          // Append to strain_log
+          const hrChange = checkData.actor.getHrChangeFromStrain(1);
+          game.the_edge.combat_log.addAction(
+            LocalisationServer.localise("Weapon attack"),
+            hrChange
+          );
         }
       },
       cancel: {
