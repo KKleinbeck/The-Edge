@@ -66,7 +66,7 @@ export class TheEdgeItem extends Item {
 }
 
 export class ArmourItemTheEdge extends TheEdgeItem {
-  static async protect(damage, damageType, location, protectionLog) {
+  static async protect(damage, penetration, damageType, location, protectionLog) {
     const protectedLoc = this.system.bodyPart;
     const isProtective = THE_EDGE.cover_map[protectedLoc].includes(location);
     if (!isProtective) return damage;
@@ -76,7 +76,9 @@ export class ArmourItemTheEdge extends TheEdgeItem {
       for (const attachment of this.system.attachments) {
         const actor = Aux.getActor(attachment.actorId, attachment.tokenId);
         const shell = actor.items.get(attachment.shellId);
-        damage = await ArmourItemTheEdge.protect.call(shell, damage, damageType, location, protectionLog);
+        [damage, penetration] = await ArmourItemTheEdge.protect.call(
+          shell, damage, penetration, damageType, location, protectionLog
+        );
       }
     }
 
@@ -91,12 +93,13 @@ export class ArmourItemTheEdge extends TheEdgeItem {
     if (damage <= protection.threshold) {
       update["system.structurePoints"] = Math.max(0, this.system.structurePoints - damage)
       protectionLog[this.name] += damage;
-      damage = 0;
+      damage = Math.max(0, Math.min(penetration, protection.threshold));
     } else {
       update["system.structurePoints"] = Math.max(0, this.system.structurePoints - protection.threshold)
       protectionLog[this.name] += protection.threshold;
-      damage -= protection.threshold;
+      damage -= Math.max(protection.threshold - penetration, 0);
     }
+    penetration = Math.max(penetration - protection.threshold, 0);
 
     if (update["system.structurePoints"] == 0) {
       let msg = LocalisationServer.parsedLocalisation("Destroyed", "Notifications", {name: this.name})
@@ -114,6 +117,6 @@ export class ArmourItemTheEdge extends TheEdgeItem {
     await this.update(update);
     if(this.sheet.rendered) { this.sheet._render() }
 
-    return damage;
+    return [damage, penetration];
   }
 }

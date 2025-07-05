@@ -163,11 +163,11 @@ export default function() {
     return true;
   }
 
-  const applyDamage = async (target, damage, crits, damageType, name) => {
+  const applyDamage = async (target, damage, penetration, crits, damageType, name) => {
     const protectionLog = {};
     const partialLogs = [];
     for (let i = 0; i < damage.length; ++i){
-      const partialLog = await target.applyDamage(damage[i], crits[i], damageType, name);
+      const partialLog = await target.applyDamage(damage[i], crits[i], penetration, damageType, name);
       partialLogs.push(partialLog);
     }
 
@@ -366,7 +366,9 @@ export default function() {
       if (sys.targetId) {
         const scene = game.scenes.get(sys.sceneId);
         const target = scene.tokens.get(sys.targetId)?.actor;
-        const protectionLog = await applyDamage(target, sys.damage, sys.crits, sys.damageType, sys.name);
+        const protectionLog = await applyDamage(
+          target, sys.damage, sys.penetration, sys.crits, sys.damageType, sys.name
+        );
         if (Object.keys(protectionLog).length != 0) {
           const template = "systems/the_edge/templates/chat/meta-protection-Log.html";
           const protectionHtml = await renderTemplate(template, {protection: protectionLog});
@@ -376,7 +378,7 @@ export default function() {
 
       $(html.find(".rerollable")).removeClass("rerollable"); // No more edits after damage application
       $(html.find(".message-header")).remove(); // Remove old header bar
-      chatMsgCls.update({"content": html.find(".message-content").html()});
+      // chatMsgCls.update({"content": html.find(".message-content").html()});
     })
   })
 }

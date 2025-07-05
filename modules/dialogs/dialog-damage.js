@@ -96,7 +96,7 @@ class DialogGenericWound extends Dialog{
           const damage = parseInt(html.find('[name="damage"]').val());
           const type = html.find('[name="type"]').val();
           var partialLog = await checkData.actor.applyDamage(
-            damage, false, type, LocalisationServer.localise("New wound"), checkData.location
+            damage, false, 0, type, LocalisationServer.localise("New wound"), checkData.location
           );
 
           const protectionLog = {};

@@ -692,13 +692,21 @@ export class TheEdgeActor extends Actor {
     return `1d${str+crd}+${str}`;
   }
   
-  async applyDamage(damage, crit, damageType, name, givenLocation = undefined) {
+  async applyDamage(damage, crit, penetration, damageType, name, givenLocation = undefined) {
     const [location, locationCoord] = Aux.generateWoundLocation(crit, this.system.sex, givenLocation)
 
     const protectionLog = {};
+    let runningPenetration = penetration;
     for (const armour of this.itemTypes["Armour"]) {
       if(!armour.system.equipped || armour.system.layer == "Outer") continue;
-      damage = await ArmourItemTheEdge.protect.call(armour, damage, damageType, location, protectionLog)
+      [damage, runningPenetration] = await ArmourItemTheEdge.protect.call(
+        armour, damage, runningPenetration, damageType, location, protectionLog
+      );
+    }
+      
+    if (runningPenetration != penetration) {
+      protectionLog[LocalisationServer.localise("Armour penetration", "Combat")] =
+        penetration - runningPenetration;
     }
 
     if (damage > 0) {
@@ -748,7 +756,7 @@ export class TheEdgeActor extends Actor {
     for (let i = 0; i < 2*nApproxWounds; i++) {
       const nextDamage = Math.min(damage, Math.floor(approxIncr / 2) + Aux.randomInt(1, approxIncr));
       await this.applyDamage(
-        nextDamage, false, damageType,
+        nextDamage, false, 0, damageType,
         LocalisationServer.localise(`${damageType} damage title`) + " " + description,
         location
       );

@@ -49,8 +49,11 @@ export default class DialogWeapon extends Dialog{
             dices, modificators.threshold, modificators.vantage, modificators.fireModeModifier.damage,
             checkData.damageType
           );
+          const ammuDamage = checkData.ammunition.system.damage;
+          damage.forEach((e, i) => {damage[i] += ammuDamage.bonus;});
           foundry.utils.mergeObject(checkData, {
-            damage: damage, crits: crits, damageRoll: modificators.fireModeModifier.damage
+            damage: damage, crits: crits, penetration: ammuDamage.penetration,
+            damageRoll: modificators.fireModeModifier.damage + (ammuDamage.bonus > 0 ? ` + ${ammuDamage.bonus}` : "")
           })
 
           // Apply the damage

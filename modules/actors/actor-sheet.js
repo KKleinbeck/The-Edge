@@ -498,7 +498,6 @@ class ActorSheetCharacter extends TheEdgeActorSheet {
           this.actor.getHRZone()
         )
         if (hrChange) {
-          console.log(this.actor, game.combat.combatant)
           if (game.combat && this.actor._id == game.combat.combatant.actorId) {
             game.the_edge.combat_log.addAction(skill.name, hrChange);
           } else {
