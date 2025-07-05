@@ -13,6 +13,10 @@ export default class ChatServer {
         html = await renderTemplate("systems/the_edge/templates/chat/attribute_check.html", details);
         break;
       
+      case "COMBAT ACTION":
+        html = await renderTemplate("systems/the_edge/templates/chat/combat_action.html", details);
+        break;
+      
       case "FIRING EMPTY WEAPON":
         html = LocalisationServer.parsedLocalisation(id, "Chat", details)
         break;
@@ -44,10 +48,6 @@ export default class ChatServer {
       
       case "RELOAD":
         html = await renderTemplate("systems/the_edge/templates/chat/reload.html", details);
-        break;
-      
-      case "STRAINUPDATE":
-        html = await renderTemplate("systems/the_edge/templates/chat/strain_update.html", details);
         break;
       
       case "SHORT REST":

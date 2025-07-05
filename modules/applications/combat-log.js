@@ -29,10 +29,23 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
 
   async _prepareContext(options) {
     const context = {};
-    context.strain = game.the_edge.strain_log;
+    const isRest = Math.max(...game.the_edge.strain_log.map(x => x.hrChange)) <= 0;
+    context.strain = game.the_edge.strain_log.map(x => {
+        const hrChange = !isRest && x.hrChange < 0 ? `0 (${x.hrChange})` : x.hrChange;
+        return {name: x.name, hrChange: hrChange};
+    });
     
     const combatant = Aux.getCombatant();
     if (combatant) context.skills = combatant.itemTypes["Combatskill"];
+    context.hrNow = combatant.system.heartRate.value;
+    if (combatant.system.health.value <= 0) {
+      context.hrThen = combatant.system.heartRate.value - 10;
+    } else {
+      context.hrThen = combatant.system.heartRate.value + Aux.combatRoundHrChange();
+      context.dying = true;
+    }
+    context.zoneNow = combatant.getHRZone();
+    context.zoneThen = combatant.getHRZone(context.hrThen);
 
     return context;
   }
@@ -58,7 +71,7 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
   }
 
   _onRender(context, options) {
-    this.element.querySelector("select[name=skill-picker]").addEventListener("change", ev => {
+    this.element.querySelector("select[name=skill-picker]")?.addEventListener("change", ev => {
       const combatant = Aux.getCombatant();
       const skillId = ev.target.value;
       if (combatant && skillId) {
@@ -76,9 +89,5 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
     const index = +target.dataset.index;
     game.the_edge.strain_log.splice(index, 1);
     this.render();
-  }
-
-  static async formHandler(event, form, formData) {
-    console.log("Event 22: ", event)
   }
 }

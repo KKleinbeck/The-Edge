@@ -1,8 +1,8 @@
 <div class="combat-log">
   {{#if (checkNotEmpty strain)}}
-    <div style="display: table; padding-bottom: 10px;">
+    <div style="display: table; padding-bottom: 5px;">
       <div style="display: table-row;">
-        <div style="display: table-cell;"><b>{{genName 'name'}}</b></div>
+        <div style="display: table-cell;"><b>{{genName 'Action'}}</b></div>
         <div style="display: table-cell; text-align: right; width: 100%;"><b>{{genName 'HR'}}</b></div>
         <div style="display: table-cell; min-width: 17px;"></div>
       </div>
@@ -15,6 +15,19 @@
           </div>
         </div>
       {{/each}}
+    </div>
+    <div style="display: flex; justify-content: space-around; padding-bottom: 10px;">
+      <div>
+        {{#if dying}}
+          {{hrNow}} ({{genName "Zone"}} {{zoneNow}})
+          <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+          {{hrThen}} ({{genName "Zone"}} {{zoneThen}})
+        {{else}}
+          {{hrNow}}
+          <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+          {{hrThen}} ({{genName "Dying"}})
+        {{/if}}
+      </div>
     </div>
   {{/if}}
   <div style="display: flex;">

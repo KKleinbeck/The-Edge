@@ -57,7 +57,9 @@
 
     "REROLLING": "{name} rerolled a {check} check, changing a dice from {old} to {new}.",
     "CONSUMED": "{actorName} used one {item}.",
-    "SAME NAME EFFECT": "This created a new effect under the same name."
+    "SAME NAME EFFECT": "This created a new effect under the same name.",
+
+    "CHANGE HR": "Changing their heart rate: "
   },
   "CHATNOTIFICATION": {
     "BLIND MESSAGE": "Blind message",
@@ -446,6 +448,7 @@
     "STRAIN LEVEL 3": "Examples: Sprinting, maximal physical efforts, melee combat"
   },
   "ACTION COST": "Action cost",
+  "ACTION": "Action",
   "ACTIONS": "Actions",
   "ADV": "Adv",
   "ADVANTAGE": "Advantage",
@@ -504,6 +507,7 @@
   "DISADVANTAGE": "Disadvantage",
   "DISADVANTAGES": "Disadvantages",
   "DISTANCE": "Distance",
+  "DYING": "Dying",
   "EFFECT": "Effect",
   "EFFECTS": "Effects",
   "EXPLANATIONS": "Explanations",

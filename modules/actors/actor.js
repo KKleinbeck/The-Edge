@@ -824,41 +824,33 @@ export class TheEdgeActor extends Actor {
     return 4 * (strain - zone + 1);
   }
 
-  async applyCombatStrain(strains, communication) {
-    let zone = this.getHRZone();
-    let maxStrain = Math.max(...strains);
-    let isRest = maxStrain < zone;
-    let hrChange = 0;
-    if (isRest) {
-      hrChange = 2 * strains.map(x => x - zone).sum();
+  async applyCombatStrain() {
+    if (this.system.health.value <= 0) {
+      await this.updateHr(Math.max(this.system.heartRate.value - 10, 0));
     } else {
-      hrChange = 4 * strains.map(x => Math.max(x - zone + 1, 0)).sum();
+      this.applyStrains(game.the_edge.strain_log.map(x => x.hrChange));
     }
-
-    hrChange += 4 * communication * !isRest;
-    
-    let hr = this.system.heartRate;
-    let threshold = [hr.min.value, this.hrZone1(), this.hrZone2(), hr.max.value][maxStrain];
-    let clamper = isRest ? Math.max : Math.min;
-    await this.update({"system.heartRate.value": clamper(hr.value + hrChange, threshold)});
-    
-    let newZone = this.getHRZone();
-    if (newZone != zone) {this.updateStrain()}
-    
-    ChatServer.transmitEvent("strainUpdate",
-      {strains: strains, communication: communication, hrChange: hrChange})
   }
 
   async applyStrains(strains) {
     const hr = this.system.heartRate;
-    var hrChange = strains.sum();
-    const threshold = hrChange < 0 ? hr.min.value : hr.max.value;
-    const clamper = hrChange < 0 ? Math.max : Math.min;
+    const isRest = Math.max(...strains) <= 0;
+    const threshold = isRest ? hr.min.value : hr.max.value;
+    const clamper = isRest ? Math.max : Math.min;
 
+    let hrChange = isRest ? strains.sum() : strains.filter(x => x >= 0).sum();
     const hrNew = clamper(hr.value + hrChange, threshold);
     hrChange = hrNew - hr.value;
-    await this.update({"system.heartRate.value": hrNew});
+    await this.updateHr(hrNew);
+
     return hrChange;
+  }
+
+  async updateHr(newHr) {
+    const zone = this.getHRZone();
+    await this.update({"system.heartRate.value": newHr});
+    const newZone = this.getHRZone();
+    if (newZone != zone) {this.updateStrain()}
   }
 
   _getEffect(name) {
@@ -883,8 +875,8 @@ export class TheEdgeActor extends Actor {
     if (effect) { await effect.delete() }
   }
 
-  getHRZone() {
-    let hr = this.system.heartRate.value;
+  getHRZone(hr = undefined) {
+    hr = hr ? hr : this.system.heartRate.value;
     if (hr < this.hrZone1()) return 1;
     if (hr < this.hrZone2()) return 2;
     return 3;

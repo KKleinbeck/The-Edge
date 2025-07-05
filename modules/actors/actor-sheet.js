@@ -465,7 +465,7 @@ class ActorSheetCharacter extends TheEdgeActorSheet {
     }
   }
 
-  _onSkillControl(event) {
+  async _onSkillControl(event) {
     event.preventDefault();
 
     // Obtain event data
@@ -498,8 +498,17 @@ class ActorSheetCharacter extends TheEdgeActorSheet {
           this.actor.getHRZone()
         )
         if (hrChange) {
-          if (game.combat) game.the_edge.combat_log.addAction(skill.name, hrChange);
-          else this.actor.applyStrains([hrChange]);
+          console.log(this.actor, game.combat.combatant)
+          if (game.combat && this.actor._id == game.combat.combatant.actorId) {
+            game.the_edge.combat_log.addAction(skill.name, hrChange);
+          } else {
+            const hrThen = this.actor.system.heartRate.value;
+            await this.actor.applyStrains([hrChange]);
+            const hrNow = this.actor.system.heartRate.value;
+            ChatServer.transmitEvent("Combat Action",
+              {actor: this.actor.name, skill: skill.name, hrThen: hrThen, hrNow: hrNow}
+            );
+          }
         }
         
         if (skill.type == "Medicalskill") {

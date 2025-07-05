@@ -93,6 +93,12 @@ export default class Aux {
     );
   }
 
+  static combatRoundHrChange() {
+    const isRest = Math.max(...game.the_edge.strain_log.map(x => x.hrChange)) <= 0;
+    const threshold = isRest ? -Infinity : 0;
+    return game.the_edge.strain_log.reduce((a, b) => Math.max(b.hrChange, threshold) + a, 0);
+  }
+
   static parseHrCostStr(costStr, skillName, hrValue, hrLimit, hrZone) {
     let cost = costStr.replace(/\s+/g, '') // w.o. whitespace
     let levels = cost.split("/");

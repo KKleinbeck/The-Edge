@@ -13,8 +13,10 @@ export default function() {
       const tokenID = details.combat.combatant.tokenId;
       const sceneID = details.combat.combatant.scneeId;
       const actor = Aux.getActor(actorID, tokenID, sceneID);
-      // TODO: actor.applyStrain();
+      actor.applyCombatStrain();
       actor.applyBloodLoss();
+
+      game.the_edge.strain_log = [];
     })
   })
 }

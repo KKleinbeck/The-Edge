@@ -34,7 +34,7 @@
   },
   "primaryTokenAttribute": "health.value",
   "secondaryTokenAttribute": "heartRate.value",
-  "version": "v0.8.6",
+  "version": "v0.9.1",
   "manifest": "https://raw.githubusercontent.com/KKleinbeck/The-Edge/master/system.json",
-  "download": "https://github.com/KKleinbeck/The-Edge/archive/refs/tags/v0.8.6.zip"
+  "download": "https://github.com/KKleinbeck/The-Edge/archive/refs/tags/v0.9.1.zip"
 }
