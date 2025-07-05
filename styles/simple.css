@@ -99,6 +99,18 @@ h1, h2, h3, h4 {
 .notes {
   color: var(--font-main-color) !important;
 }
+.editor {
+  min-height: 2em;
+  max-height: none;
+  overflow: visible;
+  height: auto;
+}
+.ProseMirror {
+  height: auto !important;
+  position: relative !important;
+  overflow: visible;
+  white-space: pre-wrap;
+}
 .prosemirror menu button:hover, .prosemirror menu button.active {
   background-color: var(--color-background-light-night-black) !important;
 }
@@ -185,14 +197,6 @@ textarea {
   padding: 2px 12px 2px 12px !important;
   height: 30px !important;
   line-height: 24px !important;
-}
-.the_edge .character-editor-wrap {
-  height: 15vh;
-}
-.the_edge .editor,
-.the_edge .editor-content {
-  min-height: 50px;
-  height: 100%;
 }
 .the_edge .editor-wrap
 .the_edge .advance-fa {
