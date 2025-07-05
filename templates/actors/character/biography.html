@@ -5,7 +5,7 @@
   <div style="display: flex; justify-content: space-between;">
     <div style="white-space: nowrap;">
       <label for="Age">{{genName "Age"}}</label>
-      <input name="system.age" id="Age" type="text" value="{{systemData.age}}" min="21" placeholder="Name" style="max-width: 50px; text-align: right;"/>
+      <input name="system.age" id="Age" type="text" value="{{systemData.age}}" min="21" placeholder="Name" style="max-width: 40px; text-align: right;"/>
     </div>
     <div style="white-space: nowrap;">
       <label for="Sex Selector">{{genName "Sex"}}</label>
@@ -17,8 +17,9 @@
     </div>
     <div style="white-space: nowrap;">
       <label for="Height">{{genName "Height"}} [cm]</label>
-      <input name="system.height" type="number" value="{{systemData.height}}" placeholder="165" min="0" style="max-width: 50px; text-align: right;"/>
+      <input name="system.height" type="number" value="{{systemData.height}}" placeholder="165" min="0" style="max-width: 40px; text-align: right;"/>
     </div>
+    <input name="system.race" type="text" value="{{systemData.race}}" placeholder="{{genName 'Race ...'}}" style="max-width: 80px; text-align: right;"/>
     <div style="white-space: nowrap;">
       <label for="Blood Type Selector">{{genName "Blood type"}}</label>
       <select class="selection-box" name="system.bloodType" id="Blood Type Selector">

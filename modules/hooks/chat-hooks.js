@@ -378,7 +378,7 @@ export default function() {
 
       $(html.find(".rerollable")).removeClass("rerollable"); // No more edits after damage application
       $(html.find(".message-header")).remove(); // Remove old header bar
-      // chatMsgCls.update({"content": html.find(".message-content").html()});
+      chatMsgCls.update({"content": html.find(".message-content").html()});
     })
   })
 }

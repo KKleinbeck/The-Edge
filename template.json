@@ -112,6 +112,7 @@
     "height": 170,
     "bloodType": "AB",
     "handedness": "right",
+    "race": "Human",
     "heartRate": {
       "value": 60,
       "min": {"value": 0, "status": 0, "baseline": 60},
