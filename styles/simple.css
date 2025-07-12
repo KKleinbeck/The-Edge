@@ -170,6 +170,11 @@ select {
   background-image: url("../assets/background.png") !important;
   color: var(--font-main-color) !important;
 }
+.application select option {
+  background-color: #2A395A;
+  background-image: url("../assets/background.png") !important;
+  color: var(--font-main-color) !important;
+}
 textarea {
   color: var(--font-main-color) !important;
   background-image: url("../assets/background.png") !important;

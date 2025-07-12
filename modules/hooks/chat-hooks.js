@@ -367,7 +367,8 @@ export default function() {
         const scene = game.scenes.get(sys.sceneId);
         const target = scene.tokens.get(sys.targetId)?.actor;
         const protectionLog = await applyDamage(
-          target, sys.damage, sys.penetration, sys.crits, sys.damageType, sys.name
+          target, sys.damage, sys.penetration === undefined ? 0 : sys.penetration,
+          sys.crits, sys.damageType, sys.name
         );
         if (Object.keys(protectionLog).length != 0) {
           const template = "systems/the_edge/templates/chat/meta-protection-Log.html";
