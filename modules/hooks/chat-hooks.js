@@ -371,7 +371,7 @@ export default function() {
           sys.crits, sys.damageType, sys.name
         );
         if (Object.keys(protectionLog).length != 0) {
-          const template = "systems/the_edge/templates/chat/meta-protection-Log.html";
+          const template = "systems/the_edge/templates/chat/meta-protection-log.html";
           const protectionHtml = await renderTemplate(template, {protection: protectionLog});
           $(ev.currentTarget).replaceWith(protectionHtml);
         } else $(ev.currentTarget).remove();
