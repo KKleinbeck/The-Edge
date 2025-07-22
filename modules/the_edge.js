@@ -20,6 +20,10 @@ Hooks.once("init", async function() {
   Array.prototype.last = function () {
     return this[this.length - 1];
   }
+  Array.prototype.variance = function () {
+    const sum = this.sum();
+    return this.reduce((a,b) => a + b*b, -sum) / this.length;
+  }
 
   // Generating maps for the fundamental data model
   THE_EDGE.attrs = Object.keys(game.model.Actor.character.attributes)
@@ -75,6 +79,8 @@ Hooks.once("init", async function() {
   game.the_edge = {
     // createWorldbuildingMacro,
     config: THE_EDGE,
+    distance: 0,
+    movementIndex: 0,
     strain_log: [],
     combat_log: new CombatLog()
   };

@@ -59,6 +59,21 @@ export class TheEdgeActor extends Actor {
     return allowed !== false ? this.update(updates) : this;
   }
 
+  getStrideSpeed() {
+    const ch = this.system.attributes;
+    return Math.min(5 + Math.floor(ch.spd.value / 6  ), Math.floor(ch.foc.value * 0.75));
+  }
+
+  getRunSpeed() {
+    const ch = this.system.attributes;
+    return Math.min(7 + Math.floor(ch.spd.value / 3  ), Math.floor(ch.foc.value * 1.25));
+  }
+
+  getSprintSpeed() {
+    const ch = this.system.attributes;
+    return Math.min(8 + Math.floor(ch.spd.value / 1.5), Math.floor(ch.foc.value * 1.75));
+  }
+
   // Generates dict for the charactersheet to parse
   prepareSheet() {
     let preparedData = { system: { attr: {}, profGroups: [], weapons: {} } };
@@ -91,8 +106,8 @@ export class TheEdgeActor extends Actor {
       mental: Object.keys(this.system.proficiencies["mental"]),
     })
 
-    let sys = this.system;
-    let ch = sys.attributes;
+    const sys = this.system;
+    const ch = sys.attributes;
     foundry.utils.mergeObject(preparedData, {
       attrs: THE_EDGE.attrs,
       canAdvance: true,
@@ -102,16 +117,16 @@ export class TheEdgeActor extends Actor {
       },
       speeds: {
         Stride: { 
-          value: Math.min(5 + Math.floor(ch.spd.value / 6  ), Math.floor(ch.foc.value * 0.665)),
-          tooltip: "Min(5 + Spd/6, 66% foc)".replace(/[ ]/g, "\u00a0")
+          value: this.getStrideSpeed(),
+          tooltip: "Min(5 + Spd/6, 75% foc)".replace(/[ ]/g, "\u00a0")
          },
         Run: { 
-          value: Math.min(7 + Math.floor(ch.spd.value / 3  ),            ch.foc.value),
-          tooltip: "Min(7 + Spd/3, Foc)".replace(/[ ]/g, "\u00a0")
+          value: this.getRunSpeed(),
+          tooltip: "Min(7 + Spd/3, 125% Foc)".replace(/[ ]/g, "\u00a0")
          },
         Sprint: { 
-          value: Math.min(8 + Math.floor(ch.spd.value / 1.5), Math.floor(ch.foc.value * 1.5)),
-          tooltip: "Min(8 + Spd/1.5, 150% Foc)".replace(/[ ]/g, "\u00a0")
+          value: this.getSprintSpeed(),
+          tooltip: "Min(8 + Spd/1.5, 175% Foc)".replace(/[ ]/g, "\u00a0")
          }
       },
       herotoken: Array(sys.heroToken.max).fill(false).fill(true, 0, sys.heroToken.available)

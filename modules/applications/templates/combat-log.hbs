@@ -1,11 +1,33 @@
 <div class="combat-log">
-  {{#if (checkNotEmpty strain)}}
-    <div style="display: table; padding-bottom: 5px;">
-      <div style="display: table-row;">
-        <div style="display: table-cell;"><b>{{genName 'Action'}}</b></div>
-        <div style="display: table-cell; text-align: right; width: 100%;"><b>{{genName 'HR'}}</b></div>
-        <div style="display: table-cell; min-width: 17px;"></div>
+  <div style="padding-bottom: 10px;">
+    <div style="display: inline-flex; gap: 10px;">
+      {{genName "Movement"}}
+      <div>
+        <input name="distance" type="number" value="{{round distance 1}}" placeholder="0" style="max-width: 44px; max-height: 20px; text-align: right;"/>
+        m
       </div>
+    </div>
+    {{#if (checkNotEmpty movementOptions)}}
+      <select style="max-width: 160px; max-height: 24px;" id="movement-options">
+        {{#if (checkNotEmpty movementOptions)}}
+          {{#each movementOptions as |option|}}
+            <option value="@index" {{#if (checkEqual @index ../movementIndex)}}selected{{/if}}>
+              {{genName "Actions"}} {{option.actions}} (+{{option.cost}} {{genName "HR"}})
+            </option>
+          {{/each}}
+        {{/if}}
+      </select>
+    {{/if}}
+  </div>
+
+  <div style="display: table; padding-bottom: 5px;">
+    <div style="display: table-row;">
+      <div style="display: table-cell;"><b>{{genName 'Action'}}</b></div>
+      <div style="display: table-cell; text-align: right; width: 100%;"><b>{{genName 'HR'}}</b></div>
+      <div style="display: table-cell; min-width: 17px;"></div>
+    </div>
+
+    {{#if (checkNotEmpty strain)}}
       {{#each strain as |action|}}
         <div style="display: table-row; white-space: nowrap;">
           <div style="display: table-cell;">{{action.name}}</div>
@@ -15,7 +37,18 @@
           </div>
         </div>
       {{/each}}
-    </div>
+    {{/if}}
+
+    {{#if (checkNotEmpty movements)}}
+      {{#each movements as |movement|}}
+        <div style="display: table-row; white-space: nowrap;">
+          <div style="display: table-cell;">{{movement.name}}</div>
+          <div style="display: table-cell; text-align: right;">{{movement.hrChange}}</div>
+        </div>
+      {{/each}}
+    {{/if}}
+  </div>
+  {{#if (checkNotEmpty strain)}}
     <div style="display: flex; justify-content: space-around; padding-bottom: 10px;">
       <div>
         {{#if dying}}
@@ -36,7 +69,7 @@
     <button data-action="addAction" data-details="strain" data-level="2" title="{{tooltipText 'Strain Level 2'}}">SL 2</button>
     <button data-action="addAction" data-details="strain" data-level="3" title="{{tooltipText 'Strain Level 3'}}">SL 3</button>
   </div>
-  {{#if (checkNotEmpty skills)}}
+  {{#if hrChanged}}
     <select class="skill-picker" name="skill-picker">
       <option class="skill-option" value="" selected>{{genName "Select Skill"}}</option>
       {{#each skills as |skill|}}

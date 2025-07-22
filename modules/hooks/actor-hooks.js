@@ -21,4 +21,16 @@ export default function() {
     // Two updateStatus calls: first to update to current values,
     //   second if the first update changed the either status effects.
   })
+
+  Hooks.on("preUpdateToken", (tokenDocument, update, _details) => {
+    const actor = game.actors.get(tokenDocument.actorId);
+    if (game.combat && game.combat.combatant.actorId == tokenDocument.actorId) {
+      const scene = game.canvas.scene;
+      const factor = scene.grid.distance / scene.grid.size;
+      const distanceTravelled = factor * Math.hypot(
+        tokenDocument.x - update.x, tokenDocument.y - update.y);
+      game.the_edge.distance += distanceTravelled;
+      game.the_edge.combat_log.render();
+    }
+  })
 }

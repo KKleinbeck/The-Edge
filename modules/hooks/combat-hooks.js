@@ -16,6 +16,7 @@ export default function() {
       actor.applyCombatStrain();
       actor.applyBloodLoss();
 
+      game.the_edge.distance = 0;
       game.the_edge.strain_log = [];
     })
   })

@@ -37,13 +37,37 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
     
     const combatant = Aux.getCombatant();
     if (combatant) context.skills = combatant.itemTypes["Combatskill"];
+
+    context.distance = game.the_edge.distance;
+    if (game.the_edge.distance > 0) {
+      context.movementOptions = CombatLog.getMovements(game.the_edge.distance, combatant);
+      if (game.the_edge.movementIndex >= context.movementOptions.length) {
+        game.the_edge.movementIndex = 0;
+      }
+      context.movementIndex = game.the_edge.movementIndex;
+
+      context.movements = [];
+      for (const movement of context.movementOptions[context.movementIndex].pattern) {
+        context.movements.push({
+          name: LocalisationServer.localise(
+            ["Idle", "Stride", "Run", "Sprint"][movement], "Combat"
+          ),
+          hrChange: combatant.getHrChangeFromStrain(movement)
+        });
+      }
+    }
+
     context.hrNow = combatant.system.heartRate.value;
     if (combatant.system.health.value <= 0) {
       context.hrThen = combatant.system.heartRate.value - 10;
     } else {
       context.hrThen = combatant.system.heartRate.value + Aux.combatRoundHrChange();
+      if (context.movements?.length >= 0) {
+        for (const movement of context.movements) { context.hrThen += movement.hrChange }
+      }
       context.dying = true;
     }
+    context.hrChanged = (context.skills.length >= 0) || (context.movements.length >= 0);
     context.zoneNow = combatant.getHRZone();
     context.zoneThen = combatant.getHRZone(context.hrThen);
 
@@ -83,11 +107,69 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
         }
       }
     });
+
+    this.element.querySelector("input[name=distance]")?.addEventListener("change", ev => {
+      game.the_edge.distance = +ev.target.value;
+      this.render();
+    })
+
+    this.element.querySelector("#movement-options")?.addEventListener("change", ev => {
+      game.the_edge.movementIndex = ev.target.selectedIndex;
+      this.render();
+    })
   }
 
   static _undoAction(event, target) {
     const index = +target.dataset.index;
     game.the_edge.strain_log.splice(index, 1);
     this.render();
+  }
+
+  static getMovements(distance, actor) {
+    const speeds = [
+      0, actor.getStrideSpeed(), actor.getRunSpeed(), actor.getSprintSpeed()
+    ];
+    const hrCost = [
+      actor.getHrChangeFromStrain(0), actor.getHrChangeFromStrain(1),
+      actor.getHrChangeFromStrain(2), actor.getHrChangeFromStrain(3)
+    ];
+    const minActions = Math.ceil(distance / speeds[3]);
+    const maxActions = Math.ceil(distance / speeds[1]);
+
+    const patterns = []
+    for (let actions = minActions; actions <= maxActions; actions++) {
+      let currentPattern = null;
+      let lowestCost = Infinity;
+      for (let iterator = Math.pow(4, actions) - 1; iterator >= Math.pow(4, actions - 1); iterator--) {
+        const pattern = CombatLog.getMovementPattern(iterator);
+        if (pattern.includes(0)) continue; // Prevent idle actions in calculation
+        const patternDist = CombatLog.calculateTotalFromPattern(pattern, speeds) + 0.0001;
+        const patternCost = CombatLog.calculateTotalFromPattern(pattern, hrCost);
+        if (distance < patternDist && lowestCost >= patternCost) {
+          if (lowestCost > patternCost || currentPattern?.variance() > pattern.variance()) {
+            lowestCost = patternCost;
+            currentPattern = pattern;
+          } 
+        }
+      }
+      patterns.push({actions: actions, pattern: currentPattern, cost: lowestCost});
+    }
+    return patterns;
+  }
+
+  static getMovementPattern(state) {
+    const pattern = [state % 4];
+    state = Math.floor(state / 4);
+    while (state > 0) {
+      pattern.push(state % 4);
+      state = Math.floor(state / 4);
+    }
+    return pattern;
+  }
+
+  static calculateTotalFromPattern(pattern, target) {
+    let acc = 0;
+    for (const movement of pattern) {acc += target[movement];}
+    return acc;
   }
 }
