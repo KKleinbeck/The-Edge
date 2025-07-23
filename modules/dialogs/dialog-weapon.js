@@ -71,9 +71,9 @@ export default class DialogWeapon extends Dialog{
             ChatServer.transmitEvent("Crit Fail Event", {event: event, check: "Combat check"})
           }
 
-          // Append to strain_log
+          // Append to strainLog
           const hrChange = checkData.actor.getHrChangeFromStrain(1);
-          game.the_edge.combat_log.addAction(
+          game.the_edge.combatLog.addAction(
             LocalisationServer.localise("Weapon attack"),
             hrChange
           );

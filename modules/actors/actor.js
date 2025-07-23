@@ -851,7 +851,7 @@ export class TheEdgeActor extends Actor {
     if (this.system.health.value <= 0) {
       await this.updateHr(Math.max(this.system.heartRate.value - 10, 0));
     } else {
-      this.applyStrains(game.the_edge.strain_log.map(x => x.hrChange));
+      this.applyStrains(game.the_edge.combatLog.strainLog.map(x => x.hrChange));
     }
   }
 

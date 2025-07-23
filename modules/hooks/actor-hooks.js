@@ -29,8 +29,7 @@ export default function() {
       const factor = scene.grid.distance / scene.grid.size;
       const distanceTravelled = factor * Math.hypot(
         tokenDocument.x - update.x, tokenDocument.y - update.y);
-      game.the_edge.distance += distanceTravelled;
-      game.the_edge.combat_log.render();
+      game.the_edge.combatLog.addToDistance(distanceTravelled);
     }
   })
 }

@@ -499,7 +499,7 @@ class ActorSheetCharacter extends TheEdgeActorSheet {
         )
         if (hrChange) {
           if (game.combat && this.actor._id == game.combat.combatant.actorId) {
-            game.the_edge.combat_log.addAction(skill.name, hrChange);
+            game.the_edge.combatLog.addAction(skill.name, hrChange);
           } else {
             const hrThen = this.actor.system.heartRate.value;
             await this.actor.applyStrains([hrChange]);

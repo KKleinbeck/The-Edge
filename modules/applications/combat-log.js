@@ -4,6 +4,13 @@ import Aux from "../system/auxilliaries.js";
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api
 
 export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2) {
+  constructor (options) {
+    super(options);
+    this.distance = 0;
+    this.movementIndex = 0;
+    this.strainLog = [];
+  }
+
   static DEFAULT_OPTIONS = {
     tag: "form",
     form: {
@@ -29,8 +36,8 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
 
   async _prepareContext(options) {
     const context = {};
-    const isRest = Math.max(...game.the_edge.strain_log.map(x => x.hrChange)) <= 0;
-    context.strain = game.the_edge.strain_log.map(x => {
+    const isRest = Math.max(...this.strainLog.map(x => x.hrChange)) <= 0;
+    context.strain = this.strainLog.map(x => {
         const hrChange = !isRest && x.hrChange < 0 ? `0 (${x.hrChange})` : x.hrChange;
         return {name: x.name, hrChange: hrChange};
     });
@@ -38,13 +45,13 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
     const combatant = Aux.getCombatant();
     if (combatant) context.skills = combatant.itemTypes["Combatskill"];
 
-    context.distance = game.the_edge.distance;
-    if (game.the_edge.distance > 0) {
-      context.movementOptions = CombatLog.getMovements(game.the_edge.distance, combatant);
-      if (game.the_edge.movementIndex >= context.movementOptions.length) {
-        game.the_edge.movementIndex = 0;
+    context.distance = this.distance;
+    if (this.distance > 0) {
+      context.movementOptions = CombatLog.getMovements(this.distance, combatant);
+      if (this.movementIndex >= context.movementOptions.length) {
+        this.changeMovementIndex(0);
       }
-      context.movementIndex = game.the_edge.movementIndex;
+      context.movementIndex = this.movementIndex;
 
       context.movements = [];
       for (const movement of context.movementOptions[context.movementIndex].pattern) {
@@ -75,21 +82,25 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
   }
 
   async addAction(name, hrChange) {
-    game.the_edge.strain_log.push({name: name, hrChange: hrChange});
+    const payload = {name: name, hrChange: hrChange};
+    this.strainLog.push(payload);
+    game.the_edge.socketHandler.emit("ADD_TO_COMBAT_LOG", payload)
     this.render();
   }
 
-  static _addAction(event, target) {
+  static _addAction(_event, target) {
     switch (target.dataset.details) {
       case "strain":
         const strainLevel = target.dataset.level;
         const combatant = Aux.getCombatant();
         const hrChange = combatant ? combatant.getHrChangeFromStrain(+strainLevel) : 0;
-        game.the_edge.strain_log.push({
-          name: LocalisationServer.localise("Strain level", "Combat") +
-            " " + target.dataset.level,
+
+        const payload = {
+          name: LocalisationServer.localise("Strain level", "Combat") + " " + target.dataset.level,
           hrChange: hrChange
-        });
+        };
+        this.strainLog.push(payload);
+        game.the_edge.socketHandler.emit("ADD_TO_COMBAT_LOG", payload);
     }
     this.render();
   }
@@ -101,27 +112,48 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
       if (combatant && skillId) {
         const skill = combatant.items.get(skillId);
         const hrChange = Aux.skillHrChange(skill, combatant);
-        if (hrChange) {
-          game.the_edge.strain_log.push({name: skill.name, hrChange: hrChange});
-          this.render();
-        }
+        if (hrChange) this.addAction(skill.name, hrChange);
       }
     });
 
     this.element.querySelector("input[name=distance]")?.addEventListener("change", ev => {
-      game.the_edge.distance = +ev.target.value;
-      this.render();
+      this.changeDistance(+ev.target.value);
     })
 
     this.element.querySelector("#movement-options")?.addEventListener("change", ev => {
-      game.the_edge.movementIndex = ev.target.selectedIndex;
-      this.render();
+      this.changeMovementIndex(ev.target.selectedIndex);
     })
+  }
+
+  addToDistance(additional) {
+    this.distance += additional;
+    game.the_edge.socketHandler.emit("ADD_DISTANCE_TRAVELLED", additional);
+    this.render();
+  }
+
+  changeDistance(newDistance) {
+    this.distance = newDistance;
+    game.the_edge.socketHandler.emit("CHANGE_DISTANCE_TRAVELLED", newDistance);
+    this.render();
+  }
+
+  changeMovementIndex(newIndex) {
+    this.movementIndex = newIndex;
+    game.the_edge.socketHandler.emit("CHANGE_MOVEMENT_INDEX", newIndex);
+    this.render();
+  }
+
+  endTurn() {
+    this.distance = 0;
+    this.movementIndex = 0;
+    this.strainLog = [];
+    game.the_edge.socketHandler.emit("END_TURN");
   }
 
   static _undoAction(event, target) {
     const index = +target.dataset.index;
-    game.the_edge.strain_log.splice(index, 1);
+    this.strainLog.splice(index, 1);
+    game.the_edge.socketHandler.emit("UNDO_ACTION", index);
     this.render();
   }
 

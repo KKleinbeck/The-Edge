@@ -94,9 +94,9 @@ export default class Aux {
   }
 
   static combatRoundHrChange() {
-    const isRest = Math.max(...game.the_edge.strain_log.map(x => x.hrChange)) <= 0;
+    const isRest = Math.max(...game.the_edge.combatLog.strainLog.map(x => x.hrChange)) <= 0;
     const threshold = isRest ? -Infinity : 0;
-    return game.the_edge.strain_log.reduce((a, b) => Math.max(b.hrChange, threshold) + a, 0);
+    return game.the_edge.combatLog.strainLog.reduce((a, b) => Math.max(b.hrChange, threshold) + a, 0);
   }
 
   static parseHrCostStr(costStr, skillName, hrValue, hrLimit, hrZone) {

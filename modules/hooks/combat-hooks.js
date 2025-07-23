@@ -2,7 +2,7 @@ import Aux from "../system/auxilliaries.js";
 
 export default function() {
   Hooks.on("renderCombatTracker", (combatTracker, html, details) => {
-    if (game.combat) game.the_edge.combat_log.render(true);
+    if (game.combat) game.the_edge.combatLog.render(true);
 
     html.find(".combat-control").click(async ev => {
       if (Aux.hasRaceCondDanger("combat-control")) return undefined;
@@ -16,8 +16,7 @@ export default function() {
       actor.applyCombatStrain();
       actor.applyBloodLoss();
 
-      game.the_edge.distance = 0;
-      game.the_edge.strain_log = [];
+      game.the_edge.combatLog.endTurn();
     })
   })
 }
