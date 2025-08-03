@@ -169,6 +169,10 @@ class ActorSheetCharacter extends TheEdgeActorSheet {
     // Item Controls
     html.find(".item-control").click(ev => this._onItemControl(ev));
 
+    // Counter Controls
+    html.find(".counter-control").click(ev => this._onCounterControl(ev));
+    html.find(".counter-name").on("change", ev => this._changeCounterName(ev));
+
     // Add draggable for Macro creation
     html.find(".attributes a.attribute-roll").each((i, a) => {
       a.setAttribute("draggable", true);
@@ -356,8 +360,8 @@ class ActorSheetCharacter extends TheEdgeActorSheet {
 
     // Obtain event data
     const button = event.currentTarget;
-    const itemElment = button.closest(".item");
-    const item = this.actor.items.get(itemElment?.dataset.itemId);
+    const itemElement = button.closest(".item");
+    const item = this.actor.items.get(itemElement?.dataset.itemId);
 
     // Handle different actions
     switch ( button.dataset.action ) {
@@ -463,6 +467,63 @@ class ActorSheetCharacter extends TheEdgeActorSheet {
         }
         break;
     }
+  }
+
+  async _onCounterControl(event) {
+    event.preventDefault();
+
+    // Obtain event data
+    const button = event.currentTarget;
+    const counterElement = button.closest(".counter");
+    const index = +counterElement?.dataset.index;
+
+    // Handle different actions
+    const counters = this.actor.system.counters || [];
+    switch ( button.dataset.action ) {
+      case "create-counter":
+        counters.push({
+          name: LocalisationServer.localise("New Counter", "item"),
+          value: 1, max: 1
+        })
+        break;
+      
+      case "delete":
+        counters.splice(index, 1);
+        break;
+
+      case "increase-counter":
+        counters[index].max += 1;
+        break;
+
+      case "decrease-counter":
+        if (counters[index].max == 1) return;
+        counters[index].max -= 1;
+        counters[index].value = Math.min(
+          counters[index].value, counters[index].max
+        );
+        break;
+      
+      case "deplete-counter":
+        counters[index].value = 0;
+        break;
+      
+      case "use":
+        counters[index].value = 1 + +button.dataset.level;
+        break;
+    }
+    this.actor.update({"system.counters": counters});
+  }
+
+  async _changeCounterName(event) {
+    event.preventDefault();
+
+    // Obtain event data
+    const input = event.currentTarget;
+    const counterElement = input.closest(".counter");
+    const index = +counterElement?.dataset.index;
+    const counters = this.actor.system.counters;
+    counters[index].name = input.value;
+    this.actor.update({"system.counters": counters});
   }
 
   async _onSkillControl(event) {

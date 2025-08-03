@@ -149,6 +149,7 @@
       "bloodlossThreshold": {"status": 0},
       "bloodlossStepSize": {"status": 0}
     },
+    "counters": [],
     "nativeLanguage": "Standard"
   },
   "Store": {

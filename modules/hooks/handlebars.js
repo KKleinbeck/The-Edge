@@ -47,6 +47,8 @@ export default function() {
       return Object.keys(a).length !== 0;
     },
     checkSubtypedItem: (a) => { return (a == "Weapon" || a == "Consumables");},
+    checkST: (a, b) => { return a < b; },
+    checkSET: (a, b) => { return a <= b; },
     checkAttachment: (a) => { return a.system?.layer === "Outer"; },
     getSys: (a, b, c, d) => { return a.system[b][c][d]; },
     getSys5: (a, b, c, d, e) => { return a.system[b][c][d][e]; },
@@ -58,6 +60,11 @@ export default function() {
     capitalise: (a) => { return a.charAt(0).toUpperCase() + a.slice(1); },
     anyObjectValues: (a) => { return Object.values(a).some(x => x); },
     storePrice: (a, b) => { return Math.round(a * b / 10) * 10; },
+    times: (n, block) => {
+      let accum = "";
+      for (let i = 0; i < n; ++ i) accum += block.fn(i);
+      return accum;
+    },
 
     getActiveGrenadeEffects: (a) => {
       const effects = [];

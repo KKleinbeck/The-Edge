@@ -37,6 +37,35 @@
       </select>
     </div>
   </div>
+  <div class="title" style="padding-right: 10px;">
+    <div class="section-title">{{genName "Counters"}}</div>
+    <div class="counter-control" title="{{ itemName 'Create Counter' }}" data-action="create-counter" style="gap: 5px; cursor: pointer;">
+      {{itemName "New Counter"}}
+      <a><i class="fas fa-plus"></i></a>
+    </div>
+  </div>
+  <div class="counter-list" style="padding: 0px 5px 0px 5px;">
+    {{#each systemData.counters as |counter|}}
+      <div class="counter" data-index="{{@index}}">
+        <div class="counter-title">
+          <input class="counter-name" value="{{counter.name}}" style="width: 70%;"/>
+          <div>
+            <a class="counter-control" data-action="decrease-counter"><i class="fas fa-minus"></i></a>
+            <a class="counter-control" data-action="increase-counter"><i class="fas fa-plus"></i></a>
+            <a class="counter-control" title="{{ itemName 'Delete Counter' }}" data-action="delete"><i class="fas fa-trash"></i></a>
+          </div>
+        </div>
+        <div class="counter-box-list" style="max-width: 100%;">
+          <a class="counter-control" data-action="deplete-counter" style="color: #bd9f09;">
+            <i class="fas fa-circle-minus"></i>
+          </a>
+          {{#times counter.max}}
+            <div class="counter-control counter-box {{#if (checkST this counter.value)}}full{{/if}}" data-action="use" data-level="{{this}}"></div>
+          {{/times}}
+        </div>
+      </div>
+    {{/each}}
+  </div>
   <div class="title">
     <div class="section-title">{{genName "Biography"}}</div>
   </div>
