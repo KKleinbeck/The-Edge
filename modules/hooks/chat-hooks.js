@@ -66,6 +66,9 @@ export default function() {
     sys.diceResults = newResults;
     sys.netOutcome = DiceServer.proficiencyNetOutcome(sys.diceResults, sys.thresholds, modificator);
     const newSys = await actor.interpretCheck("proficiencies", sys)
+    if ("rollOutcome" in newSys) {
+      sys.rollOutcome = ProficiencyConfig.rollOutcome(sys.proficiency, sys.quality).description;
+    }
     const newContent = await renderTemplate(
       "systems/the_edge/templates/chat/proficiency_check.html", sys);
     updateChatMessage(chatMsgCls, newContent, newSys);

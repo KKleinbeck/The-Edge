@@ -174,9 +174,7 @@ Hooks.on("ready", function() {
       const distance = Math.sqrt(dx * dx + dy * dy);
 
       if (duration < maxClickDuration && distance < maxMoveDistance) {
-        console.log("Short right click detected");
         if (gp) gp.close();
-        console.log(canvas.mousePosition)
         gp = new GrenadePicker({
           position: {left: e.clientX, top: e.clientY},
           mousePosition: canvas.mousePosition

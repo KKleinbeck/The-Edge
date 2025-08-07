@@ -99,14 +99,15 @@ export default class GrenadePicker extends HandlebarsApplicationMixin(Applicatio
     };
     const proficiencyRoll = await token.actor.rollProficiencyCheck(checkData, "roll", false);
     foundry.utils.mergeObject(checkData, proficiencyRoll);
-    console.log(proficiencyRoll)
 
     const rollOutcome = ProficiencyConfig.rollOutcome("throwing", proficiencyRoll.quality);
     foundry.utils.mergeObject(checkData, {rollOutcome: rollOutcome.description});
+    ChatServer.transmitEvent("ProficiencyCheck", checkData);
 
     const grenadeId = await this._createGrenadeTile(proficiencyRoll, rollOutcome, token);
     foundry.utils.mergeObject(checkData, {grenadeId: grenadeId});
-    ChatServer.transmitEvent("ProficiencyCheck", checkData);
+
+    chosenGrenade.useOne();
     this.close();
   }
 
