@@ -110,7 +110,7 @@ export default class DiceServer {
     let roll = await this._attributeRoll(threshold);
 
     if (vantage == "Advantage" || vantage == "Disadvantage") {
-      const roll2 = this._attributeRoll(threshold);
+      const roll2 = await this._attributeRoll(threshold);
       roll = this._selectVantageOutcome(vantage, roll, roll2);
     }
 

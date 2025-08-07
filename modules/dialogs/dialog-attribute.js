@@ -15,8 +15,8 @@ export default class DialogAttribute extends Dialog{
       roll: {
         label: game.i18n.localize("DIALOG.ROLL"),
         callback: (html) => {
-          checkData["temporaryMod"] = parseInt(html.find('[name="Modifier"]').val());
-          checkData["advantage"] = html.find('[name="AdvantageSelector"]').val();
+          checkData.temporaryMod = parseInt(html.find('[name="Modifier"]').val());
+          checkData.vantage = html.find('[name="AdvantageSelector"]').val();
           const rollType = Aux.parseRollType(html);
           checkData.actor.rollAttributeCheck(checkData, rollType);
         }

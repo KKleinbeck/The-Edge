@@ -38,11 +38,14 @@ export default class DialogCombatics extends Dialog{
           ChatServer.transmitEvent("WeaponCheck", details);
 
           // Append to strainLog
-          const hrChange = checkData.actor.getHrChangeFromStrain(3);
-          game.the_edge.combatLog.addAction(
-            LocalisationServer.localise("Hand to hand combat", "combat"),
-            hrChange
-          );
+          const hrChange = checkData.actor.getHrChangeFromStrain(1);
+          if (game.combat) {
+            game.the_edge.combatLog.addAction(
+              LocalisationServer.localise("Weapon attack"), hrChange
+            );
+          } else {
+            checkData.actor.applyStrains([hrChange]);
+          }
         }
       },
       cancel: {
