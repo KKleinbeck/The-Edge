@@ -1,6 +1,7 @@
 import initHooks from "./hooks/init.js";
 import THE_EDGE from "./system/config-the-edge.js"
 import CombatLog from "./applications/combat-log.js";
+import GrenadePicker from "./applications/grenades-picker.js";
 import { TheEdgeActor } from "./actors/actor.js";
 import { TheEdgeItem } from "./items/item.js";
 import { SocketHandler } from "./system/socket_handler.js";
@@ -148,6 +149,46 @@ Hooks.once("init", async function() {
 
   // Preload template partials
   await preloadHandlebarsTemplates();
+});
+
+Hooks.on("ready", function() {
+  let rightClickStart = null;
+  let startPos = null;
+  let gp = null;
+  // TODO: make user controllable options
+  const maxClickDuration = 300; // ms
+  const maxMoveDistance = 5;    // px
+
+  canvas.app.view.addEventListener("mousedown", e => {
+    if (e.button === 2) {
+      rightClickStart = Date.now();
+      startPos = { x: e.clientX, y: e.clientY };
+    }
+  });
+
+  canvas.app.view.addEventListener("mouseup", e => {
+    if (e.button === 2 && rightClickStart) {
+      const duration = Date.now() - rightClickStart;
+      const dx = e.clientX - startPos.x;
+      const dy = e.clientY - startPos.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (duration < maxClickDuration && distance < maxMoveDistance) {
+        console.log("Short right click detected");
+        if (gp) gp.close();
+        console.log(canvas.mousePosition)
+        gp = new GrenadePicker({
+          position: {left: e.clientX, top: e.clientY},
+          mousePosition: canvas.mousePosition
+        });
+        if (gp.hasContent()) {
+          gp.render(true);
+          e.preventDefault();
+        }
+      }
+      rightClickStart = null;
+    }
+  });
 });
 
 /**

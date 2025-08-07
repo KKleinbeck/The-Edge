@@ -1,0 +1,19 @@
+<div>
+  {{#if (checkEqual 1 (length actors 1))}}
+  {{else}}
+    <select class="actor-selection" style="margin-bottom: 8px;">
+      {{#each actors as |actor|}}
+        <option value="{{@index}}" {{#if (checkEqual @index ../chosenActorIndex)}}selected{{/if}}>{{actor.name}}</option>
+      {{/each}}
+    </select>
+  {{/if}}
+  <select class="grenade-selection" style="margin-bottom: 8px;">
+    {{#each grenadeOptions as |grenade|}}
+      <option value="{{@index}}">{{grenade.name}}</option>
+    {{/each}}
+  </select>
+  <button data-action="rollCheck" style="justify-content: space-between;">
+    <div>{{genName "Roll check"}}</div>
+    <div>{{#if (checkST 0 chosenActor.penalty)}}+{{/if}}{{chosenActor.modifier}} {{genName "Mod"}}</div>
+  </button>
+</div>

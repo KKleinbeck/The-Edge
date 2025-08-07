@@ -5,6 +5,7 @@ const THE_EDGE = {}
 
 THE_EDGE.sizes = {tiny: 30, small: 130, normal: 250, large: 500, giant: Infinity}
 THE_EDGE.sizeModifiers = {"normal": [0, 0], "tiny": [-8, -4], "small": [-4, -2],  "large": [2, 4], "giant": [4, 8]}
+THE_EDGE.sizeFreeThrow = {"tiny": 0.3, "small": 1, "normal": 1.5,  "large": 3, "giant": 10} 
 THE_EDGE.movements = {"stationary": [0, 0], "moderate": [-1, -1], "fast": [-2, -2], "erradic": [-4, -4]}
 THE_EDGE.cover = {"no cover": 0, "half cover": -2, "three quarters": -4, "full cover": -20}
 THE_EDGE.consumables_subtypes = ["Food", "Grenade", "SkinPack", "FleshPack", "Drugs", "Generic"]

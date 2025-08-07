@@ -1,4 +1,4 @@
-<h3>{{proficiencyName proficiency}}</h3>
+<h3>{{proficiencyName proficiency}}{{#if titleDetails}} - {{titleDetails}}{{/if}}</h3>
 <div class="centered-row">
   <b>{{genName "Check"}}: </b>
   {{#each dices as |dice|}}
@@ -20,5 +20,13 @@
 {{else}}
 <div class="centered-row">
   <b>{{genName "with"}} {{genName vantage}}</b>
+</div>
+{{/if}}
+{{#if rollOutcome}}
+<div class="roll-outcome" style="padding-top: 10px;">
+  <b>{{genName "Outcome"}}</b>
+  <span class="outcome-details">
+    {{rollOutcome}}
+  </span>
 </div>
 {{/if}}

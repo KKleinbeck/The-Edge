@@ -64,6 +64,9 @@ h1, h2, h3, h4 {
   background-color: rgba(42, 80, 122, 0.2) !important;
   background-image: none !important;
 }
+.grenade-picker {
+  background-color: rgba(42, 80, 122, 0.2);
+}
 .filepicker .display-modes a {
   background-color: var(--color-background-light-night-black) !important;
 }
