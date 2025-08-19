@@ -4,6 +4,7 @@ import ChatServer from "../system/chat_server.js";
 import DialogChangeDice from "../dialogs/dialog-change-dice.js";
 import ProficiencyConfig from "../system/config-proficiencies.js";
 import LocalisationServer from "../system/localisation_server.js";
+import NotificationServer from "../system/notifications.js";
 
 export default function() {
   const rollIsReady = (id, target) => {
@@ -358,10 +359,7 @@ export default function() {
 
     html.find(".apply-damage").on("click", async ev => {
       if (!game.user.isGM) {
-        const msg = LocalisationServer.parsedLocalisation(
-          "Requires GM", "Notifications", {weapon: "hand to hand", max: 1}
-        )
-        ui.notifications.notify(msg)
+        NotificationServer.notify("Requires GM")
         return ;
       }
 
@@ -383,6 +381,60 @@ export default function() {
       $(html.find(".rerollable")).removeClass("rerollable"); // No more edits after damage application
       $(html.find(".message-header")).remove(); // Remove old header bar
       chatMsgCls.update({"content": html.find(".message-content").html()});
+    })
+    
+    html.find(".apply-grenade-damage").on("click", async ev => {
+      if (!game.user.isGM) {
+        NotificationServer.notify("Requires GM")
+        return ;
+      }
+      
+      const sys = message.message.system;
+      const grenadeDetails = sys.grenade.system.subtypes.grenade;
+      const maxDistance = Math.max(...grenadeDetails.blastDistance);
+      const closeDistance = grenadeDetails.blastDistance[0];
+
+      const scene = game.scenes.get(sys.sceneId);
+      const grenadeTile = scene.tiles.get(sys.grenadeTileId);
+      const logs = {};
+      for (const token of scene.tokens) {
+        const factor = scene.grid.distance / scene.grid.size;
+        const distance = factor * Math.hypot(token.x - grenadeTile.x, token.y - grenadeTile.y);
+        if (distance < maxDistance) {
+          const damage = await DiceServer.genericRoll(
+            grenadeDetails.damage[distance < closeDistance ? 0 : 1]
+          );
+          const partialLog = await applyDamage(
+            token.actor, [damage], 0, [false], grenadeDetails.type, sys.nameGrenade
+          )
+
+          // Add damage and protection to the log
+          let protection = 0;
+          for (const protectionArray of Object.values(partialLog)) protection += protectionArray.sum();
+          logs[token.actor.name] = {
+            damage: damage,
+            protection: protection
+          };
+        }
+      }
+
+      // Update the chat message
+      if (Object.keys(logs).length != 0) {
+        const template = "systems/the_edge/templates/chat/meta-grenade-damage.html";
+        const damageHtml = await renderTemplate(
+          template, {logs: logs, grenade: grenadeDetails}
+        );
+        $(ev.currentTarget).replaceWith(damageHtml);
+      } else {
+        $(ev.currentTarget).replaceWith(
+          LocalisationServer.localise("Harmless explosion", "text")
+        );
+      }
+      $(html.find(".message-header")).remove(); // Remove old header bar
+      chatMsgCls.update({"content": html.find(".message-content").html()});
+
+      // Remove the grenade tile
+      grenadeTile.delete();
     })
   })
 }

@@ -446,7 +446,8 @@
     "SKILL": "Skill"
   },
   "TEXT": {
-    "EFFECTS": "Add a status modifiery to your attributes, proficiencies, weapon proficiencies and other character attributes.\nFor this write 'Attributes.NAME', 'Proficiencies.NAME', 'Weapons.NAME'. This is generally case-insensitive, except for specific proficiency and weapon names. You can also use group names, for example 'attributes.physical' or 'weapons.Energy'. Furthermore there is an 'all' specifier to affect everything.\nOther modifiers: 'health', 'heartRate.[min,max]', 'bloodVolumn'."
+    "EFFECTS": "Add a status modifiery to your attributes, proficiencies, weapon proficiencies and other character attributes.\nFor this write 'Attributes.NAME', 'Proficiencies.NAME', 'Weapons.NAME'. This is generally case-insensitive, except for specific proficiency and weapon names. You can also use group names, for example 'attributes.physical' or 'weapons.Energy'. Furthermore there is an 'all' specifier to affect everything.\nOther modifiers: 'health', 'heartRate.[min,max]', 'bloodVolumn'.",
+    "HARMLESS EXPLOSION": "The grenade explodes without damaging any creatures."
   },
   "TOOLTIP": {
     "DESIGNATED WEAPON": "Some types of ammunition are only useable with specific names. Specify these here by their names (comma separated).",
@@ -596,6 +597,7 @@
   "PROFICIENCIES": "Proficiencies",
   "PROFICIENCIES TAB": "Proficiencies",
   "PROGRESS": "Progress",
+  "PROTECTION": "Protection",
   "QUANTITY": "Quantity",
   "RACE ...": "Race ...",
   "RANGE MODIFIERS": "Range modifiers",

@@ -1,3 +1,5 @@
+import GrenadePicker from "../applications/grenades-picker.js";
+
 export class SocketHandler {
     constructor() {
     this.identifier = "system.the_edge";
@@ -7,6 +9,7 @@ export class SocketHandler {
   registerSocketHandlers() {
     game.socket.on(this.identifier, ({ type, payload }) => {
       switch (type) {
+        // Combat Log related
         case "ADD_TO_COMBAT_LOG":
           this.#addToCombatLog(payload);
           break;
@@ -25,6 +28,16 @@ export class SocketHandler {
         case "UNDO_ACTION":
           this.#undoAction(payload);
           break;
+        
+        // Grenade related
+        case "CREATE_GRENADE_TILE":
+          GrenadePicker.createGrenadeTile(
+            payload.proficiencyRoll, payload.rollOutcome, payload.token,
+            payload.checkData, payload.targetPosition
+          );
+          break;
+        
+        // Other actions
         default:
           throw new Error('unknown type: ' + type);
       }

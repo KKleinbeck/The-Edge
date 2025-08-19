@@ -1,0 +1,18 @@
+<table>
+  <tr>
+    <td></td>
+    <td style="text-align: right;">
+      {{genName "Damage"}}
+    </td>
+    <td style="text-align: right;">
+      {{genName "Protection"}}
+    </td>
+  </tr>
+  {{#each logs as |details actor|}}
+    <tr>
+      <td>{{actor}}</td>
+      <td style="text-align: right;">{{details.damage}}</td>
+      <td style="text-align: right;">{{details.protection}}</td>
+    </tr>
+  {{/each}}
+</table>

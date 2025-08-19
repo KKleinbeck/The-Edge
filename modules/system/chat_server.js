@@ -41,9 +41,13 @@ export default class ChatServer {
         html = await renderTemplate("systems/the_edge/templates/chat/general_consume.html", details);
         break;
       
-      case "GRENADE":
+      case "GRENADE SHEET BASED":
         details.check = "throwing";
-        html = await renderTemplate("systems/the_edge/templates/chat/grenade.html", details);
+        html = await renderTemplate("systems/the_edge/templates/chat/grenade-sheet-based.html", details);
+        break;
+      
+      case "GRENADE CONTEXT BASED":
+        html = await renderTemplate("systems/the_edge/templates/chat/grenade-context-based.html", details);
         break;
       
       case "RELOAD":

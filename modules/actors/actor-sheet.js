@@ -434,7 +434,7 @@ class ActorSheetCharacter extends TheEdgeActorSheet {
             break;
 
           case "grenade":
-            ChatServer.transmitEvent("grenade", {
+            ChatServer.transmitEvent("grenade sheet based", {
               actorId: this.actor?.id, tokenId: this.token?.id, grenade: item, details: item.system.subtypes.grenade
             })
             item.useOne();

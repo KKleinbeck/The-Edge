@@ -95,7 +95,7 @@ export default class GrenadePicker extends HandlebarsApplicationMixin(Applicatio
     const checkData = {
       proficiency: "throwing", temporaryMod: chosenActor.modifier, vantage: "Nothing",
       actor: token.actor, actorId: token.actor.id, tokenId: token.id, sceneId: canvas.scene.id,
-      titleDetails: chosenGrenade.name
+      titleDetails: chosenGrenade.name, grenade: chosenGrenade
     };
     const proficiencyRoll = await token.actor.rollProficiencyCheck(checkData, "roll", false);
     foundry.utils.mergeObject(checkData, proficiencyRoll);
@@ -104,34 +104,44 @@ export default class GrenadePicker extends HandlebarsApplicationMixin(Applicatio
     foundry.utils.mergeObject(checkData, {rollOutcome: rollOutcome.description});
     ChatServer.transmitEvent("ProficiencyCheck", checkData);
 
-    const grenadeId = await this._createGrenadeTile(proficiencyRoll, rollOutcome, token);
-    foundry.utils.mergeObject(checkData, {grenadeId: grenadeId});
+    const payload = {
+      proficiencyRoll: proficiencyRoll, rollOutcome: rollOutcome,
+      token: {x: token.x, y: token.y}, checkData: checkData,
+      targetPosition: this.targetPosition
+    };
+    game.the_edge.socketHandler.emit("CREATE_GRENADE_TILE", payload)
 
     chosenGrenade.useOne();
     this.close();
   }
 
-  async _createGrenadeTile(proficiencyRoll, rollOutcome, token) {
+  static async createGrenadeTile(proficiencyRoll, rollOutcome, token, checkData, targetPosition) {
     const cls = getDocumentClass("Tile");
     const position = {x: 0, y: 0};
     const dist = rollOutcome.distance * canvas.scene.grid.size;
     if (proficiencyRoll.quality >= 0) {
       const angle = Math.PI * (45 * rollOutcome.dir + 40 * Math.random() - 20) / 180;
-      position.x = this.targetPosition.x + dist * Math.sin(angle);
-      position.y = this.targetPosition.y - dist * Math.cos(angle);
+      position.x = targetPosition.x + dist * Math.sin(angle);
+      position.y = targetPosition.y - dist * Math.cos(angle);
     } else {
-      const angle = Math.atan2(token.y - this.targetPosition.y, token.x - this.targetPosition.x) +
+      const angle = Math.atan2(token.y - targetPosition.y, token.x - targetPosition.x) +
         Math.PI * (180 * rollOutcome.dir + 40 * Math.random() - 20 + 90) / 180;
       position.x = token.x + dist * Math.sin(angle);
       position.y = token.y - dist * Math.cos(angle);
     }
-    const grenade = await cls.create(
+    const grenadeTile = await cls.create(
       {
         width: 80, height: 80, ...position, elevation: 1,
         texture: {src: "systems/the_edge/icons/fragger.png"}
       },
       {parent: canvas.scene}
     );
-    return grenade.id;
+
+    const details = {
+      nameGrenade: checkData.titleDetails, nameActor: checkData.actor.name,
+      grenade: checkData.grenade, grenadeTileId: grenadeTile.id,
+      sceneId: checkData.sceneId
+    };
+    ChatServer.transmitEvent("GRENADE CONTEXT BASED", details);
   }
 }
