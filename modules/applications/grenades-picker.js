@@ -18,6 +18,8 @@ export default class GrenadePicker extends HandlebarsApplicationMixin(Applicatio
 
     this.actorOptions = [];
     for (const token of tokens) {
+      if (token.actor.type !== "character") continue;
+
       const grenades = token.actor.itemTypes["Consumables"].filter(
         x => {return "grenade" == x.system.subtype;}
       )
