@@ -1,6 +1,7 @@
 import initHooks from "./hooks/init.js";
 import THE_EDGE from "./system/config-the-edge.js"
 import CombatLog from "./applications/combat-log.js";
+import TheEdgeHotbar from "./applications/hotbar.js";
 import GrenadePicker from "./applications/grenades-picker.js";
 import { TheEdgeActor } from "./actors/actor.js";
 import { TheEdgeItem } from "./items/item.js";
@@ -100,6 +101,9 @@ Hooks.once("init", async function() {
   // Register sheet application classes
   TheEdgeActorSheet.setupSheets()
   TheEdgeItemSheet.setupSheets()
+
+  // UI setup
+  // CONFIG.ui.hotbar = TheEdgeHotbar;
 
   // Register system settings
   game.settings.register("the_edge", "macroShorthand", {

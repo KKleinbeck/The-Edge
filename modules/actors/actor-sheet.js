@@ -14,14 +14,14 @@ import ChatServer from "../system/chat_server.js";
 import Aux from "../system/auxilliaries.js";
 
 
-export class TheEdgeActorSheet extends ActorSheet {
+export class TheEdgeActorSheet extends foundry.appv1.sheets.ActorSheet {
   static setupSheets() {
-    Actors.unregisterSheet("core", ActorSheet);
-    Actors.registerSheet("the_edge", TheEdgeActorSheet, { makeDefault: true });
-    Actors.registerSheet("the_edge", ActorSheetCharacter, { makeDefault: true, types: ["character"] });
-    Actors.registerSheet("the_edge", ActorSheetStore, { makeDefault: true, types: ["Store"] });
+    foundry.documents.collections.Actors.unregisterSheet("core", foundry.appv1.sheets.ActorSheet);
+    foundry.documents.collections.Actors.registerSheet("the_edge", TheEdgeActorSheet, { makeDefault: true });
+    foundry.documents.collections.Actors.registerSheet("the_edge", ActorSheetCharacter, { makeDefault: true, types: ["character"] });
+    foundry.documents.collections.Actors.registerSheet("the_edge", ActorSheetStore, { makeDefault: true, types: ["Store"] });
 
-    Actors.unregisterSheet("the_edge", TheEdgeActorSheet, {
+    foundry.documents.collections.Actors.unregisterSheet("the_edge", TheEdgeActorSheet, {
       types: ["character"]
     });
   }

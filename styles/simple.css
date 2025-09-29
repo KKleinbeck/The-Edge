@@ -73,6 +73,10 @@ h1, h2, h3, h4 {
 .filepicker .favorites .path {
   background-color: var(--color-background-light-night-black) !important;
 }
+.hotbar-frame{
+  background-image: url("../assets/hotbar_bg.png") !important;
+  background-size: cover;
+}
 .journal-entry-content {
   background-image: url("../assets/background.png") !important;
 }
