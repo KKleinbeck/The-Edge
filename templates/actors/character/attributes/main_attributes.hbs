@@ -5,9 +5,13 @@
       {{#each prepare.attrs as |ch|}}
       <div data-tooltip="{{attrName ch}}" class="table-header">
         {{#if ../prepare.canAdvance}}
-          <a data-name="{{ch}}" advance-type="refund"  class="advance-attr" data-cost="{{getSys ../prepare 'attr' ch 'refund'}}"><i class="fas fa-minus advance-fa" style="font-size: 10px;"></i></a>
+          <a data-name="{{ch}}" advance-type="refund"  class="advance-attr" data-cost="{{getSys ../prepare 'attr' ch 'refund'}}">
+            <i class="fas fa-minus advance-fa" style="font-size: 10px;"></i>
+          </a>
           <b>{{attrAbbr ch}}</b>
-          <a data-name="{{ch}}" advance-type="advance" class="advance-attr" data-cost="{{getSys ../prepare 'attr' ch 'cost'}}"><i class="fas fa-plus advance-fa" style="font-size: 10px;"></i></a>
+          <a data-name="{{ch}}" advance-type="advance" class="advance-attr" data-cost="{{getSys ../prepare 'attr' ch 'cost'}}">
+            <i class="fas fa-plus advance-fa" style="font-size: 10px;"></i>
+          </a>
         {{else}}
           <b>{{attrAbbr ch}}</b>
         {{/if}}
@@ -22,7 +26,14 @@
       </div>
       {{#each prepare.attrs as |ch|}}
       <div class="number-input table-data">
-        <input class="core-value" data-target="system.attributes.{{ch}}.advances" type="number" value="{{getSys ../actor 'attributes' ch 'advances'}}" data-dtype="Number">
+        <input
+          class="core-value"
+          data-target="system.attributes.{{ch}}.advances"
+          type="number"
+          value="{{getSys ../actor 'attributes' ch 'advances'}}"
+          data-dtype="Number"
+          style="text-align: center;"
+        >
       </div>
       {{/each}}
     </div>

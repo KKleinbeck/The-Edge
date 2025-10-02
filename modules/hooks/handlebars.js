@@ -57,6 +57,7 @@ export default function() {
     sub: (a, b) => { return a - b; },
     div: (a, b) => { return a / b; },
     mul: (a, b) => { return a * b; },
+    range: (n) => { return Array(n).fill(0).map((_, index)=> index); },
     capitalise: (a) => { return a.charAt(0).toUpperCase() + a.slice(1); },
     anyObjectValues: (a) => { return Object.values(a).some(x => x); },
     storePrice: (a, b) => { return Math.round(a * b / 10) * 10; },
