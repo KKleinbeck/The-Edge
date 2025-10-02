@@ -51,6 +51,9 @@ export const preloadHandlebarsTemplates = async function() {
     "systems/the_edge/templates/chat/meta-apply-damage.html",
     "systems/the_edge/templates/chat/meta-protection-log.html",
     "systems/the_edge/templates/dialogs/meta-chat-options.html",
+
+    // Generic templates
+    "systems/the_edge/templates/generic/progress-bar.hbs",
   ];
 
   // Load the template parts

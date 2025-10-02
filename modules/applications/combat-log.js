@@ -29,7 +29,7 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
   }
 
   static PARTS = {
-    from: {
+    form: {
       template: "systems/the_edge/modules/applications/templates/combat-log.hbs"
     }
   }
@@ -79,6 +79,10 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
     context.zoneThen = combatant.getHRZone(context.hrThen);
 
     return context;
+  }
+
+  get title() {
+    return "ASD"
   }
 
   async addAction(name, hrChange) {

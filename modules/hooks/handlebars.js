@@ -4,7 +4,6 @@ import THE_EDGE from "../system/config-the-edge.js";
 
 export default function() {
   Handlebars.registerHelper({
-    add: (a, b) => {return +a+b; },
     genName: (a) => LocalisationServer.localise(a),
     actorName: (a) => LocalisationServer.localise(a, "Actor"),
     attrName: (a) => LocalisationServer.localise(a, "attr"),
@@ -57,6 +56,7 @@ export default function() {
     add: (a, b) => { return +a + +b; },
     sub: (a, b) => { return a - b; },
     div: (a, b) => { return a / b; },
+    mul: (a, b) => { return a * b; },
     capitalise: (a) => { return a.charAt(0).toUpperCase() + a.slice(1); },
     anyObjectValues: (a) => { return Object.values(a).some(x => x); },
     storePrice: (a, b) => { return Math.round(a * b / 10) * 10; },

@@ -9,7 +9,7 @@ import DiceServer from "../system/dice_server.js";
  * Extend the base Actor document to support attributes and groups with a custom template creation dialog.
  * @extends {Actor}
  */
-export class TheEdgeBaseActor extends Actor {
+export class TheEdgeActor extends Actor {
   constructor(...args) {
     super(...args);
     this.diceServer = new DiceServer();
@@ -76,7 +76,7 @@ export class TheEdgeBaseActor extends Actor {
 
   // Generates dict for the charactersheet to parse
   prepareSheet() {
-    const preparedData = { system: { attr: {}, profGroups: [], weapons: {} } };
+    let preparedData = { system: { attr: {}, profGroups: [], weapons: {} } };
     for (const key of Object.keys(this.system.attributes)) {
       let n = this.system.attributes[key].advances;
       preparedData.system.attr[key] = {
@@ -106,7 +106,42 @@ export class TheEdgeBaseActor extends Actor {
       mental: Object.keys(this.system.proficiencies["mental"]),
     })
 
-    return preparedData;
+    const sys = this.system;
+    const ch = sys.attributes;
+    foundry.utils.mergeObject(preparedData, {
+      attrs: THE_EDGE.attrs,
+      canAdvance: true,
+      zones: {
+        1: {value: this.hrZone1(), tooltip: "75% Max Heart Rate".replace(/[ ]/g, "\u00a0")},
+        2: {value: this.hrZone2(), tooltip: "90% Max Heart Rate".replace(/[ ]/g, "\u00a0")}
+      },
+      speeds: {
+        Stride: { 
+          value: this.getStrideSpeed(),
+          tooltip: "Min(5 + Spd/6, 75% foc)".replace(/[ ]/g, "\u00a0")
+         },
+        Run: { 
+          value: this.getRunSpeed(),
+          tooltip: "Min(7 + Spd/3, 125% Foc)".replace(/[ ]/g, "\u00a0")
+         },
+        Sprint: { 
+          value: this.getSprintSpeed(),
+          tooltip: "Min(8 + Spd/1.5, 175% Foc)".replace(/[ ]/g, "\u00a0")
+         }
+      },
+      herotoken: Array(sys.heroToken.max).fill(false).fill(true, 0, sys.heroToken.available)
+    });
+
+    return preparedData
+  }
+
+  useHeroToken(reason = "generic") {
+    this.update({"system.heroToken.available": this.system.heroToken.available - 1});
+    ChatServer.transmitEvent("Hero Token", {name: this.name, reason: reason});
+  }
+
+  regenerateHeroToken() {
+    this.update({"system.heroToken.available": this.system.heroToken.available + 1});
   }
 
   interpretCheck(type, roll) {
@@ -834,6 +869,13 @@ export class TheEdgeBaseActor extends Actor {
     return hrChange;
   }
 
+  async updateHr(newHr) {
+    const zone = this.getHRZone();
+    await this.update({"system.heartRate.value": newHr});
+    const newZone = this.getHRZone();
+    if (newZone != zone) {this.updateStrain()}
+  }
+
   _getEffect(name) {
     const effects = this.itemTypes["Effect"];
     return effects?.find(obj => obj.name == LocalisationServer.localise(name));
@@ -855,6 +897,16 @@ export class TheEdgeBaseActor extends Actor {
     const effect = this._getEffect(name)
     if (effect) { await effect.delete() }
   }
+
+  getHRZone(hr = undefined) {
+    hr = hr ? hr : this.system.heartRate.value;
+    if (hr < this.hrZone1()) return 1;
+    if (hr < this.hrZone2()) return 2;
+    return 3;
+  }
+
+  hrZone1() {return 5 * Math.floor(this.system.heartRate.max.value * 75 / 500)}
+  hrZone2() {return 5 * Math.floor(this.system.heartRate.max.value * 90 / 500)}
 
   shortRest() {this._rest("1d3 % 2", "1d3-1", "0", "short rest")}
   longRest() {this._rest("2d3kh", "2d6 / 2", "1d3-1", "long rest")}
@@ -902,4 +954,3 @@ export class TheEdgeBaseActor extends Actor {
     )
   }
 }
-

@@ -1,0 +1,63 @@
+<header class="sheet-header">
+  <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}"/>
+  <div class="header-fields">
+    <div style="display: flex; align-items: center;">
+      <div style="flex-grow: 5">
+        <h2 class="charname" style="margin-bottom: 0px;">
+          <input name="name" type="text" value="{{actor.name}}" placeholder="Name" style="min-height: 32px;"/>
+        </h2>
+        <div class="columned-page">
+          <div class="page-centered">
+            <div class="attribute-title">{{genName "health"}}</div>
+            {{>
+              systems/the_edge/templates/generic/progress-bar.hbs
+              value=system.health.value
+              max=system.health.max.value
+              name="system.health.value" id="health"
+            }}
+          </div>
+          <div class="page-centered">
+            <div class="attribute-title">{{genName "Heartrate"}}</div>
+            {{>
+              systems/the_edge/templates/generic/progress-bar.hbs
+              value=system.heartRate.value
+              max=system.heartRate.max.value
+              name="system.heartRate.value" id="heartRate"
+              segments=helpers.hrProgressBarData
+            }}
+          </div>
+          {{#if (checkEqual helpers.armourProtection 0)}}
+          {{else}}
+            <div class="page-centered" style="flex: 0.5;">
+              <div class="attribute-title">{{genName "Armour"}}</div>
+              <div style="display: flex; justify-content: center; gap: 4px;">
+                <span class="output" style="width: 74px; max-height: 22px;">{{helpers.armourProtection}}</span>
+              </div>
+            </div>
+          {{/if}}
+        </div>
+      </div>
+      <div style="margin-left: 15px;">
+        <div class="page-centered">
+          {{#each prepare.herotoken as |token|}}
+            {{#if token}}
+              <a class="token-img hero-token" data-action="heroTokenUsed" data-tooltip="Hero Token"></a>
+            {{else}}
+              <a class="token-img hero-token-spent" data-action="heroTokenRegen"></a>
+            {{/if}}
+          {{/each}}
+        </div>
+      </div>
+    </div>
+    <div class="columned-page" style="text-align: center; margin-top: 12px">
+      {{#each prepare.attrs as |attr|}}
+      <div class="page-centered">
+        <a class="attr-d20 d20-{{attr}}" data-attribute="{{attr}}" data-action="rollAttribute">
+          <span class="d20-overlay">{{getEntry (getEntry ../system.attributes attr) 'value'}}</span>
+        </a>
+        <p class="attribute-title" style="margin-top: -5px;">{{attr}}</p>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+</header>

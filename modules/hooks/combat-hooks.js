@@ -2,7 +2,6 @@ import Aux from "../system/auxilliaries.js";
 
 export default function() {
   Hooks.on("renderCombatTracker", (combatTracker, html, details) => {
-    console.log(combatTracker, html, details);
     if (game.combat) game.the_edge.combatLog.render(true);
 
     const combatControl = html.querySelector(".combat-control");
