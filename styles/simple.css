@@ -304,29 +304,27 @@ textarea {
   background-image: url('../icons/hero_token_spent.png');
 }
 /* d20 stuff */
-.the_edge .attr-d20 {
+.the_edge .attr-d20-chat, .attr-d20, .weapon-d20 {
   border: none;
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: 0px;
+  margin-right: 0px;
   padding: 0;
-  width: 35px;
-  height: 42px;
   background-size: contain;
   background-repeat: no-repeat;
   display: inline-block;
   position: relative;
 }
+.the_edge .attr-d20 {
+  width: 35px;
+  height: 42px;
+}
 .the_edge .attr-d20-chat {
-  border: none;
-  margin-left: 0px;
-  margin-right: 0px;
-  padding: 0;
   width: 28px;
   height: 33px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  display: inline-block;
-  position: relative;
+}
+.the_edge .weapon-d20 {
+  width: 25px;
+  height: 30px;
 }
 .the_edge .d20-overlay {
   white-space: nowrap;
@@ -532,17 +530,6 @@ textarea {
   text-transform: uppercase; /* Makes the text all capital letters */
   font-weight: bold; /* Optional: Make the title bold */
   font-size: 12px;
-}
-.the_edge .weapon-d20 {
-  border: none;
-  margin-left: 0px;
-  margin-right: 0px;
-  padding: 0;
-  width: 25px;
-  height: 30px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  position: relative;
 }
 .the_edge .proficiency-title {
   flex: 7;

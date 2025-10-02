@@ -3,7 +3,7 @@ export default function() {
     progressBar: {
       default: ["#4d0080", "#9900ff"],
       health: ["#2e7d32", "#4caf50"],
-      heartRate: ["#0096c7", "#023e8a"],
+      heartRate: ["#0096c7", "#03045e"],
     }
   }
 

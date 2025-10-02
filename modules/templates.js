@@ -8,9 +8,7 @@ export const preloadHandlebarsTemplates = async function() {
   // Define template paths to load
   const templatePaths = [
     // Actor templates
-    "systems/the_edge/templates/actors/character/biography.html",
-    "systems/the_edge/templates/actors/character/items.html",
-    //Attributes
+    // Attributes
     "systems/the_edge/templates/actors/character/attributes/layout.hbs",
     "systems/the_edge/templates/actors/character/attributes/main_attributes.hbs",
     "systems/the_edge/templates/actors/character/attributes/languages.hbs",
@@ -18,16 +16,18 @@ export const preloadHandlebarsTemplates = async function() {
     "systems/the_edge/templates/actors/character/attributes/skills.hbs",
     "systems/the_edge/templates/actors/character/attributes/vantages.hbs",
     "systems/the_edge/templates/actors/character/attributes/progress.hbs",
-    //Proficiencies
+    // Proficiencies
     "systems/the_edge/templates/actors/character/proficiencies/layout.hbs",
-    //Combat
-    "systems/the_edge/templates/actors/character/combat/layout.html",
-    "systems/the_edge/templates/actors/character/combat/proficiencies.html",
-    "systems/the_edge/templates/actors/character/combat/combat_skills.html",
-    "systems/the_edge/templates/actors/character/combat/medical_skills.html",
-    "systems/the_edge/templates/actors/character/combat/weapon_overview.html",
-    //Health
+    // Combat
+    "systems/the_edge/templates/actors/character/combat/layout.hbs",
+    "systems/the_edge/templates/actors/character/combat/proficiencies.hbs",
+    "systems/the_edge/templates/actors/character/combat/combat_skills.hbs",
+    "systems/the_edge/templates/actors/character/combat/medical_skills.hbs",
+    "systems/the_edge/templates/actors/character/combat/weapon_overview.hbs",
+    // Others
+    "systems/the_edge/templates/actors/character/items.hbs",
     "systems/the_edge/templates/actors/character/health/layout.html",
+    "systems/the_edge/templates/actors/character/biography.html",
 
     // Store templates
     "systems/the_edge/templates/actors/store/buy-from-player.html",

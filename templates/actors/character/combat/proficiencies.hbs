@@ -1,5 +1,5 @@
 <div style="display: flex; gap: 5px;">
-  {{#each systemData.weapons as |group groupName|}}
+  {{#each system.weapons as |group groupName|}}
     <table>
       <thead>
         <tr>
@@ -38,5 +38,5 @@
 </div>
 <div style="display: flex; justify-content: end; margin-left: auto; margin-right: 15px; gap: 5px; white-space: nowrap; align-items: center;">
   {{genName "PracticeHours"}}
-  <span class="output" style="width: 115px;">{{systemData.PracticeHours.used}} / {{systemData.PracticeHours.max}}</span>
+  <span class="output" style="width: 115px;">{{system.PracticeHours.used}} / {{system.PracticeHours.max}}</span>
 </div>

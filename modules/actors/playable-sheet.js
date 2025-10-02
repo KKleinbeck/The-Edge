@@ -1,11 +1,11 @@
 import ChatServer from "../system/chat_server.js";
+import LocalisationServer from "../system/localisation_server.js";
+import DialogWeapon from "../dialogs/dialog-weapon.js";
+import DialogReload from "../dialogs/dialog-reload.js";
 import DialogAttribute from "../dialogs/dialog-attribute.js";
 import DialogProficiency from "../dialogs/dialog-proficiency.js";
 import THE_EDGE from "../system/config-the-edge.js";
 import { TheEdgeActorSheet } from "./actor-sheet.js";
-
-const { HandlebarsApplicationMixin } = foundry.applications.api
-const { ActorSheetV2 } = foundry.applications.sheets;
 
 export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   static DEFAULT_OPTIONS = foundry.utils.mergeObject(
@@ -16,6 +16,8 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
         heroTokenRegen: TheEdgePlayableSheet.regenerateHeroToken,
         rollAttribute: TheEdgePlayableSheet.rollAttribute,
         rollProficiency: TheEdgePlayableSheet.rollProficiency,
+        rollAttack: TheEdgePlayableSheet.rollAttack,
+        reload: TheEdgePlayableSheet.reload,
       }
     }
   )
@@ -34,12 +36,20 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     proficiencies: {
       template: "systems/the_edge/templates/actors/character/proficiencies/layout.hbs",
       scrollable: [""]
+    },
+    combat: {
+      template: "systems/the_edge/templates/actors/character/combat/layout.hbs",
+      scrollable: [""]
+    },
+    items: {
+      template: "systems/the_edge/templates/actors/character/items.hbs",
+      scrollable: [""]
     }
   }
 
   static TABS = {
     primary: {
-      tabs: [{id: "attributes"}, {id: "proficiencies"}],
+      tabs: [{id: "attributes"}, {id: "proficiencies"}, {id: "combat"}, {id: "items"}],
       labelPrefix: "TABS",
       initial: "attributes",
     }
@@ -74,7 +84,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       credits: {"Schids": creditsOffline, "digital": creditsDigital},
       damage: wounds.map(x => x.system.damage).sum(),
       languages: THE_EDGE.languages,
-      types: ["Weapon", "Armour", "Ammunition", "Gear", "Consumables"],
+      itemTypes: ["Weapon", "Armour", "Ammunition", "Gear", "Consumables"],
       weight: weight,
       overloadLevel: this.actor.overloadLevel,
       weightTillNextOverload: this.actor.weightTillNextOverload,
@@ -118,11 +128,112 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       tokenId: this.token?.id, sceneID: game.user.viewedScene // TODO: Scene IDs needed?
     })
   }
+
   static rollProficiency(_event, target) {
     console.log(target.dataset)
     DialogProficiency.start({
       actor: this.actor, actorId: this.actor.id, proficiency: target.dataset.proficiency,
       tokenId: this.token?.id, sceneID: game.user.viewedScene // TODO: Scene IDs needed?
+    })
+  }
+  
+  static async rollAttack(_event, target) {
+    const targetIds = Array.from(game.user.targets.map(x => x.id));  //targets is set
+    const sceneId = game.user.viewedScene; // TODO: Needed?
+    const actor = this.actor;
+    const weaponID = target.closest(".weapon-id")?.dataset.weaponId;
+    const weapon = this.actor.items.get(weaponID);
+    var token = this.token;
+    if (token === null) { token = Aux.getToken(this.actor.id); }
+    if (token === null) {
+        const msg = LocalisationServer.localise("No Token", "Notifications")
+        ui.notifications.notify(msg)
+      return undefined;
+    }
+
+    if (target.dataset?.type === "Hand-to-Hand combat") {
+      if (targetIds.length > 1) {
+        const msg = LocalisationServer.parsedLocalisation(
+          "Too many targets", "Notifications", {weapon: "hand to hand", max: 1}
+        )
+        ui.notifications.notify(msg)
+        return undefined;
+      }
+      const threshold = weaponID ? actor._getWeaponPL(weaponID) : actor._getCombaticsPL();
+      const damage = weaponID ? weapon.system.fireModes[0].damage : actor._getCombaticsDamage();
+      const name = weaponID ? weapon.name : LocalisationServer.localise("Hand to Hand combat", "combat");
+      DialogCombatics.start({
+        actor: actor, token: token, sceneId: sceneId, targetId: targetIds[0] || undefined,
+        name: name, threshold: threshold, damage: damage, sceneId: sceneId
+      })
+      return undefined;
+    }
+
+    if (targetIds.length > 1 && !(weapon.system.multipleTargets)) {
+      const msg = LocalisationServer.parsedLocalisation(
+        "Too many targets", "Notifications", {weapon: weapon.name, max: 1}
+      )
+      ui.notifications.notify(msg)
+      return undefined;
+    }
+
+    if (weapon.system.ammunitionID === "") {
+      let msg = LocalisationServer.localise("Ammu missing", "Notifications")
+      ui.notifications.notify(msg)
+      return undefined;
+    }
+
+    let damageType = ""
+    if (weapon.system.isElemental) {
+      damageType = "Elemental"
+    } else if (Object.keys(game.model.Actor.character.weapons.energy).includes(weapon.system.type)) {
+      damageType = "energy"
+    } else damageType = "kinetic";
+    
+    const threshold = actor._getWeaponPL(weaponID);
+    const effectItems = actor.items.filter(x => x.system.effects !== undefined)
+    const effectModifier = [];
+    for (const effectItem of effectItems) {
+      if (!effectItem.system.active && !effectItem.system.equipped) continue;
+      for (const effect of effectItem.system.effects) {
+        if (effect.group != "weapons") continue;
+        if (effect.name == "all" || effect.name == damageType || effect.name == weapon.system.type) {
+          effectModifier.push({name: effectItem.name, value: effect.value})
+        }
+      }
+    }
+    DialogWeapon.start({
+      name: weapon.name, actor: actor, actorId: actor.id, token: token,
+      tokenId: token?.id, sceneId: sceneId,
+      ammunition: this.actor.items.get(weapon.system.ammunitionID),
+      threshold: threshold, effectModifier: effectModifier,
+      damageType: damageType,
+      rangeChart: weapon.system.rangeChart,
+      fireModes: weapon.system.fireModes,
+      targetIds: targetIds
+    })
+  }
+
+  static async reload(_event, target) {
+    const weaponID = target.closest(".weapon-id").dataset.weaponId
+    const ammunition = []
+    let weapon = this.actor.items.get(weaponID);
+    for (const ammu of this.actor.itemTypes["Ammunition"]) {
+      let sys = ammu.system
+      let designatedWeapons = sys.designatedWeapons
+        .replace(/<[^>]*>?/gm, '') // Strip html tags
+        .split(",")
+        .map(x => x.trim())
+      if (designatedWeapons.includes(weapon.name)) {
+        ammunition.push(ammu);
+      } else if (sys.whitelist[sys.type][weapon.system.type]) ammunition.push(ammu);
+    }
+
+    await DialogReload.start({
+      weaponID: weaponID,
+      actor: this.actor,
+      weapon: weapon,
+      ammunition: ammunition
     })
   }
 }
