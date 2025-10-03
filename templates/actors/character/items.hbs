@@ -6,7 +6,7 @@
   {{#each helpers.itemTypes as |type|}}
     <div class="title">
       <div class="section-title">{{itemName type}}</div>
-      <div class="item-control" title="{{ itemName 'Create' }}" data-action="itemControl" data-subaction="create" data-type="{{type}}" style="gap: 5px; cursor: pointer;">
+      <div title="{{ itemName 'Create' }}" data-action="itemControl" data-subaction="create" data-type="{{type}}" style="gap: 5px; cursor: pointer;">
         {{itemName "Create"}}
         <a><i class="fas fa-plus"></i></a>
       </div>
@@ -16,7 +16,7 @@
         {{#if (checkRenderItem item type)}}
           <li class="item" data-item-id="{{item._id}}" style="break-inside: avoid;">
             <div class="flexrow">
-              <div class="item-control" data-action="itemControl" data-subaction="edit" style="cursor: pointer; display: flex; vertical-align: center;">
+              <div data-action="itemControl" data-subaction="edit" style="cursor: pointer; display: flex; vertical-align: center;">
                 <img class="item-img" src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
                 <b>
                   {{#if (checkAttachment item)}}
@@ -37,31 +37,31 @@
               <div class="item-controls">
                 {{#if (checkIn "equipped" item.system)}}
                   {{#if item.system.equipped}}
-                    <a class="item-control" title="{{ itemName 'Unequip' }}" data-action="itemControl" data-subaction="toggle-equip"><i class="far fa-check-circle"></i></a>
+                    <a title="{{ itemName 'Unequip' }}" data-action="itemControl" data-subaction="toggle-equip"><i class="far fa-check-circle"></i></a>
                   {{else}}
-                    <a class="item-control" title="{{ itemName 'Equip' }}" data-action="itemControl" data-subaction="toggle-equip"><i class="far fa-circle"></i></a>
+                    <a title="{{ itemName 'Equip' }}" data-action="itemControl" data-subaction="toggle-equip"><i class="far fa-circle"></i></a>
                   {{/if}}
                 {{/if}}
                 {{#if (checkEqual item.type "Consumables")}}
-                    <a class="item-control" title="{{ itemName 'Use' }}" data-action="itemControl" data-subaction="consume"><i class="far fa-dice-d20"></i></a>
+                    <a title="{{ itemName 'Use' }}" data-action="itemControl" data-subaction="consume"><i class="far fa-dice-d20"></i></a>
                 {{/if}}
-                <!-- <a class="item-control" title="{{ itemName 'Edit' }}" data-action="itemControl" data-subaction="edit"><i class="fas fa-edit"></i></a> -->
-                <a class="item-control" title="{{ genName 'Post to chat' }}" data-action="itemControl" data-subaction="post"><i class="fas fa-message"></i></a>
-                <a class="item-control" title="{{ itemName 'Delete' }}" data-action="itemControl" data-subaction="delete"><i class="fas fa-trash"></i></a>
+                <!-- <a title="{{ itemName 'Edit' }}" data-action="itemControl" data-subaction="edit"><i class="fas fa-edit"></i></a> -->
+                <a title="{{ genName 'Post to chat' }}" data-action="itemControl" data-subaction="post"><i class="fas fa-message"></i></a>
+                <a title="{{ itemName 'Delete' }}" data-action="itemControl" data-subaction="delete"><i class="fas fa-trash"></i></a>
               </div>
             </div>
             {{#if (checkNotEmpty item.system.attachments)}}
               {{#each item.system.attachments as |attachment|}}
                 <div class="item flexrow" data-item-id="{{attachment.shell._id}}" style="border-bottom: 0px;">
-                  <div class="item-control" data-action="itemControl" data-subaction="edit" style="cursor: pointer; display: flex; align-items: center;">
-                    <a class="item-control" style="padding: 0px 8px;"><i class="fas fa-turn-up" style="transform: rotate(90deg);"></i></a>
+                  <div data-action="itemControl" data-subaction="edit" style="cursor: pointer; display: flex; align-items: center;">
+                    <a style="padding: 0px 8px;"><i class="fas fa-turn-up" style="transform: rotate(90deg);"></i></a>
                     <img src="{{attachment.shell.img}}" title="{{attachment.shell.name}}" width="24" height="24" />
                     <b>({{genName "Attachment"}}) {{getAttachmentDetails attachment.actorId attachment.tokenId attachment.shellId}}</b>
                   </div>
                   <div class="item-controls">
-                    <a class="item-control" title="{{ itemName 'Unequip' }}" data-action="itemControl" data-subaction="toggle-equip"><i class="far fa-check-circle"></i></a>
-                    <a class="item-control" title="{{ genName 'Post to chat' }}" data-action="itemControl" data-subaction="post"><i class="fas fa-message"></i></a>
-                    <a class="item-control" title="{{ itemName 'Delete' }}" data-action="itemControl" data-subaction="delete"><i class="fas fa-trash"></i></a>
+                    <a title="{{ itemName 'Unequip' }}" data-action="itemControl" data-subaction="toggle-equip"><i class="far fa-check-circle"></i></a>
+                    <a title="{{ genName 'Post to chat' }}" data-action="itemControl" data-subaction="post"><i class="fas fa-message"></i></a>
+                    <a title="{{ itemName 'Delete' }}" data-action="itemControl" data-subaction="delete"><i class="fas fa-trash"></i></a>
                   </div>
                 </div>
               {{/each}}

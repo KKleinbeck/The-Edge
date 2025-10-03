@@ -1,0 +1,135 @@
+<section
+  class="tab {{tabs.health.cssClass}}"
+  data-group="primary"
+  data-tab="health"
+>
+  {{#each effectDict as |effects name|}}
+    {{#if (checkDisplayEffects name effects)}}
+      <div class="title" style="padding-right: 10px;">
+        <div class="section-title">{{genName name}}</div>
+        {{#if (checkEqual name "effects")}}
+          <div title="{{ itemName 'Create' }}" data-action="itemControl" data-subaction="create-effect" style="gap: 5px; cursor: pointer;">
+            {{itemName "New Effect"}}
+            <a><i class="fas fa-plus"></i></a>
+          </div>
+        {{/if}}
+      </div>
+      <div class="effect-list" style="padding: 0px 5px 0px 5px; overflow: hidden;">
+        {{#each effects as |effect|}}
+          <div class="item effect-box" data-item-id="{{effect._id}}" style="cursor: pointer;">
+            <div data-action="itemControl" data-subaction="edit">
+              {{#if (checkEqual name "statusEffects")}}
+                {{effect.name}} - {{genName "Level"}} {{effect.system.gm_description}}
+              {{else}}
+                {{effect.name}}
+              {{/if}}
+            </div>
+            <div>
+              {{#if (getEntry ../../effectToggle name)}}
+                {{#if effect.system.active}}
+                  <a title="{{ itemName 'Deactivate' }}" data-action="itemControl" data-subaction="toggle-active"><i class="far fa-check-circle"></i></a>
+                {{else}}
+                  <a title="{{ itemName 'Activate' }}" data-action="itemControl" data-subaction="toggle-active"><i class="far fa-circle"></i></a>
+                {{/if}}
+              {{/if}}
+              {{#if (checkEqual name "effects")}}
+                <a title="{{ itemName 'Delete' }}" data-action="itemControl" data-subaction="delete"><i class="fas fa-trash"></i></a>
+              {{/if}}
+            </div>
+          </div>
+        {{/each}}
+      </div>
+    {{/if}}
+  {{/each}}
+  <div class="title">
+    <div class="section-title">{{genName "Injuries"}}</div>
+  </div>
+  <div style="display: flex; justify-content: flex-start; gap: 20px; padding: 10px;">
+    <div class="wound-overview">
+      {{#if (checkEqual system.sex "female")}}
+        <img src="systems/the_edge/icons/body_female.png" alt="Background" class="background-image">
+      {{else}}
+        <img src="systems/the_edge/icons/body_male.png" alt="Background" class="background-image">
+      {{/if}}
+      <div class="overlay">
+        {{#each data.items as |item id|}}
+          {{#if (checkEqual item.type "Wounds")}}
+            <div class="item-control item" data-action="edit" data-item-id="{{item._id}}" style="cursor: pointer;">
+              {{{getWoundCoords item.system}}}
+            </div>
+          {{/if}}
+        {{/each}}
+      </div>
+    </div>
+    <div>
+      <div style="gap: 20px;">
+        <div style="display: flex; gap: 20px; padding-bottom: 10px;">
+          <div style="display: flex; white-space: nowrap; gap: 5px; cursor: pointer;" title="{{genName 'Short rest duration'}}">
+            <b>{{genName "Short rest"}}</b>
+            <a data-action="shortRest"><i class="fas fa-campground"></i></a>
+          </div>
+          <div style="display: flex; white-space: nowrap; gap: 5px; cursor: pointer;" title="{{genName 'Long rest duration'}}">
+            <b>{{genName "Long rest"}}</b>
+            <a data-action="longRest"><i class="fas fa-bed"></i></a>
+          </div>
+          <div style="display: flex; white-space: nowrap; gap: 5px; cursor: pointer;">
+            <b>{{genName "Apply Damage"}}</b>
+            <a data-action="applyDamage"><i class="fas fa-heart-circle-minus"></i></a>
+          </div>
+        </div>
+        <div style="display: flex; gap: 20px; padding-bottom: 20px; vertical-align: middle;">
+          <div>{{genName "Total Damage"}}: {{helpers.damage}}</div>
+          <div>{{genName "Total Bleeding"}}: {{helpers.bleeding}}</div>
+          <div style="gap: 5px;">
+            <label for="bloodloss">{{genName "Blood loss"}}:</label>
+            <input 
+                name="system.bloodLoss.value" id="bloodloss" type="number" value="{{system.bloodLoss.value}}"
+                style="width: 32px; max-height: 16px; text-align: right;"
+            />
+          </div>
+        </div>
+      </div>
+      <div style="columns: 2;">
+        {{#each helpers.bodyParts as |bPart|}}
+          <div style="padding-bottom: 10px; break-inside: avoid-column; min-width: 200px;">
+            <div style="display: flex;">
+              <b>{{genName bPart}}</b>
+              &emsp;
+              <div style="display: flex; white-space: nowrap; gap: 5px; cursor: pointer;" data-action="applyDamage" data-location={{bPart}}>
+                <a><i class="fas fa-heart-circle-minus"></i></a>
+              </div>
+            </div>
+            <hr />
+            {{#each ../wounds as |wound|}}
+              {{#if (checkInstance bPart wound.system.bodyPart)}}
+                <div class="item" data-item-id="{{wound.id}}" style="cursor: pointer; min-width: 200px;">
+                  <div data-action="itemControl" data-subaction="edit">
+                    <div class="item-name" style="font-size: 20; font-weight: 500; margin: 0px;">{{wound.name}}</div>
+                  </div>
+                  <div class="item-controls" style="white-space: no-wrap; padding: 0 0 5px 10px;">
+                    <div data-action="edit" style="display: flex; gap: 5px;">
+                      {{combatName wound.system.type}} - {{itemName wound.system.status}}
+                      <i class="fa-regular {{getWoundIcon wound.system.status}}" style="font-size: 12px; transform: translateY(2px);"></i>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                      <div>{{genName "Damage"}} {{wound.system.damage}}</div>
+                      <div>{{genName "Bleeding"}} {{wound.system.bleeding}}</div>
+                      <div style="gap: 5px;">
+                        {{#if wound.system.active}}
+                          <a title="{{ itemName 'Deactivate' }}" data-action="itemControl" data-subaction="toggle-active"><i class="far fa-check-circle"></i></a>
+                        {{else}}
+                          <a title="{{ itemName 'Activate' }}" data-action="itemControl" data-subaction="toggle-active"><i class="far fa-circle"></i></a>
+                        {{/if}}
+                        <a title="{{ itemName 'Delete' }}" data-action="itemControl" data-subaction="delete"><i class="fas fa-trash"></i></a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {{/if}}
+            {{/each}}
+          </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,90 @@
+<section
+  class="tab {{tabs.biography.cssClass}}"
+  data-group="primary"
+  data-tab="biography"
+>
+  <div class="title">
+    <div class="section-title">{{genName "Biology"}}</div>
+  </div>
+  <div style="display: flex; justify-content: space-between;">
+    <div style="white-space: nowrap;">
+      <label for="Age">{{genName "Age"}}</label>
+      <input name="system.age" id="Age" type="text" value="{{system.age}}" min="21" placeholder="Name" style="max-width: 40px; text-align: right;"/>
+    </div>
+    <div style="white-space: nowrap;">
+      <label for="Sex Selector">{{genName "Sex"}}</label>
+      <select class="selection-box" name="system.sex" id="Sex Selector">
+        <option value="female" {{#if (checkEqual system.sex 'female')}}selected{{/if}}>{{genName "female"}}</option>
+        <option value="male" {{#if (checkEqual system.sex 'male')}}selected{{/if}}>{{genName "male"}}</option>
+        <option value="N.A." {{#if (checkEqual system.sex 'N.A.')}}selected{{/if}}>{{genName "N.A."}}</option>
+      </select>
+    </div>
+    <div style="white-space: nowrap;">
+      <label for="Height">{{genName "Height"}} [cm]</label>
+      <input name="system.height" type="number" value="{{system.height}}" placeholder="165" min="0" style="max-width: 40px; text-align: right;"/>
+    </div>
+    <input name="system.race" type="text" value="{{system.race}}" placeholder="{{genName 'Race ...'}}" style="max-width: 80px; text-align: right;"/>
+    <div style="white-space: nowrap;">
+      <label for="Blood Type Selector">{{genName "Blood type"}}</label>
+      <select class="selection-box" name="system.bloodType" id="Blood Type Selector">
+        <option value="AB" {{#if (checkEqual system.bloodType 'AB')}}selected{{/if}}>AB</option>
+        <option value="B" {{#if (checkEqual system.bloodType 'B')}}selected{{/if}}>B</option>
+        <option value="A" {{#if (checkEqual system.bloodType 'A')}}selected{{/if}}>A</option>
+        <option value="0" {{#if (checkEqual system.bloodType '0')}}selected{{/if}}>0</option>
+      </select>
+    </div>
+    <div style="white-space: nowrap;">
+      <label for="Handedness Selector">{{genName "Handedness"}}</label>
+      <select class="selection-box" name="system.handedness" id="Handedness Selector">
+        <option value="right" {{#if (checkEqual system.handedness 'right')}}selected{{/if}}>{{genName "right"}}</option>
+        <option value="left" {{#if (checkEqual system.handedness 'left')}}selected{{/if}}>{{genName "left"}}</option>
+      </select>
+    </div>
+  </div>
+  <div class="title" style="padding-right: 10px;">
+    <div class="section-title">{{genName "Counters"}}</div>
+    <div title="{{ itemName 'Create Counter' }}" data-action="counterControl" data-subaction="create-counter" style="gap: 5px; cursor: pointer;">
+      {{itemName "New Counter"}}
+      <a><i class="fas fa-plus"></i></a>
+    </div>
+  </div>
+  <div class="counter-list" style="padding: 0px 5px 0px 5px;">
+    {{#each system.counters as |counter|}}
+      <div class="counter" data-index="{{@index}}">
+        <div class="counter-title">
+          <input class="counter-name" value="{{counter.name}}" style="width: 70%;"/>
+          <div>
+            <a data-action="counterControl" data-subaction="decrease-counter"><i class="fas fa-minus"></i></a>
+            <a data-action="counterControl" data-subaction="increase-counter"><i class="fas fa-plus"></i></a>
+            <a title="{{ itemName 'Delete Counter' }}" data-action="counterControl" data-subaction="delete"><i class="fas fa-trash"></i></a>
+          </div>
+        </div>
+        <div class="counter-box-list" style="max-width: 100%;">
+          {{#if (checkST counter.max 9)}}
+            {{#times counter.max}}
+              <div class="counter-box {{#if (checkST this counter.value)}}full{{/if}}" data-action="counterControl" data-subaction="use" data-level="{{this}}"></div>
+            {{/times}}
+          {{else}}
+            {{>
+              systems/the_edge/templates/generic/progress-bar.hbs
+              value=counter.value max=counter.max id="counter"
+            }}
+          {{/if}}
+        </div>
+      </div>
+    {{/each}}
+  </div>
+  <div class="title">
+    <div class="section-title">{{genName "Biography"}}</div>
+  </div>
+  {{!-- TODO: Get the editors to work --}}
+  <div style="padding-left: 10px;">
+    {{editor biographyHTML target="system.biography" button=true editable=editable engine="prosemirror"}}
+  </div>
+  <div class="title">
+    <div class="section-title">{{genName "Notes"}}</div>
+  </div>
+  <div style="padding-left: 10px;">
+    {{editor notesHTML target="system.notes" button=true editable=editable engine="prosemirror"}}
+  </div>
+</section>

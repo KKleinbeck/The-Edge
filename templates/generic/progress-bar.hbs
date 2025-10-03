@@ -9,7 +9,10 @@
         <div class="progress-segment" style="left: {{mul (div segment.value ../max) 100}}%;"></div>
       {{/each}}
     {{/if}}
-    <input class="progress-input" name="{{name}}" type="number" value="{{value}}">
+    <input
+      class="progress-input" name="{{name}}" type="number" value="{{value}}"
+      data-details="{{details}}" data-id="{{id}}" data-max={{max}}
+    >
   </div>
   <div class="progress-segment-labels">
     <div class="progress-segment-label" style="left:0%;">0</div>

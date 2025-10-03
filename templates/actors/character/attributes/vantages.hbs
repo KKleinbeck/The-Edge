@@ -1,64 +1,32 @@
-<div class="section">
-  <div class="title">
-    <div class="section-title">{{genName "Advantages"}}</div>
-  </div>
-  <div class="section-content">
-    <div class="vantage-list">
-    {{#each data.items as |item id|}}
-        {{#if (checkEqual item.type "Advantage")}}
-            <li class="vantage item" data-item-id="{{item._id}}">
-                <h4 class="item-name item-control" data-action="edit" style="cursor: pointer; white-space: nowrap;">
-                    {{item.name}}
-                    {{#if (checkEqual item.system.maxLevel 1)}}
-                    {{else}}
-                        ({{item.system.level}} / {{item.system.maxLevel}})
-                    {{/if}}
-                </h4>
+<div class="title">
+<div class="section-title">{{genName vantageType}}</div>
+</div>
+<div class="section-content">
+<div class="vantage-list">
+{{#each data.items as |item id|}}
+    {{#if (checkEqual item.type vantageType)}}
+        <li class="vantage item" data-item-id="{{item._id}}">
+            <h4 class="item-name item-control" data-action="edit" style="cursor: pointer; white-space: nowrap;">
+                {{item.name}}
                 {{#if (checkEqual item.system.maxLevel 1)}}
                 {{else}}
-                    <div class="item-controls" style="padding-left: 5px;">
-                        <a class="item-control" data-action="decrease"><i class="fas fa-minus advance-fa"></i></a>
-                    </div>
-                    <div class="item-controls" style="padding-left: 5px;">
-                        <a class="item-control" data-action="increase"><i class="fas fa-plus advance-fa"></i></a>
-                    </div>
+                    ({{item.system.level}} / {{item.system.maxLevel}})
                 {{/if}}
+            </h4>
+            {{#if (checkEqual item.system.maxLevel 1)}}
+            {{else}}
                 <div class="item-controls" style="padding-left: 5px;">
-                    <a class="item-control" title="{{ itemName 'Delete' }}" data-action="delete"><i class="fas fa-trash"></i></a>
+                    <a data-action="item-control" data-subaction="decrease"><i class="fas fa-minus advance-fa"></i></a>
                 </div>
-            </li>
-        {{/if}}
-    {{/each}}
-    </div>
-  </div>
-  <div class="title">
-    <div class="section-title">{{genName "Disadvantages"}}</div>
-  </div>
-  <div class="section-content vantage-list">
-    {{#each data.items as |item id|}}
-        {{#if (checkEqual item.type "Disadvantage")}}
-            <li class="vantage item" data-item-id="{{item._id}}">
-                <h4 class="item-name item-control" data-action="edit" style="cursor: pointer; white-space: nowrap;">
-                    {{item.name}}
-                    {{#if (checkEqual item.system.maxLevel 1)}}
-                    {{else}}
-                        ({{item.system.level}} / {{item.system.maxLevel}})
-                    {{/if}}
-                </h4>
-                {{#if (checkEqual item.system.maxLevel 1)}}
-                {{else}}
-                    <div class="item-controls" style="padding-left: 5px;">
-                        <a class="item-control" data-action="decrease"><i class="fas fa-minus advance-fa"></i></a>
-                    </div>
-                    <div class="item-controls" style="padding-left: 5px;">
-                        <a class="item-control" data-action="increase"><i class="fas fa-plus advance-fa"></i></a>
-                    </div>
-                {{/if}}
                 <div class="item-controls" style="padding-left: 5px;">
-                    <a class="item-control" title="{{ itemName 'Delete' }}" data-action="delete"><i class="fas fa-trash"></i></a>
+                    <a data-action="item-control" data-subaction="increase"><i class="fas fa-plus advance-fa"></i></a>
                 </div>
-            </li>
-        {{/if}}
-    {{/each}}
-  </div>
+            {{/if}}
+            <div class="item-controls" style="padding-left: 5px;">
+                <a title="{{ itemName 'Delete' }}" data-action="item-control" data-subaction="delete"><i class="fas fa-trash"></i></a>
+            </div>
+        </li>
+    {{/if}}
+{{/each}}
+</div>
 </div>

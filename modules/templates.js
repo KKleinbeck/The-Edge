@@ -26,8 +26,8 @@ export const preloadHandlebarsTemplates = async function() {
     "systems/the_edge/templates/actors/character/combat/weapon_overview.hbs",
     // Others
     "systems/the_edge/templates/actors/character/items.hbs",
-    "systems/the_edge/templates/actors/character/health/layout.html",
-    "systems/the_edge/templates/actors/character/biography.html",
+    "systems/the_edge/templates/actors/character/health.hbs",
+    "systems/the_edge/templates/actors/character/biography.hbs",
 
     // Store templates
     "systems/the_edge/templates/actors/store/buy-from-player.html",

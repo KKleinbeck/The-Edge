@@ -13,7 +13,7 @@
       {{#each data.items as |item|}}
         {{#if (checkEqual item.type "Languageskill")}}
           <div class="language-box item skill" data-item-id="{{item._id}}">
-            <div class="item-control" data-action="edit" style="cursor: pointer;">
+            <div data-action="itemControl" data-subaction="edit" style="cursor: pointer;">
               {{item.name}} ({{item.system.level}} / {{#if item.system.humanSpoken}}6{{else}}3{{/if}})
             </div>
             <div class="item-controls item-control">

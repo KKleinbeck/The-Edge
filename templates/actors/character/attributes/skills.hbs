@@ -7,7 +7,7 @@
       {{#if (checkEqual item.type 'Skill')}}
         <div class="skill-box">
           <div class="item skill loadout-name" data-item-id="{{item._id}}">
-            <div class="item-control" data-action="edit" style="cursor: pointer;">{{item.name}} {{#if (checkEqual item.system.maxLevel 1)}}{{else}}({{item.system.level}} / {{item.system.maxLevel}}){{/if}}</div>
+            <div data-action="item-control" data-subaction="edit" style="cursor: pointer;">{{item.name}} {{#if (checkEqual item.system.maxLevel 1)}}{{else}}({{item.system.level}} / {{item.system.maxLevel}}){{/if}}</div>
             {{#if (checkEqual item.system.maxLevel 1)}}
             {{else}}
               <a class="skill-control" title="{{ skillName 'decrease' }}" data-action="decrease"><i class="fas fa-minus"></i></a>

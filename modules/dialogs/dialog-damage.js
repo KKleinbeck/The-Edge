@@ -10,6 +10,7 @@ export default class DialogDamage extends Dialog{
   }
 
   static async start(checkData) {
+    console.log(checkData)
     const template = "systems/the_edge/templates/dialogs/new-damage.html";
     let html = await renderTemplate(template, checkData);
     
@@ -46,6 +47,7 @@ class DialogFallAndImpact extends Dialog{
   }
 
   static async start(checkData, type) {
+    console.log(checkData)
     const template = `systems/the_edge/templates/dialogs/${type}-damage.html`;
     let html = await renderTemplate(template, checkData);
     

@@ -710,7 +710,6 @@ export class TheEdgeBaseActor extends Actor {
       this.generateNewWound(name, location, locationCoord, damage, bleeding, damageType);
     }
 
-    if(this.sheet.rendered) this.sheet._render();
     return protectionLog;
   }
 

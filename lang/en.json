@@ -447,8 +447,9 @@
   },
   "TABS": {
     "attributes": "Attributes",
+    "biography": "Biography",
     "combat": "Combat",
-    "health": "HEALTH",
+    "health": "Health",
     "items": "Items",
     "proficiencies": "Proficiencies"
   },

@@ -1,7 +1,9 @@
 import ChatServer from "../system/chat_server.js";
 import LocalisationServer from "../system/localisation_server.js";
-import DialogWeapon from "../dialogs/dialog-weapon.js";
+import DialogRest from "../dialogs/dialog-rest.js";
+import DialogDamage from "../dialogs/dialog-damage.js";
 import DialogReload from "../dialogs/dialog-reload.js";
+import DialogWeapon from "../dialogs/dialog-weapon.js";
 import DialogAttribute from "../dialogs/dialog-attribute.js";
 import DialogProficiency from "../dialogs/dialog-proficiency.js";
 import THE_EDGE from "../system/config-the-edge.js";
@@ -14,9 +16,15 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       actions: {
         heroTokenUsed: TheEdgePlayableSheet.useHeroToken,
         heroTokenRegen: TheEdgePlayableSheet.regenerateHeroToken,
+        // Rolls
         rollAttribute: TheEdgePlayableSheet.rollAttribute,
         rollProficiency: TheEdgePlayableSheet.rollProficiency,
         rollAttack: TheEdgePlayableSheet.rollAttack,
+        // Health
+        longRest: TheEdgePlayableSheet.longRest,
+        shortRest: TheEdgePlayableSheet.shortRest,
+        applyDamage: TheEdgePlayableSheet.applyDamage,
+        // Other
         reload: TheEdgePlayableSheet.reload,
       }
     }
@@ -31,11 +39,11 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     },
     attributes: {
       template: "systems/the_edge/templates/actors/character/attributes/layout.hbs",
-      scrollable: [""]
+      // scrollable: [""]
     },
     proficiencies: {
       template: "systems/the_edge/templates/actors/character/proficiencies/layout.hbs",
-      scrollable: [""]
+      // scrollable: [""]
     },
     combat: {
       template: "systems/the_edge/templates/actors/character/combat/layout.hbs",
@@ -44,12 +52,20 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     items: {
       template: "systems/the_edge/templates/actors/character/items.hbs",
       scrollable: [""]
+    },
+    health: {
+      template: "systems/the_edge/templates/actors/character/health.hbs",
+    },
+    biography: {
+      template: "systems/the_edge/templates/actors/character/biography.hbs",
     }
   }
 
   static TABS = {
     primary: {
-      tabs: [{id: "attributes"}, {id: "proficiencies"}, {id: "combat"}, {id: "items"}],
+      tabs: [
+        {id: "attributes"}, {id: "proficiencies"}, {id: "combat"},
+        {id: "items"}, {id: "health"}, {id: "biography"}],
       labelPrefix: "TABS",
       initial: "attributes",
     }
@@ -76,6 +92,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     const creditsDigital = credits.find(c => !c.system?.isSchid)?.system?.value || 0;
     const weight =  this.actor._determineWeight();
     const wounds = this.actor.itemTypes["Wounds"];
+    context.wounds = wounds;
     context.helpers = {
       armourProtection: armourProtection,
       equippedWeapons: equippedWeapons,
@@ -94,7 +111,24 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
         {value: context.prepare.zones[2].value, label: "Z3"},
       ]
     }
-    console.log(context)
+
+    context.effectDict = {statusEffects: [], effects: [], itemEffects: [], skillEffects: []}
+    for (const item of this.actor.items) {
+      if (item.type ==  "Effect") {
+        if (item.system.statusEffect) context.effectDict.statusEffects.push(item);
+        else context.effectDict.effects.push(item);
+      } else if (item.type == "Skill" || item.type == "Combatskill" || item.type == "Medicalskill") {
+        for (const effect of item.system.levelEffects) {
+          if (effect.length != 0) {
+            context.effectDict.skillEffects.push(item);
+            break;
+          }
+        }
+      } else if (item.system.equipped && item.system.effects.length !== 0) {
+        context.effectDict.itemEffects.push(item);
+      }
+    }
+    context.effectToggle = {statusEffects: false, effects: true, itemEffects: false, skillEffects: true};
     context.tabs = this._prepareTabs("primary");
     return context;
   }
@@ -235,6 +269,14 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       weapon: weapon,
       ammunition: ammunition
     })
+  }
+
+  static longRest( _) { DialogRest.start({actor: this.actor, type: "short rest"}); }
+  static shortRest(_) { DialogRest.start({actor: this.actor, type: "short rest"}); }
+
+  static applyDamage(_event, target) {
+    const location = target.dataset.location;
+    DialogDamage.start({actor: this.actor, location: location});
   }
 }
 
