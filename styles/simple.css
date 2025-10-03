@@ -576,9 +576,6 @@ textarea {
   align-items: end;
   width: 15px;
 }
-.the_edge .proficiency-column .input-flow {
-  text-align: right;
-}
 .the_edge .proficiency-column .output {
   max-height: 20;
   max-width: 25px;

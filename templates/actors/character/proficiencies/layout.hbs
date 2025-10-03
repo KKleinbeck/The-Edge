@@ -21,10 +21,16 @@
                 {{proficiencyName proficiency}}
               </div>
               <div class="proficiency-column">
-                <input class="core-value input-flow" data-target="system.proficiencies.{{category}}.{{proficiency}}.advances" type="number" value="{{getProficiency ../../../actor category proficiency 'advances'}}" data-dtype="Number" style="max-height: 20px;">
+                <input
+                  class="core-value" data-target="system.proficiencies.{{category}}.{{proficiency}}.advances" type="number"
+                  value="{{getProficiency ../../../actor category proficiency 'advances'}}" data-dtype="Number"
+                  style="max-height: 20px; width: 24px; text-align: right; padding: 0 2px 0 0;"
+                >
               </div>
               <div class="proficiency-column">
-                <span class="output" style="width:27px; max-height: 21px; text-align: right;">{{getProficiency ../../../actor category proficiency 'status'}}</span>
+                <span class="output" style="width:27px; max-height: 21px; width: 24px; text-align: right;">
+                  {{getProficiency ../../../actor category proficiency 'status'}}
+                </span>
               </div>
               {{#each (range 3) as |index|}}
                 <div class="proficiency-column-dice">

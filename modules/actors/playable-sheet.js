@@ -14,8 +14,11 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     TheEdgeActorSheet.DEFAULT_OPTIONS,
     {
       actions: {
+        // Hero Token
         heroTokenUsed: TheEdgePlayableSheet.useHeroToken,
         heroTokenRegen: TheEdgePlayableSheet.regenerateHeroToken,
+        // Leveling
+        advanceAttr: TheEdgePlayableSheet.advanceAttr,
         // Rolls
         rollAttribute: TheEdgePlayableSheet.rollAttribute,
         rollProficiency: TheEdgePlayableSheet.rollProficiency,
@@ -156,6 +159,11 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     }
   }
 
+  static advanceAttr(_event, target) {
+    const dataset = target.dataset;
+    this.actor._advanceAttr(dataset.name, dataset.type);
+  }
+
   static rollAttribute(_event, target) {
     DialogAttribute.start({
       actor: this.actor, actorId: this.actor.id, attribute: target.dataset.attribute,
@@ -277,6 +285,56 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   static applyDamage(_event, target) {
     const location = target.dataset.location;
     DialogDamage.start({actor: this.actor, location: location});
+  }
+
+  // Specific Listeners
+  _onRender(_context, _options) {
+    this.element.querySelectorAll("[data-action='advanceAttr']").forEach(attr =>
+        attr.addEventListener("mouseover", this._attrCostTooltip)
+    )
+    this.element.querySelectorAll(".core-value").forEach(cv => {
+        cv.addEventListener("keyup", (ev) => this._onModifyCoreValues(ev, this.actor));
+        cv.addEventListener("mousewheel", (ev) => this._onModifyCoreValues(ev, this.actor));
+        cv.addEventListener("change", (ev) => this._onChangeCoreValues(ev, this.actor));
+    })
+  }
+
+  _attrCostTooltip(event) {
+    const target = event.currentTarget;
+    const type = target.getAttribute("advance-type");
+    const cost = target.dataset.cost;
+
+    if (type == "advance") {
+      const text = LocalisationServer.parsedLocalisation("Costs", "notifications", {cost: cost});
+      game.tooltip.activate(event.currentTarget, {text: text, direction: "UP"});
+    }
+    else {
+      const text = LocalisationServer.parsedLocalisation("Gain", "notifications", {gain: cost});
+      game.tooltip.activate(event.currentTarget, {text: text, direction: "UP"});
+    }
+  }
+
+  _onModifyCoreValues(event, actor) {
+    const field = $(event.currentTarget);
+    const name = event.currentTarget.dataset.target;
+
+    const cost = actor.coreValueChangeCost(name, field.val());
+
+    if (cost == 0) return;
+    else if (cost > 0) {
+      const text = LocalisationServer.parsedLocalisation("Costs", "notifications", {cost: cost});
+      game.tooltip.activate(event.currentTarget, {text: text, direction: "DOWN"});
+    }
+    else {
+      const text = LocalisationServer.parsedLocalisation("Gain", "notifications", {gain: -cost});
+      game.tooltip.activate(event.currentTarget, {text: text, direction: "DOWN"});
+    }
+  }
+
+  _onChangeCoreValues(event, actor) {
+    const target = event.target;
+    const name = target.dataset.target;
+    actor.changeCoreValue(name, target.value);
   }
 }
 
