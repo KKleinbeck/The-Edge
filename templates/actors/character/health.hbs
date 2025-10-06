@@ -100,7 +100,7 @@
               </div>
             </div>
             <hr />
-            {{#each ../wounds as |wound|}}
+            {{#each ../Wounds as |wound|}}
               {{#if (checkInstance bPart wound.system.bodyPart)}}
                 <div class="item" data-item-id="{{wound.id}}" style="cursor: pointer; min-width: 200px;">
                   <div data-action="itemControl" data-subaction="edit">

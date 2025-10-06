@@ -42,11 +42,9 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     },
     attributes: {
       template: "systems/the_edge/templates/actors/character/attributes/layout.hbs",
-      // scrollable: [""]
     },
     proficiencies: {
       template: "systems/the_edge/templates/actors/character/proficiencies/layout.hbs",
-      // scrollable: [""]
     },
     combat: {
       template: "systems/the_edge/templates/actors/character/combat/layout.hbs",
@@ -58,9 +56,11 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     },
     health: {
       template: "systems/the_edge/templates/actors/character/health.hbs",
+      scrollable: [""]
     },
     biography: {
       template: "systems/the_edge/templates/actors/character/biography.hbs",
+      scrollable: [""]
     }
   }
 
@@ -95,7 +95,6 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     const creditsDigital = credits.find(c => !c.system?.isSchid)?.system?.value || 0;
     const weight =  this.actor._determineWeight();
     const wounds = this.actor.itemTypes["Wounds"];
-    context.wounds = wounds;
     context.helpers = {
       armourProtection: armourProtection,
       equippedWeapons: equippedWeapons,
@@ -133,6 +132,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     }
     context.effectToggle = {statusEffects: false, effects: true, itemEffects: false, skillEffects: true};
     context.tabs = this._prepareTabs("primary");
+    console.log(this.actor)
     return context;
   }
 
@@ -288,7 +288,9 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   }
 
   // Specific Listeners
-  _onRender(_context, _options) {
+  _onRender(context, options) {
+    super._onRender(context, options)
+
     this.element.querySelectorAll("[data-action='advanceAttr']").forEach(attr =>
         attr.addEventListener("mouseover", this._attrCostTooltip)
     )

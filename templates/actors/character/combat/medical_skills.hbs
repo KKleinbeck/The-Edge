@@ -3,25 +3,23 @@
     <div class="section-title">{{combatName "Medical skills"}}</div>
   </div>
   <div class="skill-container">
-    {{#each data.items as |item|}}
-      {{#if (checkEqual item.type 'Medicalskill')}}
-        <div class="skill-box">
-          <div class="item skill loadout-name" data-item-id="{{item._id}}">
-            <div class="item-control" data-action="edit" style="cursor: pointer;">{{item.name}} {{#if (checkEqual item.system.maxLevel 1)}}{{else}}({{item.system.level}} / {{item.system.maxLevel}}){{/if}}</div>
-            {{#if (checkEqual item.system.maxLevel 1)}}
-            {{else}}
-              <a class="skill-control" title="{{ skillName 'decrease' }}" data-action="decrease"><i class="fas fa-minus"></i></a>
-              <a class="skill-control" title="{{ skillName 'increase' }}" data-action="increase"><i class="fas fa-plus"></i></a>
-              &emsp;
-            {{/if}}
-            <a class="skill-control" title="{{ genName 'roll' }}" data-action="roll"><i class="fal fa-dice-d20"></i></a>
-            <a class="skill-control" title="{{ genName 'Post to chat' }}" data-action="post"><i class="fas fa-message"></i></a>
-            <a class="skill-control" title="{{ itemName 'Delete' }}" data-action="delete"><i class="fas fa-trash"></i></a>
-          </div>
-          <div class="weapon-id" style="display: flex; flex-wrap: nowrap; gap: 5px; align-items: center;" data-weapon-id="{{item._id}}">
-          </div>
+    {{#each Medicalskill as |item|}}
+      <div class="skill-box">
+        <div class="item skill loadout-name" data-item-id="{{item._id}}">
+          <div data-action="itemControl" data-action="edit" style="cursor: pointer;">{{item.name}} {{#if (checkEqual item.system.maxLevel 1)}}{{else}}({{item.system.level}} / {{item.system.maxLevel}}){{/if}}</div>
+          {{#if (checkEqual item.system.maxLevel 1)}}
+          {{else}}
+            <atitle="{{ skillName 'decrease' }}"  data-action="skillControl" data-subaction="decrease"><i class="fas fa-minus"></i></a>
+            <atitle="{{ skillName 'increase' }}"  data-action="skillControl" data-subaction="increase"><i class="fas fa-plus"></i></a>
+            &emsp;
+          {{/if}}
+          <atitle="{{ genName 'roll' }}"  data-action="skillControl" data-subaction="roll"><i class="fal fa-dice-d20"></i></a>
+          <atitle="{{ genName 'Post to chat' }}"  data-action="skillControl" data-subaction="post"><i class="fas fa-message"></i></a>
+          <atitle="{{ itemName 'Delete' }}"  data-action="skillControl" data-subaction="delete"><i class="fas fa-trash"></i></a>
         </div>
-      {{/if}}
+        <div class="weapon-id" style="display: flex; flex-wrap: nowrap; gap: 5px; align-items: center;" data-weapon-id="{{item._id}}">
+        </div>
+      </div>
     {{/each}}
   </div>
 </div>

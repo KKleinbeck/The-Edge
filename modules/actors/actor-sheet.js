@@ -22,6 +22,7 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
     classes: ["the_edge", "actor"],
     actions: {
       itemControl: TheEdgeActorSheet._onItemControl,
+      skillControl: TheEdgeActorSheet._onSkillControl,
       counterControl: TheEdgeActorSheet.onCounterControl,
     },
   }
@@ -33,9 +34,14 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
     context.actor = this.actor;
     context.system = context.document.system;
     context.prepare = this.actor.prepareSheet()
+
+    Object.entries(this.actor.itemTypes).forEach(([type, entries]) => {
+      context[type] = entries;
+    })
+    console.log(context)
     return context;
   }
-
+  
   // Actions
   static async _onItemControl(event, target) {
     event.preventDefault();
@@ -150,6 +156,59 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
         break;
     }
   }
+  
+  static async _onSkillControl(event, target) {
+    event.preventDefault();
+
+    // Obtain event data
+    const skillElement = target.closest(".skill");
+    const skillID = skillElement?.dataset.itemId;
+    const skill = this.actor.items.get(skillID);
+
+    // Handle different actions
+    switch ( target.dataset.subaction ) {
+      case "increase":
+        return this.actor.skillLevelIncrease(skillID);
+      case "decrease":
+        return this.actor.skillLevelDecrease(skillID);
+      case "delete":
+        return this.actor.deleteSkill(skillID);
+      case "toggle-active":
+        skill.toggleActive();
+        break;
+      case "post":
+        ChatServer.transmitEvent("Post Skill",
+          {name: skill.name, type: skill.type, description: skill.system.description}
+        );
+        break;
+      case "roll":
+        const hrChange = Aux.parseHrCostStr(
+          skill.system.hrCost, skill.name,
+          this.actor.system.heartRate.value,
+          this.actor.system.heartRate.max.value,
+          this.actor.getHRZone()
+        )
+        if (hrChange) {
+          if (game.combat && this.actor._id == game.combat.combatant.actorId) {
+            game.the_edge.combatLog.addAction(skill.name, hrChange);
+          } else {
+            const hrThen = this.actor.system.heartRate.value;
+            await this.actor.applyStrains([hrChange]);
+            const hrNow = this.actor.system.heartRate.value;
+            ChatServer.transmitEvent("Combat Action",
+              {actor: this.actor.name, skill: skill.name, hrThen: hrThen, hrNow: hrNow}
+            );
+          }
+        }
+        
+        if (skill.type == "Medicalskill") {
+          DialogProficiency.start({
+            proficiency: skill.system.basis, actor: this.actor, actorId: this.actor.id
+          })
+        }
+        break;
+    }
+  }
 
   _findAttachableArmour(outerShell) {
     const bodyTarget = outerShell.system.bodyPart;
@@ -211,7 +270,8 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
   }
 
   // Specific listeners
-  _onRender(_context, _options) {
+  _onRender(context, options) {
+    super._onRender(context, options)
     const progressInputs = this.element.querySelectorAll(".progress-input");
     for (const input of progressInputs) {
       if (input.dataset.id == "counter") {
