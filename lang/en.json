@@ -176,8 +176,6 @@
 
     "STRUCTURE POINTS": "Structure Points",
     
-    "COMBAT SKILLS": "Combat skills",
-
     "COMBAT ACTIONS": "Combat actions",
     "FIRST ACTION": "First action",
     "SECOND ACTION": "Second action",
@@ -204,7 +202,6 @@
 
     "LEAD ATTR COMBATICS": "Lead attr: Str & Crd",
 
-    "MEDICAL SKILLS": "Medical skills",
     "ABRASION": "Abrasion",
     "LACERATION": "Laceration",
     "FRACTURE": "Fracture",
@@ -327,6 +324,8 @@
     "SKILL": "General Skill",
     "COMBATSKILL": "Combat Skill",
     "MEDICALSKILL": "Medical Skill",
+    "ADVANTAGE": "Advantage",
+    "DISADVANTAGE": "Disadvantage",
 
     "ACTIVATE": "Activate",
     "DEACTIVATE": "Deactivate"
@@ -506,6 +505,7 @@
   "CHANGE DICE": "Change dice",
   "CHECK": "Check",
   "COAGULATION": "Coagulation",
+  "COMBAT SKILLS": "Combat skills",
   "CREDITS": "Credits",
   "CRITFAILURE": "Critical Failure",
   "CRITSUCCESS": "Critical Success",
@@ -577,6 +577,7 @@
   "MAKE STORAGE": "Make Storage",
   "MALE": "Male",
   "MAXIMUM": "maximum",
+  "MEDICAL SKILLS": "Medical skills",
   "MOD": "Mod",
   "MODIFICATORS": "Modificators",
   "MOVEMENT": "Movement",

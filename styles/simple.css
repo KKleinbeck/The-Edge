@@ -516,8 +516,8 @@ textarea {
   width: 100%;
 }
 .the_edge .skill-container .skill-box {
-  height: 55px;
-  padding: 10px;
+  height: 45px;
+  padding: 0px;
   break-inside: avoid;
 
   display: flex;

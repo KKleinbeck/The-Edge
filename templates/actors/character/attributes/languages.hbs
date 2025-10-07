@@ -7,22 +7,19 @@
       <b>{{genName "Native language"}}:</b>
       <input name="system.nativeLanguage" type="text" value="{{system.nativeLanguage}}" placeholder="{{genName 'language'}}" />
     </div>
-    <!-- Fix native language selector and the delete button -->
     </select><br/>
     <div class="language-container">
-      {{#each data.items as |item|}}
-        {{#if (checkEqual item.type "Languageskill")}}
-          <div class="language-box item skill" data-item-id="{{item._id}}">
-            <div data-action="itemControl" data-subaction="edit" style="cursor: pointer;">
-              {{item.name}} ({{item.system.level}} / {{#if item.system.humanSpoken}}6{{else}}3{{/if}})
-            </div>
-            <div class="item-controls item-control">
-              <a class="skill-control" title="{{ skillName 'decrease' }}" data-action="decrease"><i class="fas fa-minus"></i></a>
-              <a class="skill-control" title="{{ skillName 'increase' }}" data-action="increase"><i class="fas fa-plus"></i></a>
-              <a class="skill-control" title="{{ itemName 'Delete' }}" data-action="delete"><i class="fas fa-trash"></i></a>
-            </div>
+      {{#each Languageskill as |language|}}
+        <div class="language-box item skill" data-item-id="{{language._id}}">
+          <div data-action="itemControl" data-subaction="edit" style="cursor: pointer;">
+            {{language.name}} ({{language.system.level}} / {{#if language.system.humanSpoken}}6{{else}}3{{/if}})
           </div>
-        {{/if}}
+          <div class="item-controls item-control">
+            <a title="{{ skillName 'decrease' }}" data-action="skillControl" data-subaction="decrease"><i class="fas fa-minus"></i></a>
+            <a title="{{ skillName 'increase' }}" data-action="skillControl" data-subaction="increase"><i class="fas fa-plus"></i></a>
+            <a title="{{ itemName 'Delete' }}" data-action="skillControl" data-subaction="delete"><i class="fas fa-trash"></i></a>
+          </div>
+        </div>
       {{/each}}
     </div>
   </div>

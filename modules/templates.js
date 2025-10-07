@@ -8,6 +8,8 @@ export const preloadHandlebarsTemplates = async function() {
   // Define template paths to load
   const templatePaths = [
     // Actor templates
+    // Generics
+    "systems/the_edge/templates/actors/skills.hbs",
     // Attributes
     "systems/the_edge/templates/actors/character/attributes/layout.hbs",
     "systems/the_edge/templates/actors/character/attributes/main_attributes.hbs",
@@ -21,7 +23,6 @@ export const preloadHandlebarsTemplates = async function() {
     // Combat
     "systems/the_edge/templates/actors/character/combat/layout.hbs",
     "systems/the_edge/templates/actors/character/combat/proficiencies.hbs",
-    "systems/the_edge/templates/actors/character/combat/skills.hbs",
     "systems/the_edge/templates/actors/character/combat/weapon_overview.hbs",
     // Others
     "systems/the_edge/templates/actors/character/items.hbs",

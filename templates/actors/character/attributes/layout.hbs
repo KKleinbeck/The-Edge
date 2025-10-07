@@ -14,12 +14,12 @@
     </div>
   </div>
 
-  {{> systems/the_edge/templates/actors/character/attributes/skills.hbs}}
+  {{> systems/the_edge/templates/actors/skills.hbs name="Skills" skills=Skill}}
 
   <div class="columned-page">
     <div class="fixed-page">
-      {{> systems/the_edge/templates/actors/character/attributes/vantages.hbs vantageType="Advantage"}}
-      {{> systems/the_edge/templates/actors/character/attributes/vantages.hbs vantageType="Disadvantage"}}
+      {{> systems/the_edge/templates/actors/skills.hbs name="Advantage" skills=Advantage }}
+      {{> systems/the_edge/templates/actors/skills.hbs name="Disadvantage" skills=Disadvantage }}
     </div>
     <div class="fixed-page">
       {{> systems/the_edge/templates/actors/character/attributes/progress.hbs}}
