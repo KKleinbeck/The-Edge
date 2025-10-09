@@ -2,9 +2,9 @@
   <div class="message-content">
     {{{message.content}}}
     <header class="message-header flexrow">
-      <div>
+      <div style="display: flex; gap: 4px; align-items: center;">
         {{#if user.isGM}}
-          <a class="button message-delete" data-tooltip="CHATNOTIFICATION.DELETE"><i class="fas fa-trash"></i></a>
+          <a class="button message-delete" data-action="deleteMessage" data-tooltip="CHATNOTIFICATION.DELETE"><i class="fas fa-trash"></i></a>
         {{/if}}
         {{#if isWhisper}}
           <span class="chatIndicator"><i data-tooltip="CHATNOTIFICATION.WHISPER" class="fas fa-eye-slash"></i></span>

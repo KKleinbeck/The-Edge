@@ -2,6 +2,8 @@ import LocalisationServer from "../system/localisation_server.js";
 import ChatServer from "../system/chat_server.js";
 import THE_EDGE from "../system/config-the-edge.js";
 
+const { renderTemplate } = foundry.applications.handlebars;
+
 export default class DialogDamage extends Dialog{
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -10,7 +12,6 @@ export default class DialogDamage extends Dialog{
   }
 
   static async start(checkData) {
-    console.log(checkData)
     const template = "systems/the_edge/templates/dialogs/new-damage.html";
     let html = await renderTemplate(template, checkData);
     
@@ -47,7 +48,6 @@ class DialogFallAndImpact extends Dialog{
   }
 
   static async start(checkData, type) {
-    console.log(checkData)
     const template = `systems/the_edge/templates/dialogs/${type}-damage.html`;
     let html = await renderTemplate(template, checkData);
     

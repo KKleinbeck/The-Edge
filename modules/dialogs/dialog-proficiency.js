@@ -1,6 +1,8 @@
 import LocalisationServer from "../system/localisation_server.js";
 import Aux from "../system/auxilliaries.js";
 
+const { renderTemplate } = foundry.applications.handlebars;
+
 export default class DialogProficiency extends Dialog{
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {

@@ -38,7 +38,6 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
     Object.entries(this.actor.itemTypes).forEach(([type, entries]) => {
       context[type] = entries;
     })
-    console.log(context)
     return context;
   }
   
@@ -301,6 +300,53 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
         break;
     }
     actor.update({"system.counters": counters});
+  }
+
+  // Item dropping
+  async _onDropItem(event, data) {
+    const item = (await Item.implementation.fromDropData(data)).toObject();
+    switch (item.type) {
+      case "Weapon":
+      case "Armour":
+      case "Effect":
+        return super._onDropItem(event, data)
+
+      case "Ammunition":
+      case "Gear":
+      case "Consumables":
+        return this._onDropStackableItem(event, data, item)
+      
+      case "Advantage":
+      case "Disadvantage":
+        this.actor.addOrCreateVantage(item);
+        break;
+      
+      case "Skill":
+      case "Combatskill":
+      case "Medicalskill":
+      case "Languageskill":
+        const createNew = this.actor.learnSkill(item);
+        return createNew ? super._onDropItem(event, data) : undefined;
+      
+      case "Credits":
+        if (item.system.isChid) {
+          this.actor.update({"system.credits.chids": this.actor.system.credits.chids + item.system.value})
+        } else this.actor.update({"system.credits.digital": this.actor.system.credits.digital + item.system.value})
+        return false;
+    }
+  }
+
+  _onDropStackableItem(event, data, item) {
+    const existingCopy = this._itemExists(item);
+    if (existingCopy) {
+      existingCopy.update({"system.quantity": existingCopy.system.quantity + 1});
+      return existingCopy;
+    }
+    return super._onDropItem(event, data)
+  }
+
+  _itemExists(item) {
+    return this.actor.findItem(item);
   }
 }
 

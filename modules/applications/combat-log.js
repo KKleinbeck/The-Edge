@@ -48,19 +48,21 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
     context.distance = this.distance;
     if (this.distance > 0) {
       context.movementOptions = CombatLog.getMovements(this.distance, combatant);
-      if (this.movementIndex >= context.movementOptions.length) {
+      if (context.movementOptions.length === 0) context.movements = [];
+      else if (this.movementIndex >= context.movementOptions.length) {
         this.changeMovementIndex(0);
-      }
-      context.movementIndex = this.movementIndex;
+      } else {
+        context.movementIndex = this.movementIndex;
 
-      context.movements = [];
-      for (const movement of context.movementOptions[context.movementIndex].pattern) {
-        context.movements.push({
-          name: LocalisationServer.localise(
-            ["Idle", "Stride", "Run", "Sprint"][movement], "Combat"
-          ),
-          hrChange: combatant.getHrChangeFromStrain(movement)
-        });
+        context.movements = [];
+        for (const movement of context.movementOptions[context.movementIndex].pattern) {
+          context.movements.push({
+            name: LocalisationServer.localise(
+              ["Idle", "Stride", "Run", "Sprint"][movement], "Combat"
+            ),
+            hrChange: combatant.getHrChangeFromStrain(movement)
+          });
+        }
       }
     }
 
@@ -82,7 +84,7 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
   }
 
   get title() {
-    return "ASD"
+    return LocalisationServer.localise("Combat Log", "Combat");
   }
 
   async addAction(name, hrChange) {
@@ -165,6 +167,7 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
     const speeds = [
       0, actor.getStrideSpeed(), actor.getRunSpeed(), actor.getSprintSpeed()
     ];
+    if (speeds[3] == 0) return []; // We cannot possibly do anything here
     const hrCost = [
       actor.getHrChangeFromStrain(0), actor.getHrChangeFromStrain(1),
       actor.getHrChangeFromStrain(2), actor.getHrChangeFromStrain(3)

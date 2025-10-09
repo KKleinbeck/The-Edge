@@ -1,5 +1,7 @@
 import ChatServer from "../system/chat_server.js";
 
+const { renderTemplate } = foundry.applications.handlebars;
+
 export default class DialogReload extends Dialog{
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {

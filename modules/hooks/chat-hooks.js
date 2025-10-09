@@ -202,7 +202,7 @@ export default function() {
     // Hero token listeners
     const sys = message.message.system;
     const actor = Aux.getActor(sys.actorId);
-    new ContextMenu(html, ".rerollable", [
+    new foundry.applications.ux.ContextMenu(html, ".rerollable", [
       {
         name: LocalisationServer.localise("Use hero token"),
         classes: "roll-context-menu",
@@ -313,7 +313,7 @@ export default function() {
           }
         }
       }
-    ])
+    ], {jQuery: false}) // Option can be removed with Foundry v14
 
     // Dynamic rolls listeners
     const proficiencyRoll = html.querySelector(".proficiency-roll");

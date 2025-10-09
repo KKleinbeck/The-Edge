@@ -1,6 +1,8 @@
 import DiceServer from "../system/dice_server.js";
 import ChatServer from "../system/chat_server.js";
 
+const { renderTemplate } = foundry.applications.handlebars;
+
 export default class DialogMedicine extends Dialog{
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {

@@ -132,7 +132,6 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     }
     context.effectToggle = {statusEffects: false, effects: true, itemEffects: false, skillEffects: true};
     context.tabs = this._prepareTabs("primary");
-    console.log(this.actor)
     return context;
   }
 
@@ -172,7 +171,6 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   }
 
   static rollProficiency(_event, target) {
-    console.log(target.dataset)
     DialogProficiency.start({
       actor: this.actor, actorId: this.actor.id, proficiency: target.dataset.proficiency,
       tokenId: this.token?.id, sceneID: game.user.viewedScene // TODO: Scene IDs needed?
