@@ -400,7 +400,7 @@ export default function() {
     
     const applyGrenadeDamage = html.querySelector(".apply-grenade-damage");
     if (applyGrenadeDamage) {
-      applyGrenadeDamage.addEventListener("click", "click", async ev => {
+      applyGrenadeDamage.addEventListener("click", async ev => {
         if (!game.user.isGM) {
           NotificationServer.notify("Requires GM")
           return ;
@@ -440,11 +440,10 @@ export default function() {
           const damageHtml = await renderTemplate(
             template, {logs: logs, grenade: grenadeDetails}
           );
-          $(ev.currentTarget).replaceWith(damageHtml);
+          applyGrenadeDamage.outerHTML = damageHtml;
         } else {
-          $(ev.currentTarget).replaceWith(
-            LocalisationServer.localise("Harmless explosion", "text")
-          );
+          applyGrenadeDamage.outerHTML = 
+            LocalisationServer.localise("Harmless explosion", "text");
         }
         updateChatMessageFromHTML(chatMsgCls, html, sys);
 

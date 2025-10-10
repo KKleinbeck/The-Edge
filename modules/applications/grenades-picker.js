@@ -111,7 +111,12 @@ export default class GrenadePicker extends HandlebarsApplicationMixin(Applicatio
       token: {x: token.x, y: token.y}, checkData: checkData,
       targetPosition: this.targetPosition
     };
-    game.the_edge.socketHandler.emit("CREATE_GRENADE_TILE", payload)
+    game.the_edge.socketHandler.emit("CREATE_GRENADE_TILE", payload);
+    if (game.user.isActiveGM) { // As we do not catch our own events
+      GrenadePicker.createGrenadeTile(
+        proficiencyRoll, rollOutcome, payload.token, checkData, this.targetPosition
+      );
+    }
 
     chosenGrenade.useOne();
     this.close();
