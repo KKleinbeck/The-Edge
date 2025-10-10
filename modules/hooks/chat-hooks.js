@@ -6,6 +6,8 @@ import ProficiencyConfig from "../system/config-proficiencies.js";
 import LocalisationServer from "../system/localisation_server.js";
 import NotificationServer from "../system/notifications.js";
 
+const { renderTemplate } = foundry.applications.handlebars;
+
 export default function() {
   const rollIsReady = (id, target) => {
       if (Aux.hasRaceCondDanger(id)) return false;
@@ -14,7 +16,7 @@ export default function() {
   };
 
   const rollFollowUps = elem => {
-    let followUps = elem.parent().find(".roll-offline");
+    const followUps = elem.parent().find(".roll-offline");
     followUps.removeClass("roll-offline")
   }
 
@@ -28,6 +30,13 @@ export default function() {
 
   const updateChatMessage = async (chatMsgCls, newContent, newSys) => {
     chatMsgCls.update({"content": newContent, "system": newSys});
+  }
+
+  const updateChatMessageFromHTML = (chatMsgCls, html, sys) => {
+    html.querySelector(".message-header").remove();
+    updateChatMessage(
+      chatMsgCls, html.querySelector(".message-content").innerHTML, sys
+    )
   }
 
   const heroTokenAttributeCheck = async (chatMsgCls, actor, sys) => {
@@ -199,21 +208,22 @@ export default function() {
   })
 
   Hooks.on("renderChatMessageHTML", (chatMsgCls, html, message) => {
-    // Hero token listeners
     const sys = message.message.system;
     const actor = Aux.getActor(sys.actorId);
+
+    // Adding context menus
     new foundry.applications.ux.ContextMenu(html, ".rerollable", [
       {
         name: LocalisationServer.localise("Use hero token"),
         classes: "roll-context-menu",
         icon: "",
         condition: (contextHtml) => {
-          const prevRoll = parseInt(contextHtml.find(".d20-overlay").html());
-          const type = contextHtml[0].dataset.type;
+          const prevRoll = parseInt(contextHtml.querySelector(".d20-overlay").innerText);
+          const type = contextHtml.dataset.type;
           return actor.system.heroToken.available > 0 && (prevRoll != 1 || type == "proficiency");
         },
         callback: async (contextHtml) => {
-          switch (contextHtml[0].dataset.type) {
+          switch (contextHtml.dataset.type) {
             case "attribute":
               await heroTokenAttributeCheck(chatMsgCls, actor, sys)
               actor.useHeroToken("attribute");
@@ -223,7 +233,7 @@ export default function() {
               actor.useHeroToken("proficiency");
               break;
             case "weapon":
-              const index = +contextHtml[0].dataset.index;
+              const index = +contextHtml.dataset.index;
               await heroTokenWeaponCheck(chatMsgCls, actor, sys, index)
               actor.useHeroToken("weapon");
               break;
@@ -238,8 +248,8 @@ export default function() {
         callback: async (contextHtml) => {
           const newRoll = await DiceServer.genericRoll("1d20");
           const chatDetails = {name: game.user.name, new: newRoll};
-          const index = +contextHtml[0].dataset.index;
-          switch (contextHtml[0].dataset.type) {
+          const index = +contextHtml.dataset.index;
+          switch (contextHtml.dataset.type) {
             case "attribute":
               chatDetails.old = sys.diceResult;
               updateAttributeCheck(chatMsgCls, actor, sys, newRoll);
@@ -269,8 +279,8 @@ export default function() {
         condition: () => {return game.user.isGM;},
         callback: async (contextHtml) => {
           const chatDetails = {name: game.user.name};
-          const index = +contextHtml[0].dataset.index;
-          switch (contextHtml[0].dataset.type) {
+          const index = +contextHtml.dataset.index;
+          switch (contextHtml.dataset.type) {
             case "attribute":
               chatDetails.old = sys.diceResult;
               chatDetails.check = LocalisationServer.localise(sys.attribute, "attr");
@@ -313,7 +323,7 @@ export default function() {
           }
         }
       }
-    ], {jQuery: false}) // Option can be removed with Foundry v14
+    ], {jQuery: false, fixed: true}) // jQuery Option can be removed with Foundry v14
 
     // Dynamic rolls listeners
     const proficiencyRoll = html.querySelector(".proficiency-roll");
@@ -322,10 +332,9 @@ export default function() {
         const target = ev.currentTarget;
         if (!rollIsReady("proficiency-roll", target)) return undefined;
 
-        const sys = message.message.system;
         const actor = Aux.getActor(sys.actorId, sys.tokenId);
         const proficiencyRoll = await actor.rollProficiencyCheck({proficiency: sys.check}, "roll", false);
-        let elem = $(target)
+        const elem = $(target)
         elem.find(".roll").remove()
         switch (proficiencyRoll.outcome) {
           case "Success":
@@ -339,7 +348,7 @@ export default function() {
         addRollDescription(elem, rollDescription);
 
         rollFollowUps(elem);
-        chatMsgCls.update({"content": html.find(".message-content").html()})
+        updateChatMessageFromHTML(chatMsgCls, html, sys);
       })
     }
 
@@ -359,19 +368,18 @@ export default function() {
         elem.find(".roll").remove()
 
         rollFollowUps(elem);
-        chatMsgCls.update({"content": html.find(".message-content").html()})
+        updateChatMessageFromHTML(chatMsgCls, html, sys);
       })
     }
 
-    const applyDamage = html.querySelector(".apply-damage");
-    if (applyDamage) {
-      applyDamage.addEventListener("click", "click", async ev => {
+    const applyDamageButton = html.querySelector(".apply-damage");
+    if (applyDamageButton) {
+      applyDamageButton.addEventListener("click", async ev => {
         if (!game.user.isGM) {
           NotificationServer.notify("Requires GM")
           return ;
         }
 
-        const sys = message.message.system;
         if (sys.targetId) {
           const scene = game.scenes.get(sys.sceneId);
           const target = scene.tokens.get(sys.targetId)?.actor;
@@ -382,13 +390,11 @@ export default function() {
           if (Object.keys(protectionLog).length != 0) {
             const template = "systems/the_edge/templates/chat/meta-protection-log.html";
             const protectionHtml = await renderTemplate(template, {protection: protectionLog});
-            $(ev.currentTarget).replaceWith(protectionHtml);
-          } else $(ev.currentTarget).remove();
-        } else $(ev.currentTarget).remove();
+            html.querySelector(".apply-damage").outerHTML = protectionHtml;
+          } else await html.querySelector(".apply-damage").remove();
+        } else await html.querySelector(".apply-damage").remove();
 
-        $(html.find(".rerollable")).removeClass("rerollable"); // No more edits after damage application
-        $(html.find(".message-header")).remove(); // Remove old header bar
-        chatMsgCls.update({"content": html.find(".message-content").html()});
+        updateChatMessageFromHTML(chatMsgCls, html, sys);
       })
     }
     
@@ -400,7 +406,6 @@ export default function() {
           return ;
         }
         
-        const sys = message.message.system;
         const grenadeDetails = sys.grenade.system.subtypes.grenade;
         const maxDistance = Math.max(...grenadeDetails.blastDistance);
         const closeDistance = grenadeDetails.blastDistance[0];
@@ -441,8 +446,7 @@ export default function() {
             LocalisationServer.localise("Harmless explosion", "text")
           );
         }
-        $(html.find(".message-header")).remove(); // Remove old header bar
-        chatMsgCls.update({"content": html.find(".message-content").html()});
+        updateChatMessageFromHTML(chatMsgCls, html, sys);
 
         // Remove the grenade tile
         grenadeTile.delete();

@@ -59,6 +59,15 @@ export class TheEdgeBaseActor extends Actor {
     return allowed !== false ? this.update(updates) : this;
   }
 
+  useHeroToken(reason = "generic") {
+    this.update({"system.heroToken.available": this.system.heroToken.available - 1});
+    ChatServer.transmitEvent("Hero Token", {name: this.name, reason: reason});
+  }
+
+  regenerateHeroToken() {
+    this.update({"system.heroToken.available": this.system.heroToken.available + 1});
+  }
+
   getStrideSpeed() {
     const ch = this.system.attributes;
     return Math.min(5 + Math.floor(ch.spd.value / 6  ), Math.floor(ch.foc.value * 0.75));

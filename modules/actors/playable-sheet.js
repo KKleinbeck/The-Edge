@@ -1,10 +1,11 @@
-import ChatServer from "../system/chat_server.js";
+import Aux from "../system/auxilliaries.js";
 import LocalisationServer from "../system/localisation_server.js";
 import DialogRest from "../dialogs/dialog-rest.js";
 import DialogDamage from "../dialogs/dialog-damage.js";
 import DialogReload from "../dialogs/dialog-reload.js";
 import DialogWeapon from "../dialogs/dialog-weapon.js";
 import DialogAttribute from "../dialogs/dialog-attribute.js";
+import DialogCombatics from "../dialogs/dialog-combatics.js";
 import DialogProficiency from "../dialogs/dialog-proficiency.js";
 import THE_EDGE from "../system/config-the-edge.js";
 import { TheEdgeActorSheet } from "./actor-sheet.js";
@@ -144,15 +145,11 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   }
 
   // actions
-  static useHeroToken(_event, _target) {
-    const actor = this.actor
-    actor.update({"system.heroToken.available": actor.system.heroToken.available - 1});
-    ChatServer.transmitEvent("Hero Token", {name: actor.name, reason: "reason"});
-  }
+  static useHeroToken(_event, _target) { this.actor.useHeroToken(); }
 
   static regenerateHeroToken(_event, _target) {
     if (game.user.isGM) {
-      this.actor.update({"system.heroToken.available": this.actor.system.heroToken.available + 1});
+      this.actor.regenerateHeroToken();
     } else {
       // TODO: notify
     }
