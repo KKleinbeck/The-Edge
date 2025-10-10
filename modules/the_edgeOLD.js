@@ -3,11 +3,11 @@ import THE_EDGE from "./system/config-the-edge.js"
 import CombatLog from "./applications/combat-log.js";
 import TheEdgeHotbar from "./applications/hotbar.js";
 import GrenadePicker from "./applications/grenades-picker.js";
-import { TheEdgeBiologicalActor } from "./actors/biological.js";
+import { TheEdgeActor } from "./actors/actor.js";
 import { TheEdgeItem } from "./items/item.js";
 import { SocketHandler } from "./system/socket_handler.js";
 import { TheEdgeItemSheet } from "./items/item-sheet.js";
-import { TheEdgePlayableSheet } from "./actors/playable-sheet.js";
+import { TheEdgeActorSheet } from "./actors/actor-sheet.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
 import { TheEdgeToken, TheEdgeTokenDocument } from "./token.js";
 
@@ -80,23 +80,14 @@ Hooks.once("init", async function() {
   }
 
   game.the_edge = {
+    // createWorldbuildingMacro,
     config: THE_EDGE,
     combatLog: new CombatLog(),
     socketHandler: new SocketHandler()
   };
 
-  // Register actor sheets
-  foundry.documents.collections.Actors.unregisterSheet('core', foundry.appv1.sheets.ActorSheet);
-
-  const actorSheets = [
-    { sheetClass: TheEdgePlayableSheet, types: ['character'], makeDefault: true },
-  ];
-  actorSheets.forEach(({ sheetClass, types, makeDefault }) => {
-    foundry.documents.collections.Actors.registerSheet('the_edge', sheetClass, { types, makeDefault });
-  });
-
   // Define custom Document classes
-  CONFIG.Actor.documentClass = TheEdgeBiologicalActor;
+  CONFIG.Actor.documentClass = TheEdgeActor;
   CONFIG.Item.documentClass = TheEdgeItem;
   CONFIG.Token.documentClass = TheEdgeTokenDocument;
   CONFIG.Token.objectClass = TheEdgeToken;
@@ -108,6 +99,7 @@ Hooks.once("init", async function() {
   }
 
   // Register sheet application classes
+  // TheEdgeActorSheet.setupSheets()
   TheEdgeItemSheet.setupSheets()
 
   // UI setup

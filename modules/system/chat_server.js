@@ -1,5 +1,7 @@
 import LocalisationServer from "./localisation_server.js";
 
+const { renderTemplate } = foundry.applications.handlebars;
+
 export default class ChatServer {
   static transmitPlain(msg) {
     ChatMessage.create(this._chatDataSetup(`<h2>${msg}</h2>`, "roll"))

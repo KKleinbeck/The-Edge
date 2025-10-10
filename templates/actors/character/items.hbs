@@ -1,0 +1,97 @@
+<section
+  class="tab {{tabs.items.cssClass}}"
+  data-group="primary"
+  data-tab="items"
+>
+  {{#each helpers.itemTypes as |type|}}
+    <div class="title">
+      <div class="section-title">{{itemName type}}</div>
+      <div title="{{ itemName 'Create' }}" data-action="itemControl" data-subaction="create" data-type="{{type}}" style="gap: 5px; cursor: pointer;">
+        {{itemName "Create"}}
+        <a><i class="fas fa-plus"></i></a>
+      </div>
+    </div>
+    <ol class="item-list item-category" data-category="{{loc}}" style="margin-bottom: 15px; padding: 0px 5px 0px 5px;">
+      {{#each ../actor.items as |item id|}}
+        {{#if (checkRenderItem item type)}}
+          <li class="item" data-item-id="{{item._id}}" style="break-inside: avoid;">
+            <div class="flexrow">
+              <div data-action="itemControl" data-subaction="edit" style="cursor: pointer; display: flex; vertical-align: center;">
+                <img class="item-img" src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
+                <b>
+                  {{#if (checkAttachment item)}}
+                    ({{genName "Attachment"}})
+                  {{/if}}
+                  {{#if (checkIn "quantity" item.system)}}
+                    {{item.system.quantity}} x 
+                  {{/if}}
+                  {{item.name}}
+                  {{#if (checkEqual item.type "Ammunition")}}
+                    {{getAmmunitionCount item}}
+                  {{/if}}
+                  {{#if (checkEqual item.type "Armour")}}
+                    {{getStructurePoints item}}
+                  {{/if}}
+                </b>
+              </div>
+              <div class="item-controls">
+                {{#if (checkIn "equipped" item.system)}}
+                  {{#if item.system.equipped}}
+                    <a title="{{ itemName 'Unequip' }}" data-action="itemControl" data-subaction="toggle-equip"><i class="far fa-check-circle"></i></a>
+                  {{else}}
+                    <a title="{{ itemName 'Equip' }}" data-action="itemControl" data-subaction="toggle-equip"><i class="far fa-circle"></i></a>
+                  {{/if}}
+                {{/if}}
+                {{#if (checkEqual item.type "Consumables")}}
+                    <a title="{{ itemName 'Use' }}" data-action="itemControl" data-subaction="consume"><i class="far fa-dice-d20"></i></a>
+                {{/if}}
+                <!-- <a title="{{ itemName 'Edit' }}" data-action="itemControl" data-subaction="edit"><i class="fas fa-edit"></i></a> -->
+                <a title="{{ genName 'Post to chat' }}" data-action="itemControl" data-subaction="post"><i class="fas fa-message"></i></a>
+                <a title="{{ itemName 'Delete' }}" data-action="itemControl" data-subaction="delete"><i class="fas fa-trash"></i></a>
+              </div>
+            </div>
+            {{#if (checkNotEmpty item.system.attachments)}}
+              {{#each item.system.attachments as |attachment|}}
+                <div class="item flexrow" data-item-id="{{attachment.shell._id}}" style="border-bottom: 0px;">
+                  <div data-action="itemControl" data-subaction="edit" style="cursor: pointer; display: flex; align-items: center;">
+                    <a style="padding: 0px 8px;"><i class="fas fa-turn-up" style="transform: rotate(90deg);"></i></a>
+                    <img src="{{attachment.shell.img}}" title="{{attachment.shell.name}}" width="24" height="24" />
+                    <b>({{genName "Attachment"}}) {{getAttachmentDetails attachment.actorId attachment.tokenId attachment.shellId}}</b>
+                  </div>
+                  <div class="item-controls">
+                    <a title="{{ itemName 'Unequip' }}" data-action="itemControl" data-subaction="toggle-equip"><i class="far fa-check-circle"></i></a>
+                    <a title="{{ genName 'Post to chat' }}" data-action="itemControl" data-subaction="post"><i class="fas fa-message"></i></a>
+                    <a title="{{ itemName 'Delete' }}" data-action="itemControl" data-subaction="delete"><i class="fas fa-trash"></i></a>
+                  </div>
+                </div>
+              {{/each}}
+            {{/if}}
+          </li>
+        {{/if}}
+      {{/each}}
+    </ol>
+  {{/each}}
+  <div class="title">
+    <div class="section-title">{{itemName "Others"}}</div>
+  </div>
+  <div style="display: flex; justify-content: space-between;">
+    <div style="display: flex; gap: 20px;">
+      <div class="section-title">{{genName "Credits"}}</div>
+      <div style="max-width: 30%;">
+        <input type="Number" id="Chids" style="width: 70%; text-align: right;" name="system.credits.chids" value="{{system.credits.chids}}"/>
+        <lavel for="Chids">Chids</lavel>
+      </div>
+      <div style="max-width: 30%;">
+        <input type="Number" id="Chids" style="width: 70%; text-align: right;" name="system.credits.digital" value="{{system.credits.digital}}"/>
+        <lavel for="Chids">{{genName "digital"}}</lavel>
+      </div>
+    </div>
+    <div style="display: flex; gap: 20px; align-items: center; padding-right: 15px;">
+      <div class="section-title">{{genName "Weight"}}</div>
+      <div>{{round helpers.weight 2}}</div>
+      <div style="white-space: nowrap;" title="{{getNextWeightClass helpers.weightTillNextOverload}}">
+        ({{genName "Overload"}}: {{helpers.overloadLevel}})
+      </div>
+    </div>
+  </div>
+</section>

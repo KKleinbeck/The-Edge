@@ -1,5 +1,7 @@
 import LocalisationServer from "../system/localisation_server.js";
 
+const { renderTemplate } = foundry.applications.handlebars;
+
 export default class DialogArmourAttachment extends Dialog{
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {

@@ -1,0 +1,24 @@
+<div class="fixed-page" style="margin-bottom: 5px;">
+  <div class="title" style="margin-bottom: 2px;">
+    <div class="section-title">{{genName name}}</div>
+  </div>
+  <div class="skill-container">
+    {{#each skills as |skill|}}
+      <div class="skill-box">
+        <div class="item skill loadout-name" data-item-id="{{skill._id}}">
+          <div data-action="itemControl" data-subaction="edit" style="cursor: pointer;">
+            {{skill.name}} {{#unless (checkEqual skill.system.maxLevel 1)}}({{skill.system.level}}&nbsp;/&nbsp;{{skill.system.maxLevel}}){{/unless}}
+          </div>
+          {{#unless (checkEqual skill.system.maxLevel 1)}}
+            <a title="{{ skillName 'decrease' }}" data-action="skillControl" data-subaction="decrease"><i class="fas fa-minus"></i></a>
+            <a title="{{ skillName 'increase' }}" data-action="skillControl" data-subaction="increase"><i class="fas fa-plus"></i></a>
+            &emsp;
+          {{/unless}}
+          <a title="{{ genName 'use' }}" data-action="skillControl" data-subaction="roll"><i class="fal fa-dice-d20"></i></a>
+          <a title="{{ genName 'Post to chat' }}" data-action="skillControl" data-subaction="post"><i class="fas fa-message"></i></a>
+          <a title="{{ itemName 'Delete' }}" data-action="skillControl" data-subaction="delete"><i class="fas fa-trash"></i></a>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</div>

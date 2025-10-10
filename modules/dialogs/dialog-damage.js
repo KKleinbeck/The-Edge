@@ -2,6 +2,8 @@ import LocalisationServer from "../system/localisation_server.js";
 import ChatServer from "../system/chat_server.js";
 import THE_EDGE from "../system/config-the-edge.js";
 
+const { renderTemplate } = foundry.applications.handlebars;
+
 export default class DialogDamage extends Dialog{
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {

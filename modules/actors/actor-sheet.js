@@ -1,372 +1,58 @@
-import THE_EDGE from "../system/config-the-edge.js";
-import DialogAttribute from "../dialogs/dialog-attribute.js";
-import DialogProficiency from "../dialogs/dialog-proficiency.js";
-import DialogReload from "../dialogs/dialog-reload.js";
+import Aux from "../system/auxilliaries.js";
 import DialogMedicine from "../dialogs/dialog-medicine.js";
-import DialogRest from "../dialogs/dialog-rest.js";
-import DialogDamage from "../dialogs/dialog-damage.js";
-import DialogWeapon from "../dialogs/dialog-weapon.js";
-import DialogCombatics from "../dialogs/dialog-combatics.js";
 import DialogItemDeletion from "../dialogs/dialog-item-deletion.js";
 import DialogArmourAttachment from "../dialogs/dialog-attachOuterArmour.js";
 import LocalisationServer from "../system/localisation_server.js";
 import ChatServer from "../system/chat_server.js";
-import Aux from "../system/auxilliaries.js";
 
+const { HandlebarsApplicationMixin } = foundry.applications.api
+const { ActorSheetV2 } = foundry.applications.sheets;
 
-export class TheEdgeActorSheet extends ActorSheet {
-  static setupSheets() {
-    Actors.unregisterSheet("core", ActorSheet);
-    Actors.registerSheet("the_edge", TheEdgeActorSheet, { makeDefault: true });
-    Actors.registerSheet("the_edge", ActorSheetCharacter, { makeDefault: true, types: ["character"] });
-    Actors.registerSheet("the_edge", ActorSheetStore, { makeDefault: true, types: ["Store"] });
-
-    Actors.unregisterSheet("the_edge", TheEdgeActorSheet, {
-      types: ["character"]
-    });
+export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
+  static DEFAULT_OPTIONS = {
+    tag: "form",
+    position: {
+      width: 740,
+      height: 800,
+    },
+    form: {
+      submitOnChange: true,
+    },
+    window: {title: ""},
+    classes: ["the_edge", "actor"],
+    actions: {
+      itemControl: TheEdgeActorSheet._onItemControl,
+      skillControl: TheEdgeActorSheet._onSkillControl,
+      counterControl: TheEdgeActorSheet.onCounterControl,
+    },
   }
 
-  async _onDropItem(event, data) {
-    const item = (await Item.implementation.fromDropData(data)).toObject();
-    switch (item.type) {
-      case "Weapon":
-      case "Armour":
-        return super._onDropItem(event, data)
+  get title () { return this.actor.name; } // Override in tandom with option.window.title
 
-      case "Ammunition":
-      case "Gear":
-      case "Consumables":
-        return this._onDropStackableItem(event, data, item)
-      
-      case "Advantage":
-      case "Disadvantage":
-        this.actor.addOrCreateVantage(item);
-        break;
-      
-      case "Skill":
-      case "Combatskill":
-      case "Medicalskill":
-      case "Languageskill":
-        const createNew = this.actor.learnSkill(item);
-        return createNew ? super._onDropItem(event, data) : undefined;
-      
-      case "Credits":
-        if (item.system.isChid) {
-          this.actor.update({"system.credits.chids": this.actor.system.credits.chids + item.system.value})
-        } else this.actor.update({"system.credits.digital": this.actor.system.credits.digital + item.system.value})
-        return false;
-
-      case "Effect":
-        return super._onDropItem(event, data)
-    }
-    // return this.actor.createEmbeddedDocuments("Item", itemData);
-  }
-
-  _itemExists(item) {
-    return this.actor.findItem(item);
-  }
-
-  _onDropStackableItem(event, data, item) {
-    const existingCopy = this._itemExists(item);
-    if (existingCopy) {
-      existingCopy.update({"system.quantity": existingCopy.system.quantity + 1});
-      return existingCopy;
-    }
-    return super._onDropItem(event, data)
-  }
-}
-
-class ActorSheetCharacter extends TheEdgeActorSheet {
-
-  /** @inheritdoc */
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["the_edge", "sheet", "actor"],
-      template: "systems/the_edge/templates/actors/character/actor-sheet.html",
-      width: 700,
-      height: 600,
-      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "attributes"}],
-      scrollY: [".attributes", ".proficiencies", ".combat", ".items", ".biography"],
-      dragDrop: [{dragSelector: ".item-list .item", dropSelector: null}]
-    });
-  }
-
-  async render(force, options) {
-    if (options && 'width' in options) {
-      options.width = options.width < 600 ? 600 : options.width;
-    }
-    super.render(force, options)
-  }
-
-  async getData(options) {
-    const context = await super.getData(options);
-    context.shorthand = !!game.settings.get("the_edge", "macroShorthand");
-    context.systemData = context.data.system;
-    context.biographyHTML = await TextEditor.enrichHTML(context.systemData.biography, {
-      secrets: this.document.isOwner,
-      async: true
-    });
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    context.actor = this.actor;
+    context.system = context.document.system;
     context.prepare = this.actor.prepareSheet()
 
-    const equippedArmour = this.actor.itemTypes["Armour"]?.filter(
-      a => a.system.equipped && a.system.layer == "Inner");
-    let armourProtection = 0;
-    for (const armour of equippedArmour) {
-      armourProtection += armour.system.structurePoints;
-      for (const attachment of armour.system.attachments) {
-        armourProtection += attachment.shell.system.structurePoints;
-      }
-    }
-    const equippedWeapons = this.actor.itemTypes["Weapon"]?.filter(
-      a => a.system.equipped
-    );
-
-    const credits = this.actor.itemTypes["Credits"]
-    const creditsOffline = credits.find(c => c.system?.isSchid)?.system?.value || 0;
-    const creditsDigital = credits.find(c => !c.system?.isSchid)?.system?.value || 0;
-    const weight =  this.actor._determineWeight();
-    const wounds = this.actor.itemTypes["Wounds"];
-    context.helpers = {
-      armourProtection: armourProtection,
-      equippedWeapons: equippedWeapons,
-      bodyParts: ["Torso", "Head", "Arms", "Legs"],
-      bleeding: wounds.map(x => x.system.bleeding).sum(),
-      credits: {"Schids": creditsOffline, "digital": creditsDigital},
-      damage: wounds.map(x => x.system.damage).sum(),
-      languages: THE_EDGE.languages,
-      types: ["Weapon", "Armour", "Ammunition", "Gear", "Consumables"],
-      weight: weight,
-      overloadLevel: this.actor.overloadLevel,
-      weightTillNextOverload: this.actor.weightTillNextOverload
-    }
-
-    context.effectDict = {statusEffects: [], effects: [], itemEffects: [], skillEffects: []}
-    for (const item of this.actor.items) {
-      if (item.type ==  "Effect") {
-        if (item.system.statusEffect) context.effectDict.statusEffects.push(item);
-        else context.effectDict.effects.push(item);
-      } else if (item.type == "Skill" || item.type == "Combatskill" || item.type == "Medicalskill") {
-        for (const effect of item.system.levelEffects) {
-          if (effect.length != 0) {
-            context.effectDict.skillEffects.push(item);
-            break;
-          }
-        }
-      } else if (item.system.equipped && item.system.effects.length !== 0) {
-        context.effectDict.itemEffects.push(item);
-      }
-    }
-    context.effectToggle = {statusEffects: false, effects: true, itemEffects: false, skillEffects: true};
+    Object.entries(this.actor.itemTypes).forEach(([type, entries]) => {
+      context[type] = entries;
+    })
     return context;
   }
-
-  activateListeners(html) {
-    super.activateListeners(html);
-
-    // Everything below here is only needed if the sheet is editable
-    if ( !this.isEditable ) return;
-
-    // Item Controls
-    html.find(".item-control").click(ev => this._onItemControl(ev));
-
-    // Counter Controls
-    html.find(".counter-control").click(ev => this._onCounterControl(ev));
-    html.find(".counter-name").on("change", ev => this._changeCounterName(ev));
-
-    // Add draggable for Macro creation
-    html.find(".attributes a.attribute-roll").each((i, a) => {
-      a.setAttribute("draggable", true);
-      a.addEventListener("dragstart", ev => {
-        let dragData = ev.currentTarget.dataset;
-        ev.dataTransfer.setData('text/plain', JSON.stringify(dragData));
-      }, false);
-    });
-
-    // Hero Tokens
-    html.find(".hero-token").click(_ => this.actor.useHeroToken());
-    html.find(".hero-token-spent").click(_ => {
-      if (game.user.isGM) this.actor.regenerateHeroToken();
-    });
-
-    // Skills
-    html.find(".skill-control").click(ev => this._onSkillControl(ev));
-
-    // Attribute, proficiency and weapon skill change
-    html.find(".core-value").on("keyup", ev => this._onModifyCoreValues(ev));
-    html.find(".core-value").on("change", ev => this._onChangeCoreValues(ev));
-
-    // Attributes
-    html.find(".attr-d20").click(ev => this._rollAttr(ev));
-    html.find(".advance-attr").on("mouseover", ev => this._attrCostTooltip(ev));
-    html.find(".advance-attr").on("click", ev => this._advanceSrv(ev, "attr"));
-
-    // Proficiencies
-    html.find(".prof-d20").click(ev => this._rollProficiency(ev));
-
-    // Weapon Proficiencies
-    html.find(".weapon-d20").click(ev => this._rollAttack(ev));
-    html.find(".reload").click(ev => this._reload(ev));
-
-    // Health
-    html.find(".short-rest").click(_ => DialogRest.start({actor: this.actor, type: "short rest"}));
-    html.find(".long-rest").click(_ => DialogRest.start({actor: this.actor, type: "long rest"}));
-    html.find(".apply-damage").click(ev => this._applyDamage(ev));
-  }
-
-  async _advanceSrv(ev, quantity) {
-    const target = ev.currentTarget;
-    let name = target.getAttribute("data-name");
-    let type = target.getAttribute("advance-type");
-    switch (quantity){
-      case "attr":
-        this.actor._advanceAttr(name, type);
-        break;
-    }
-    this._render();
-  }
-
-  async _rollAttr(ev) {
-    const target = ev.currentTarget; // HTMLElement
-    const attribute = target.getAttribute("attr-name");
-    DialogAttribute.start({
-      actor: this.actor, actorId: this.actor.id, attribute: attribute,
-      tokenId: this.token?.id, sceneID: game.user.viewedScene
-    })
-  }
-
-  async _rollProficiency(ev) {
-    const target = ev.currentTarget; // HTMLElement
-    const proficiency = target.getAttribute("prof-name");
-    DialogProficiency.start({
-      actor: this.actor, actorId: this.actor.id, proficiency: proficiency,
-      token: this.token, tokenId: this.token?.id, sceneID: game.user.viewedScene
-    })
-  }
-
-  async _rollAttack(ev) {
-    const target = ev.currentTarget; // HTMLElement
-    const targetIds = Array.from(game.user.targets.map(x => x.id));  //targets is set
-    const sceneId = game.user.viewedScene;
-    const actor = this.actor;
-    const weaponID = target.closest(".weapon-id")?.dataset.weaponId;
-    const weapon = this.actor.items.get(weaponID);
-    var token = this.token;
-    if (token === null) { token = Aux.getToken(this.actor.id); }
-    if (token === null) {
-        const msg = LocalisationServer.localise("No Token", "Notifications")
-        ui.notifications.notify(msg)
-      return undefined;
-    }
-
-    if (target.dataset?.type === "Hand-to-Hand combat") {
-      if (targetIds.length > 1) {
-        const msg = LocalisationServer.parsedLocalisation(
-          "Too many targets", "Notifications", {weapon: "hand to hand", max: 1}
-        )
-        ui.notifications.notify(msg)
-        return undefined;
-      }
-      const threshold = weaponID ? actor._getWeaponPL(weaponID) : actor._getCombaticsPL();
-      const damage = weaponID ? weapon.system.fireModes[0].damage : actor._getCombaticsDamage();
-      const name = weaponID ? weapon.name : LocalisationServer.localise("Hand to Hand combat", "combat");
-      DialogCombatics.start({
-        actor: actor, token: token, sceneId: sceneId, targetId: targetIds[0] || undefined,
-        name: name, threshold: threshold, damage: damage, sceneId: sceneId
-      })
-      return undefined;
-    }
-
-    if (targetIds.length > 1 && !(weapon.system.multipleTargets)) {
-      const msg = LocalisationServer.parsedLocalisation(
-        "Too many targets", "Notifications", {weapon: weapon.name, max: 1}
-      )
-      ui.notifications.notify(msg)
-      return undefined;
-    }
-
-    if (weapon.system.ammunitionID === "") {
-      let msg = LocalisationServer.localise("Ammu missing", "Notifications")
-      ui.notifications.notify(msg)
-      return undefined;
-    }
-
-    let damageType = ""
-    if (weapon.system.isElemental) {
-      damageType = "Elemental"
-    } else if (Object.keys(game.model.Actor.character.weapons.energy).includes(weapon.system.type)) {
-      damageType = "energy"
-    } else damageType = "kinetic";
-    
-    const threshold = actor._getWeaponPL(weaponID);
-    const effectItems = actor.items.filter(x => x.system.effects !== undefined)
-    const effectModifier = [];
-    for (const effectItem of effectItems) {
-      if (!effectItem.system.active && !effectItem.system.equipped) continue;
-      for (const effect of effectItem.system.effects) {
-        if (effect.group != "weapons") continue;
-        if (effect.name == "all" || effect.name == damageType || effect.name == weapon.system.type) {
-          effectModifier.push({name: effectItem.name, value: effect.value})
-        }
-      }
-    }
-    DialogWeapon.start({
-      name: weapon.name, actor: actor, actorId: actor.id, token: token,
-      tokenId: token?.id, sceneId: sceneId,
-      ammunition: this.actor.items.get(weapon.system.ammunitionID),
-      threshold: threshold, effectModifier: effectModifier,
-      damageType: damageType,
-      rangeChart: weapon.system.rangeChart,
-      fireModes: weapon.system.fireModes,
-      targetIds: targetIds
-    })
-  }
-
-  async _reload(ev) {
-    const target = ev.currentTarget; // HTMLElement
-    const weaponID = target.closest(".weapon-id").dataset.weaponId
-    const ammunition = []
-    let weapon = this.actor.items.get(weaponID);
-    for (const ammu of this.actor.itemTypes["Ammunition"]) {
-      let sys = ammu.system
-      let designatedWeapons = sys.designatedWeapons
-        .replace(/<[^>]*>?/gm, '') // Strip html tags
-        .split(",")
-        .map(x => x.trim())
-      if (designatedWeapons.includes(weapon.name)) {
-        ammunition.push(ammu);
-      } else if (sys.whitelist[sys.type][weapon.system.type]) ammunition.push(ammu);
-    }
-
-    await DialogReload.start({
-      weaponID: weaponID,
-      actor: this.actor,
-      weapon: weapon,
-      ammunition: ammunition
-    })
-  }
-
-  async _applyDamage(ev) {
-    const location = ev.currentTarget.dataset.location; // HTMLElement
-
-    DialogDamage.start({actor: this.actor, location: location});
-  }
-
-  async _onDropFolder(event, data) {
-    return [];
-  }
-
-  async _onItemControl(event) {
+  
+  // Actions
+  static async _onItemControl(event, target) {
     event.preventDefault();
 
     // Obtain event data
-    const button = event.currentTarget;
-    const itemElement = button.closest(".item");
+    const itemElement = target.closest(".item");
     const item = this.actor.items.get(itemElement?.dataset.itemId);
 
     // Handle different actions
-    switch ( button.dataset.action ) {
+    switch ( target.dataset.subaction ) {
       case "create":
-        const itemType = button.dataset.type;
+        const itemType = target.dataset.type;
         const cls = getDocumentClass("Item");
         return cls.create({name: LocalisationServer.localise("New", "item"), type: itemType}, {parent: this.actor});
       case "create-effect":
@@ -424,12 +110,12 @@ class ActorSheetCharacter extends TheEdgeActorSheet {
         }
         await item.toggleEquipped();
         await this.actor.updateStatus();
-        this._render();
+        this.render();
         break;
       case "consume":
         switch (item.system.subtype) {
           case "medicine":
-            let wounds = this.actor.itemTypes["Wounds"];
+            const wounds = this.actor.itemTypes["Wounds"];
             DialogMedicine.start({medicineItem: item, wounds: wounds, actor: this.actor});
             break;
 
@@ -441,9 +127,10 @@ class ActorSheetCharacter extends TheEdgeActorSheet {
             break;
           
           default:
-            let effectNames = this.actor.itemTypes["Effect"].map(x => x.name)
+            const effectNames = this.actor.itemTypes["Effect"].map(x => x.name)
             if (effectNames.includes(item.name)) {
-              let msg = LocalisationServer.localise("Effect already exists", "Notifications")
+              // TODO Notification server
+              const msg = LocalisationServer.localise("Effect already exists", "Notifications")
               ui.notifications.notify(msg)
             } else {
               const hasEffects = item.system.effects.length > 0;
@@ -457,7 +144,7 @@ class ActorSheetCharacter extends TheEdgeActorSheet {
                   "system.effects": item.system.effects, "system.description": item.system.description,
                   "system.gm_description": item.system.gm_description
                 })
-                this._render();
+                this.render();
               }
               ChatServer.transmitEvent("General Consume", {
                 details: {actorName: this.actor.name, item: item.name}, hasEffects: hasEffects
@@ -468,75 +155,17 @@ class ActorSheetCharacter extends TheEdgeActorSheet {
         break;
     }
   }
-
-  async _onCounterControl(event) {
+  
+  static async _onSkillControl(event, target) {
     event.preventDefault();
 
     // Obtain event data
-    const button = event.currentTarget;
-    const counterElement = button.closest(".counter");
-    const index = +counterElement?.dataset.index;
-
-    // Handle different actions
-    const counters = this.actor.system.counters || [];
-    switch ( button.dataset.action ) {
-      case "create-counter":
-        counters.push({
-          name: LocalisationServer.localise("New Counter", "item"),
-          value: 1, max: 1
-        })
-        break;
-      
-      case "delete":
-        counters.splice(index, 1);
-        break;
-
-      case "increase-counter":
-        counters[index].max += 1;
-        break;
-
-      case "decrease-counter":
-        if (counters[index].max == 1) return;
-        counters[index].max -= 1;
-        counters[index].value = Math.min(
-          counters[index].value, counters[index].max
-        );
-        break;
-      
-      case "deplete-counter":
-        counters[index].value = 0;
-        break;
-      
-      case "use":
-        counters[index].value = 1 + +button.dataset.level;
-        break;
-    }
-    this.actor.update({"system.counters": counters});
-  }
-
-  async _changeCounterName(event) {
-    event.preventDefault();
-
-    // Obtain event data
-    const input = event.currentTarget;
-    const counterElement = input.closest(".counter");
-    const index = +counterElement?.dataset.index;
-    const counters = this.actor.system.counters;
-    counters[index].name = input.value;
-    this.actor.update({"system.counters": counters});
-  }
-
-  async _onSkillControl(event) {
-    event.preventDefault();
-
-    // Obtain event data
-    const button = event.currentTarget;
-    const skillElement = button.closest(".skill");
+    const skillElement = target.closest(".skill");
     const skillID = skillElement?.dataset.itemId;
     const skill = this.actor.items.get(skillID);
 
     // Handle different actions
-    switch ( button.dataset.action ) {
+    switch ( target.dataset.subaction ) {
       case "increase":
         return this.actor.skillLevelIncrease(skillID);
       case "decrease":
@@ -579,66 +208,7 @@ class ActorSheetCharacter extends TheEdgeActorSheet {
         break;
     }
   }
-  
-  _attrCostTooltip(event) {
-    const target = event.currentTarget;
-    const type = target.getAttribute("advance-type");
-    const cost = target.dataset.cost;
 
-    if (type == "advance") {
-      const text = LocalisationServer.parsedLocalisation("Costs", "notifications", {cost: cost});
-      game.tooltip.activate(event.currentTarget, {text: text, direction: "UP"});
-    }
-    else {
-      const text = LocalisationServer.parsedLocalisation("Gain", "notifications", {gain: cost});
-      game.tooltip.activate(event.currentTarget, {text: text, direction: "UP"});
-    }
-  }
-
-  _onModifyCoreValues(event) {
-    const field = $(event.currentTarget);
-    const name = event.currentTarget.dataset.target;
-
-    const cost = this.actor.coreValueChangeCost(name, field.val());
-
-    if (cost == 0) return;
-    else if (cost > 0) {
-      const text = LocalisationServer.parsedLocalisation("Costs", "notifications", {cost: cost});
-      game.tooltip.activate(event.currentTarget, {text: text, direction: "DOWN"});
-    }
-    else {
-      const text = LocalisationServer.parsedLocalisation("Gain", "notifications", {gain: -cost});
-      game.tooltip.activate(event.currentTarget, {text: text, direction: "DOWN"});
-    }
-  }
-
-  _onChangeCoreValues(event) {
-    const field = $(event.currentTarget);
-    const name = event.currentTarget.dataset.target;
-    this.actor.changeCoreValue(name, field.val());
-  }
-
-  // Trash code which contains a useful template though
-  _onItemRoll(event) {
-    let button = $(event.currentTarget);
-    const li = button.parents(".item");
-    const item = this.actor.items.get(li.data("itemId"));
-    let r = new Roll(button.data('roll'), this.actor.getRollData());
-    return r.toMessage({
-      user: game.user.id,
-      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-      flavor: `<h2>${item.name}</h2><h3>${button.text()}</h3>`
-    });
-  }
-
-  /* -------------------------------------------- */
-
-  /** @inheritdoc */
-  _getSubmitData(updateData) {
-    let formData = super._getSubmitData(updateData);
-    return formData;
-  }
-  
   _findAttachableArmour(outerShell) {
     const bodyTarget = outerShell.system.bodyPart;
     const size = outerShell.system.attachmentPoints.max;
@@ -652,25 +222,93 @@ class ActorSheetCharacter extends TheEdgeActorSheet {
       return false
     })
   }
-}
 
-class ActorSheetStore extends TheEdgeActorSheet {
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["the_edge", "sheet", "actor"],
-      template: "systems/the_edge/templates/actors/store/actor-sheet.html",
-      width: 700,
-      height: 600,
-      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body"}],
-      dragDrop: [{dragSelector: ".item-list .item", dropSelector: null}]
-    });
+  static onCounterControl(event, target) {
+    event.preventDefault();
+
+    // Obtain event data
+    const counterElement = target.closest(".counter");
+    const index = +counterElement?.dataset.index;
+
+    // Handle different actions
+    const counters = this.actor.system.counters || [];
+    switch ( target.dataset.subaction ) {
+      case "create-counter":
+        counters.push({
+          name: LocalisationServer.localise("New Counter", "item"),
+          value: 1, max: 1
+        })
+        break;
+      
+      case "delete":
+        counters.splice(index, 1);
+        break;
+
+      case "increase-counter":
+        counters[index].max += 1;
+        break;
+
+      case "decrease-counter":
+        if (counters[index].max == 1) return;
+        counters[index].max -= 1;
+        counters[index].value = Math.min(
+          counters[index].value, counters[index].max
+        );
+        break;
+      
+      case "deplete-counter":
+        counters[index].value = 0;
+        break;
+      
+      case "use":
+        const level = 1 + +target.dataset.level;
+        counters[index].value = (counters[index].value < level) ? level : level - 1;
+        break;
+    }
+    this.actor.update({"system.counters": counters});
   }
 
+  // Specific listeners
+  _onRender(context, options) {
+    super._onRender(context, options)
+    const progressInputs = this.element.querySelectorAll(".progress-input");
+    for (const input of progressInputs) {
+      if (input.dataset.id == "counter") {
+        input.addEventListener("change", (ev) => this._onCounterChange(ev, this.actor, "value"))
+      }
+    }
+
+    const counterNames = this.element.querySelectorAll(".counter-name");
+    for (const counter of counterNames) {
+      counter.addEventListener("change", (ev) => this._onCounterChange(ev, this.actor, "name"))
+    }
+  }
+
+  async _onCounterChange(event, actor, changeId) {
+    const target = event.target;
+    const counterElement = target.closest(".counter");
+    const index = +counterElement?.dataset.index;
+
+    const counters = actor.system.counters || [];
+    switch (changeId) {
+      case "value":
+        counters[index].value = Math.min(target.value, +target.dataset.max);
+        break;
+      
+      case "name":
+        counters[index].name = target.value;
+        break;
+    }
+    actor.update({"system.counters": counters});
+  }
+
+  // Item dropping
   async _onDropItem(event, data) {
     const item = (await Item.implementation.fromDropData(data)).toObject();
     switch (item.type) {
       case "Weapon":
       case "Armour":
+      case "Effect":
         return super._onDropItem(event, data)
 
       case "Ammunition":
@@ -678,150 +316,37 @@ class ActorSheetStore extends TheEdgeActorSheet {
       case "Consumables":
         return this._onDropStackableItem(event, data, item)
       
-      default:
-        return;
-    }
-  }
-
-  activateListeners(html) {
-    super.activateListeners(html);
-
-    html.find(".item-information").on("click", ev => this._on_edit_item(ev));
-    html.find(".delete").on("click", ev => this._on_item_delete(ev));
-    html.find(".buy-or-retrieve").on("click", ev => this._on_retrieve_item(ev));
-    html.find(".sell-or-store").on("click", ev => this._on_deposite_item(ev));
-  }
-
-  canUserModify() { return true; }
-
-  async getData(options) {
-    const context = await super.getData(options);
-    context.systemData = context.data.system;
-    context.systemData.userIsGM = game.user.isGM;
-
-    context.itemTypes = {};
-    for (const [type, items] of Object.entries(this.actor.itemTypes)) {
-      if (items.length == 0) continue;
-
-      if (type == "Weapon") {
-        context.itemTypes.Weapon = {};
-
-        for (const item of items) {
-          if (!(item.system.type in context.itemTypes.Weapon)) {
-            context.itemTypes.Weapon[item.system.type] = [item];
-          } else {
-            context.itemTypes.Weapon[item.system.type].push(item);
-          }
-        }
-      } else if (type == "Consumables") {
-        context.itemTypes.Consumables = {};
-
-        for (const item of items) {
-          if (!(item.system.subtype in context.itemTypes.Consumables)) {
-            context.itemTypes.Consumables[item.system.subtype] = [item];
-          } else {
-            context.itemTypes.Consumables[item.system.subtype].push(item);
-          }
-        }
-      } else if ("value" in game.model.Item[type]) context.itemTypes[type] = items;
-    }
-
-    const playerTokens = Aux.getPlayerTokens();
-    context.playerItemTypes = {};
-    for (const token of playerTokens) {
-      for (const [type, items] of Object.entries(token.actor.itemTypes)) {
-        if (items.length > 0 && "value" in game.model.Item[type]) {
-          context.playerItemTypes[type] = items.filter(
-            x => (!("equipped" in x.system) || !x.system.equipped) &&
-                 (!("loaded" in x.system) || !x.system.loaded)
-          );
-        }
-      }
-    }
-
-    return context;
-  }
-
-  _on_edit_item(event) {
-    const target = event.currentTarget;
-    const itemInformation = target.closest(".store-item").dataset;
-    if ("parentId" in itemInformation) {
-      const actor = game.actors.get(itemInformation.parentId);
-      const item = actor.items.get(itemInformation.itemId);
-      item.sheet.render(true);
-    } else {
-      const item = this.actor.items.get(itemInformation.itemId);
-      item.sheet.render(true);
-    }
-  }
-
-  _on_item_delete(event) {
-    const target = event.currentTarget;
-    const itemInformation = target.closest(".store-item").dataset;
-    const item = this.actor.items.get(itemInformation.itemId);
-    item.delete();
-  }
-
-  _on_retrieve_item(event) {
-    const playerTokens = Aux.getPlayerTokens();
-    if (!playerTokens || playerTokens.length == 0) return;
-
-    // TODO: Select which actor buys the item
-    const actor = playerTokens[0].actor;    
-    const credits = actor.system.credits.chids + actor.system.credits.digital;
-
-    const target = event.currentTarget;
-    const itemInformation = target.closest(".store-item").dataset;
-    const price = +itemInformation.price;
-
-    if (credits >= price) {
-      const item = this.actor.items.get(itemInformation?.itemId);
-      const [chids, digital] = actor.pay(price);
-      this.actor.getCredits(chids, digital);
-
-      const existingCopy = actor.findItem(item);
-      if (existingCopy && "quantity" in item.system) {
-        existingCopy.update({"system.quantity": existingCopy.system.quantity + 1});
-      } else {
-        const itemCls = getDocumentClass("Item");
-        const newSystem = {...item.system};
-        newSystem.quantity = 1;
-        itemCls.create({name: item.name, type: item.type, system: newSystem}, {parent: actor});
-      }
-
-      if (item.system.quantity > 1) item.update({"system.quantity": item.system.quantity - 1});
-      else item.delete();
-    }
-  }
-
-  _on_deposite_item(event) {
-    const credits = this.actor.system.credits.chids + this.actor.system.credits.digital;
-
-    const target = event.currentTarget;
-    const itemInformation = target.closest(".store-item").dataset;
-    const price = +itemInformation.price;
-    if (credits >= price) {
-      const actor = game.actors.get(itemInformation.parentId);
-      const [chids, digital] = this.actor.pay(price);
-      actor.getCredits(chids, digital);
-
-      const item = actor.items.get(itemInformation.itemId);
-
-      const existingCopy = this.actor.findItem(item);
-      if (existingCopy && "quantity" in item.system) {
-        existingCopy.update({"system.quantity": existingCopy.system.quantity + 1});
-      } else {
-        const itemCls = getDocumentClass("Item");
-        const newSystem = {...item.system};
-        newSystem.quantity = 1;
-        itemCls.create({name: item.name, type: item.type, system: newSystem}, {parent: this.actor});
-      }
+      case "Advantage":
+      case "Disadvantage":
+        this.actor.addOrCreateVantage(item);
+        break;
       
-      if (item.system.quantity > 1) item.update({"system.quantity": item.system.quantity - 1});
-      else item.delete();
+      case "Skill":
+      case "Combatskill":
+      case "Medicalskill":
+      case "Languageskill":
+        const createNew = this.actor.learnSkill(item);
+        return createNew ? super._onDropItem(event, data) : undefined;
       
-      // TODO: find a way to redraw
+      case "Credits":
+        if (item.system.isChid) {
+          this.actor.update({"system.credits.chids": this.actor.system.credits.chids + item.system.value})
+        } else this.actor.update({"system.credits.digital": this.actor.system.credits.digital + item.system.value})
+        return false;
     }
   }
-  // TODO: prevent item drop when not sellable
+
+  _onDropStackableItem(event, data, item) {
+    const existingCopy = this._itemExists(item);
+    if (existingCopy) {
+      existingCopy.update({"system.quantity": existingCopy.system.quantity + 1});
+      return existingCopy;
+    }
+    return super._onDropItem(event, data)
+  }
+
+  _itemExists(item) {
+    return this.actor.findItem(item);
+  }
 }
+

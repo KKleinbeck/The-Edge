@@ -1,6 +1,8 @@
 import LocalisationServer from "../system/localisation_server.js";
 import Aux from "../system/auxilliaries.js";
 
+const { renderTemplate } = foundry.applications.handlebars;
+
 export default class DialogProficiency extends Dialog{
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -9,7 +11,7 @@ export default class DialogProficiency extends Dialog{
   }
 
   static async start(checkData) {
-    const template = "systems/the_edge/templates/dialogs/proficinecy.html";
+    const template = "systems/the_edge/templates/dialogs/proficienecy.html";
     let html = await renderTemplate(template, {});
     const buttons = {
       roll: {

@@ -6,7 +6,7 @@ import LocalisationServer from "../system/localisation_server.js";
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class TheEdgeItemSheet extends ItemSheet {
+export class TheEdgeItemSheet extends foundry.appv1.sheets.ItemSheet {
 
   /** @inheritdoc */
   static get defaultOptions() {
@@ -20,21 +20,21 @@ export class TheEdgeItemSheet extends ItemSheet {
   }
   
   static setupSheets() {
-    Items.unregisterSheet("core", ItemSheet);
-    Items.registerSheet("the_edge", TheEdgeItemSheet, { makeDefault: true });
-    Items.registerSheet("the_edge", ItemSheetWeapon, { makeDefault: true, types: ["Weapon"] });
-    Items.registerSheet("the_edge", ItemSheetArmour, { makeDefault: true, types: ["Armour"] });
-    Items.registerSheet("the_edge", ItemSheetAmmunition, { makeDefault: true, types: ["Ammunition"] });
-    Items.registerSheet("the_edge", ItemSheetVantage, { makeDefault: true, types: ["Advantage", "Disadvantage"] });
-    Items.registerSheet("the_edge", ItemSheetSkill, { makeDefault: true, types: ["Skill", "Combatskill", "Medicalskill"] });
-    Items.registerSheet("the_edge", ItemSheetLanguage, { makeDefault: true, types: ["Languageskill"] });
-    Items.registerSheet("the_edge", ItemSheetGear, { makeDefault: true, types: ["Gear"] });
-    Items.registerSheet("the_edge", ItemSheetConsumables, { makeDefault: true, types: ["Consumables"] });
-    Items.registerSheet("the_edge", ItemSheetCredits, { makeDefault: true, types: ["Credits"] });
-    Items.registerSheet("the_edge", ItemSheetWounds, { makeDefault: true, types: ["Wounds"] });
-    Items.registerSheet("the_edge", ItemSheetEffect, { makeDefault: true, types: ["Effect"] });
+    foundry.documents.collections.Items.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
+    foundry.documents.collections.Items.registerSheet("the_edge", TheEdgeItemSheet, { makeDefault: true });
+    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetWeapon, { makeDefault: true, types: ["Weapon"] });
+    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetArmour, { makeDefault: true, types: ["Armour"] });
+    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetAmmunition, { makeDefault: true, types: ["Ammunition"] });
+    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetVantage, { makeDefault: true, types: ["Advantage", "Disadvantage"] });
+    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetSkill, { makeDefault: true, types: ["Skill", "Combatskill", "Medicalskill"] });
+    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetLanguage, { makeDefault: true, types: ["Languageskill"] });
+    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetGear, { makeDefault: true, types: ["Gear"] });
+    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetConsumables, { makeDefault: true, types: ["Consumables"] });
+    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetCredits, { makeDefault: true, types: ["Credits"] });
+    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetWounds, { makeDefault: true, types: ["Wounds"] });
+    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetEffect, { makeDefault: true, types: ["Effect"] });
 
-    Items.unregisterSheet("the_edge", TheEdgeItemSheet, {
+    foundry.documents.collections.Items.unregisterSheet("the_edge", TheEdgeItemSheet, {
       types: [
         "Weapon", "Armour", "Ammunition", "Advantage", "Disadvantage", "Skill", "Combatskill",
         "Medicalskill", "Languageskill", "Gear", "Consumables", "Credits", "Wounds", "Effect"

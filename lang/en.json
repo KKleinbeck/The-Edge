@@ -69,6 +69,7 @@
   },
   "COMBAT": {
     "COMBAT": "Combat",
+    "COMBAT LOG": "Combat Log",
 
     "BLASTER PISTOLS": "Blaster Pistols",
     "PULSE RIFLE": "Pulse Rifle",
@@ -176,8 +177,6 @@
 
     "STRUCTURE POINTS": "Structure Points",
     
-    "COMBAT SKILLS": "Combat skills",
-
     "COMBAT ACTIONS": "Combat actions",
     "FIRST ACTION": "First action",
     "SECOND ACTION": "Second action",
@@ -204,7 +203,6 @@
 
     "LEAD ATTR COMBATICS": "Lead attr: Str & Crd",
 
-    "MEDICAL SKILLS": "Medical skills",
     "ABRASION": "Abrasion",
     "LACERATION": "Laceration",
     "FRACTURE": "Fracture",
@@ -327,6 +325,8 @@
     "SKILL": "General Skill",
     "COMBATSKILL": "Combat Skill",
     "MEDICALSKILL": "Medical Skill",
+    "ADVANTAGE": "Advantage",
+    "DISADVANTAGE": "Disadvantage",
 
     "ACTIVATE": "Activate",
     "DEACTIVATE": "Deactivate"
@@ -445,6 +445,14 @@
     "INCREASE": "Increase skill level",
     "SKILL": "Skill"
   },
+  "TABS": {
+    "attributes": "Attributes",
+    "biography": "Biography",
+    "combat": "Combat",
+    "health": "Health",
+    "items": "Items",
+    "proficiencies": "Proficiencies"
+  },
   "TEXT": {
     "EFFECTS": "Add a status modifiery to your attributes, proficiencies, weapon proficiencies and other character attributes.\nFor this write 'Attributes.NAME', 'Proficiencies.NAME', 'Weapons.NAME'. This is generally case-insensitive, except for specific proficiency and weapon names. You can also use group names, for example 'attributes.physical' or 'weapons.Energy'. Furthermore there is an 'all' specifier to affect everything.\nOther modifiers: 'health', 'heartRate.[min,max]', 'bloodVolumn'.",
     "HARMLESS EXPLOSION": "The grenade explodes without damaging any creatures."
@@ -498,6 +506,7 @@
   "CHANGE DICE": "Change dice",
   "CHECK": "Check",
   "COAGULATION": "Coagulation",
+  "COMBAT SKILLS": "Combat skills",
   "CREDITS": "Credits",
   "CRITFAILURE": "Critical Failure",
   "CRITSUCCESS": "Critical Success",
@@ -569,6 +578,7 @@
   "MAKE STORAGE": "Make Storage",
   "MALE": "Male",
   "MAXIMUM": "maximum",
+  "MEDICAL SKILLS": "Medical skills",
   "MOD": "Mod",
   "MODIFICATORS": "Modificators",
   "MOVEMENT": "Movement",

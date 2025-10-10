@@ -8,26 +8,24 @@ export const preloadHandlebarsTemplates = async function() {
   // Define template paths to load
   const templatePaths = [
     // Actor templates
-    "systems/the_edge/templates/actors/character/biography.html",
-    "systems/the_edge/templates/actors/character/items.html",
-    //Attributes
-    "systems/the_edge/templates/actors/character/attributes/layout.html",
-    "systems/the_edge/templates/actors/character/attributes/main_attributes.html",
-    "systems/the_edge/templates/actors/character/attributes/languages.html",
-    "systems/the_edge/templates/actors/character/attributes/conditioning.html",
-    "systems/the_edge/templates/actors/character/attributes/skills.html",
-    "systems/the_edge/templates/actors/character/attributes/vantages.html",
-    "systems/the_edge/templates/actors/character/attributes/progress.html",
-    //Proficiencies
-    "systems/the_edge/templates/actors/character/proficiencies/layout.html",
-    //Combat
-    "systems/the_edge/templates/actors/character/combat/layout.html",
-    "systems/the_edge/templates/actors/character/combat/proficiencies.html",
-    "systems/the_edge/templates/actors/character/combat/combat_skills.html",
-    "systems/the_edge/templates/actors/character/combat/medical_skills.html",
-    "systems/the_edge/templates/actors/character/combat/weapon_overview.html",
-    //Health
-    "systems/the_edge/templates/actors/character/health/layout.html",
+    // Generics
+    "systems/the_edge/templates/actors/skills.hbs",
+    // Attributes
+    "systems/the_edge/templates/actors/character/attributes/layout.hbs",
+    "systems/the_edge/templates/actors/character/attributes/main_attributes.hbs",
+    "systems/the_edge/templates/actors/character/attributes/languages.hbs",
+    "systems/the_edge/templates/actors/character/attributes/conditioning.hbs",
+    "systems/the_edge/templates/actors/character/attributes/progress.hbs",
+    // Proficiencies
+    "systems/the_edge/templates/actors/character/proficiencies/layout.hbs",
+    // Combat
+    "systems/the_edge/templates/actors/character/combat/layout.hbs",
+    "systems/the_edge/templates/actors/character/combat/proficiencies.hbs",
+    "systems/the_edge/templates/actors/character/combat/weapon_overview.hbs",
+    // Others
+    "systems/the_edge/templates/actors/character/items.hbs",
+    "systems/the_edge/templates/actors/character/health.hbs",
+    "systems/the_edge/templates/actors/character/biography.hbs",
 
     // Store templates
     "systems/the_edge/templates/actors/store/buy-from-player.html",
@@ -51,8 +49,11 @@ export const preloadHandlebarsTemplates = async function() {
     "systems/the_edge/templates/chat/meta-apply-damage.html",
     "systems/the_edge/templates/chat/meta-protection-log.html",
     "systems/the_edge/templates/dialogs/meta-chat-options.html",
+
+    // Generic templates
+    "systems/the_edge/templates/generic/progress-bar.hbs",
   ];
 
   // Load the template parts
-  return loadTemplates(templatePaths);
+  return foundry.applications.handlebars.loadTemplates(templatePaths);
 };

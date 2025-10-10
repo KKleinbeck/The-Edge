@@ -1,5 +1,5 @@
 <div style="display: flex; gap: 5px;">
-  {{#each systemData.weapons as |group groupName|}}
+  {{#each system.weapons as |group groupName|}}
     <table>
       <thead>
         <tr>
@@ -16,7 +16,13 @@
         {{#each group as |modifiers weapon|}}
           <tr>
             <td style="font-weight: bold;">{{combatName weapon}}</td>
-            <td align="center"><input class="core-value" data-target="system.weapons.{{groupName}}.{{weapon}}.advances" type="number" value="{{getWeaponProficiency ../../actor groupName weapon 'advances'}}" data-dtype="Number" style="max-height: 22px; text-align: right; width: 28px;"></td>
+            <td align="center">
+              <input
+                class="core-value" data-target="system.weapons.{{groupName}}.{{weapon}}.advances" type="number"
+                value="{{getWeaponProficiency ../../actor groupName weapon 'advances'}}" data-dtype="Number"
+                style="max-height: 22px; text-align: right; width: 28px; padding: 0 2px 0 0;"
+              >
+            </td>
             <td align="center">
               <div class="output" style="max-height: 22px; width: 28px; text-align: right;">
                 {{getWeaponProficiency ../../actor groupName weapon 'status'}}
@@ -38,5 +44,5 @@
 </div>
 <div style="display: flex; justify-content: end; margin-left: auto; margin-right: 15px; gap: 5px; white-space: nowrap; align-items: center;">
   {{genName "PracticeHours"}}
-  <span class="output" style="width: 115px;">{{systemData.PracticeHours.used}} / {{systemData.PracticeHours.max}}</span>
+  <span class="output" style="width: 115px;">{{system.PracticeHours.used}} / {{system.PracticeHours.max}}</span>
 </div>
