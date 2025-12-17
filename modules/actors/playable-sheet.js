@@ -49,19 +49,15 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     },
     combat: {
       template: "systems/the_edge/templates/actors/character/combat/layout.hbs",
-      scrollable: [""]
     },
     items: {
       template: "systems/the_edge/templates/actors/character/items.hbs",
-      scrollable: [""]
     },
     health: {
       template: "systems/the_edge/templates/actors/character/health.hbs",
-      scrollable: [""]
     },
     biography: {
       template: "systems/the_edge/templates/actors/character/biography.hbs",
-      scrollable: [""]
     }
   }
 
@@ -96,6 +92,9 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     const creditsDigital = credits.find(c => !c.system?.isSchid)?.system?.value || 0;
     const weight =  this.actor._determineWeight();
     const wounds = this.actor.itemTypes["Wounds"];
+    
+    await this.actor.determineOverload();
+    console.log(this.actor.overloadLevel);
     context.helpers = {
       armourProtection: armourProtection,
       equippedWeapons: equippedWeapons,

@@ -107,15 +107,15 @@ h1, h2, h3, h4 {
   color: var(--font-main-color) !important;
 }
 .editor {
-  min-height: 2em;
-  max-height: none;
-  overflow: visible;
-  height: auto;
+  min-height: 2.5em;
+}
+.editor-content {
+  position: static;
+  overflow-y: auto;
+  max-height: 10em;
 }
 .ProseMirror {
-  height: auto !important;
-  position: relative !important;
-  overflow: visible;
+  max-height: none;
   white-space: pre-wrap;
 }
 .prosemirror menu button:hover, .prosemirror menu button.active {
@@ -420,6 +420,7 @@ textarea {
   padding: 2px 12px 2px 12px !important;
   height: 30px !important;
   line-height: 24px !important;
+  color: var(--font-main-color);
 }
 .the_edge .editor-wrap
 .the_edge .advance-fa {
@@ -522,7 +523,7 @@ textarea {
 
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: top;
 }
 .the_edge .loadout-container {
   columns: 2;
@@ -735,12 +736,14 @@ textarea {
   text-decoration: underline;
   text-shadow: none;
 }
-.the_edge .sheet-body {
-  overflow: hidden;
+.system-the_edge .tabs .item.active {
+  text-decoration: underline;
+  text-shadow: none;
 }
-.the_edge .sheet-body .tab {
+.system-the_edge .sheet .tab {
   height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 .the_edge .item-list {
   list-style: none;

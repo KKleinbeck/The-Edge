@@ -81,19 +81,17 @@
   <div class="title">
     <div class="section-title">{{genName "Biography"}}</div>
   </div>
-  {{!-- TODO: Get the editors to work --}}
   <div style="padding-left: 10px;">
     {{#if editable}}
       <prose-mirror
         name="system.biography" button="true" editable="{{editable}}"
         toggled="false" value="{{system.biography}}" active="true"
       >
-        {{{biographyHTML}}}
+        {{{system.biography}}}
       </prose-mirror>
     {{else}}
-      {{{biographyHTML}}}
+      {{{system.biography}}}
     {{/if}}
-    {{!-- {{editor biographyHTML target="system.biography" button=true editable=editable engine="prosemirror"}} --}}
   </div>
   <div class="title">
     <div class="section-title">{{genName "Notes"}}</div>
@@ -104,11 +102,10 @@
         name="system.notes" button="true" editable="{{editable}}"
         toggled="false" value="{{system.notes}}"
       >
-        {{{notesHTML}}}
+        {{{system.notes}}}
       </prose-mirror>
     {{else}}
-      {{{notesHTML}}}
+      {{{system.notes}}}
     {{/if}}
-    {{!-- {{editor notesHTML target="system.notes" button=true editable=editable engine="prosemirror"}} --}}
   </div>
 </section>

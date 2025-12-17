@@ -1,6 +1,6 @@
 <div class="tab" data-group="primary" data-tab="description">
   {{#if editable}} 
-    <prose-mirror name="system.description" data-document-u-u-i-d="{{item.uuid}}" value="{{systemData.description}}" collaborate="true" toggled="true">
+    <prose-mirror name="system.description" data-document-u-u-i-d="{{item.uuid}}" value="{{systemData.description}}" collaborate="true" toggled="false">
       {{{descriptionHTML}}}
     </prose-mirror>
   {{else}} {{{descriptionHTML}}}
@@ -8,7 +8,7 @@
   {{#if systemData.userIsGM}}
     <h4>{{genName "GM Notes"}}</h4>
     {{#if editable}} 
-      <prose-mirror name="system.gm_description" data-document-u-u-i-d="{{item.uuid}}" value="{{systemData.gm_description}}" collaborate="true" toggled="true">
+      <prose-mirror name="system.gm_description" data-document-u-u-i-d="{{item.uuid}}" value="{{systemData.gm_description}}" collaborate="true" toggled="false">
         {{{gmDescriptionHTML}}}
       </prose-mirror>
     {{else}} {{{gmDescriptionHTML}}}
