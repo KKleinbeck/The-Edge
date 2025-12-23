@@ -111,7 +111,7 @@ Hooks.once("init", async function() {
   TheEdgeItemSheet.setupSheets()
 
   // UI setup
-  // CONFIG.ui.hotbar = TheEdgeHotbar;
+  CONFIG.ui.hotbar = TheEdgeHotbar;
 
   // Register system settings
   game.settings.register("the_edge", "macroShorthand", {
@@ -199,6 +199,10 @@ Hooks.on("ready", function() {
       rightClickStart = null;
     }
   });
+
+  // Redraw the hotbar to a sensible actor
+  ui.hotbar._onResize(); // Initialize size
+  ui.hotbar.render(true);
 });
 
 /**

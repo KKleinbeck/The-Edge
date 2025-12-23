@@ -1,34 +1,117 @@
-<div class="the_edge" style="width: 100%; padding: 0 13% 0 13%;">
-  <div class="hotbar-frame" style="width: 100%; aspect-ratio: 1729 / 235;">
-    <div style="display: flex; height: 100%; padding: 2.5% 3% 2.5% 3%;">
-      <div style="width: 8%;"> {{!-- Name and attr dice section --}}
-        {{#if (checkEqual 1 (length actors 1))}}
-          {{actors.[0]}}
-        {{else}}
-          <select style="height: 24px; width: 100%;">
-            {{#each actors as |actor id|}}
-              <option value="{{id}}" {{#if (checkEqual id ../selectedActorId)}}selected{{/if}}>{{actor}}</option>
-            {{/each}}
-          </select>
-        {{/if}}
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 5px; width: 100%; height: 65%">
-          {{#each attributes as |attr|}}
-            <div class="d20-{{attr}}" style="background-size: contain; background-repeat: no-repeat; background-position: center; margin-left: auto; margin-right: auto; width: 100%; height: 100%">
+<aside>
+  <div class="hotbar-frame"></div>
+  <div class="hotbar-content" data-action="click">
+    <div style="flex: 1; min-width: 100px;"> {{!-- Name and attr dice section --}}
+      <div style="display: flex; justify-content: space-between; align-items: bottom;">
+        <div font-size="12" font-weight="bold">{{selectedActorName}}</div>
+        <a class="ui-control fa-solid fa-rotate-right icon" data-action="reloadActor"
+          data-tooltip aria-label="{{localize 'HOTBAR.RELOAD'}}" style="width: 22px; height: 22px;"></a>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(9, 1fr); margin-top: 5px; width: 95%;">
+        {{#each attributes as |attr|}}
+          <button type="button" class="hotbar-d20" data-action="rollAttr" data-attribute="{{attr}}"
+            style="height: fit-content; min-height: 10pt; background: none; border: none;"
+            data-tooltip aria-label="{{attrName attr}} {{genName 'Check'}}">
+            <img class="hotbar-d20-{{attr}}"/>
+          </button>
+          <div></div> {{!-- Empty div to fill every other space --}}
+        {{/each}}
+      </div>
+    </div>
+
+    <div class="hotbar-separator"></div>
+
+    <div style="flex: 1">
+      {{>
+        systems/the_edge/templates/generic/progress-bar-modern.hbs
+        name="Health" value=actor.system.health.value max=actor.system.health.max.value id="health"
+      }}
+      {{>
+        systems/the_edge/templates/generic/progress-bar-modern.hbs
+        name="Heart Rate" value=actor.system.heartRate.value max=actor.system.heartRate.max.value id="heartRate"
+      }}
+      {{#unless (checkEqual armourProtection 0)}}
+        {{>
+          systems/the_edge/templates/generic/progress-bar-modern.hbs
+          name="Armour" value=armourProtection max=armourProtection id="armour"
+        }}
+      {{/unless}}
+    </div>
+
+    <div class="hotbar-separator"></div>
+
+    {{!-- Lowered right section --}}
+    <div style="width: 63%; padding-top: 0.7%; display: flex", id="hotbar-lowered-right">
+      <div style="width: 23%">
+        <h5>{{genName "Weapons"}}</h5>
+        <div style="display: flex; height: 72%;">
+          {{#if weaponsScroll}}
+            <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between; margin-right: 5px;">
+              <button type="button" data-action="scrollWeaponsUp" style="border: none; background: none; color: white;">
+                &#9650;
+              </button>
+              <button type="button" data-action="scrollWeaponsDown" style="border: none; background: none; color: white;">
+                &#9660;
+              </button>
             </div>
-          {{/each}}
+          {{/if}}
+          <div>
+            {{#each equippedWeapons as |weapon|}}
+              <button type="button" style="display: flex; align-items: center; background: none; margin-bottom: 3px;"
+                data-action="rollAttack" data-weapon-id="{{weapon._id}}">
+                <img src="{{weapon.img}}" title="{{weapon.name}}" style="width: 24px; height: 24px;" />
+                <div style="color: white">{{weapon.name}}</div>
+              </button>
+            {{/each}}
+          </div>
         </div>
       </div>
-      <div style="padding-left: 10pt;">
-        <h3>{{genName "Counters"}}</h3>
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 5px; width: 100%; height: 65%">
+
+      <div class="hotbar-separator"></div>
+
+      <div style="width: 25%">
+        <button type="button" data-action="searchProficiency" style="border: none; background: none;">
+          <input name="proficiency" type="text" value="" placeholder="{{genName 'Search Proficiency'}}">
+        </button>
+        {{#if searchCandidate}}
+          <div style="display: flex; align-items: center; gap: 5px; margin-top: 5px;">
+            <div style="color: rgba(200, 200, 200, 1)">{{proficiencyName searchCandidate.name}}</div>
+            {{#each searchCandidate.dices as |dice|}}
+              <button type="button" class="hotbar-proficiency-d20" data-action="rollSearchProficiency" data-proficiency="{{../searchCandidate.name}}"
+                style="height: fit-content; min-height: 10pt; background: none; border: none;"
+                data-tooltip aria-label="{{proficiencyName ../searchCandidate.name}} {{genName 'Check'}} - {{attrName dice}}">
+                <img class="hotbar-d20-{{dice}}"/>
+              </button>
+            {{/each}}
+          </div>
+        {{/if}}
+        {{#each proficiencySearchHistory as |prof|}}
+          <div style="display: flex; align-items: center; gap: 5px; margin-top: 5px;">
+            <div style="color: white">{{proficiencyName prof.name}}</div>
+            {{#each prof.dices as |dice|}}
+              <button type="button" class="hotbar-proficiency-d20" data-action="rollProficiency" data-proficiency="{{prof.name}}"
+                style="height: fit-content; min-height: 10pt; background: none; border: none;"
+                data-tooltip aria-label="{{proficiencyName prof.name}} {{genName 'Check'}} - {{attrName dice}}">
+                <img class="hotbar-d20-{{dice}}"/>
+              </button>
+            {{/each}}
+          </div>
+        {{/each}}
+      </div>
+
+      <div class="hotbar-separator"></div>
+
+      <div style="width: 48%">
+        <h5>{{genName "Counters"}}</h5>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 5px; margin-top: 5px; width: 100%; height: 65%">
           {{#each counters as |counter|}}
-            <div style="display: flex; align-items: center; gap: 5px;">
-              <div style="color: white">{{counter.name}}</div>
-              <div>{{counter.value}} / {{counter.max}}</div>
-            </div>
+            {{>
+              systems/the_edge/templates/generic/progress-bar-modern.hbs
+              value=counter.value max=counter.max id="counter"
+            }}
           {{/each}}
         </div>
       </div>
     </div>
   </div>
-</div>
+</aside>

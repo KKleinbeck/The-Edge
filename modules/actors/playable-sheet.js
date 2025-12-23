@@ -92,9 +92,8 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     const creditsDigital = credits.find(c => !c.system?.isSchid)?.system?.value || 0;
     const weight =  this.actor._determineWeight();
     const wounds = this.actor.itemTypes["Wounds"];
-    
+
     await this.actor.determineOverload();
-    console.log(this.actor.overloadLevel);
     context.helpers = {
       armourProtection: armourProtection,
       equippedWeapons: equippedWeapons,
@@ -162,14 +161,14 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   static rollAttribute(_event, target) {
     DialogAttribute.start({
       actor: this.actor, actorId: this.actor.id, attribute: target.dataset.attribute,
-      tokenId: this.token?.id, sceneID: game.user.viewedScene // TODO: Scene IDs needed?
+      tokenId: this.token?.id, sceneId: game.user.viewedScene // TODO: Scene IDs needed?
     })
   }
 
   static rollProficiency(_event, target) {
     DialogProficiency.start({
       actor: this.actor, actorId: this.actor.id, proficiency: target.dataset.proficiency,
-      tokenId: this.token?.id, sceneID: game.user.viewedScene // TODO: Scene IDs needed?
+      tokenId: this.token?.id, sceneId: game.user.viewedScene // TODO: Scene IDs needed?
     })
   }
   
@@ -177,17 +176,17 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     const targetIds = Array.from(game.user.targets.map(x => x.id));  //targets is set
     const sceneId = game.user.viewedScene; // TODO: Needed?
     const actor = this.actor;
-    const weaponID = target.closest(".weapon-id")?.dataset.weaponId;
+    const weaponID = target.closest(".weapon-id")?.dataset.weaponId ||
+      target.dataset.weaponId;
     const weapon = this.actor.items.get(weaponID);
-    var token = this.token;
-    if (token === null) { token = Aux.getToken(this.actor.id); }
+    const token = this.token || Aux.getToken(this.actor.id);
     if (token === null) {
         const msg = LocalisationServer.localise("No Token", "Notifications")
         ui.notifications.notify(msg)
       return undefined;
     }
 
-    if (target.dataset?.type === "Hand-to-Hand combat") {
+    if (weapon.system.type === "Hand-to-Hand combat") {
       if (targetIds.length > 1) {
         const msg = LocalisationServer.parsedLocalisation(
           "Too many targets", "Notifications", {weapon: "hand to hand", max: 1}
@@ -226,7 +225,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       damageType = "energy"
     } else damageType = "kinetic";
     
-    const threshold = actor._getWeaponPL(weaponID);
+    const threshold = actor._getWeaponPL(weapon._id);
     const effectItems = actor.items.filter(x => x.system.effects !== undefined)
     const effectModifier = [];
     for (const effectItem of effectItems) {
@@ -241,7 +240,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     DialogWeapon.start({
       name: weapon.name, actor: actor, actorId: actor.id, token: token,
       tokenId: token?.id, sceneId: sceneId,
-      ammunition: this.actor.items.get(weapon.system.ammunitionID),
+      ammunition: actor.items.get(weapon.system.ammunitionID),
       threshold: threshold, effectModifier: effectModifier,
       damageType: damageType,
       rangeChart: weapon.system.rangeChart,

@@ -52,6 +52,7 @@ export const preloadHandlebarsTemplates = async function() {
 
     // Generic templates
     "systems/the_edge/templates/generic/progress-bar.hbs",
+    "systems/the_edge/templates/generic/progress-bar-modern.hbs",
   ];
 
   // Load the template parts

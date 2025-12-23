@@ -251,6 +251,9 @@
     "PROFICIENCY": "{name} used a hero token to improve a proficiency check.",
     "WEAPON": "{name} used a hero token to improve a combat check."
   },
+  "HOTBAR": {
+    "RELOAD": "Choose selected actor"
+  },
   "ITEM": {
     "ADD": "Add entry",
     "EDIT": "Edit Item",
@@ -622,6 +625,8 @@
   "RIGHT": "Right",
   "ROLL": "Roll",
   "ROLL CHECK": "Roll check",
+  "SEARCH PROFICIENCY": "Search proficiency",
+  "SEARCH TERM": "Search term",
   "SELECT SKILL": "Select Skill...",
   "SELL": "Sell",
   "SEX": "Sex",

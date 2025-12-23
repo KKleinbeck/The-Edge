@@ -100,7 +100,7 @@ export default class ChatServer {
         html = await renderTemplate("systems/the_edge/templates/chat/reroll-check.html", details);
         break;
     }
-    const chatData = this._chatDataSetup(html, roll);
+    const chatData = this._chatDataSetup(html, roll, details);
     chatData.system = details;
     ChatMessage.create(chatData);
   }
@@ -114,12 +114,15 @@ export default class ChatServer {
     return msg;
   }
 
-  static _chatDataSetup(content, modeOverride, forceWhisper, forceWhisperIDs) {
+  static _chatDataSetup(content, modeOverride, details, forceWhisper, forceWhisperIDs) {
     let chatData = {
       user: game.user.id,
       rollMode: modeOverride || game.settings.get("core", "rollMode"),
       content: content,
-      speaker: ChatMessage.getSpeaker()
+      speaker: ChatMessage.getSpeaker({
+        actor: details?.actor,
+        token: canvas.scene.tokens.get(details?.tokenId)
+      })
     };
 
     if (["gmroll", "blindroll"].includes(chatData.rollMode)) chatData["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);

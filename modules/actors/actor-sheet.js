@@ -282,6 +282,10 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
     for (const counter of counterNames) {
       counter.addEventListener("change", (ev) => this._onCounterChange(ev, this.actor, "name"))
     }
+
+    if (ui.hotbar.token?.actor?.id == this.actor.id) {
+      ui.hotbar.render(true);
+    }
   }
 
   async _onCounterChange(event, actor, changeId) {

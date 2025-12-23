@@ -32,7 +32,9 @@ export default function() {
       if (preface == "less") return "< " + distance;
       return "> " + distance;
     },
+    size: (a) => { return a.size; },
     length: (a) => { return a.length; },
+    objectLength: (a) => { return Object.keys(a).length; },
     round: (a, b) => { return a.toFixed(b); },
     strCombine: (a, b) => { return a + " " + b; },
 
@@ -55,7 +57,7 @@ export default function() {
     log: (a) => console.log(a),
     add: (a, b) => { return +a + +b; },
     sub: (a, b) => { return a - b; },
-    div: (a, b) => { return a / b; },
+    div: (a, b) => { if (b == 0) return undefined; return a / b; },
     mul: (a, b) => { return a * b; },
     range: (n) => { return Array(n).fill(0).map((_, index)=> index); },
     capitalise: (a) => { return a.charAt(0).toUpperCase() + a.slice(1); },

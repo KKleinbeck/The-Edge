@@ -26,15 +26,14 @@
               segments=helpers.hrProgressBarData
             }}
           </div>
-          {{#if (checkEqual helpers.armourProtection 0)}}
-          {{else}}
+          {{#unless (checkEqual helpers.armourProtection 0)}}
             <div class="page-centered" style="flex: 0.5;">
               <div class="attribute-title">{{genName "Armour"}}</div>
               <div style="display: flex; justify-content: center; gap: 4px;">
                 <span class="output" style="width: 74px; max-height: 22px;">{{helpers.armourProtection}}</span>
               </div>
             </div>
-          {{/if}}
+          {{/unless}}
         </div>
       </div>
       <div style="margin-left: 15px;">
