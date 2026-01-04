@@ -227,14 +227,14 @@ export class TheEdgeBaseActor extends Actor {
     })
   }
 
-  _determineWeight() {
+  determineWeight() {
     return this.items.reduce(
       (a, b) => a + ((b.system?.quantity || 1) * b.system?.weight || 0), 0
     );
   }
   
   async determineOverload() {
-    const weight = this._determineWeight() - this.system.statusEffects.overloadThreshold.status;
+    const weight = this.determineWeight() - this.system.statusEffects.overloadThreshold.status;
     let str = this.system.attributes.str.value;
 
     // Correct for the current overload level

@@ -90,10 +90,10 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     const credits = this.actor.itemTypes["Credits"]
     const creditsOffline = credits.find(c => c.system?.isSchid)?.system?.value || 0;
     const creditsDigital = credits.find(c => !c.system?.isSchid)?.system?.value || 0;
-    const weight =  this.actor._determineWeight();
+    const weight = this.actor.determineWeight();
     const wounds = this.actor.itemTypes["Wounds"];
 
-    await this.actor.determineOverload();
+    await this.actor.updateStatus();
     context.helpers = {
       armourProtection: armourProtection,
       equippedWeapons: equippedWeapons,
