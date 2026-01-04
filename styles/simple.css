@@ -103,6 +103,19 @@ h1, h2, h3, h4 {
   filter: blur(1px);
   margin: 0 1% 0 1%;
 }
+.hotbar-button {
+  width: 100%;
+  justify-content: start;
+  padding-left: 3px;
+  padding-right: 3px;
+}
+.hotbar-button .button-text {
+  width: calc(80%);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: start;
+}
 .the_edge .hotbar-d20 {
   width: 130%;
 }

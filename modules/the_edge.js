@@ -27,6 +27,10 @@ Hooks.once("init", async function() {
     const sum = this.sum();
     return this.reduce((a,b) => a + b*b, -sum) / this.length;
   }
+  Number.prototype.mod = function (n) {
+    // Javascripts % returns remainder, not module (-1 % n == -1 != n - 1)
+    return ((this % n) + n) % n;
+  }
 
   // Generating maps for the fundamental data model
   THE_EDGE.attrs = Object.keys(game.model.Actor.character.attributes)
@@ -180,6 +184,11 @@ Hooks.on("ready", function() {
 
   canvas.app.view.addEventListener("mouseup", e => {
     if (e.button === 2 && rightClickStart) {
+      if(Date.now() - game.the_edge.tokenClickTime < maxClickDuration) {
+        rightClickStart = null;
+        return;
+      }
+
       const duration = Date.now() - rightClickStart;
       const dx = e.clientX - startPos.x;
       const dy = e.clientY - startPos.y;
@@ -204,6 +213,18 @@ Hooks.on("ready", function() {
   ui.hotbar._onResize(); // Initialize size
   ui.hotbar.render(true);
 });
+
+Hooks.on("renderTokenHUD", function(_tokenHUG) {
+  preventGrenadePick()
+})
+
+Hooks.on("closeBasePlaceableHUD", function(_tokenHUD) {
+  preventGrenadePick()
+})
+
+function preventGrenadePick() {
+  game.the_edge.tokenClickTime = Date.now();
+}
 
 /**
  * Macrobar hook.

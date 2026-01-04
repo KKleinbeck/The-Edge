@@ -47,20 +47,22 @@
         <div style="display: flex; height: 72%;">
           {{#if weaponsScroll}}
             <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between; margin-right: 5px;">
-              <button type="button" data-action="scrollWeaponsUp" style="border: none; background: none; color: white;">
+              <button type="button" data-action="scroll" data-type="weapons" data-dir="down"
+                style="border: none; background: none; color: white;">
                 &#9650;
               </button>
-              <button type="button" data-action="scrollWeaponsDown" style="border: none; background: none; color: white;">
+              <button type="button" data-action="scroll" data-type="weapons" data-dir="up"
+                style="border: none; background: none; color: white;">
                 &#9660;
               </button>
             </div>
           {{/if}}
-          <div>
+          <div style="width: 100%">
             {{#each equippedWeapons as |weapon|}}
-              <button type="button" style="display: flex; align-items: center; background: none; margin-bottom: 3px;"
-                data-action="rollAttack" data-weapon-id="{{weapon._id}}">
+              <button class="hotbar-button" type="button" style="margin-bottom: 3px;"
+                data-tooltip aria-label="{{weapon.name}}" data-action="rollAttack" data-weapon-id="{{weapon._id}}">
                 <img src="{{weapon.img}}" title="{{weapon.name}}" style="width: 24px; height: 24px;" />
-                <div style="color: white">{{weapon.name}}</div>
+                <div class="button-text">{{weapon.name}}</div>
               </button>
             {{/each}}
           </div>
@@ -102,7 +104,31 @@
       <div class="hotbar-separator"></div>
 
       <div style="width: 48%">
-        <h5>{{genName "Counters"}}</h5>
+        <h5>{{genName "Items"}}</h5>
+        <div style="display: flex; height: 82%;">
+          {{#if itemsScroll}}
+            <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between; margin-right: 5px;">
+              <button type="button" data-action="scroll" data-type="items" data-dir="down"
+                style="border: none; background: none; color: white;">
+                &#9650;
+              </button>
+              <button type="button" data-action="scroll" data-type="items" data-dir="up"
+                style="border: none; background: none; color: white;">
+                &#9660;
+              </button>
+            </div>
+          {{/if}}
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-gap: 5px; margin-top: 5px; width: 100%; height: 65%">
+            {{#each consumables as |consumable|}}
+              <button class="hotbar-button item" type="button" data-tooltip aria-label="{{consumable.tooltip}}"
+                data-action="useItem" data-item-id="{{consumable._id}}" data-subaction="consume">
+                <img src="{{consumable.img}}" title="{{consumable.name}}" width="24" height="24" />
+                <div class="button-text">{{consumable.displayName}}</div>
+              </button>
+            {{/each}}
+          </div>
+        </div>
+        {{!-- <h5>{{genName "Counters"}}</h5>
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 5px; margin-top: 5px; width: 100%; height: 65%">
           {{#each counters as |counter|}}
             {{>
@@ -110,7 +136,7 @@
               value=counter.value max=counter.max id="counter"
             }}
           {{/each}}
-        </div>
+        </div> --}}
       </div>
     </div>
   </div>

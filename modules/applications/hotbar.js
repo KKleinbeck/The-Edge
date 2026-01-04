@@ -1,4 +1,6 @@
 import THE_EDGE from "../system/config-the-edge.js"
+import LocalisationServer from "../system/localisation_server.js";
+import { TheEdgeActorSheet } from "../actors/actor-sheet.js";
 import { TheEdgePlayableSheet } from "../actors/playable-sheet.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api
@@ -6,8 +8,9 @@ const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api
 export default class TheEdgeHotbar extends HandlebarsApplicationMixin(ApplicationV2) {
   constructor (options) {
     super(options);
-    this.nWeaponsShown = 1;
+    this.nItemsShown = 1;
     this.weaponSelectedIndex = 0;
+    this.itemSelectedIndex = 0;
     this.token = undefined;
 
     this.proficiencies = {};
@@ -43,9 +46,9 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
       rollAttr: TheEdgeHotbar._onRollAttr,
       rollProficiency: TheEdgeHotbar._onRollProficiency,
       rollSearchProficiency: TheEdgeHotbar._onRollSearchProficiency,
-      scrollWeaponsDown: TheEdgeHotbar._onScrollWeaponsDown,
-      scrollWeaponsUp: TheEdgeHotbar._onScrollWeaponsUp,
+      scroll: TheEdgeHotbar._onScroll,
       searchProficiency: TheEdgeHotbar._onSearchProficiency,
+      useItem: TheEdgeHotbar._onUseItem,
     }
   };
 
@@ -81,16 +84,49 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
 
     context.equippedWeapons = actor?.itemTypes["Weapon"]?.filter(
       w => w.system.equipped) ?? [];
-    context.weaponsScroll = context.equippedWeapons.length > this.nWeaponsShown;
+    context.weaponsScroll = context.equippedWeapons.length > this.nItemsShown;
     if (context.weaponsScroll) {
       const actualList = [];
-      for (let i = 0; i < this.nWeaponsShown; i++) {
+      for (let i = 0; i < this.nItemsShown; i++) {
         actualList.push(context.equippedWeapons[
-          (i + this.weaponSelectedIndex) % context.equippedWeapons.length
+          (i + this.weaponSelectedIndex).mod(context.equippedWeapons.length)
         ]);
       }
       context.equippedWeapons = actualList;
     }
+
+    context.consumables = [];
+    for (const item of actor?.itemTypes["Consumables"] ?? []) {
+      if (item.system.subtype == "medicine") {
+        item.tooltip = item.name + " \u2014 " +
+          LocalisationServer.localise("heals") + ": " +
+          item.system.subtypes.medicine.healing + " \u2013 "+
+          LocalisationServer.localise("coagulates") + ": " +
+          item.system.subtypes.medicine.coagulation;
+        item.displayName = item.system.quantity + "x " + item.name;
+        context.consumables.push(item);
+      } else if (item.system.subtype = "drugs") {
+        item.tooltip = item.name;
+        for (const effect of item.system.effects) {
+          item.tooltip += " \u2014 ";
+          item.tooltip += LocalisationServer.effectLocalisation(effect.name, effect.group);
+          item.tooltip += (effect.value > 0) ? " +" + effect.value : " " + effect.value;
+        }
+        item.displayName = item.system.quantity + "x " + item.name;
+        context.consumables.push(item);
+      }
+    }
+    context.itemsScroll = context.consumables.length > this.nItemsShown * 2;
+    if (context.itemsScroll) {
+      const actualList = [];
+      for (let i = 0; i < this.nItemsShown * 2; i++) {
+        actualList.push(context.consumables[
+          (i + this.itemSelectedIndex).mod(context.consumables.length)
+        ]);
+      }
+      context.consumables = actualList;
+    }
+
     context.proficiencySearchHistory = this.proficiencySearchHistory;
     context.searchCandidate = this.searchCandidate;
     return context;
@@ -178,8 +214,13 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
 
   _onResize() {
     const hotbar = window.document.getElementById("hotbar-lowered-right");
-    this.nWeaponsShown = Math.floor((hotbar.clientHeight - 40) / 31);
+    this.nItemsShown = Math.floor((hotbar.clientHeight - 40) / 31);
     this.render(true);
+  }
+
+  static async _onReloadActor(_event, _target) {
+    this.render(true);
+    this.weaponSelectedIndex = 0;
   }
 
   static async _onRollAttack(event, target) {
@@ -199,24 +240,28 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
     TheEdgePlayableSheet.rollProficiency.call(this.token.sheet, event, target);
   }
 
-  static async _onScrollWeaponsDown(_event, _target) {
-    this.weaponSelectedIndex += 1;
+  static async _onScroll(_event, target) {
+    const change = target.dataset.dir == "up" ? 1 : -1;
+    switch (target.dataset.type) {
+      case "weapons":
+        this.weaponSelectedIndex += change;
+        break;
+      
+      case "items":
+        this.itemSelectedIndex += 2*change;
+        break;
+    }
     this.render(true);
-  }
-
-  static async _onScrollWeaponsUp(_event, _target) {
-    this.weaponSelectedIndex -= 1;
-    this.render(true);
-  }
-
-  static async _onReloadActor(_event, _target) {
-    this.render(true);
-    this.weaponSelectedIndex = 0;
   }
 
   static async _onSearchProficiency(_event, target) {
     var input = target.querySelector("input[name='proficiency']");
     // Manually bring input into focus
     input.focus();
+  }
+
+  static async _onUseItem(event, target) {
+    TheEdgeActorSheet._onItemControl.call(this.token.sheet, event, target);
+    this.render(true);
   }
 }

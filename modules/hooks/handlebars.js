@@ -16,16 +16,7 @@ export default function() {
     proficiencyName: (a) => LocalisationServer.localise(a, "proficiency"),
     textLocalisation: (a) => LocalisationServer.localise(a, "text"),
     detailedLocalisation: (a, b, c) => LocalisationServer.parsedLocalisation(b, a, c),
-    effectRequirementName: (a, b) => {
-      if (a == "all") return LocalisationServer.localise(a);
-      if (b == "skills") return a;
-      switch (b) {
-        case "attributes": return LocalisationServer.localise(a, "attr");
-        case "proficiencies": return LocalisationServer.localise(a, "proficiency");
-        case "weapons": return LocalisationServer.localise(a, "combat");
-      }
-      return LocalisationServer.localise(a);
-    },
+    effectRequirementName: (a, b) => LocalisationServer.effectLocalisation(a, b),
     genRange: (a) => {
       let preface = a.split("_")[0];
       let distance = a.split("_")[1];
