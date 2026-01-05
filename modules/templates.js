@@ -51,6 +51,7 @@ export const preloadHandlebarsTemplates = async function() {
     "systems/the_edge/templates/dialogs/meta-chat-options.html",
 
     // Generic templates
+    "systems/the_edge/templates/generic/counter-token.hbs",
     "systems/the_edge/templates/generic/progress-bar.hbs",
     "systems/the_edge/templates/generic/progress-bar-modern.hbs",
   ];

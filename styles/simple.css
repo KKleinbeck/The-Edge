@@ -151,6 +151,7 @@ h1, h2, h3, h4 {
 }
 .progress-wrapper {
   height: 33%;
+  width: 100%;
 }
 /* Animate progress fill (example value) */
 .progress-fill-animation {
@@ -177,9 +178,13 @@ h1, h2, h3, h4 {
   border-radius: 2px !important;
   line-height: 10px !important;
   max-height: 10px;
-  width: 20pt;
-  padding: 0 2pt 0 0 !important;
-              /* style="width: 38px; height: 12px; font-size: 8pt; text-align: right;"/> */
+  width: 20px;
+  padding: 0 1px 0 1px !important;
+}
+.svg-progress-name {
+  text-align:left;
+  width: 65%;
+  max-height: 11px;
 }
 .svg-div-text {
   font-size: 8px;
@@ -499,17 +504,13 @@ textarea {
   row-gap: 4px;
   justify-content: center;
 }
-.the_edge .counter-list .counter-box {
-  margin: 0 3px 5px 3px;
-  width: 15px;
-  height: 24px;
-  cursor: pointer; 
-  border: 1.333px solid #bd9f09;
-  border-radius: 5px;
-  /* box-shadow: 0 0 1px 1px #bd9f09; */
-}
 .the_edge .counter-list .full {
   background: #bd9f09;
+}
+.the_edge .counter-name {
+  font-size: 13px;
+  max-height: 18px;
+  padding: 0 2px 0 2px !important;
 }
 /* old code  */
 .the_edge .window-content {

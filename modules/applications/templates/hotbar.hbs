@@ -24,16 +24,16 @@
     <div style="flex: 1">
       {{>
         systems/the_edge/templates/generic/progress-bar-modern.hbs
-        name="Health" value=actor.system.health.value max=actor.system.health.max.value id="health"
+        name="Health" value=actor.system.health.value max=actor.system.health.max.value fillId="health"
       }}
       {{>
         systems/the_edge/templates/generic/progress-bar-modern.hbs
-        name="Heart Rate" value=actor.system.heartRate.value max=actor.system.heartRate.max.value id="heartRate"
+        name="Heart Rate" value=actor.system.heartRate.value max=actor.system.heartRate.max.value fillId="heartRate"
       }}
       {{#unless (checkEqual armourProtection 0)}}
         {{>
           systems/the_edge/templates/generic/progress-bar-modern.hbs
-          name="Armour" value=armourProtection max=armourProtection id="armour"
+          name="Armour" value=armourProtection max=armourProtection fillId="armour"
         }}
       {{/unless}}
     </div>
@@ -133,7 +133,7 @@
           {{#each counters as |counter|}}
             {{>
               systems/the_edge/templates/generic/progress-bar-modern.hbs
-              value=counter.value max=counter.max id="counter"
+              value=counter.value max=counter.max fillId="counter"
             }}
           {{/each}}
         </div> --}}

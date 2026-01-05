@@ -1,0 +1,30 @@
+<div style="width: 12px; cursor: pointer;" data-action="counterControl" data-subaction="use" data-level="{{level}}">
+  <svg viewBox="-2 -2 21 47"
+    style="overflow: visible"
+    xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <path id="token-outline"
+        d="M3 0 H11 L14 3 V11 L19 16 V29 L14 34 V42 L11 45 H3 L0 42 V34 L5 29 V16 L0 11 V3 Z" />
+
+      <linearGradient id="token-glass" x1="0" y1="0" x2="0.1" y2="1">
+        <stop offset="0%" stop-color="rgba(255,255,255,0.85)" />
+        <stop offset="50%" stop-color="rgba(255,255,255,0.58)" />
+        <stop offset="100%" stop-color="rgba(255,255,255,0.15)" />
+      </linearGradient>
+    </defs>
+
+    {{!-- Outline --}}
+    <use href="#token-outline"
+      stroke="var(--theme-color-secondary)"
+      stroke-width="2"
+      stroke-linejoin="bevel"
+      fill={{#if full}}"var(--theme-color-secondary)"{{else}}"none"{{/if}} />
+
+    {{#if full}}
+      {{!-- Glassy Overlay --}}
+      <use href="#token-outline"
+        fill="url(#token-glass)"
+        opacity="1.0" />
+    {{/if}}
+  </svg>
+</div>

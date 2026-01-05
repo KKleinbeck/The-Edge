@@ -274,36 +274,48 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
     const progressInputs = this.element.querySelectorAll(".progress-input");
     for (const input of progressInputs) {
       if (input.dataset.id == "counter") {
-        input.addEventListener("change", (ev) => this._onCounterChange(ev, this.actor, "value"))
+        input.addEventListener("change", (ev) => this._onCounterChange(ev, "value"))
       }
     }
 
     const counterNames = this.element.querySelectorAll(".counter-name");
     for (const counter of counterNames) {
-      counter.addEventListener("change", (ev) => this._onCounterChange(ev, this.actor, "name"))
+      counter.addEventListener("change", (ev) => this._onCounterChange(ev, "name"))
     }
 
     if (ui.hotbar.token?.actor?.id == this.actor.id) {
       ui.hotbar.render(true);
     }
+    
+    const progressBarInputs = this.element.querySelectorAll(".svg-progress-input");
+    for (const input of progressBarInputs) {
+      input.addEventListener("change", (ev) => {
+        this._onCounterChange(ev, ev.target.dataset.subtype)
+      })
+    }
   }
 
-  async _onCounterChange(event, actor, changeId) {
+  async _onCounterChange(event, changeId) {
     const target = event.target;
     const counterElement = target.closest(".counter");
     const index = +counterElement?.dataset.index;
 
-    const counters = actor.system.counters || [];
+    const counters = this.actor.system.counters || [];
     switch (changeId) {
       case "value":
-        counters[index].value = Math.min(target.value, +target.dataset.max);
+        counters[index].value = Math.min(+target.value, +target.dataset.max);
+        break;
+      
+      case "max":
+        counters[index].max = +target.value;
+        counters[index].value = Math.min(counters[index].value, +target.value);
         break;
       
       case "name":
         counters[index].name = target.value;
         break;
     }
-    actor.update({"system.counters": counters});
+    this.actor.update({"system.counters": counters});
   }
 
   // Item dropping

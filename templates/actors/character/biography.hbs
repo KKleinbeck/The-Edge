@@ -55,26 +55,52 @@
   <div class="counter-list" style="padding: 0px 5px 0px 5px; overflow-y: hidden;">
     {{#each system.counters as |counter|}}
       <div class="counter" data-index="{{@index}}">
-        <div class="counter-title">
+        {{!-- <div class="counter-title">
           <input class="counter-name" value="{{counter.name}}" style="width: 70%;"/>
-          <div>
+          <div style="display: flex; align-items: center; gap: 2px;">
             <a data-action="counterControl" data-subaction="decrease-counter"><i class="fas fa-minus"></i></a>
             <a data-action="counterControl" data-subaction="increase-counter"><i class="fas fa-plus"></i></a>
             <a title="{{ itemName 'Delete Counter' }}" data-action="counterControl" data-subaction="delete"><i class="fas fa-trash"></i></a>
           </div>
-        </div>
-        <div class="counter-box-list" style="max-width: 100%;">
-          {{#if (checkST counter.max 8)}}
+        </div> --}}
+        {{#if (checkST counter.max 11)}}
+          <div class="counter-box-list" style="max-width: 100%; justify-content: space-between">
+            <div style="display: flex; align-items: center;">
+              <a data-action="counterControl" data-subaction="decrease-counter"><i class="far fa-circle-minus"></i></a>
+            </div>
+            <div style="display: flex">
             {{#times counter.max}}
-              <div class="counter-box {{#if (checkST this counter.value)}}full{{/if}}" data-action="counterControl" data-subaction="use" data-level="{{this}}"></div>
+              {{#if (checkST this counter.value)}}
+                {{> systems/the_edge/templates/generic/counter-token.hbs full=true level=this}}
+              {{else}}
+                {{> systems/the_edge/templates/generic/counter-token.hbs level=this}}
+              {{/if}}
+              {{#if (checkEqual this 4)}}
+                {{#unless (checkST counter.max 6)}}
+                  <div style="width: 5px;"></div> {{!-- Small Gap --}}
+                {{/unless}}
+              {{/if}}
             {{/times}}
-          {{else}}
+            </div>
+            <div style="display: flex; align-items: center;">
+              <a data-action="counterControl" data-subaction="increase-counter"><i class="far fa-circle-plus"></i></a>
+            </div>
+          </div>
+          <div class="counter-title">
+            <a title="{{ itemName 'Delete Counter' }}" data-action="counterControl" data-subaction="delete">
+              <i class="fas fa-trash"></i>
+            </a>
+            <input class="counter-name" value="{{counter.name}}" style="width: 70%;"/>
+          </div>
+        {{else}}
+          <div class="counter-box-list" style="max-width: 100%; margin-top: 5px;">
             {{>
-              systems/the_edge/templates/generic/progress-bar.hbs
-              value=counter.value max=counter.max id="counter"
+              systems/the_edge/templates/generic/progress-bar-modern.hbs
+              editable=true name=counter.name
+              value=counter.value max=counter.max fillId="counter"
             }}
-          {{/if}}
-        </div>
+          </div>
+        {{/if}}
       </div>
     {{/each}}
   </div>
