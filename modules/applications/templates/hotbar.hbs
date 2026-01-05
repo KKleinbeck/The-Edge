@@ -3,7 +3,7 @@
   <div class="hotbar-content" data-action="click">
     <div style="flex: 1; min-width: 100px;"> {{!-- Name and attr dice section --}}
       <div style="display: flex; justify-content: space-between; align-items: bottom;">
-        <div font-size="12" font-weight="bold">{{selectedActorName}}</div>
+        <div class="hotbar-actor-name">{{selectedActorName}}</div>
         <a class="ui-control fa-solid fa-rotate-right icon" data-action="reloadActor"
           data-tooltip aria-label="{{localize 'HOTBAR.RELOAD'}}" style="width: 22px; height: 22px;"></a>
       </div>
@@ -17,7 +17,7 @@
           <div></div> {{!-- Empty div to fill every other space --}}
         {{/each}}
       </div>
-      <div style="display: flex; justify-content: center; height: 30%; margin-top: 7px; gap: 5px;">
+      <div style="display: flex; justify-content: center; height: 27%; margin-top: 7px; gap: 10px;">
         {{#times heroToken.max}}
           {{#if (checkST this ../heroToken.available)}}
             <a class="ui-control hotbar-token-img hero-token-white" data-action="heroTokenUsed"
