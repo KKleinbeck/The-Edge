@@ -19,7 +19,11 @@
           </div>
           <div class="item-header-fields" style="white-space: nowrap;">
             {{combatName "Structure points"}}<br/>
-            <input type="number" name="system.structurePoints" value="{{data.system.structurePoints}}" data-dtype="Number"/>
+            <div style="display: flex;">
+              <input type="number" name="system.structurePoints" value="{{data.system.structurePoints}}" data-dtype="Number"/>
+              /
+              <input type="number" name="system.structurePointsOriginal" value="{{data.system.structurePointsOriginal}}" data-dtype="Number"/>
+            </div>
           </div>
         </div>
       </div>

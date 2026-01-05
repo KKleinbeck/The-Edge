@@ -76,11 +76,13 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
 
     const equippedArmour = actor?.itemTypes["Armour"]?.filter(
       a => a.system.equipped && a.system.layer == "Inner") ?? [];
-    context.armourProtection = 0;
+    context.armourProtection = {"value": 0, "original": 0};
     for (const armour of equippedArmour) {
-      context.armourProtection += armour.system.structurePoints;
+      context.armourProtection.value += armour.system.structurePoints;
+      context.armourProtection.original += armour.system.structurePointsOriginal;
       for (const attachment of armour.system.attachments) {
-        context.armourProtection += attachment.shell.system.structurePoints;
+        context.armourProtection.value += attachment.shell.system.structurePoints;
+        context.armourProtection.original += attachment.shell.system.structurePointsOriginal;
       }
     }
 

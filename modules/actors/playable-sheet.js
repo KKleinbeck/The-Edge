@@ -76,11 +76,13 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
 
     const equippedArmour = this.actor.itemTypes["Armour"]?.filter(
       a => a.system.equipped && a.system.layer == "Inner");
-    let armourProtection = 0;
+    const armourProtection = {"value": 0, "original": 0};
     for (const armour of equippedArmour) {
-      armourProtection += armour.system.structurePoints;
+      armourProtection.value += armour.system.structurePoints;
+      armourProtection.original += armour.system.structurePointsOriginal;
       for (const attachment of armour.system.attachments) {
-        armourProtection += attachment.shell.system.structurePoints;
+        armourProtection.value += attachment.shell.system.structurePoints;
+        armourProtection.original += attachment.shell.system.structurePointsOriginal;
       }
     }
     const equippedWeapons = this.actor.itemTypes["Weapon"]?.filter(

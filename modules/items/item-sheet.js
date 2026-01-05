@@ -1,6 +1,5 @@
 import THE_EDGE from "../system/config-the-edge.js";
 import Aux from "../system/auxilliaries.js";
-import LocalisationServer from "../system/localisation_server.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications

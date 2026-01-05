@@ -231,6 +231,7 @@
     "bodyPart": "Torso",
     "layer": "Inner",
     "structurePoints": 10,
+    "structurePointsOriginal": 10,
     "attachmentPoints": {"max": 0, "used": 0},
     "attachments": [],
     "protection": {
