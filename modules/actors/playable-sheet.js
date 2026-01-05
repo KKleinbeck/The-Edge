@@ -143,29 +143,29 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   }
 
   // actions
-  static useHeroToken(_event, _target) { this.actor.useHeroToken(); }
+  static async useHeroToken(_event, _target) { await this.actor.useHeroToken(); }
 
-  static regenerateHeroToken(_event, _target) {
+  static async regenerateHeroToken(_event, _target) {
     if (game.user.isGM) {
-      this.actor.regenerateHeroToken();
+      await this.actor.regenerateHeroToken();
     } else {
       // TODO: notify
     }
   }
 
-  static advanceAttr(_event, target) {
+  static async advanceAttr(_event, target) {
     const dataset = target.dataset;
     this.actor._advanceAttr(dataset.name, dataset.type);
   }
 
-  static rollAttribute(_event, target) {
+  static async rollAttribute(_event, target) {
     DialogAttribute.start({
       actor: this.actor, actorId: this.actor.id, attribute: target.dataset.attribute,
       tokenId: this.token?.id, sceneId: game.user.viewedScene // TODO: Scene IDs needed?
     })
   }
 
-  static rollProficiency(_event, target) {
+  static async rollProficiency(_event, target) {
     DialogProficiency.start({
       actor: this.actor, actorId: this.actor.id, proficiency: target.dataset.proficiency,
       tokenId: this.token?.id, sceneId: game.user.viewedScene // TODO: Scene IDs needed?

@@ -41,6 +41,8 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
       positioned: false
     },
     actions: {
+      heroTokenUsed: TheEdgeHotbar._onHeroTokenUsed,
+      heroTokenRegen: TheEdgeHotbar._onHeroTokenRegen,
       reloadActor: TheEdgeHotbar._onReloadActor,
       rollAttack: TheEdgeHotbar._onRollAttack,
       rollAttr: TheEdgeHotbar._onRollAttr,
@@ -129,6 +131,7 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
 
     context.proficiencySearchHistory = this.proficiencySearchHistory;
     context.searchCandidate = this.searchCandidate;
+    context.heroToken = actor?.system.heroToken;
     return context;
   }
 
@@ -215,6 +218,16 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
   _onResize() {
     const hotbar = window.document.getElementById("hotbar-lowered-right");
     this.nItemsShown = Math.floor((hotbar.clientHeight - 40) / 31);
+    this.render(true);
+  }
+
+  static async _onHeroTokenUsed(event, target) {
+    await TheEdgePlayableSheet.useHeroToken.call(this.token.sheet, event, target);
+    this.render(true);
+  }
+
+  static async _onHeroTokenRegen(event, target) {
+    await TheEdgePlayableSheet.regenerateHeroToken.call(this.token.sheet, event, target);
     this.render(true);
   }
 

@@ -40,9 +40,9 @@
         <div class="page-centered">
           {{#each prepare.herotoken as |token|}}
             {{#if token}}
-              <a class="token-img hero-token" data-action="heroTokenUsed" data-tooltip="Hero Token"></a>
+              <a class="token-img hero-token" data-action="heroTokenUsed" data-tooltip aria-label="{{genName 'HeroToken'}}"></a>
             {{else}}
-              <a class="token-img hero-token-spent" data-action="heroTokenRegen"></a>
+              <a class="token-img hero-token-spent" data-action="heroTokenRegen" data-tooltip aria-label="{{genName 'HeroTokenSpent'}}"></a>
             {{/if}}
           {{/each}}
         </div>

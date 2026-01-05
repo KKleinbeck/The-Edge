@@ -96,20 +96,29 @@ h1, h2, h3, h4 {
   display: flex;
   padding: 2.1% 3% 2% 3%;
 }
-.hotbar-separator {
+.hotbar-content .hotbar-token-img {
+  border: none;
+  background-color: rgba(0,0,0,0);
+  background-position: center center;
+  width: 15%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: inline-block;
+}
+.hotbar-content .hotbar-separator {
   height: 90%;
   width: 0%;
   border-left: 2pt solid var(--theme-color-secondary);
   filter: blur(1px);
   margin: 0 1% 0 1%;
 }
-.hotbar-button {
+.hotbar-content .hotbar-button {
   width: 100%;
   justify-content: start;
   padding-left: 3px;
   padding-right: 3px;
 }
-.hotbar-button .button-text {
+.hotbar-content .hotbar-button .button-text {
   width: calc(80%);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -179,7 +188,7 @@ h1, h2, h3, h4 {
   line-height: 10px !important;
   max-height: 10px;
   width: 20px;
-  padding: 0 1px 0 1px !important;
+  padding: 0 1px 1px 1px !important;
 }
 .svg-progress-name {
   text-align:left;
@@ -415,6 +424,9 @@ textarea {
 }
 .hero-token-spent {
   background-image: url('../icons/hero_token_spent.png');
+}
+.hero-token-white {
+  background-image: url('../icons/hero_token_white.png');
 }
 /* d20 stuff */
 .the_edge .attr-d20-chat, .attr-d20, .weapon-d20 {

@@ -17,6 +17,17 @@
           <div></div> {{!-- Empty div to fill every other space --}}
         {{/each}}
       </div>
+      <div style="display: flex; justify-content: center; height: 30%; margin-top: 7px; gap: 5px;">
+        {{#times heroToken.max}}
+          {{#if (checkST this ../heroToken.available)}}
+            <a class="ui-control hotbar-token-img hero-token-white" data-action="heroTokenUsed"
+              data-tooltip aria-label="{{genName 'HeroToken'}}"></a>
+          {{else}}
+            <a class="ui-control hotbar-token-img hero-token-spent" data-action="heroTokenRegen"
+              data-tooltip aria-label="{{genName 'HeroTokenSpent'}}"></a>
+          {{/if}}
+        {{/times}}
+      </div>
     </div>
 
     <div class="hotbar-separator"></div>
