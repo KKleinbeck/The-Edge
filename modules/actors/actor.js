@@ -32,8 +32,7 @@ export class TheEdgeBaseActor extends Actor {
     
     sys.heartRate.max.value = sys.heartRate.max.baseline + sys.heartRate.max.status +
       sys.attributes.end.value - 2 * Math.floor((sys.age - 21) / 3) - sys.bloodLoss.value;
-    sys.heartRate.min.value = Math.max(20, sys.heartRate.min.baseline + sys.heartRate.min.status +
-      (sys.health.max.value - sys.health.value) - sys.attributes.end.value);
+    sys.heartRate.min.value = Math.max(20, sys.heartRate.min.baseline + sys.heartRate.min.status - sys.attributes.end.value);
 
     sys.wounds = {}
   }
@@ -902,7 +901,7 @@ export class TheEdgeBaseActor extends Actor {
     const bloodRegen = Math.min(this.system.bloodLoss.value, bloodRegenRoll.total - remainingBleeding);
     this.update({
       "system.health.value": Math.min(this.system.health.max.value, this.system.health.value + accHealing),
-      "system.heartRate.value": this.system.heartRate.min.value - accHealing,
+      "system.heartRate.value": this.system.heartRate.min.value,
       "system.bloodLoss.value": this.system.bloodLoss.value - bloodRegen
     });
     ChatServer.transmitEvent(
