@@ -204,8 +204,16 @@ h1, h2, h3, h4 {
 }
 .svg-div-text {
   font-size: 8px;
+  color: var(--font-main-color);
   line-height: 10px !important;
   white-space: nowrap;
+}
+.svg-segment-label {
+  display: flex;
+  justify-content: center;
+  background-color: rgba(0,0,0,0.05);
+  border: 1.333px solid rgb(119, 119, 249);
+  border-radius: 5px;
 }
 .journal-entry-content {
   background-image: url("../assets/background.png") !important;
@@ -323,69 +331,6 @@ textarea {
   /* Attributes */
 }
 /* new code */
-/* Progress bar template */
-.progress-container {
-  width: 90%;
-  margin-left: auto;
-  margin-right: auto;
-  font-family: sans-serif;
-  text-align: center; /* center children */
-}
-
-.progress-input {
-  font-size: 16px;
-  width: 120%;
-  color: white !important;
-  background: none !important;
-  border: none;
-  text-align: center;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.progress-input:focus {
-  border: none !important;
-  border-width: 0px !important;
-}
-
-.progress-bar {
-  position: relative;
-  height: 22px;
-  background: var(--color-background-light-night-black);
-  border-radius: 12px;
-  border-width: 2px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  background: linear-gradient(90deg, #4caf50, #2e7d32);
-  height: 100%;
-  width: 0%;
-  transition: width 0.3s ease;
-}
-
-.progress-segment {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: #666;
-}
-
-.progress-segment-labels {
-  position: relative;
-  height: 12px;
-}
-
-.progress-segment-label {
-  position: absolute;
-  transform: translateX(-50%); /* center over tick */
-  font-size: 12px;
-  white-space: nowrap;
-}
-
 /* sheet-header */
 .the_edge .sheet-header {
   flex: 0 0 185px;
@@ -809,12 +754,9 @@ textarea {
 .sheet-header .attribute-title {
   text-align: center;
   text-transform: capitalize;
-  font-size: 14px; /* Adjust font size as needed */
-  margin-top: 5px;
-  margin-left: 5px; /* Adds a small indent */
-  margin-right: 5px; /* Adds a small indent */
-  margin-bottom: 0; /* Space between title and the horizontal line */
-  font-weight: bold; /* Optional: Make the title bold */
+  font-size: 14px;
+  margin: 5px 5px 5px 0;
+  font-weight: bold;
 }
 .the_edge .resource {
   /* width: 20%; */

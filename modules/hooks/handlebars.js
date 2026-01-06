@@ -17,6 +17,7 @@ export default function() {
     textLocalisation: (a) => LocalisationServer.localise(a, "text"),
     detailedLocalisation: (a, b, c) => LocalisationServer.parsedLocalisation(b, a, c),
     effectRequirementName: (a, b) => LocalisationServer.effectLocalisation(a, b),
+
     genRange: (a) => {
       let preface = a.split("_")[0];
       let distance = a.split("_")[1];
@@ -42,6 +43,7 @@ export default function() {
     checkST: (a, b) => { return a < b; },
     checkSET: (a, b) => { return a <= b; },
     checkAttachment: (a) => { return a.system?.layer === "Outer"; },
+    defaultTo: (a, b) => { if(a) return a; return b; },
     getSys: (a, b, c, d) => { return a.system[b][c][d]; },
     getSys5: (a, b, c, d, e) => { return a.system[b][c][d][e]; },
     getEntry: (a, b) => { return a[b]; },

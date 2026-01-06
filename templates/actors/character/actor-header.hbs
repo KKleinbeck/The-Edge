@@ -8,33 +8,34 @@
         </h2>
         <div class="columned-page">
           <div class="page-centered">
-            <div class="attribute-title">{{genName "health"}}</div>
+            <div class="attribute-title" style="margin-bottom: 10px;">{{genName "health"}}</div>
             {{>
-              systems/the_edge/templates/generic/progress-bar.hbs
+              systems/the_edge/templates/generic/progress-bar-modern.hbs
               value=system.health.value
               max=system.health.max.value
-              name="system.health.value" id="health"
+              dataPath="system.health.value"
+              partiallyEditable=true editable=false fillId="health" textScale=1.2
             }}
           </div>
           <div class="page-centered">
-            <div class="attribute-title">{{genName "Heartrate"}}</div>
+            <div class="attribute-title" style="margin-bottom: 10px;">{{genName "Heartrate"}}</div>
             {{>
-              systems/the_edge/templates/generic/progress-bar.hbs
+              systems/the_edge/templates/generic/progress-bar-modern.hbs
               value=system.heartRate.value
               max=system.heartRate.max.value
-              name="system.heartRate.value" id="heartRate"
+              dataPath="system.heartRate.value"
               segments=helpers.hrProgressBarData
+              partiallyEditable=true editable=false fillId="heartRate" textScale=1.2
             }}
           </div>
           {{#unless (checkEqual helpers.armourProtection.value 0)}}
             <div class="page-centered">
-              <div class="attribute-title">{{genName "Armour"}}</div>
+              <div class="attribute-title" style="margin-bottom: 10px;">{{genName "Armour"}}</div>
               {{>
                 systems/the_edge/templates/generic/progress-bar-modern.hbs
                 value=helpers.armourProtection.value
                 max=helpers.armourProtection.original
-                editable=false
-                fillId="armour"
+                editable=false fillId="armour" textScale=1.2
               }}
             </div>
           {{/unless}}

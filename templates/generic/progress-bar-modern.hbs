@@ -51,7 +51,28 @@
         <rect x="-120" y="0" width="{{mul (div value max) 100}}" height="16"
           fill="url(#glowGradient)"
           class="glow" />
+    
+        {{!-- Segements --}}
+        {{#if (checkNotEmpty segments)}}
+          {{#each segments as |segment|}}
+            <line x1="{{mul (div segment.value ../max) 100}}" y1="0"
+              x2="{{mul (div segment.value ../max) 100}}" y2="20" stroke="#BBB" stroke-width="1.5" />
+          {{/each}}
+        {{/if}}
       </g>
+    {{/if}}
+
+    {{!-- Segements --}}
+    {{#if (checkNotEmpty segments)}}
+      {{#each segments as |segment|}}
+        <foreignObject x="calc({{mul (div segment.value ../max) 100}} - 6)" y="15" width="12" height="12" overflow="visible">
+          <div class="svg-segment-label" data-tooltip aria-label="{{segment.value}}">
+            <div class="svg-div-text">
+              {{segment.label}}
+            </div>
+          </div>
+        </foreignObject>
+      {{/each}}
     {{/if}}
     
     {{!-- Outline --}}
@@ -69,7 +90,7 @@
             data-action="counterControl" data-subaction="delete" style="line-height: 8px;">
             <i class="fas fa-trash" style="font-size: 8px;"></i>
           </a>
-          <input xmlns="http://www.w3.org/1999/xhtml" class="svg-progress-input svg-progress-name"
+          <input xmlns="http://www.w3.org/1999/xhtml" class="svg-progress-input svg-progress-name {{inputClass}}"
             type="text" value="{{name}}" data-subtype="name" />
         </div>
       </foreignObject>
@@ -78,19 +99,24 @@
     {{/if}}
 
     {{#if max}}
-      {{#if editable}}
-        <foreignObject x="0" y="-8" width="100" height="14" overflow="visible">
-          <div style="display: flex; justify-content: end; align-items: top;">
-            <input xmlns="http://www.w3.org/1999/xhtml" class="svg-progress-input"
-              type="number" value="{{value}}" data-subtype="value" data-max={{max}} />
-            <div class="svg-div-text"> / </div>
-            <input xmlns="http://www.w3.org/1999/xhtml" class="svg-progress-input"
-              type="number" value="{{max}}" data-subtype="max" />
+      <foreignObject x="0" y="-8" width="100" height="14" overflow="visible">
+        <div style="display: flex; justify-content: end; align-items: top;
+          transform: scale({{defaultTo textScale 1.0}}); transform-origin: bottom right;">
+            {{#if (or partiallyEditable editable)}}
+              <input xmlns="http://www.w3.org/1999/xhtml" class="svg-progress-input {{inputClass}}"
+                type="number" name="{{dataPath}}" value="{{value}}" data-subtype="value" data-max={{max}} />
+              {{#if editable}}
+                <div class="svg-div-text"> / </div>
+                <input xmlns="http://www.w3.org/1999/xhtml" class="svg-progress-input {{inputClass}}"
+                  type="number" value="{{max}}" data-subtype="max" />
+              {{else}}
+                <div class="svg-div-text">&nbsp;/ {{max}}</div>
+              {{/if}}
+            {{else}}
+              <div class="svg-div-text">{{value}} / {{max}}</div>
+            {{/if}}
           </div>
         </foreignObject>
-      {{else}}
-        <text x="100" y="1.6" fill="white" font-size="8" text-anchor="end">{{value}} / {{max}}</text>
-      {{/if}}
     {{/if}}
   </svg>
 </div>

@@ -271,12 +271,6 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
   // Specific listeners
   _onRender(context, options) {
     super._onRender(context, options)
-    const progressInputs = this.element.querySelectorAll(".progress-input");
-    for (const input of progressInputs) {
-      if (input.dataset.id == "counter") {
-        input.addEventListener("change", (ev) => this._onCounterChange(ev, "value"))
-      }
-    }
 
     const counterNames = this.element.querySelectorAll(".counter-name");
     for (const counter of counterNames) {
@@ -287,7 +281,7 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
       ui.hotbar.render(true);
     }
     
-    const progressBarInputs = this.element.querySelectorAll(".svg-progress-input");
+    const progressBarInputs = this.element.querySelectorAll(".counter-input");
     for (const input of progressBarInputs) {
       input.addEventListener("change", (ev) => {
         this._onCounterChange(ev, ev.target.dataset.subtype)
