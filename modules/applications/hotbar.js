@@ -65,9 +65,9 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
     context.selectedActorId = this.selectedActorId;
-    context.attributes = THE_EDGE.attrs;
 
     const actor = this.getActor();
+    context.attributes = actor?.system.attributes ?? {};
     this.selectedActorId = actor?.id;
     context.selectedActorId = this.selectedActorId;
     context.selectedActorName = actor?.name ?? "No Actor Selected";

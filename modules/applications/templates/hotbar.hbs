@@ -8,11 +8,12 @@
           data-tooltip aria-label="{{localize 'HOTBAR.RELOAD'}}" style="width: 22px; height: 22px;"></a>
       </div>
       <div style="display: grid; grid-template-columns: repeat(9, 1fr); margin-top: 5px; width: 95%;">
-        {{#each attributes as |attr|}}
-          <button type="button" class="hotbar-d20" data-action="rollAttr" data-attribute="{{attr}}"
+        {{#each attributes as |attr name|}}
+          <button type="button" class="hotbar-d20" data-action="rollAttr" data-attribute="{{name}}"
             style="height: fit-content; min-height: 10pt; background: none; border: none;"
-            data-tooltip aria-label="{{attrName attr}} {{genName 'Check'}}">
-            <img class="hotbar-d20-{{attr}}"/>
+            data-tooltip aria-label="{{attrName name}} {{genName 'Check'}}">
+              <img class="hotbar-d20-{{name}}" />
+              <span class="hotbar-d20-overlay">{{attr.value}}</span>
           </button>
           <div></div> {{!-- Empty div to fill every other space --}}
         {{/each}}
