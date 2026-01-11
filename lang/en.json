@@ -452,6 +452,7 @@
     "attributes": "Attributes",
     "biography": "Biography",
     "combat": "Combat",
+    "description": "Description",
     "health": "Health",
     "items": "Items",
     "proficiencies": "Proficiencies"

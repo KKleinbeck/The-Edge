@@ -2,31 +2,31 @@
   <header class="sheet-header-item">
     <div class="item-columned-page">
       <div style="width: 100px;">
-        <img class="profile-img-item" src="{{data.img}}" data-edit="img" title="{{data.name}}" />
+        <img class="profile-img-item" src="{{document.img}}" data-edit="img" title="{{document.name}}" />
       </div>
       <div style="flex: 1">
         <h3 class="charname">
-          <input name="name" type="text" value="{{data.name}}" placeholder="Name" />
+          <input name="name" type="text" value="{{document.name}}" placeholder="Name" />
         </h3>
         <div class="item-columned-page">
           <div class="item-header-fields">
             {{genName "Weight"}}<br/>
-            <input type="number" name="system.weight" value="{{data.system.weight}}" data-dtype="Number"/>
+            <input type="number" name="system.weight" value="{{system.weight}}" data-dtype="Number"/>
           </div>
           <div class="item-header-fields">
             {{genName "Value"}}<br/>
-            <input type="number" name="system.value" value="{{data.system.value}}" data-dtype="Number"/>
+            <input type="number" name="system.value" value="{{system.value}}" data-dtype="Number"/>
           </div>
           <div class="item-header-fields">
             {{genName "Quantity"}}<br/>
-            <input type="number" name="system.quantity" value="{{data.system.quantity}}" data-dtype="Number"/>
+            <input type="number" name="system.quantity" value="{{system.quantity}}" data-dtype="Number"/>
           </div>
           <div class="item-header-fields" style="min-width: 37%;">
             {{genName "Capacity"}}
             <div style="display: flex; align-items: center; gap: 3px;">
-              <div class="output" title="{{genName 'available'}}" style="width: 44%; height: 26px; line-height: 1.45rem;">{{sub data.system.capacity.max data.system.capacity.used}}</div>
+              <div class="output" title="{{genName 'available'}}" style="width: 44%; height: 26px; line-height: 1.45rem;">{{sub system.capacity.max system.capacity.used}}</div>
               /
-              <input type="number" title="{{genName 'maximum'}}" name="system.capacity.max" value="{{data.system.capacity.max}}" data-dtype="Number" style="width: 44%;"/>
+              <input type="number" title="{{genName 'maximum'}}" name="system.capacity.max" value="{{system.capacity.max}}" data-dtype="Number" style="width: 44%;"/>
             </div>
           </div>
         </div>

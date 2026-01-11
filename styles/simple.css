@@ -11,6 +11,7 @@
   --color-text-light-highlight: #FFF;
   --color-background-night-black: #2A395A;
   --color-background-light-night-black: #2A507A;
+  --color-background-sheets: #31395A;
 }
 
 
@@ -341,6 +342,50 @@ textarea {
   /* Attributes */
 }
 /* new code */
+/* Item Sheest */
+.item-sheet {
+  overflow: visible;
+}
+.the_edge .item-header-frame {
+  border-radius: 5px;
+  border: 2px solid var(--theme-color-secondary);
+  overflow: visible;
+}
+.the_edge .item-header-frame .header-item-img-frame {
+  position: absolute;
+  left: 0;
+  top: 0%;
+  transform: translate(-50%, -50%);
+
+  width: 80px;
+  height: 80px;
+
+  background-color: var(--theme-color-secondary);
+
+  clip-path: polygon(
+    30% 0%,
+    70% 0%,
+    100% 30%,
+    100% 70%,
+    70% 100%,
+    30% 100%,
+    0% 70%,
+    0% 30%
+  );
+}
+.the_edge .item-header-frame .header-item-img-frame-inner {
+  display: flex;
+  justify-content: center;
+  align-items:center;
+  position: absolute;
+  inset: 2px;
+  background: var(--color-background-sheets);
+  clip-path: inherit;
+  overflow: hidden;
+}
+.the_edge .item-header-frame .header-item-img {
+  height: 80%;
+}
 /* sheet-header */
 .the_edge .sheet-header {
   flex: 0 0 185px;
@@ -882,21 +927,6 @@ textarea {
 .the_edge .effect-list .effect-box {
   display: flex;
   gap: 5px;
-}
-
-.the_edge.sheet.actor {
-}
-.the_edge.sheet.item {
-  min-width: 390px;
-  min-height: 420px;
-}
-.the_edge.sheet.item-wounds {
-  min-width: 390px;
-  min-height: 240px;
-}
-.the_edge.sheet.item-credits {
-  min-width: 390px;
-  min-height: 240px;
 }
 
 .main-row {

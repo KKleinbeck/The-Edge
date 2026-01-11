@@ -18,7 +18,6 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
     form: {
       submitOnChange: true,
     },
-    window: {title: ""},
     classes: ["the_edge", "actor"],
     actions: {
       itemControl: TheEdgeActorSheet._onItemControl,
@@ -27,7 +26,7 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
     },
   }
 
-  get title () { return this.actor.name; } // Override in tandom with option.window.title
+  get title () { return this.actor.name; }
 
   async _prepareContext(options) {
     const context = await super._prepareContext(options);

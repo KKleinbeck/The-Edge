@@ -1,0 +1,22 @@
+<section
+  class="tab {{tabs.description.cssClass}}"
+  data-group="primary"
+  data-tab="description"
+  style="overflow-y: auto; overflow-x: hidden"
+>
+  {{#if editable}} 
+    <prose-mirror name="system.description" data-document-u-u-i-d="{{item.uuid}}" value="{{item.system.description}}" collaborate="true" toggled="false">
+      {{{descriptionHTML}}}
+    </prose-mirror>
+  {{else}} {{{descriptionHTML}}}
+  {{/if}}
+  {{#if userIsGM}}
+    <h4>{{genName "GM Notes"}}</h4>
+    {{#if editable}} 
+      <prose-mirror name="system.gm_description" data-document-u-u-i-d="{{item.uuid}}" value="{{item.system.gm_description}}" collaborate="true" toggled="false">
+        {{{gmDescriptionHTML}}}
+      </prose-mirror>
+    {{else}} {{{gmDescriptionHTML}}}
+    {{/if}}
+  {{/if}}
+</section>

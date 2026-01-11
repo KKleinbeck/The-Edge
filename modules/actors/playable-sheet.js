@@ -11,28 +11,25 @@ import THE_EDGE from "../system/config-the-edge.js";
 import { TheEdgeActorSheet } from "./actor-sheet.js";
 
 export class TheEdgePlayableSheet extends TheEdgeActorSheet {
-  static DEFAULT_OPTIONS = foundry.utils.mergeObject(
-    TheEdgeActorSheet.DEFAULT_OPTIONS,
-    {
-      actions: {
-        // Hero Token
-        heroTokenUsed: TheEdgePlayableSheet.useHeroToken,
-        heroTokenRegen: TheEdgePlayableSheet.regenerateHeroToken,
-        // Leveling
-        advanceAttr: TheEdgePlayableSheet.advanceAttr,
-        // Rolls
-        rollAttribute: TheEdgePlayableSheet.rollAttribute,
-        rollProficiency: TheEdgePlayableSheet.rollProficiency,
-        rollAttack: TheEdgePlayableSheet.rollAttack,
-        // Health
-        longRest: TheEdgePlayableSheet.longRest,
-        shortRest: TheEdgePlayableSheet.shortRest,
-        applyDamage: TheEdgePlayableSheet.applyDamage,
-        // Other
-        reload: TheEdgePlayableSheet.reload,
-      }
+  static DEFAULT_OPTIONS = {...TheEdgeActorSheet.DEFAULT_OPTIONS,
+    actions: {
+      // Hero Token
+      heroTokenUsed: TheEdgePlayableSheet.useHeroToken,
+      heroTokenRegen: TheEdgePlayableSheet.regenerateHeroToken,
+      // Leveling
+      advanceAttr: TheEdgePlayableSheet.advanceAttr,
+      // Rolls
+      rollAttribute: TheEdgePlayableSheet.rollAttribute,
+      rollProficiency: TheEdgePlayableSheet.rollProficiency,
+      rollAttack: TheEdgePlayableSheet.rollAttack,
+      // Health
+      longRest: TheEdgePlayableSheet.longRest,
+      shortRest: TheEdgePlayableSheet.shortRest,
+      applyDamage: TheEdgePlayableSheet.applyDamage,
+      // Other
+      reload: TheEdgePlayableSheet.reload,
     }
-  )
+  }
 
   static PARTS = {
     form: {

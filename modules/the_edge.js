@@ -111,7 +111,7 @@ Hooks.once("init", async function() {
     givePH: /^(\/givePH)\s*(\d+)?\s*([a-zA-Z0-9 ]*)?$/, ...CONFIG.ui.chat.MESSAGE_PATTERNS
   }
 
-  // Register sheet application classes
+  // Register item sheets
   TheEdgeItemSheet.setupSheets()
 
   // UI setup
