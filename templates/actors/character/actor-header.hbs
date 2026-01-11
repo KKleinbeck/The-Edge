@@ -13,8 +13,8 @@
               systems/the_edge/templates/generic/progress-bar-modern.hbs
               value=system.health.value
               max=system.health.max.value
-              dataPath="system.health.value"
-              partiallyEditable=true editable=false fillId="health" textScale=1.2
+              valueEditable=true valueDataPath="system.health.value"
+              fillId="health" textScale=1.2
             }}
           </div>
           <div class="page-centered">
@@ -23,9 +23,9 @@
               systems/the_edge/templates/generic/progress-bar-modern.hbs
               value=system.heartRate.value
               max=system.heartRate.max.value
-              dataPath="system.heartRate.value"
               segments=helpers.hrProgressBarData
-              partiallyEditable=true editable=false fillId="heartRate" textScale=1.2
+              valueEditable=true valueDataPath="system.heartRate.value"
+              fillId="heartRate" textScale=1.2
             }}
           </div>
           {{#unless (checkEqual helpers.armourProtection.value 0)}}
@@ -35,7 +35,7 @@
                 systems/the_edge/templates/generic/progress-bar-modern.hbs
                 value=helpers.armourProtection.value
                 max=helpers.armourProtection.original
-                editable=false fillId="armour" textScale=1.2
+                fillId="armour" textScale=1.2
               }}
             </div>
           {{/unless}}

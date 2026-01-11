@@ -55,14 +55,6 @@
   <div class="counter-list" style="padding: 0px 5px 0px 5px; overflow-y: hidden;">
     {{#each system.counters as |counter|}}
       <div class="counter" data-index="{{@index}}">
-        {{!-- <div class="counter-title">
-          <input class="counter-name" value="{{counter.name}}" style="width: 70%;"/>
-          <div style="display: flex; align-items: center; gap: 2px;">
-            <a data-action="counterControl" data-subaction="decrease-counter"><i class="fas fa-minus"></i></a>
-            <a data-action="counterControl" data-subaction="increase-counter"><i class="fas fa-plus"></i></a>
-            <a title="{{ itemName 'Delete Counter' }}" data-action="counterControl" data-subaction="delete"><i class="fas fa-trash"></i></a>
-          </div>
-        </div> --}}
         {{#if (checkST counter.max 11)}}
           <div class="counter-box-list" style="max-width: 100%; justify-content: space-between">
             <div style="display: flex; align-items: center;">
@@ -96,8 +88,8 @@
           <div class="counter-box-list" style="max-width: 100%; margin-top: 5px;">
             {{>
               systems/the_edge/templates/generic/progress-bar-modern.hbs
-              editable=true name=counter.name
-              value=counter.value max=counter.max fillId="counter"
+              valueEditable=true maxEditable=true nameEditable=true
+              name=counter.name value=counter.value max=counter.max fillId="counter"
               inputClass="counter-input"
             }}
           </div>

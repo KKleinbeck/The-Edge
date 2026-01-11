@@ -1,34 +1,24 @@
 <header class="sheet-header-item">
   <div class="item-columned-page">
-    <div style="width: 100px;">
-      <img class="profile-img-item" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+    <div class="item-header-fields">
+      {{genName "Weight"}}<br/>
+      <input type="number" name="system.weight" value="{{item.system.weight}}" data-dtype="Number"/>
     </div>
-    <div style="flex: 1">
-      <h3 class="charname">
-        {{!-- <input name="name" type="text" value="{{item.name}}" placeholder="Name" /> --}}
-      </h3>
-      <div class="item-columned-page">
-        <div class="item-header-fields">
-          {{genName "Weight"}}<br/>
-          <input type="number" name="system.weight" value="{{item.system.weight}}" data-dtype="Number"/>
-        </div>
-        <div class="item-header-fields">
-          {{genName "Value"}}<br/>
-          <input type="number" name="system.value" value="{{item.system.value}}" data-dtype="Number"/>
-        </div>
-        <div class="item-header-fields">
-          {{genName "Quantity"}}<br/>
-          <input type="number" name="system.quantity" value="{{item.system.quantity}}" data-dtype="Number"/>
-        </div>
-        <div class="item-header-fields" style="min-width: 37%;">
-          {{genName "Capacity"}}
-          <div style="display: flex; align-items: center; gap: 3px;">
-            <div class="output" title="{{genName 'available'}}" style="width: 44%; height: 26px; line-height: 1.45rem;">{{sub item.system.capacity.max item.system.capacity.used}}</div>
-            /
-            <input type="number" title="{{genName 'maximum'}}" name="system.capacity.max" value="{{item.system.capacity.max}}" data-dtype="Number" style="width: 44%;"/>
-          </div>
-        </div>
-      </div>
+    <div class="item-header-fields">
+      {{genName "Value"}}<br/>
+      <input type="number" name="system.value" value="{{item.system.value}}" data-dtype="Number"/>
+    </div>
+    <div class="item-header-fields">
+      {{genName "Quantity"}}<br/>
+      <input type="number" name="system.quantity" value="{{item.system.quantity}}" data-dtype="Number"/>
+    </div>
+    <div class="item-header-fields" style="padding-top: 12px; min-width: 37%;">
+      {{>
+        systems/the_edge/templates/generic/progress-bar-modern.hbs
+        value=item.system.capacity.value valueEditable=true valueDataPath="system.capacity.value"
+        max=item.system.capacity.max maxEditable=true maxDataPath="system.capacity.max"
+        name=(genName "Capacity") textScale=1.2
+      }}
     </div>
   </div>
 </header>

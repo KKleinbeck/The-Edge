@@ -224,7 +224,7 @@
     "leadAttr2": {"name": "str", "value": 10},
     "rangeChart": {"less_2m": [0, 0], "less_20m": [0, 0], "less_200m": [0, 0], "less_1km": [0, 0], "more_1km": [0, 0]},
     "attachments": [],
-    "ammunitionID": ""
+    "ammunitionType": ""
   },
   "Armour": {
     "templates": ["non-stackable", "description", "equipable"],
@@ -242,15 +242,15 @@
   },
   "Ammunition": {
     "templates": ["stackable", "description"],
-    "capacity": {"max": 30, "used": 0},
+    "capacity": {"max": 30, "value": 0},
     "reloadDuration": 0,
     "type": "energy",
+    "subtype": "",
     "whitelist": {
       "energy": {"Blaster Pistols": true, "Pulse Rifle": true, "SABs": true, "Blaster Shockguns": true, "Blaster Snipers": true},
       "kinetic": {"Kinetic Pistols": true, "Slug Throwers": true, "LMGs": true, "Shotguns": true, "Projectile Snipers": true},
       "others": {"Recoilless Rifles": true}
     },
-    "designatedWeapons": "",
     "damage": {"bonus": 0, "penetration": 0},
     "modifiers": {"less_2m": [0, 0], "less_20m": [0, 0], "less_200m": [0, 0], "less_1km": [0, 0], "more_1km": [0, 0]}
   },
