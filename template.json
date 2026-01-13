@@ -242,7 +242,7 @@
   },
   "Ammunition": {
     "templates": ["stackable", "description"],
-    "capacity": {"max": 30, "value": 0},
+    "capacity": {"max": 30, "value": 30},
     "reloadDuration": 0,
     "type": "energy",
     "subtype": "",

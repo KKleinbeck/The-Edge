@@ -1,18 +1,13 @@
 <header class="sheet-header-item">
   <div class="item-columned-page">
-    <div class="item-header-fields">
-      {{genName "Weight"}}<br/>
-      <input type="number" name="system.weight" value="{{item.system.weight}}" data-dtype="Number"/>
-    </div>
-    <div class="item-header-fields">
-      {{genName "Value"}}<br/>
-      <input type="number" name="system.value" value="{{item.system.value}}" data-dtype="Number"/>
-    </div>
-    <div class="item-header-fields">
-      {{genName "Quantity"}}<br/>
-      <input type="number" name="system.quantity" value="{{item.system.quantity}}" data-dtype="Number"/>
-    </div>
+    {{> systems/the_edge/templates/items/meta-generic-info.hbs}}
     <div class="item-header-fields" style="padding-top: 12px; min-width: 37%;">
+      {{#each types as |details type|}}
+        {{>
+          systems/the_edge/templates/generic/icon-selector.hbs
+          icon=details.icon iconType="type" value=type selected=details.selected
+        }}
+      {{/each}}
       {{>
         systems/the_edge/templates/generic/progress-bar-modern.hbs
         value=item.system.capacity.value valueEditable=true valueDataPath="system.capacity.value"

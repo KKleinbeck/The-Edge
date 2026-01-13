@@ -30,7 +30,11 @@ export default function() {
     round: (a, b) => { return a.toFixed(b); },
     strCombine: (a, b) => { return a + " " + b; },
 
-    concat: (a, b) => { return a.toString().concat(b.toString()); },
+    concat: (...args) => {
+      let result = "";
+      args.slice(0, -1).forEach(arg => result = result.concat(arg.toString()) );
+      return result;
+    },
     checkEqual: (a, b) => { return a === b; },
     checkIn: (a, b) => { return b[a] !== undefined; },
     checkInstance: (a, b) => { return b.includes(a); },

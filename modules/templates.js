@@ -41,6 +41,7 @@ export const preloadHandlebarsTemplates = async function() {
     // Item templates
     "systems/the_edge/templates/items/meta-attachments.html",
     "systems/the_edge/templates/items/meta-effects.html",
+    "systems/the_edge/templates/items/meta-generic-info.hbs",
     "systems/the_edge/templates/items/meta-leading-attr.html",
 
     // Chat templates
@@ -51,6 +52,7 @@ export const preloadHandlebarsTemplates = async function() {
 
     // Generic templates
     "systems/the_edge/templates/generic/counter-token.hbs",
+    "systems/the_edge/templates/generic/icon-selector.hbs",
     "systems/the_edge/templates/generic/progress-bar-modern.hbs",
   ];
 

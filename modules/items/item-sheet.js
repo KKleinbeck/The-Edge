@@ -1,10 +1,11 @@
 import THE_EDGE from "../system/config-the-edge.js";
+import IconSelectorMixin from "../mixins/icon-selector-mixin.js";
 import Aux from "../system/auxilliaries.js";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ItemSheetV2 } = foundry.applications.sheets;
 
-export class TheEdgeItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
+export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMixin(ItemSheetV2)) {
   static DEFAULT_OPTIONS = {
     position: {
       width: 390,
@@ -16,6 +17,10 @@ export class TheEdgeItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     classes: ["the_edge", "item-sheet"],
     actions: {
     },
+  }
+
+  static test() {
+    console.log("Test")
   }
 
   static PARTS = {
@@ -71,6 +76,12 @@ export class TheEdgeItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
         style="width: 100%; margin-right: 20%; margin-left: 10%"/>
     `
   }
+  _dynamicHeaderImg() {
+    return `<div class="header-item-img-frame-inner">
+      <img class="header-item-img" src="${this.item.img}" data-edit="img" title="${this.item.name}"/>
+      </div>
+    `
+  }
 
   async _renderFrame(options) {
     const frame = await super._renderFrame(options);
@@ -78,11 +89,8 @@ export class TheEdgeItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     const headers = frame.getElementsByClassName("window-header");
     if (headers.length) {
       const test = document.createElement("div")
-      test.classList = "header-item-img-frame"
-      test.innerHTML = `<div class="header-item-img-frame-inner">
-        <img class="header-item-img" src="${this.item.img}" data-edit="img" title="${this.item.name}"/>
-        </div>
-      `
+      test.classList = "header-item-img-frame header-img"
+      test.innerHTML = this._dynamicHeaderImg();
       headers[0].prepend(test);
       headers[0].classList.add("item-header-frame");
     }
@@ -94,9 +102,17 @@ export class TheEdgeItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 
   async minimize() {
     super.minimize();
-    const header = this.element.getElementsByClassName("header-item-name");
-    if (header.length) {
-      header[0].outerHTML = `
+    const headerImgs = this.element.getElementsByClassName("header-img");
+    if (headerImgs.length) {
+      headerImgs[0].outerHTML = `
+        <div class="header-img-minimised header-img">
+          <img src="${this.item.img}"/>
+        </div>
+      `
+    }
+    const titles = this.element.getElementsByClassName("header-item-name");
+    if (titles.length) {
+      titles[0].outerHTML = `
         <div class="header-item-name" style="width: 100%; margin-right: 30%">
           ${this.item.name}
         </div>
@@ -106,14 +122,19 @@ export class TheEdgeItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 
   async maximize() {
     super.maximize();
-    const header = this.element.getElementsByClassName("header-item-name");
-    if (header.length) { header[0].outerHTML = this._dynamicHeaderName(); }
+    const headerImgs = this.element.getElementsByClassName("header-img");
+    if (headerImgs.length) {
+      headerImgs[0].innerHTML = this._dynamicHeaderImg();
+      headerImgs[0].classList = "header-item-img-frame header-img";
+    }
+    const titles = this.element.getElementsByClassName("header-item-name");
+    if (titles.length) { titles[0].outerHTML = this._dynamicHeaderName(); }
   }
 
   async _prepareContext(options) {
-    console.log(TheEdgeItemSheet.PARTS)
     const context = await super._prepareContext(options);
     context.item = this.item;
+    console.log(this.item.system)
     context.descriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
       context.item.system.description, {
         secrets: this.document.isOwner,
@@ -187,6 +208,14 @@ class ItemSheetAmmunition extends TheEdgeItemSheet {
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
     context.designatedWeaponsHTML = context.item.system.designatedWeapons
+    context.types = {}
+    for (const type of ["energy", "kinetic"]) {
+      context.types[type] =  {
+        icon: `systems/the_edge/icons/armour/${type}.png`,
+        selected: type==this.item.system.type
+      }
+    }
+    console.log(context.types)
     return context;
   }
 }
