@@ -2,18 +2,24 @@
   <div class="item-columned-page">
     {{> systems/the_edge/templates/items/meta-generic-info.hbs}}
     <div class="item-header-fields" style="padding-top: 12px; min-width: 37%;">
-      {{#each types as |details type|}}
-        {{>
-          systems/the_edge/templates/generic/icon-selector.hbs
-          icon=details.icon iconType="type" value=type selected=details.selected
-        }}
-      {{/each}}
-      {{>
-        systems/the_edge/templates/generic/progress-bar-modern.hbs
-        value=item.system.capacity.value valueEditable=true valueDataPath="system.capacity.value"
-        max=item.system.capacity.max maxEditable=true maxDataPath="system.capacity.max"
-        name=(genName "Capacity") textScale=1.2
-      }}
+      <div style="display: flex;">
+        <div style="display: flex; padding: 0 3px 0 3px; gap: 5px; align-items: end;">
+          {{#each types as |details type|}}
+            {{>
+              systems/the_edge/templates/generic/icon-selector.hbs
+              icon=details.icon iconType="type" value=type selected=details.selected
+            }}
+          {{/each}}
+        </div>
+        <div style="width: 45%;">
+          {{>
+            systems/the_edge/templates/generic/progress-bar-modern.hbs
+            value=item.system.capacity.value valueEditable=true valueDataPath="system.capacity.value"
+            max=item.system.capacity.max maxEditable=true maxDataPath="system.capacity.max"
+            name=(genName "Capacity") textScale=1.2
+          }}
+        </div>
+      </div>
     </div>
   </div>
 </header>

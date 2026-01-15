@@ -208,15 +208,28 @@ class ItemSheetAmmunition extends TheEdgeItemSheet {
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
     context.designatedWeaponsHTML = context.item.system.designatedWeapons
-    context.types = {}
+    context.types = this._setTypesDict();
+    return context;
+  }
+
+  _setTypesDict() {
+    const types = {};
     for (const type of ["energy", "kinetic"]) {
-      context.types[type] =  {
+      types[type] =  {
         icon: `systems/the_edge/icons/armour/${type}.png`,
         selected: type==this.item.system.type
       }
     }
-    console.log(context.types)
-    return context;
+    return types;
+  }
+  
+  onIconSelected(iconType, value) {
+    switch (iconType) {
+      case "type":
+        this.item.system.type = value;
+        break;
+    }
+    this.updateIcons(iconType, this._setTypesDict());
   }
 }
 

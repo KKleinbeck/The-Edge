@@ -235,6 +235,10 @@ h1, h2, h3, h4 {
 }
 .the_edge .icon-selector-selected {
   box-shadow: inset 3px 3px #bd9f09;
+  width: 75px;
+  height: 32px;
+  border-radius: 24px;
+  transition: all 1s linear;
 }
 /* Editor */
 .journal-entry-content {
