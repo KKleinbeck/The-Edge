@@ -1,4 +1,6 @@
-<button class="icon-selector {{#if selected}}icon-selector-selected{{/if}}"
-  data-action="iconSelectorClicked" data-icon-type="{{iconType}}" data-value="{{value}}">
-  <img src="{{icon}}" style="width: 24px;"/>
-</button>
+<div class="icon-selector-outer">
+  <button class="icon-selector {{#if selected}}icon-selector-selected{{/if}}"
+    data-action="iconSelectorClicked" data-icon-type="{{iconType}}" data-value="{{value}}">
+    <img src="{{icon}}" style="height: 26px;"/>
+  </button>
+</div>
