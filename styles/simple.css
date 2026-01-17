@@ -366,44 +366,40 @@ textarea {
 .item-sheet {
   overflow: visible;
 }
-.the_edge .item-header-frame {
-  border-radius: 5px;
-  border: 2px solid var(--theme-color-secondary);
+.the_edge .item-header {
   overflow: visible;
+  justify-content: end;
 }
-.the_edge .item-header-frame .header-item-img-frame {
+.the_edge .item-header .item-header-frame {
   position: absolute;
   left: 0;
-  top: 0%;
-  transform: translate(-50%, -50%);
+  top: 0;
+  z-index: -1;
+  transform: translateY(-15px);
 
-  width: 80px;
-  height: 80px;
-
-  background-color: var(--theme-color-secondary);
-
-  clip-path: polygon(
-    30% 0%,
-    70% 0%,
-    100% 30%,
-    100% 70%,
-    70% 100%,
-    30% 100%,
-    0% 70%,
-    0% 30%
-  );
+  width: 100%;
+  height: calc(100% + 15px);
 }
-.the_edge .item-header-frame .header-item-img-frame-inner {
+.the_edge .item-header .item-header-content {
+  position: absolute;
+  /* Fix to all sides of parent */
+  left: 4%;
+  right: 30%;
+  bottom: 10%;
+  height: 100%;
+  display: flex;
+  gap: 10px;
+  align-items: end;
+}
+.the_edge .item-header .item-header-img-container {
   display: flex;
   justify-content: center;
   align-items:center;
-  position: absolute;
-  inset: 2px;
-  background: var(--color-background-sheets);
+  background: var(--color-background-light-night-black);
   clip-path: inherit;
   overflow: hidden;
 }
-.the_edge .item-header-frame .header-img-minimised {
+.the_edge .item-header .item-header-img-minimised {
   display: flex;
   justify-content: center;
   max-width: 24px;
@@ -411,7 +407,7 @@ textarea {
   margin-right: 3px;
   background: var(--color-background-sheets);
 }
-.the_edge .item-header-frame .header-item-img {
+.the_edge .item-header .item-header-img {
   height: 80%;
 }
 /* sheet-header */

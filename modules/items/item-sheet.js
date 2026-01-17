@@ -4,8 +4,15 @@ import Aux from "../system/auxilliaries.js";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ItemSheetV2 } = foundry.applications.sheets;
+const { renderTemplate } = foundry.applications.handlebars;
 
 export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMixin(ItemSheetV2)) {
+  constructor (options) {
+    super(options);
+    this.headerWidth = 0;
+    this.headerHeight = 0;
+  }
+
   static DEFAULT_OPTIONS = {
     position: {
       width: 390,
@@ -70,17 +77,21 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
 
   get title () { return this.item.name; }
 
-  _dynamicHeaderName() {
-    return `
-      <input class="header-item-name" name="name" type="text" value="${this.item.name}" placeholder="Name"
-        style="width: 100%; margin-right: 20%; margin-left: 10%"/>
+  async _dynamicHeader(width, height) {
+    const lineLength = 0.3 * height;
+    const path = `
+      M0 ${height} V${lineLength} L${lineLength} 0
+      H${0.382*width - 0.5*lineLength} L${0.382*width + 0.5*lineLength} ${lineLength}
+      H${width} V${height}
     `
-  }
-  _dynamicHeaderImg() {
-    return `<div class="header-item-img-frame-inner">
-      <img class="header-item-img" src="${this.item.img}" data-edit="img" title="${this.item.name}"/>
-      </div>
-    `
+    const template = "systems/the_edge/templates/items/layout-header.hbs";
+    const html = await renderTemplate(
+      template, {
+        width: width, height: height, path: path,
+        name: this.item.name, imgPath: this.item.img
+      }
+    );
+    return html
   }
 
   async _renderFrame(options) {
@@ -88,32 +99,21 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
     // Add image to header and modify to custom class
     const headers = frame.getElementsByClassName("window-header");
     if (headers.length) {
-      const test = document.createElement("div")
-      test.classList = "header-item-img-frame header-img"
-      test.innerHTML = this._dynamicHeaderImg();
-      headers[0].prepend(test);
-      headers[0].classList.add("item-header-frame");
+      headers[0].classList.add("item-header");
     }
     // Make title dynamic
     const titles = frame.getElementsByClassName("window-title");
-    if (titles.length) { titles[0].outerHTML = this._dynamicHeaderName(); }
+    if (titles.length) { titles[0].outerHTML = await this._dynamicHeader(0, 0); }
     return frame;
   }
 
   async minimize() {
     super.minimize();
-    const headerImgs = this.element.getElementsByClassName("header-img");
+    const headerImgs = this.element.getElementsByClassName("item-header-frame-tag");
     if (headerImgs.length) {
       headerImgs[0].outerHTML = `
-        <div class="header-img-minimised header-img">
-          <img src="${this.item.img}"/>
-        </div>
-      `
-    }
-    const titles = this.element.getElementsByClassName("header-item-name");
-    if (titles.length) {
-      titles[0].outerHTML = `
-        <div class="header-item-name" style="width: 100%; margin-right: 30%">
+        <div class="item-header-frame-tag" style="display: flex; gap: 10px; width: 100%; align-items: center;">
+          <img class="item-header-img-minimised" src="${this.item.img}"/>
           ${this.item.name}
         </div>
       `
@@ -122,13 +122,12 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
 
   async maximize() {
     super.maximize();
-    const headerImgs = this.element.getElementsByClassName("header-img");
+    const headerImgs = this.element.getElementsByClassName("item-header-frame-tag");
     if (headerImgs.length) {
-      headerImgs[0].innerHTML = this._dynamicHeaderImg();
-      headerImgs[0].classList = "header-item-img-frame header-img";
+      this.headerWidth = Math.max(headerImgs[0].offsetWidth, this.headerWidth);
+      this.headerHeight = Math.max(headerImgs[0].offsetHeight, this.headerHeight);
+      headerImgs[0].outerHTML = await this._dynamicHeader(this.headerWidth, this.headerHeight);
     }
-    const titles = this.element.getElementsByClassName("header-item-name");
-    if (titles.length) { titles[0].outerHTML = this._dynamicHeaderName(); }
   }
 
   async _prepareContext(options) {
