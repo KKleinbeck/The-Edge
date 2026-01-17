@@ -41,7 +41,6 @@ export const preloadHandlebarsTemplates = async function() {
     // Item templates
     "systems/the_edge/templates/items/meta-attachments.html",
     "systems/the_edge/templates/items/meta-effects.html",
-    "systems/the_edge/templates/items/meta-generic-info.hbs",
     "systems/the_edge/templates/items/meta-leading-attr.html",
 
     // Chat templates

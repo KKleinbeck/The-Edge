@@ -94,6 +94,23 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
     return html
   }
 
+  async _dynamicFooter(width, height) {
+    const lineLength = 0.5 * height;
+    const path = `
+      M0 0 H${0.382*width - 0.5*lineLength} L${0.382*width + 0.5*lineLength} ${lineLength}
+      H${width - lineLength} L${width} 0
+    `
+    const template = "systems/the_edge/templates/items/layout-footer.hbs";
+    const html = await renderTemplate(
+      template, {
+          width: width, pathHeight: lineLength, path: path,
+          weight: this.item.system.weight,
+          value: this.item.system.value
+        }
+      );
+    return html;
+  }
+
   async _renderFrame(options) {
     const frame = await super._renderFrame(options);
     // Add image to header and modify to custom class
@@ -104,6 +121,10 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
     // Make title dynamic
     const titles = frame.getElementsByClassName("window-title");
     if (titles.length) { titles[0].outerHTML = await this._dynamicHeader(0, 0); }
+    // Make footer
+    const footer = document.createElement("div");
+    footer.classList.add("item-footer");
+    frame.appendChild(footer);
     return frame;
   }
 
@@ -122,11 +143,17 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
 
   async maximize() {
     super.maximize();
-    const headerImgs = this.element.getElementsByClassName("item-header-frame-tag");
-    if (headerImgs.length) {
-      this.headerWidth = Math.max(headerImgs[0].offsetWidth, this.headerWidth);
-      this.headerHeight = Math.max(headerImgs[0].offsetHeight, this.headerHeight);
-      headerImgs[0].outerHTML = await this._dynamicHeader(this.headerWidth, this.headerHeight);
+    const headers = this.element.getElementsByClassName("item-header-frame-tag");
+    if (headers.length) {
+      const header = headers[0];
+      this.headerWidth = Math.max(header.offsetWidth, this.headerWidth);
+      this.headerHeight = Math.max(header.offsetHeight, this.headerHeight);
+      header.outerHTML = await this._dynamicHeader(this.headerWidth, this.headerHeight);
+    }
+    const footers = this.element.getElementsByClassName("item-footer");
+    if (footers.length) {
+      const footer = footers[0];
+      footer.outerHTML = await this._dynamicFooter(this.headerWidth, this.headerHeight);
     }
   }
 

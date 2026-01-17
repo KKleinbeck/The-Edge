@@ -1,0 +1,39 @@
+<div class="item-footer" style="height: {{pathHeight}}px; transform: translateY({{pathHeight}}px);">
+  <svg viewBox="0 0 {{width}} {{pathHeight}}"
+    style="overflow: visible;"
+    xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <path id="item-footer-outline"
+        d="{{path}}" />
+    </defs>
+
+    {{!-- Background --}}
+    <use href="#item-footer-outline"
+      {{!-- style="filter: drop-shadow(0 3px 5px black);" --}}
+      fill="var(--color-background-night-black)" />
+    
+    {{!-- Outline --}}
+    <use href="#item-footer-outline"
+      stroke="var(--theme-color-secondary)"
+      style="filter: drop-shadow(0 0 5px var(--theme-color-secondary));"
+      stroke-width="4"
+      stroke-linejoin="bevel"
+      fill="none" />
+  </svg>
+
+  <div class="item-footer-content" style="height: {{pathHeight}}px;">
+    {{#if (checkNotUndefined weight)}}
+      <div class="item-footer-content-entry">
+        <input class="item-footer-input" type="number" name="system.weight" value="{{weight}}" data-dtype="Number"/>
+        kg
+      </div>
+    {{/if}}
+    {{#if (checkNotUndefined value)}}
+      <div class="item-footer-content-entry">
+        <input class="item-footer-input" type="number" name="system.value" value="{{value}}" data-dtype="Number"/>
+        <img src="systems/the_edge/icons/credits.png" style="height: 16px;"/>
+      </div>
+    {{/if}}
+  </div>`
+  <div class="window-resize-handle" title="{{genName 'Resize'}}"></div>
+</div>

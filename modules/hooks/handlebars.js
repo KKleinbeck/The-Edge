@@ -43,6 +43,7 @@ export default function() {
       if (!a) return false;
       return Object.keys(a).length !== 0;
     },
+    checkNotUndefined: (a) => {return (typeof a !== "undefined");},
     checkSubtypedItem: (a) => { return (a == "Weapon" || a == "Consumables");},
     checkST: (a, b) => { return a < b; },
     checkSET: (a, b) => { return a <= b; },

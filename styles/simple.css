@@ -410,6 +410,33 @@ textarea {
 .the_edge .item-header .item-header-img {
   height: 80%;
 }
+.the_edge .item-footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  overflow: visible;
+  width: 100%;
+}
+.the_edge .item-footer-content {
+  position: absolute;
+  left: 42%;
+  right: 6%;
+  bottom: 0;
+  padding-bottom: 10px;
+  overflow: visible;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.the_edge .item-footer-content-entry {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.the_edge .item-footer-input {
+  width: 40px;
+  text-align: right;
+}
 /* sheet-header */
 .the_edge .sheet-header {
   flex: 0 0 185px;
@@ -808,10 +835,6 @@ textarea {
   flex: 1;
   height: 50px;
   text-align: center;
-}
-.the_edge .item-generic-input {
-  width: 60px;
-  text-align: right;
 }
 .the_edge .sheet-header-item .skill-header-fields {
   display: flex;
