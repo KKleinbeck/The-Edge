@@ -236,12 +236,12 @@ h1, h2, h3, h4 {
 .the_edge .icon-selector-outer {
   display: flex;
   justify-content: center;
-  width: 60px;
+  width: 70px;
 }
 .the_edge .icon-selector {
   background: white;
   opacity: 0.6;
-  width: 55px;
+  width: 90%;
   border: 3px solid black;
   border-radius: 20px;
 }
@@ -252,7 +252,7 @@ h1, h2, h3, h4 {
   text-align: right;
   padding-right: 5px;
   height: 28px;
-  width: 55px;
+  width: 90%;
   border: 3px solid black;
   border-radius: 20px;
   transition: all 0.5s linear;
@@ -260,7 +260,7 @@ h1, h2, h3, h4 {
 .the_edge .icon-selector-selected {
   box-shadow: 0 0 4px 3px var(--theme-color-secondary);
   opacity: 1;
-  width: 60px;
+  width: 100%;
   height: 30px;
   border-radius: 24px;
   transition: all 0.5s linear;
@@ -338,6 +338,7 @@ button {
 }
 input {
   height: 24px;
+  padding-left: 3px;
   padding-right: 3px;
   background-color: rgba(255,255,255, 0.2);
   border-color: rgb(86, 86, 253);

@@ -170,7 +170,9 @@
 
     "LAYER": "Layer",
     "INNER": "Inner",
+    "INNER LAYER": "Inner Layer",
     "OUTER": "Outer",
+    "OUTER LAYER": "Outer Layer",
     "ARMOUR ATTACHMENT": "Armour attachment",
     "ATTACHMENT POINTS": "Attachments Slots",
     "ATTACHMENT SIZE": "Attachment size",
@@ -454,6 +456,7 @@
     "combat": "Combat",
     "description": "Description",
     "details": "Details",
+    "effects": "Effects",
     "health": "Health",
     "items": "Items",
     "proficiencies": "Proficiencies"

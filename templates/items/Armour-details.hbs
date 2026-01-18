@@ -1,0 +1,32 @@
+<section
+  class="tab {{tabs.details.cssClass}}"
+  data-group="primary"
+  data-tab="details"
+  style="overflow-y: auto; overflow-x: hidden"
+>
+  <table>
+    <tr>
+      <td></td>
+      <td style="text-align: right;">{{combatName "Energy"}}</td>
+      <td style="text-align: right;">{{combatName "Kinetic"}}</td>
+      <td style="text-align: right;">{{combatName "Elemental"}}</td>
+    </tr>
+    <tr>
+      <td data-tooltip="Absorbed incoming damage by this amount">{{combatName "absorption"}}</td>
+      {{#each item.system.protection as |modifier type|}}
+        <td style="text-align: right;">
+          <input type="number" name="system.protection.{{type}}.absorption" value="{{modifier.absorption}}" style="width: 80%; text-align: right;"/>
+        </td>
+      {{/each}}
+    </tr>
+    <tr>
+      <td data-tooltip="Maximum damage before transfering further down">{{combatName "threshold"}}</td>
+      {{#each item.system.protection as |modifier type|}}
+        <td style="text-align: right;">
+          <input type="number" name="system.protection.{{type}}.threshold" value="{{modifier.threshold}}" style="width: 80%; text-align: right;"/>
+        </td>
+      {{/each}}
+    </tr>
+  </table>
+  {{combatName "Damage Modifiers"}}
+</section>

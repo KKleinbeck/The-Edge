@@ -23,11 +23,9 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
     },
     classes: ["the_edge", "item-sheet"],
     actions: {
+      createEffect: TheEdgeItemSheet._createEffect,
+      deleteEffect: TheEdgeItemSheet._deleteEffect,
     },
-  }
-
-  static test() {
-    console.log("Test")
   }
 
   static PARTS = {
@@ -56,8 +54,8 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
     foundry.documents.collections.Items.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
     foundry.documents.collections.Items.registerSheet("the_edge", TheEdgeItemSheet, { makeDefault: true });
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetAmmunition, { makeDefault: true, types: ["Ammunition"] });
+    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetArmour, { makeDefault: true, types: ["Armour"] });
     // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetWeapon, { makeDefault: true, types: ["Weapon"] });
-    // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetArmour, { makeDefault: true, types: ["Armour"] });
     // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetVantage, { makeDefault: true, types: ["Advantage", "Disadvantage"] });
     // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetSkill, { makeDefault: true, types: ["Skill", "Combatskill", "Medicalskill"] });
     // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetLanguage, { makeDefault: true, types: ["Languageskill"] });
@@ -185,49 +183,38 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
   }
 
   _onRender(context, options) {
-    super._onRender(context, options);
+    super._onRender(context, options)
+    this.element.querySelectorAll(".effect-modify")?.forEach(
+      x => x.addEventListener("change", ev => this._modifyEffect(ev))
+    );
   }
 
-  // _getSubmitData(updateData) {
-  //   let formData = super._getSubmitData(updateData);
-  //   return formData;
-  // }
+  static _createEffect(_event, _target) {
+    const effects = this.item.system.effects;
+    effects.push({group: "attributes", name: "end", value: 0});
+    this.item.update({"system.effects": effects});
+  }
 
-  // activateListeners(html) {
-  //   super.activateListeners(html)
-  //   html.find(".effect-add").click(ev => this._onAdd(ev));
-  //   html.find(".effect-modify").on("change", ev => this._onModify(ev));
-  //   html.find(".effect-delete").click(ev => this._onDelete(ev));
-  // }
+  async _modifyEffect(ev) {
+    const button = ev.currentTarget;
+    const index = button.dataset.index;
+    const effects = this.item.system.effects;
+    const target = button.dataset.target;
+    effects[index][target] = target == "value" ? parseInt(button.value) : button.value;
+    // The next line also sets the name to something sensible if the group changes
+    const context = await this._prepareContext();
+    if (target == "group") {
+      effects[index].name = Object.keys(context.definedEffects[button.value])[0];
+    }
+    this.item.update({"system.effects": effects});
+  }
 
-  // _onAdd(_event) {
-  //   let effects = this.item.system.effects;
-  //   effects.push({group: "attributes", name: "end", value: 0});
-  //   this.item.update({"system.effects": effects});
-  // }
-
-  // async _onModify(ev) {
-  //   const button = ev.currentTarget;
-  //   const index = button.dataset.index;
-  //   const effects = this.item.system.effects;
-  //   const target = button.dataset.target;
-  //   effects[index][target] = target == "value" ? parseInt(button.value) : button.value;
-  //   // The next line also sets the name to something sensible if the group changes
-  //   const context = await this.getData();
-  //   if (target == "group") {
-  //     effects[index].name = Object.keys(context.definedEffects[button.value])[0];
-  //   }
-  //   this.item.update({"system.effects": effects});
-  // }
-
-  // _onDelete(ev) {
-  //   const button = ev.currentTarget;
-  //   let index = button.dataset.index;
-  //   let effects = this.item.system.effects;
-  //   effects.splice(index, 1);
-  //   this.item.update({"system.effects": effects});
-  //   this._render();
-  // }
+  static _deleteEffect(_event, target) {
+    const index = target.dataset.index;
+    const effects = this.item.system.effects;
+    effects.splice(index, 1);
+    this.item.update({"system.effects": effects});
+  }
 }
 
 class ItemSheetAmmunition extends TheEdgeItemSheet {
@@ -283,7 +270,6 @@ class ItemSheetAmmunition extends TheEdgeItemSheet {
   }
   
   onIconSelected(iconType, value) {
-    console.log(iconType, value)
     switch (iconType) {
       case "type":
         this.item.system.type = value;
@@ -299,6 +285,95 @@ class ItemSheetAmmunition extends TheEdgeItemSheet {
         break;
     }
     this.item.update({"system": this.item.system}, {render: false});
+  }
+}
+
+class ItemSheetArmour extends TheEdgeItemSheet {
+  static DEFAULT_OPTIONS = {...TheEdgeItemSheet.DEFAULT_OPTIONS,
+    actions: {
+      ...TheEdgeItemSheet.DEFAULT_OPTIONS.actions,
+    }
+  }
+
+  static PARTS = {...TheEdgeItemSheet.PARTS,
+    form: {
+      template: `systems/the_edge/templates/items/Armour-header.hbs`
+    },
+    effects: {
+      template: "systems/the_edge/templates/items/meta-effects.hbs"
+    }, 
+    details: {
+      template: "systems/the_edge/templates/items/Armour-details.hbs"
+    },
+  // {{#if (checkEqual item.system.layer "Inner")}}
+  //   {{> systems/the_edge/templates/items/meta-attachments.html}}
+  // {{/if}}
+  }
+
+  static TABS = {
+    primary: {
+      tabs: [
+        {id: "effects"}, {id: "details"}, {id: "description"},
+      ],
+      labelPrefix: "TABS",
+      initial: "details",
+    }
+  }
+
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    context.types = this._setTypesDict();
+    return context;
+  }
+
+  _setTypesDict() {
+    const types = {};
+    for (const type of Object.keys(THE_EDGE.cover_map)) {
+      types[type] =  {
+        icon: `systems/the_edge/icons/armour/${type.toLowerCase()}.png`,
+        selected: type==this.item.system.bodyPart
+      }
+    }
+    return types;
+  }
+  
+  onIconSelected(iconType, value) {
+    switch (iconType) {
+      case "bodyPart":
+        this.item.system.bodyPart = value;
+        this.updateIcons(iconType, this._setTypesDict());
+        break;
+    }
+    this.item.update({"system": this.item.system}, {render: false});
+  }
+
+  // _onRender(context, options) {
+  //   super._onRender(context, options);
+  //   this.element.find(".attachment-edit").click(ev => this._onAttachmentEdit(ev));
+  //   this.element.find(".attachment-detach").click(ev => this._onAttachmentDetach(ev));
+  // }
+
+  _fetchAttachment(event) {
+    const dataElement = $(event.currentTarget).parent()[0];
+
+    const actorId = dataElement.dataset.actorId;
+    const tokenId = dataElement.dataset.tokenId;
+    const actor = Aux.getActor(actorId, tokenId)
+
+    const attachmentId = dataElement.dataset.attachmentId;
+    return actor.items.get(attachmentId);
+  }
+
+  _onAttachmentEdit(event) {
+    const attachment = this._fetchAttachment(event);
+    attachment.sheet.render(true);
+  }
+
+  _onAttachmentDetach(event) {
+    const attachment = this._fetchAttachment(event);
+    attachment.update({"system.equipped": false, "system.attachments": []});
+    Aux.detachFromParent(this.item, attachment._id, attachment.system.attachmentPoints.max);
+    this.render()
   }
 }
 
@@ -361,49 +436,6 @@ class ItemSheetAmmunition extends TheEdgeItemSheet {
 //       fireModes[+index][target] = +button.value;
 //     }
 //     this.item.update({"system.fireModes": fireModes})
-//   }
-// }
-
-// class ItemSheetArmour extends TheEdgeItemSheet {
-//   static get defaultOptions() {
-//     return foundry.utils.mergeObject(super.defaultOptions, {
-//       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "details"}],
-//     });
-//   }
-
-//   async getData(options) {
-//     const context = await super.getData(options);
-//     context.helpers = {bodyParts: Object.keys(THE_EDGE.cover_map)};
-//     return context;
-//   }
-
-//   activateListeners(html) {
-//     super.activateListeners(html)
-//     html.find(".attachment-edit").click(ev => this._onAttachmentEdit(ev));
-//     html.find(".attachment-detach").click(ev => this._onAttachmentDetach(ev));
-//   }
-
-//   _fetchAttachment(event) {
-//     const dataElement = $(event.currentTarget).parent()[0];
-
-//     const actorId = dataElement.dataset.actorId;
-//     const tokenId = dataElement.dataset.tokenId;
-//     const actor = Aux.getActor(actorId, tokenId)
-
-//     const attachmentId = dataElement.dataset.attachmentId;
-//     return actor.items.get(attachmentId);
-//   }
-
-//   _onAttachmentEdit(event) {
-//     const attachment = this._fetchAttachment(event);
-//     attachment.sheet.render(true);
-//   }
-
-//   _onAttachmentDetach(event) {
-//     const attachment = this._fetchAttachment(event);
-//     attachment.update({"system.equipped": false, "system.attachments": []});
-//     Aux.detachFromParent(this.item, attachment._id, attachment.system.attachmentPoints.max);
-//     this.render()
 //   }
 // }
 
