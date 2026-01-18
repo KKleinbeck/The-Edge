@@ -249,25 +249,17 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   }
 
   static async reload(_event, target) {
-    const weaponID = target.closest(".weapon-id").dataset.weaponId
-    const ammunition = []
-    let weapon = this.actor.items.get(weaponID);
-    for (const ammu of this.actor.itemTypes["Ammunition"]) {
-      let sys = ammu.system
-      let designatedWeapons = sys.designatedWeapons
-        .replace(/<[^>]*>?/gm, '') // Strip html tags
-        .split(",")
-        .map(x => x.trim())
-      if (designatedWeapons.includes(weapon.name)) {
-        ammunition.push(ammu);
-      } else if (sys.whitelist[sys.type][weapon.system.type]) ammunition.push(ammu);
-    }
+    const weaponID = target.closest(".weapon-id").dataset.weaponId;
+    const weapon = this.actor.items.get(weaponID);
+    const ammunitionOptions = this.actor.itemTypes["Ammunition"].filter(
+      x => x.system.whitelist[x.system.type][weapon.system.type]
+    );
 
     await DialogReload.start({
       weaponID: weaponID,
       actor: this.actor,
       weapon: weapon,
-      ammunition: ammunition
+      ammunitionOptions: ammunitionOptions
     })
   }
 

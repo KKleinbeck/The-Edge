@@ -82,8 +82,8 @@ export default function() {
       if (weapon.system.type == "Hand-to-Hand combat") return "";
       for (const ammu of actor.itemTypes["Ammunition"]) {
         if (ammu.id == weapon.system.ammunitionID) {
-          let asc = ammu.system.capacity;
-          return `(${asc.max - asc.used} / ${asc.max})`;
+          const asc = ammu.system.capacity;
+          return `(${asc.value} / ${asc.max})`;
         }
       }
       return "(empty)";
@@ -118,7 +118,7 @@ export default function() {
     getSizeModifier: (size) => {
       return `(${THE_EDGE.sizeModifiers[size][0]} / ${THE_EDGE.sizeModifiers[size][1]})`
     },
-    getAmmunitionCount: (a) => {return `(${a.system.capacity.max - a.system.capacity.used} / ${a.system.capacity.max})`},
+    getAmmunitionCount: (a) => {return `(${a.system.capacity.value} / ${a.system.capacity.max})`},
     getStructurePoints: (a) => {return `(${a.system.structurePoints})`},
     getAttachmentDetails: (actorId, tokenId, shellId) => {
       const actor = Aux.getActor(actorId, tokenId);
