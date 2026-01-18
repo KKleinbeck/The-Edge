@@ -130,15 +130,17 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
 
   async minimize() {
     super.minimize();
-    const headerImgs = this.element.getElementsByClassName("item-header-frame-tag");
-    if (headerImgs.length) {
-      headerImgs[0].outerHTML = `
+    const headers = this.element.getElementsByClassName("item-header-frame-tag");
+    if (headers.length) {
+      headers[0].outerHTML = `
         <div class="item-header-frame-tag" style="display: flex; gap: 10px; width: 100%; align-items: center;">
           <img class="item-header-img-minimised" src="${this.item.img}"/>
           ${this.item.name}
         </div>
       `
     }
+    const footers = this.element.getElementsByClassName("item-footer");
+    if (footers.length) { footers[0].innerHTML = "";}
   }
 
   async maximize() {
@@ -180,6 +182,10 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
       context.definedEffects[group].critFail = undefined;
     }
     return context;
+  }
+
+  _onRender(context, options) {
+    super._onRender(context, options);
   }
 
   // _getSubmitData(updateData) {
@@ -235,6 +241,9 @@ class ItemSheetAmmunition extends TheEdgeItemSheet {
     const context = await super._prepareContext(options);
     context.designatedWeaponsHTML = context.item.system.designatedWeapons
     context.types = this._setTypesDict();
+    context.subtypes = this._setSubtypesDict();
+    context.subtypeIsArbitrary = !THE_EDGE.ammunitionSubtypes.includes(this.item.system.subtype);
+    context.dynamicSubtype = context.subtypeIsArbitrary ? this.item.system.subtype : "";
     return context;
   }
 
@@ -248,14 +257,35 @@ class ItemSheetAmmunition extends TheEdgeItemSheet {
     }
     return types;
   }
+
+  _setSubtypesDict() {
+    const subtypes = {};
+    for (const type of THE_EDGE.ammunitionSubtypes) {
+      subtypes[type] =  {
+        icon: `systems/the_edge/icons/armour/energy.png`,
+        selected: type==this.item.system.subtype
+      }
+    }
+    return subtypes;
+  }
   
   onIconSelected(iconType, value) {
+    console.log(iconType, value)
     switch (iconType) {
       case "type":
         this.item.system.type = value;
+        this.updateIcons(iconType, this._setTypesDict());
+        break;
+      
+      case "subtype":
+        this.item.system.subtype = value;
+        this.updateIcons(
+          iconType, this._setSubtypesDict(),
+          THE_EDGE.ammunitionSubtypes.includes(value) ? "" : value
+        );
         break;
     }
-    this.updateIcons(iconType, this._setTypesDict());
+    this.item.update({"system": this.item.system}, {render: false});
   }
 }
 

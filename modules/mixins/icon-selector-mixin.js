@@ -6,23 +6,46 @@ export default function IconSelectorMixin(BaseApplication) {
       }
     }
 
+    _onRender(context, options) {
+      super._onRender(context, options)
+      this.element.querySelector(".dynamic-icon")?.addEventListener("click", ev => {
+        this.onIconSelected(ev.currentTarget.dataset.iconType, ev.currentTarget.value);
+      })
+      this.element.querySelector(".dynamic-icon")?.addEventListener("change", ev => {
+        const selection = ev.currentTarget.value;
+        this.onIconSelected(ev.currentTarget.dataset.iconType, selection);
+      })
+      this.element.querySelector(".dynamic-icon")?.addEventListener("keypress", ev => {
+        // Prevent Enter events, as this somehow triggers buttons
+        // The change is still registered
+        if (ev.key === "Enter") ev.preventDefault();
+      })
+    }
+
     static async _onIconSelected(_event, target) {
       const iconType = target.dataset.iconType;
       const value = target.dataset.value;
-      console.log("Icon clicked", iconType, value)
       this.onIconSelected(iconType, value);
     }
 
     onIconSelected(iconType, value) {}
 
-    updateIcons(iconType, details) {
+    updateIcons(iconType, details, dynamicValue = "") {
       const iconButtons = this.element.querySelectorAll(
-        `.icon-selector[data-icon-type="${iconType}"]`
+        `[data-icon-type="${iconType}"]`
       );
       for (const iconButton of iconButtons) {
-        iconButton.classList = "icon-selector"
+        // console.log(iconButton.tagName)
+        iconButton.classList.remove("icon-selector-selected");
         if (details[iconButton.dataset.value]?.selected) {
-          iconButton.classList += " icon-selector-selected"
+          iconButton.classList.add("icon-selector-selected")
+        }
+        else if (iconButton.tagName === "INPUT") {
+          const dynamicSelection = !Object.values(details).reduce(
+            (acc, val) => acc = acc | val.selected, false
+          ); // No static element is selected
+          if (dynamicSelection) iconButton.classList.add("icon-selector-selected");
+          iconButton.value = dynamicValue;
         }
       }
     }

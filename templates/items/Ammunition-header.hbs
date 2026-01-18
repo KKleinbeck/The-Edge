@@ -1,24 +1,34 @@
 <header class="sheet-header-item">
   <div class="item-columned-page">
-    <div class="item-header-fields" style="padding-top: 12px; min-width: 37%;">
-      <div style="display: flex;">
-        <div style="display: flex; padding: 0 3px 0 3px; gap: 5px; align-items: end;">
-          {{#each types as |details type|}}
-            {{>
-              systems/the_edge/templates/generic/icon-selector.hbs
-              icon=details.icon iconType="type" value=type selected=details.selected
-            }}
-          {{/each}}
-        </div>
-        <div style="width: 45%;">
+    <div style="flex: 1; padding-top: 5px;">
+      <div class="icon-selector-row" style="padding: 0 30px 0 30px;">
+        {{#each types as |details type|}}
           {{>
-            systems/the_edge/templates/generic/progress-bar-modern.hbs
-            value=item.system.capacity.value valueEditable=true valueDataPath="system.capacity.value"
-            max=item.system.capacity.max maxEditable=true maxDataPath="system.capacity.max"
-            name=(genName "Capacity") textScale=1.2
+            systems/the_edge/templates/generic/icon-selector.hbs
+            icon=details.icon iconType="type" value=type selected=details.selected
           }}
+        {{/each}}
+      </div>
+      <div class="icon-selector-row">
+        {{#each subtypes as |details type|}}
+          {{>
+            systems/the_edge/templates/generic/icon-selector.hbs
+            icon=details.icon iconType="subtype" value=type selected=details.selected
+          }}
+        {{/each}}
+        <div class="icon-selector-outer">
+          <input class="dynamic-icon icon-selector-text {{#if subtypeIsArbitrary}}icon-selector-selected{{/if}}"
+            value="{{dynamicSubtype}}" placeholder="{{genName 'Other'}}" data-icon-type="subtype"/>
         </div>
       </div>
+    </div>
+    <div style="flex: 1; padding-top: 15px;">
+      {{>
+        systems/the_edge/templates/generic/progress-bar-modern.hbs
+        value=item.system.capacity.value valueEditable=true valueDataPath="system.capacity.value"
+        max=item.system.capacity.max maxEditable=true maxDataPath="system.capacity.max"
+        name=(genName "Capacity") textScale=1.2
+      }}
     </div>
   </div>
 </header>
