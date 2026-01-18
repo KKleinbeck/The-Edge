@@ -250,6 +250,8 @@ h1, h2, h3, h4 {
 }
 .the_edge .icon-selector-text {
   text-align: right;
+  padding-right: 5px;
+  height: 28px;
   width: 55px;
   border: 3px solid black;
   border-radius: 20px;
@@ -335,13 +337,25 @@ button {
   color: var(--font-main-color) !important;
 }
 input {
-  height: 24px !important;
-  background-color: rgba(255,255,255, 0.2) !important;
-  border-color: rgb(86, 86, 253) !important;
-  border-width: 1.333px !important;
-  border-radius: 5px !important;
+  height: 24px;
+  padding-right: 3px;
+  background-color: rgba(255,255,255, 0.2);
+  border-color: rgb(86, 86, 253);
+  border-width: 1.333px;
+  border-radius: 5px;
   font-family: "Titillium-Regular";
-  color: var(--font-main-color) !important;
+  color: var(--font-main-color);
+}
+input[type="checkbox"] {
+  background: none;
+}
+input[type="checkbox"]::before {
+  color: rgb(86, 86, 253);
+  font-weight: 400;
+}
+input[type="checkbox"]::after {
+  color: var(--color-background-night-black);
+  font-weight: 100;
 }
 input::placeholder {
   color: var(--font-secondary-color);

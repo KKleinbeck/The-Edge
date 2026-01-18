@@ -234,6 +234,19 @@ class ItemSheetAmmunition extends TheEdgeItemSheet {
   static PARTS = {...TheEdgeItemSheet.PARTS,
     form: {
       template: `systems/the_edge/templates/items/Ammunition-header.hbs`
+    },
+    details: {
+      template: "systems/the_edge/templates/items/Ammunition-details.hbs"
+    },
+  }
+
+  static TABS = {
+    primary: {
+      tabs: [
+        {id: "details"}, {id: "description"},
+      ],
+      labelPrefix: "TABS",
+      initial: "details",
     }
   }
 

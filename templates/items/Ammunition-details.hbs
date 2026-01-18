@@ -1,0 +1,44 @@
+<section
+  class="tab {{tabs.details.cssClass}}"
+  data-group="primary"
+  data-tab="details"
+  style="overflow-y: auto; overflow-x: hidden"
+>
+  <div class="item-columned-page" style="justify-content: space-between;">
+    <div class="item-field" style="width: 130px;">
+      <b>{{combatName "Combat stats"}}</b><br />
+      <input type="number" id="damage-bonus" name="system.damage.bonus" value="{{item.system.damage.bonus}}" style="width: 25px; height: 20px; text-align: right; margin-top: 3px;"/>
+      <label for="damage-bonus">{{genName "Damage"}}</label><br />
+      <input type="number" id="penetr-bonus" name="system.damage.penetration" value="{{item.system.damage.penetration}}" style="width: 25px; height: 20px; text-align: right; margin-top: 3px;"/>
+      <label for="penetr-bonus">{{genName "Penetration"}}</label>
+      <div style="white-space: nowrap; display: inline-block; align-self: flex-end;">
+        <input type="number" id="reload-duration" name="system.reloadDuration" value="{{item.system.reloadDuration}}" title="{{combatName 'reload duration extension'}}" style="width: 25px; height: 20px; text-align: right; margin-top: 3px;"/>
+        <label for="reload-duration">{{combatName "Reload duration"}}</label>
+      </div>
+    </div>
+    <div class="item-field">
+      <b>{{genName "Range modifiers"}}</b><br />
+      {{#each item.system.modifiers as |mods range|}}
+        <div style="flex: 1; padding-bottom: 2px;">
+          {{#each mods as |mod|}}
+            <input type="number" name="system.modifiers.{{range}}" value="{{mod}}" style="width: 23px; height: 20px; text-align: right;"/>
+          {{/each}}
+          {{genRange range}}
+        </div>
+      {{/each}}
+    </div>
+    <div class="item-field" style="width: 130px;">
+      <b>{{genName "Available for"}}</b>
+      {{#each item.system.whitelist as |candidates type|}}
+        {{#if (checkEqual type ../item.system.type)}}
+          {{#each candidates as |val weapon|}}
+            <div class="checkbox-container" style="padding-bottom: 5px;">
+              <input type="checkbox" id="is-{{weapon}}" name="system.whitelist.{{type}}.{{weapon}}" {{#if val}}checked{{/if}} style="width: 16px; height: 16px; margin: 0px;"/>
+              <label for="is-{{weapon}}">{{combatName weapon}}</label>
+            </div>
+          {{/each}}
+        {{/if}}
+      {{/each}}
+    </div>
+  </div>
+</section>
