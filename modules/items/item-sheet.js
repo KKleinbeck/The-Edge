@@ -195,8 +195,8 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
     this.item.update({"system.effects": effects});
   }
 
-  async _modifyEffect(ev) {
-    const button = ev.currentTarget;
+  async _modifyEffect(event, _target) {
+    const button = event.currentTarget;
     const index = button.dataset.index;
     const effects = this.item.system.effects;
     const target = button.dataset.target;
@@ -292,6 +292,8 @@ class ItemSheetArmour extends TheEdgeItemSheet {
   static DEFAULT_OPTIONS = {...TheEdgeItemSheet.DEFAULT_OPTIONS,
     actions: {
       ...TheEdgeItemSheet.DEFAULT_OPTIONS.actions,
+      detachAttachment: ItemSheetArmour._detachAttachment,
+      editAttachment: ItemSheetArmour._editAttachment,
     }
   }
 
@@ -305,9 +307,9 @@ class ItemSheetArmour extends TheEdgeItemSheet {
     details: {
       template: "systems/the_edge/templates/items/Armour-details.hbs"
     },
-  // {{#if (checkEqual item.system.layer "Inner")}}
-  //   {{> systems/the_edge/templates/items/meta-attachments.html}}
-  // {{/if}}
+    attachments: {
+      template: "systems/the_edge/templates/items/meta-attachments.hbs"
+    }
   }
 
   static TABS = {
@@ -317,10 +319,21 @@ class ItemSheetArmour extends TheEdgeItemSheet {
       ],
       labelPrefix: "TABS",
       initial: "details",
-    }
+    },
+  }
+
+  constructor (options) {
+    super(options);
   }
 
   async _prepareContext(options) {
+    if (this.item.system.attachments.length) {
+      this.constructor.TABS.primary.tabs.push({id: "attachments"})
+    } else {
+      this.constructor.TABS.primary.tabs =
+        this.constructor.TABS.primary.tabs.filter(x => x.id != "attachments");
+      if (this.tabGroups.primary == "attachments") this.tabGroups.primary = "details";
+    }
     const context = await super._prepareContext(options);
     context.types = this._setTypesDict();
     return context;
@@ -347,14 +360,8 @@ class ItemSheetArmour extends TheEdgeItemSheet {
     this.item.update({"system": this.item.system}, {render: false});
   }
 
-  // _onRender(context, options) {
-  //   super._onRender(context, options);
-  //   this.element.find(".attachment-edit").click(ev => this._onAttachmentEdit(ev));
-  //   this.element.find(".attachment-detach").click(ev => this._onAttachmentDetach(ev));
-  // }
-
-  _fetchAttachment(event) {
-    const dataElement = $(event.currentTarget).parent()[0];
+  _fetchAttachment(target) {
+    const dataElement = target.parentElement;
 
     const actorId = dataElement.dataset.actorId;
     const tokenId = dataElement.dataset.tokenId;
@@ -364,13 +371,14 @@ class ItemSheetArmour extends TheEdgeItemSheet {
     return actor.items.get(attachmentId);
   }
 
-  _onAttachmentEdit(event) {
-    const attachment = this._fetchAttachment(event);
+  static _editAttachment(_event, target) {
+    console.log("TEST")
+    const attachment = this._fetchAttachment(target);
     attachment.sheet.render(true);
   }
 
-  _onAttachmentDetach(event) {
-    const attachment = this._fetchAttachment(event);
+  static _detachAttachment(_event, target) {
+    const attachment = this._fetchAttachment(target);
     attachment.update({"system.equipped": false, "system.attachments": []});
     Aux.detachFromParent(this.item, attachment._id, attachment.system.attachmentPoints.max);
     this.render()

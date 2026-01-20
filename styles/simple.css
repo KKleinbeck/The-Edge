@@ -378,6 +378,7 @@ optgroup{
 select {
   background-image: url("../assets/background.png") !important;
   color: var(--font-main-color) !important;
+  border-color: rgb(86, 86, 253);
 }
 .application select option {
   background-color: #2A395A;
