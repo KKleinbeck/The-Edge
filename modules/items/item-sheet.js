@@ -55,12 +55,12 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
     foundry.documents.collections.Items.registerSheet("the_edge", TheEdgeItemSheet, { makeDefault: true });
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetAmmunition, { makeDefault: true, types: ["Ammunition"] });
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetArmour, { makeDefault: true, types: ["Armour"] });
+    // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetConsumables, { makeDefault: true, types: ["Consumables"] });
     // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetWeapon, { makeDefault: true, types: ["Weapon"] });
     // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetVantage, { makeDefault: true, types: ["Advantage", "Disadvantage"] });
-    // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetSkill, { makeDefault: true, types: ["Skill", "Combatskill", "Medicalskill"] });
+    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetSkill, { makeDefault: true, types: ["Skill", "Combatskill", "Medicalskill"] });
     // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetLanguage, { makeDefault: true, types: ["Languageskill"] });
     // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetGear, { makeDefault: true, types: ["Gear"] });
-    // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetConsumables, { makeDefault: true, types: ["Consumables"] });
     // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetCredits, { makeDefault: true, types: ["Credits"] });
     // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetWounds, { makeDefault: true, types: ["Wounds"] });
     // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetEffect, { makeDefault: true, types: ["Effect"] });
@@ -322,10 +322,6 @@ class ItemSheetArmour extends TheEdgeItemSheet {
     },
   }
 
-  constructor (options) {
-    super(options);
-  }
-
   async _prepareContext(options) {
     if (this.item.system.attachments.length) {
       this.constructor.TABS.primary.tabs.push({id: "attachments"})
@@ -382,6 +378,169 @@ class ItemSheetArmour extends TheEdgeItemSheet {
     attachment.update({"system.equipped": false, "system.attachments": []});
     Aux.detachFromParent(this.item, attachment._id, attachment.system.attachmentPoints.max);
     this.render()
+  }
+}
+
+class ItemSheetSkill extends TheEdgeItemSheet {
+  static DEFAULT_OPTIONS = {...TheEdgeItemSheet.DEFAULT_OPTIONS,
+    actions: {
+      ...TheEdgeItemSheet.DEFAULT_OPTIONS.actions,
+      addEffectLevel: ItemSheetSkill._addEffectLevel,
+      deleteEffectLevel: ItemSheetSkill._deleteEffectLevel
+    }
+  }
+
+  static PARTS = {...TheEdgeItemSheet.PARTS,
+    form: {
+      template: `systems/the_edge/templates/items/Skill-header.hbs`
+    },
+    details: {
+      template: `systems/the_edge/templates/items/Skill-details.hbs`
+    }
+  }
+
+  static TABS = {
+    primary: {
+      tabs: [
+        {id: "details"}, {id: "description"},
+      ],
+      labelPrefix: "TABS",
+      initial: "details",
+    },
+  }
+  
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    // context.helpers = {displayHint: this.options.displayHint};
+    context.coreRequirements = structuredClone(THE_EDGE.core_value_map);
+    context.coreRequirements.skills = {};
+    const skills = game.items.filter(x => x.type.toLowerCase().includes("skill"));
+    for (const skill of skills) {
+      context.coreRequirements.skills[skill.name] = skill.name;
+    }
+    return context;
+  }
+
+  _onRender(context, options) {
+    super._onRender(context, options)
+    // this.element.find(".effect-hint").click(ev => {
+    //   this.options.displayHint = !this.options.displayHint;
+    //   this._render()
+    // });
+    this.element.querySelectorAll(".max-level")?.forEach(
+      x => x.addEventListener("change", ev => this._onMaxLevelChange(ev))
+    )
+    this.element.querySelectorAll(".effect-level-modify")?.forEach(
+      x => x.addEventListener("change", ev => this._onLevelModify(ev))
+    )
+  }
+
+  _onMaxLevelChange(ev) {
+    console.log(ev)
+    const maxLevel = ev.target.value;
+    const le = this.item.system.levelEffects;
+    const re = this.item.system.requirements;
+    if (le.length >= maxLevel) {
+      this.item.update({
+        "system.maxLevel": maxLevel, "system.levelEffects": le.slice(0, maxLevel),
+        "system.requirements": re.slice(0, maxLevel)
+      })
+    } else {
+      for (let i = le.length; i < maxLevel ; ++i) {
+        le.push([])
+        re.push([])
+      }
+      this.item.update({
+        "system.maxLevel": maxLevel, "system.levelEffects": le,
+        "system.requirements": re
+      });
+    }
+  }
+
+  static _addEffectLevel(_event, target) {
+    const dataHtml = target.closest(".effect-level");
+    const level = dataHtml.dataset.index;
+    const type = dataHtml.dataset.type;
+    const targetList = this.item.system[type];
+    targetList[level].push({group: "attributes", name: "end", value: 0});
+    if (type == "levelEffects") this.item.update({"system.levelEffects": targetList});
+    if (type == "requirements") this.item.update({"system.requirements": targetList});
+  }
+
+  async _onLevelModify(ev) {
+    const button = ev.target;
+    const dataHtml = ev.target.closest(".effect-level");
+    const type = dataHtml.dataset.type;
+
+    const targetList = this.item.system[type];
+    const level = dataHtml.dataset.index;
+    const index = button.dataset.index;
+    const target = button.dataset.target;
+    targetList[level][index][target] = target == "value" ? parseInt(button.value) : button.value;
+    // The next line also sets the name to something sensible if the group changes
+    const context = await this._prepareContext();
+    if (target == "group") {
+      if (button.value == "others" || button.value == "statusEffects"){
+        targetList[level][index].name = Object.keys(context.definedEffects["others"])[0];
+      } else targetList[level][index].name = Object.keys(context.coreRequirements[button.value])[0];
+    }
+    if (type == "levelEffects") this.item.update({"system.levelEffects": targetList});
+    if (type == "requirements") this.item.update({"system.requirements": targetList});
+  }
+
+  static _deleteEffectLevel(_event, target) {
+    const dataHtml = target.closest(".effect-level");
+    const level = dataHtml.dataset.index;
+    const type = dataHtml.dataset.type;
+    const index = target.dataset.index;
+    const targetList = this.item.system[type];
+    targetList[level].splice(index, 1);
+    if (type == "levelEffects") this.item.update({"system.levelEffects": targetList});
+    if (type == "requirements") this.item.update({"system.requirements": targetList});
+  }
+}
+
+// class ItemSheetConsumables extends ItemSheetSkill {
+//   static DEFAULT_OPTIONS = {...TheEdgeItemSheet.DEFAULT_OPTIONS,
+//   }
+
+//   static PARTS = {...TheEdgeItemSheet.PARTS,
+//     form: {
+//       template: `systems/the_edge/templates/items/Consumables-header.hbs`
+//     },
+//     effects: {
+//       template: "systems/the_edge/templates/items/meta-effects.hbs"
+//     }, 
+//   }
+
+//   static TABS = {
+//     primary: {
+//       tabs: [
+//         {id: "effects"}, {id: "description"},
+//       ],
+//       labelPrefix: "TABS",
+//       initial: "details",
+//     },
+//   }
+
+//   async _prepareContext(options) {
+//     const context = await super._prepareContext(options);
+//     context.helpers = {
+//       medicineEffects: THE_EDGE.medicine_effects,
+//       displayHint: this.options.displayHint,
+//       damageTypes: Object.keys(THE_EDGE.bleeding_threshold)
+//     };
+//     return context;
+//   }
+// }
+
+class ItemSheetCredits extends TheEdgeItemSheet {
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      classes: ["the_edge", "sheet", "item-credits"],
+      height: 240,
+      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}],
+    });
   }
 }
 
@@ -459,109 +618,6 @@ class ItemSheetArmour extends TheEdgeItemSheet {
 //   }
 // }
 
-// class ItemSheetSkill extends TheEdgeItemSheet {
-//   static get defaultOptions() {
-//     return foundry.utils.mergeObject(super.defaultOptions, {
-//       displayHint: false,
-//       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}],
-//     });
-//   }
-  
-//   async getData(options) {
-//     const context = await super.getData(options);
-//     context.helpers = {displayHint: this.options.displayHint};
-//     context.coreRequirements = structuredClone(THE_EDGE.core_value_map);
-//     context.coreRequirements.skills = {};
-//     const skills = game.items.filter(x => x.type.toLowerCase().includes("skill"));
-//     for (const skill of skills) {
-//       context.coreRequirements.skills[skill.name] = skill.name;
-//     }
-//     return context;
-//   }
-
-//   activateListeners(html) {
-//     super.activateListeners(html)
-//     html.find(".effect-hint").click(ev => {
-//       this.options.displayHint = !this.options.displayHint;
-//       this._render()
-//     });
-//     html.find(".max-level").on("change", ev => this._onMaxLevelChange(ev));
-//     html.find(".effect-level-add").click(ev => this._onLevelAdd(ev));
-//     html.find(".effect-level-modify").on("change", ev => this._onLevelModify(ev));
-//     html.find(".effect-level-delete").click(ev => this._onLevelDelete(ev));
-//   }
-
-//   _onMaxLevelChange(ev) {
-//     const button = ev.currentTarget;
-//     let maxLevel = button.value;
-//     let le = this.item.system.levelEffects;
-//     let re = this.item.system.requirements;
-//     if (le.length >= maxLevel) {
-//       this.item.update({
-//         "system.maxLevel": maxLevel, "system.levelEffects": le.slice(0, maxLevel),
-//         "system.requirements": re.slice(0, maxLevel)
-//       })
-//     } else {
-//       for (let i = le.length; i < maxLevel ; ++i) {
-//         le.push([])
-//         re.push([])
-//       }
-//       this.item.update({
-//         "system.maxLevel": maxLevel, "system.levelEffects": le,
-//         "system.requirements": re
-//       });
-//     }
-//   }
-
-//   _onLevelAdd(ev) {
-//     const dataHtml = ev.currentTarget.closest(".effect-level");
-//     const level = dataHtml.dataset.index;
-//     const target = dataHtml.dataset.type;
-//     let targetList = this.item.system[target];
-//     targetList[level].push({group: "attributes", name: "end", value: 0});
-//     if (target == "levelEffects") this.item.update({"system.levelEffects": targetList});
-//     if (target == "requirements") this.item.update({"system.requirements": targetList});
-//   }
-
-//   async _onLevelModify(ev) {
-//     const button = ev.currentTarget;
-//     const dataHtml = ev.currentTarget.closest(".effect-level");
-//     const type = dataHtml.dataset.type;
-
-//     const targetList = this.item.system[type];
-//     const level = dataHtml.dataset.index;
-//     const index = button.dataset.index;
-//     const target = button.dataset.target;
-//     targetList[level][index][target] = target == "value" ? parseInt(button.value) : button.value;
-//     // The next line also sets the name to something sensible if the group changes
-//     const context = await this.getData();
-//     if (target == "group") {
-//       if (button.value == "others" || button.value == "statusEffects"){
-//         targetList[level][index].name = Object.keys(context.definedEffects["others"])[0];
-//       } else targetList[level][index].name = Object.keys(context.coreRequirements[button.value])[0];
-//     }
-//     if (type == "levelEffects") this.item.update({"system.levelEffects": targetList});
-//     if (type == "requirements") this.item.update({"system.requirements": targetList});
-//   }
-
-//   _onLevelDelete(ev) {
-//     const button = ev.currentTarget;
-//     const dataHtml = ev.currentTarget.closest(".effect-level");
-//     const level = dataHtml.dataset.index;
-//     const target = dataHtml.dataset.type;
-//     let index = button.dataset.index;
-//     let targetList = this.item.system[target];
-//     targetList[level].splice(index, 1);
-//     if (target == "levelEffects") this.item.update({"system.levelEffects": targetList});
-//     if (target == "requirements") this.item.update({"system.requirements": targetList});
-//     this._render();
-//   }
-
-//   get template() {
-//     return `systems/the_edge/templates/items/item-Skill.html`;
-//   }
-// }
-
 // class ItemSheetLanguage extends TheEdgeItemSheet {
 //   static get defaultOptions() {
 //     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -573,38 +629,6 @@ class ItemSheetArmour extends TheEdgeItemSheet {
 // class ItemSheetGear extends TheEdgeItemSheet {
 //   static get defaultOptions() {
 //     return foundry.utils.mergeObject(super.defaultOptions, {
-//       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}],
-//     });
-//   }
-// }
-
-// class ItemSheetConsumables extends ItemSheetSkill {
-//   static get defaultOptions() {
-//     return foundry.utils.mergeObject(super.defaultOptions, {
-//       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "effects"}],
-//     });
-//   }
-
-//   async getData(options) {
-//     const context = await super.getData(options);
-//     context.helpers = {
-//       medicineEffects: THE_EDGE.medicine_effects,
-//       displayHint: this.options.displayHint,
-//       damageTypes: Object.keys(THE_EDGE.bleeding_threshold)
-//     };
-//     return context;
-//   }
-
-//   get template() {
-//     return `systems/the_edge/templates/items/item-Consumables.html`;
-//   }
-// }
-
-// class ItemSheetCredits extends TheEdgeItemSheet {
-//   static get defaultOptions() {
-//     return foundry.utils.mergeObject(super.defaultOptions, {
-//       classes: ["the_edge", "sheet", "item-credits"],
-//       height: 240,
 //       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}],
 //     });
 //   }

@@ -1,0 +1,29 @@
+<header class="sheet-header-item">
+  <div class="item-columned-page">
+    <div style="flex: 1">
+      <div class="skill-header-fields" style="justify-content: space-between;">
+        <div>
+          <input class="max-level" type="number" id="maxLevel" value="{{item.system.maxLevel}}" style="text-align: right; width: 15%;"/>
+          <label for="maxLevel" style="white-space: nowrap;">{{genName "Max Level"}}</label>
+        </div>
+        {{#if (checkIn "basis" item.system)}}
+          <div style="display: flex; align-items: center;">
+            <label for="basis" style="white-space: nowrap; padding-left: 10px;">{{genName "Uses"}}</label>
+            <select class="selection-box" name="system.basis" id="basis" style="max-height: 24px;">
+              <option value="Medicine" {{#if (checkEqual "Medicine" item.system.basis)}}selected{{/if}}>{{proficiencyName "Medicine"}}</option>
+              <option value="First Aid" {{#if (checkEqual "First Aid" item.system.basis)}}selected{{/if}}>{{proficiencyName "First Aid"}}</option>
+            </select>
+          </div>
+        {{/if}}
+      </div>
+      <div class="skill-header-fields">
+        <input type="text" id="cost" name="system.cost" value="{{item.system.cost}}" style="text-align: right;"/>
+        <label for="cost" style="white-space: nowrap;">{{genName "PH Cost"}}</label>
+      </div>
+      <div class="skill-header-fields">
+        <input type="text" id="hrCost" name="system.hrCost" value="{{item.system.hrCost}}" style="text-align: right;"/>
+        <label for="hrCost" style="white-space: nowrap;">{{genName "HR Cost"}}</label>
+      </div>
+    </div>
+  </div>
+</header>

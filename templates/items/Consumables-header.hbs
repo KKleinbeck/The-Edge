@@ -1,0 +1,16 @@
+<header class="sheet-header-item">
+  <div class="item-columned-page">
+    <div style="flex: 1">
+      <div class="item-columned-page">
+        <div class="item-header-fields">
+          {{genName "Type"}}<br/>
+          <select class="selection-box" name="system.subtype" id="Type Selector">
+            {{#each item.system.subtypes as |details typeName|}}
+              <option value="{{typeName}}" {{#if (checkEqual ../item.system.subtype typeName)}}selected{{/if}}>{{itemName typeName}}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

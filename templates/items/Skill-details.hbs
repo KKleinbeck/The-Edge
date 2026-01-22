@@ -1,0 +1,63 @@
+<section
+  class="tab {{tabs.details.cssClass}}"
+  data-group="primary"
+  data-tab="details"
+  style="overflow-y: auto; overflow-x: hidden"
+>
+  <h3>{{genName "Effects"}}</h3>
+  {{#each item.system.levelEffects as |effectList|}}
+    <div class="effect-level" data-index="{{@index}}" data-type="levelEffects" style="display: flex; justify-content: space-between;">
+      <b>{{genName "Level"}} {{add @index 1}} {{genName "Effects"}}</b>
+      <a data-action="addEffectLevel" title="{{ itemName 'Create' }}" data-action="create"><i class="fas fa-plus"></i> {{ itemName "Add" }}</a>
+    </div>
+    <div class="effect-level" data-index="{{@index}}" data-type="levelEffects" style="padding-left: 10px;">
+      {{#each effectList as |effect|}}
+        <div class="item-columned-page" style="align-items: center;">
+          <select class="selection-box effect-level-modify" data-index="{{@index}}" data-target="group">
+            {{#each ../../definedEffects as |name group|}}
+              <option value="{{group}}" {{#if (checkEqual effect.group group)}}selected{{/if}}>{{genName group}}</option>
+            {{/each}}
+          </select>
+          <select class="selection-box effect-level-modify" data-index="{{@index}}" data-target="name" style="min-width: 50%;">
+            {{#each (getEntry ../../definedEffects effect.group) as |target name|}}
+              <option value="{{name}}" {{#if (checkEqual effect.name name)}}selected{{/if}}>{{effectRequirementName name effect.group}}</option>
+            {{/each}}
+          </select>
+          <input class="effect-level-modify" data-index="{{@index}}" type="number" data-target="value" value="{{effect.value}}" style="width: 45px; text-align: right;"/>
+          <a data-action="deleteEffectLevel" data-index="{{@index}}" title="{{ itemName 'delete' }}"><i class="fas fa-trash"></i></a>
+        </div>
+      {{/each}}
+    </div>
+    {{#unless @last}}
+      <hr />
+    {{/unless}}
+  {{/each}}
+  <h3>{{genName "Requirements"}}</h3>
+  {{#each item.system.requirements as |levelRequirements|}}
+    <div class="effect-level" data-index="{{@index}}" data-type="requirements" style="display: flex; justify-content: space-between;">
+      <b>Level {{add @index 1}} {{genName "Requirements"}}</b>
+      <a data-action="addEffectLevel" title="{{ itemName 'Create' }}" data-action="create"><i class="fas fa-plus"></i> {{ itemName "Add" }}</a>
+    </div>
+    <div class="effect-level" data-index="{{@index}}" data-type="requirements" style="padding-left: 10px;">
+      {{#each levelRequirements as |requirement|}}
+        <div class="item-columned-page" style="align-items: center;">
+          <select class="selection-box effect-level-modify" data-index="{{@index}}" data-target="group">
+            {{#each ../../coreRequirements as |name group|}}
+              <option value={{group}} {{#if (checkEqual requirement.group group)}}selected{{/if}}>{{genName group}}</option>
+            {{/each}}
+          </select>
+          <select class="selection-box effect-level-modify" data-index="{{@index}}" data-target="name" style="min-width: 50%;">
+            {{#each (getEntry ../../coreRequirements requirement.group) as |target name|}}
+              <option value="{{name}}" {{#if (checkEqual requirement.name name)}}selected{{/if}}>{{effectRequirementName name requirement.group}}</option>
+            {{/each}}
+          </select>
+          <input class="effect-level-modify" data-index="{{@index}}" data-target="value" type="number" value="{{requirement.value}}" style="width: 45px; text-align: right;"/>
+          <a data-action="deleteEffectLevel" data-index="{{@index}}" title="{{ itemName 'delete' }}"><i class="fas fa-trash"></i></a>
+        </div>
+      {{/each}}
+    </div>
+    {{#unless @last}}
+      <hr />
+    {{/unless}}
+  {{/each}}
+</section>
