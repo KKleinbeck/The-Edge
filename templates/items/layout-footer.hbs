@@ -22,18 +22,7 @@
   </svg>
 
   <div class="item-footer-content" style="height: {{pathHeight}}px;">
-    {{#if (checkNotUndefined weight)}}
-      <div class="item-footer-content-entry">
-        <input class="item-footer-input" type="number" name="system.weight" value="{{weight}}" data-dtype="Number"/>
-        kg
-      </div>
-    {{/if}}
-    {{#if (checkNotUndefined value)}}
-      <div class="item-footer-content-entry">
-        <input class="item-footer-input" type="number" name="system.value" value="{{value}}" data-dtype="Number"/>
-        <img src="systems/the_edge/icons/credits.png" style="height: 16px;"/>
-      </div>
-    {{/if}}
+    {{{content}}}
   </div>`
   <div class="window-resize-handle" title="{{genName 'Resize'}}"></div>
 </div>

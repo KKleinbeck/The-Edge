@@ -102,11 +102,31 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
     const html = await renderTemplate(
       template, {
           width: width, pathHeight: lineLength, path: path,
-          weight: this.item.system.weight,
-          value: this.item.system.value
+          content: this._footerContent()
         }
       );
     return html;
+  }
+
+  _footerContent() {
+    let content = "";
+    if (this.item.system.weight !== undefined) {
+      content += `
+        <div class="item-footer-content-entry">
+          <input class="item-footer-input" type="number" name="system.weight" value="${this.item.system.weight}" data-dtype="Number"/>
+          kg
+        </div>
+      `
+    }
+    if (this.item.system.value !== undefined) {
+      content += `
+        <div class="item-footer-content-entry">
+          <input class="item-footer-input" type="number" name="system.value" value="${this.item.system.value}" data-dtype="Number"/>
+          <img src="systems/the_edge/icons/credits.png" style="height: 16px;"/>
+        </div>
+      `
+    }
+    return content;
   }
 
   async _renderFrame(options) {
