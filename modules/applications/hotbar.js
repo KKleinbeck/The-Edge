@@ -1,4 +1,3 @@
-import THE_EDGE from "../system/config-the-edge.js"
 import LocalisationServer from "../system/localisation_server.js";
 import { TheEdgeActorSheet } from "../actors/actor-sheet.js";
 import { TheEdgePlayableSheet } from "../actors/playable-sheet.js";
@@ -91,6 +90,7 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
     context.weaponsScroll = context.equippedWeapons.length > this.nItemsShown;
     if (context.weaponsScroll) {
       const actualList = [];
+      // Add the weapons which are visible in the scroll list
       for (let i = 0; i < this.nItemsShown; i++) {
         actualList.push(context.equippedWeapons[
           (i + this.weaponSelectedIndex).mod(context.equippedWeapons.length)
@@ -98,6 +98,17 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
       }
       context.equippedWeapons = actualList;
     }
+    context.equippedWeapons.forEach(weapon => {
+      if (weapon.system.ammunitionID) {
+        // TODO: Refactor at Version 0.13.0
+        const ammunition = actor.items.get(weapon.system.ammunitionID);
+        const ammunitionMax = ammunition.system.capacity.max;
+        const ammunitionValue = ammunitionMax - ammunition.system.capacity.used;
+        weapon.ammunitionStatus = `(${ammunitionValue} / ${ammunitionMax})`;
+      } else {
+        weapon.ammunitionStatus = `(${LocalisationServer.localise("Empty", "Dialog")})`;
+      }
+    })
 
     context.consumables = [];
     for (const item of actor?.itemTypes["Consumables"] ?? []) {
@@ -147,7 +158,7 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
     const tokens = canvas.scene?.tokens ?? [];
     for (const token of tokens) {
       const actor = token.actor;
-      if (actor.isOwner && actor.type == "character") {
+      if (actor?.isOwner && actor?.type == "character") {
         this.token = token;
         return actor;
       }
