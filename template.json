@@ -268,7 +268,11 @@
       "medicine": { "healing": "0", "coagulation": "0", "effect": "heals", "actionCost": "1" },
       "grenade": {
         "blastDistance": [0, 0], "damage": ["0", "0"], "type": "kinetic",
-        "effects": {"blind": false, "deafen": false, "emp": false, "smoke": false, "shellShock": false}
+        "effects": {
+          "shellshock": {"active": false, "close": [], "far": []},
+          "emp": {"active": false, "close": [], "far": []},
+          "smoke": {"active": false}
+        }
       },
       "food": {}, "drugs": {}, "generic": {}
     },

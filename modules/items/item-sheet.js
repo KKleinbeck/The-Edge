@@ -1,6 +1,7 @@
 import THE_EDGE from "../system/config-the-edge.js";
 import IconSelectorMixin from "../mixins/icon-selector-mixin.js";
 import Aux from "../system/auxilliaries.js";
+import LocalisationServer from "../system/localisation_server.js";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ItemSheetV2 } = foundry.applications.sheets;
@@ -55,7 +56,7 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
     foundry.documents.collections.Items.registerSheet("the_edge", TheEdgeItemSheet, { makeDefault: true });
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetAmmunition, { makeDefault: true, types: ["Ammunition"] });
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetArmour, { makeDefault: true, types: ["Armour"] });
-    // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetConsumables, { makeDefault: true, types: ["Consumables"] });
+    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetConsumables, { makeDefault: true, types: ["Consumables"] });
     // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetWeapon, { makeDefault: true, types: ["Weapon"] });
     // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetVantage, { makeDefault: true, types: ["Advantage", "Disadvantage"] });
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetSkill, { makeDefault: true, types: ["Skill", "Combatskill", "Medicalskill"] });
@@ -95,7 +96,7 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
   async _dynamicFooter(width, height) {
     const lineLength = 0.5 * height;
     const path = `
-      M0 0 H${0.382*width - 0.5*lineLength} L${0.382*width + 0.5*lineLength} ${lineLength}
+      M0 0 H${0.32*width - 0.5*lineLength} L${0.32*width + 0.5*lineLength} ${lineLength}
       H${width - lineLength} L${width} 0
     `
     const template = "systems/the_edge/templates/items/layout-footer.hbs";
@@ -120,7 +121,7 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
     }
     if (this.item.system.value !== undefined) {
       content += `
-        <div class="item-footer-content-entry">
+        <div class="item-footer-content-entry" style="margin-right: 10px;">
           <input class="item-footer-input" type="number" name="system.value" value="${this.item.system.value}" data-dtype="Number"/>
           <img src="systems/the_edge/icons/credits.png" style="height: 16px;"/>
         </div>
@@ -216,17 +217,25 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
   }
 
   async _modifyEffect(event, _target) {
-    const button = event.currentTarget;
-    const index = button.dataset.index;
+    const change = await this._getEffectData(event.currentTarget);
     const effects = this.item.system.effects;
-    const target = button.dataset.target;
-    effects[index][target] = target == "value" ? parseInt(button.value) : button.value;
-    // The next line also sets the name to something sensible if the group changes
-    const context = await this._prepareContext();
-    if (target == "group") {
-      effects[index].name = Object.keys(context.definedEffects[button.value])[0];
+    const index = event.currentTarget.dataset.index;
+    for (const [key, value] of Object.entries(change)) {
+      effects[index][key] = value;
     }
     this.item.update({"system.effects": effects});
+  }
+
+  async _getEffectData(target) {
+    const field = target.dataset.field;
+    const result = {};
+    result[field] = field == "value" ? parseInt(target.value) : target.value;
+    // The next line also sets the name to something sensible if the group changes
+    const context = await this._prepareContext();
+    if (field == "group") {
+      result.name = Object.keys(context.definedEffects[target.value])[0];
+    }
+    return result;
   }
 
   static _deleteEffect(_event, target) {
@@ -388,7 +397,6 @@ class ItemSheetArmour extends TheEdgeItemSheet {
   }
 
   static _editAttachment(_event, target) {
-    console.log("TEST")
     const attachment = this._fetchAttachment(target);
     attachment.sheet.render(true);
   }
@@ -456,7 +464,6 @@ class ItemSheetSkill extends TheEdgeItemSheet {
   }
 
   _onMaxLevelChange(ev) {
-    console.log(ev)
     const maxLevel = ev.target.value;
     const le = this.item.system.levelEffects;
     const re = this.item.system.requirements;
@@ -520,39 +527,174 @@ class ItemSheetSkill extends TheEdgeItemSheet {
   }
 }
 
-// class ItemSheetConsumables extends ItemSheetSkill {
-//   static DEFAULT_OPTIONS = {...TheEdgeItemSheet.DEFAULT_OPTIONS,
-//   }
+class ItemSheetConsumables extends TheEdgeItemSheet {
+  static DEFAULT_OPTIONS = {...TheEdgeItemSheet.DEFAULT_OPTIONS,
+    actions: {...TheEdgeItemSheet.DEFAULT_OPTIONS.actions,
+      createGrenadeEffect: ItemSheetConsumables._createGrenadeEffect,
+      deleteGrenadeEffect: ItemSheetConsumables._deleteGrenadeEffect,
+    }
+  }
 
-//   static PARTS = {...TheEdgeItemSheet.PARTS,
-//     form: {
-//       template: `systems/the_edge/templates/items/Consumables-header.hbs`
-//     },
-//     effects: {
-//       template: "systems/the_edge/templates/items/meta-effects.hbs"
-//     }, 
-//   }
+  static PARTS = {...TheEdgeItemSheet.PARTS,
+    form: {
+      template: `systems/the_edge/templates/items/Consumables-header.hbs`
+    },
+    effects: {
+      template: "systems/the_edge/templates/items/meta-effects.hbs"
+    }, 
+  }
 
-//   static TABS = {
-//     primary: {
-//       tabs: [
-//         {id: "effects"}, {id: "description"},
-//       ],
-//       labelPrefix: "TABS",
-//       initial: "details",
-//     },
-//   }
+  static TABS = {
+    primary: {
+      tabs: [
+        {id: "effects"}, {id: "description"},
+      ],
+      labelPrefix: "TABS",
+      initial: "description",
+    },
+  }
 
-//   async _prepareContext(options) {
-//     const context = await super._prepareContext(options);
-//     context.helpers = {
-//       medicineEffects: THE_EDGE.medicine_effects,
-//       displayHint: this.options.displayHint,
-//       damageTypes: Object.keys(THE_EDGE.bleeding_threshold)
-//     };
-//     return context;
-//   }
-// }
+  _footerContent() {
+    let content = super._footerContent();
+    content += `
+      <select class="selection-box" name="system.subtype" id="Type Selector"
+        style="padding-left: 1px; padding-right: 1px;" data-dtype="String">`;
+    for (const typeName of Object.keys(this.item.system.subtypes)) {
+      const selected = this.item.system.subtype == typeName ? "selected" : "";
+      content += `<option value="${typeName}" ${selected}>${LocalisationServer.localise(typeName, "Item")}</option>`
+    }
+    content += `</select>`;
+    return content;
+  }
+
+  async render(options={}, _options={}) {
+    // Disable effects for generic
+    if (this.item.system.subtype != "generic") {
+      this.constructor.TABS.primary.tabs = [{id: "effects"}, {id: "description"}];
+    } else {
+      this.constructor.TABS.primary.tabs =
+        this.constructor.TABS.primary.tabs.filter(x => x.id != "effects");
+      if (this.tabGroups.primary == "effects") this.tabGroups.primary = "details";
+    }
+    
+    // Special Effects tab for Grenades
+    if (this.item.system.subtype == "grenade") {
+        this.constructor.PARTS.effects.template = "systems/the_edge/templates/items/Grenade-effects.hbs";
+    } else {
+        this.constructor.PARTS.effects.template = "systems/the_edge/templates/items/meta-effects.hbs";
+    }
+
+    // Remove non necessary headers
+    switch (this.item.system.subtype) {
+      case "drugs":
+      case "food":
+      case "generic":
+        this.constructor.PARTS.form.template = "systems/the_edge/templates/items/meta-no-header.hbs";
+        break;
+      case "grenade":
+      case "medicine":
+        this.constructor.PARTS.form.template = "systems/the_edge/templates/items/Consumables-header.hbs";
+        break;
+    }
+    super.render(options, _options);
+  }
+
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    context.grenadeEffects = this._grenadeEffects();
+    context.helpers = {
+      medicineEffects: THE_EDGE.medicine_effects,
+      displayHint: this.options.displayHint,
+      damageTypes: THE_EDGE.combat_damage_types
+    };
+    return context;
+  }
+
+  _onRender(context, options) {
+    super._onRender(context, options)
+    this._attachGrenadeListener();
+  }
+
+  _grenadeEffects() {
+    const grenadeEffects = {
+      smoke: {render: "solid", icon: "cloud"},
+      emp: {render: "regular", icon: "bolt-lightning"},
+      shellshock: {render: "solid", icon: "person-falling-burst"}
+    };
+    for (const effect of Object.keys(grenadeEffects)) {
+      grenadeEffects[effect].selected = this.item.system.subtypes.grenade.effects[effect].active;
+    }
+    return grenadeEffects;
+  }
+
+  async onIconSelected(iconType, value) {
+    switch (iconType) {
+      case "grenadeEffect":
+        const effects = structuredClone(this.item.system.subtypes.grenade.effects);
+        const target = "system.subtypes.grenade.effects"
+        effects[value].active = !effects[value].active;
+
+        const update = {};
+        update[target] = effects;
+        await this.item.update(update, {render: false});
+        this._drawGrenadeEffects();
+        this.updateIcons(iconType, this._grenadeEffects());
+    }
+  }
+
+  static async _createGrenadeEffect(_event, target) {
+    const data = target.closest(".effect-data").dataset;
+    const effects = structuredClone(this.item.system.subtypes.grenade.effects);
+    effects[data.category][data.distance].push({group: "attributes", name: "end", value: 0});
+    const update = {};
+    update["system.subtypes.grenade.effects"] = effects;
+    await this.item.update(update, {render: false});
+    this._drawGrenadeEffects()
+  }
+
+  static async _deleteGrenadeEffect(_event, target) {
+    const data = target.closest(".effect-data").dataset;
+    const index = target.dataset.index;
+    const effects = structuredClone(this.item.system.subtypes.grenade.effects);
+    effects[data.category][data.distance].splice(index, 1);
+    const update = {};
+    update["system.subtypes.grenade.effects"] = effects;
+    await this.item.update(update, {render: false});
+    this._drawGrenadeEffects()
+  }
+
+  async _modifyGrenadeEffect(target) {
+    const index = target.dataset.index;
+    const data = target.closest(".effect-data").dataset;
+    const effects = this.item.system.subtypes.grenade.effects[data.category][data.distance];
+
+    const effectData = await this._getEffectData(target);
+    for (const [key, value] of Object.entries(effectData)) {
+      effects[index][key] = value;
+    }
+
+    const field = `system.subtypes.grenade.effects.${data.category}.${data.distance}`;
+    const update = {};
+    update[field] = effects;
+    await this.item.update(effects, {render: false});
+    this._drawGrenadeEffects();
+  }
+
+  async _drawGrenadeEffects() {
+    const template = "systems/the_edge/templates/items/Grenade-effects.hbs";
+    const html = await renderTemplate(template, await this._prepareContext());
+
+    const grenadeEffectsHTML = this.element.querySelector(".grenade-effects");
+    grenadeEffectsHTML.outerHTML = html;
+    this._attachGrenadeListener();
+  }
+
+  _attachGrenadeListener() {
+    this.element.querySelectorAll(".grenade-effect-modify")?.forEach(
+      x => x.addEventListener("change", ev => this._modifyGrenadeEffect(ev.target))
+    );
+  }
+}
 
 class ItemSheetCredits extends TheEdgeItemSheet {
   static get defaultOptions() {

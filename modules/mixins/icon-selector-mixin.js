@@ -12,8 +12,7 @@ export default function IconSelectorMixin(BaseApplication) {
         this.onIconSelected(ev.currentTarget.dataset.iconType, ev.currentTarget.value);
       })
       this.element.querySelector(".dynamic-icon")?.addEventListener("change", ev => {
-        const selection = ev.currentTarget.value;
-        this.onIconSelected(ev.currentTarget.dataset.iconType, selection);
+        this.onIconSelected(ev.currentTarget.dataset.iconType, ev.currentTarget.value);
       })
       this.element.querySelector(".dynamic-icon")?.addEventListener("keypress", ev => {
         // Prevent Enter events, as this somehow triggers buttons
@@ -22,7 +21,7 @@ export default function IconSelectorMixin(BaseApplication) {
       })
     }
 
-    static async _onIconSelected(_event, target) {
+    static _onIconSelected(_event, target) {
       const iconType = target.dataset.iconType;
       const value = target.dataset.value;
       this.onIconSelected(iconType, value);
@@ -35,7 +34,6 @@ export default function IconSelectorMixin(BaseApplication) {
         `[data-icon-type="${iconType}"]`
       );
       for (const iconButton of iconButtons) {
-        // console.log(iconButton.tagName)
         iconButton.classList.remove("icon-selector-selected");
         if (details[iconButton.dataset.value]?.selected) {
           iconButton.classList.add("icon-selector-selected")

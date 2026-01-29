@@ -4,24 +4,24 @@
   data-tab="effects"
   style="overflow-y: auto; overflow-x: hidden"
 >
-  <a class="effect-add" title="{{ itemName 'Create' }}" data-action="createEffect"
+  <a title="{{ itemName 'Create' }}" data-action="createEffect"
     style="display: flex; width: 100%; justify-content: end; align-items: end; gap: 10px; padding-bottom: 10px;">
     {{ itemName "Add" }}<i class="fas fa-plus"></i>
   </a>
   {{#each item.system.effects as |effect|}}
     <div class="item-columned-page" style="align-items: center; padding-left: 10px;">
-      <select class="selection-box effect-modify" data-index="{{@index}}" data-target="group">
+      <select class="selection-box effect-modify" data-index="{{@index}}" data-field="group">
         {{#each ../definedEffects as |name group|}}
           <option value="{{group}}" {{#if (checkEqual effect.group group)}}selected{{/if}}>{{genName group}}</option>
         {{/each}}
       </select>
-      <select class="selection-box effect-modify" data-index="{{@index}}" data-target="name" style="min-width: 50%;">
+      <select class="selection-box effect-modify" data-index="{{@index}}" data-field="name" style="min-width: 50%;">
         {{#each (getEntry ../definedEffects effect.group) as |target name|}}
           <option value="{{name}}" {{#if (checkEqual effect.name name)}}selected{{/if}}>{{effectRequirementName name effect.group}}</option>
         {{/each}}
       </select>
-      <input class="effect-modify" data-index="{{@index}}" type="number" data-target="value" value="{{effect.value}}" style="width: 45px; text-align: right;"/>
-      <a class="effect-delete" data-index="{{@index}}" title="{{ itemName 'delete' }}"><i class="fas fa-trash"></i></a>
+      <input class="effect-modify" data-index="{{@index}}" type="number" data-field="value" value="{{effect.value}}" style="width: 45px; text-align: right;"/>
+      <a data-action="deleteEffect" data-index="{{@index}}" title="{{ itemName 'delete' }}"><i class="fas fa-trash"></i></a>
     </div>
   {{/each}}
 </section>

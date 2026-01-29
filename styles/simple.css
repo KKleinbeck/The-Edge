@@ -237,6 +237,7 @@ h1, h2, h3, h4 {
   display: flex;
   justify-content: center;
   width: 70px;
+  height: 30px;
 }
 .the_edge .icon-selector {
   background: white;
@@ -454,14 +455,15 @@ textarea {
 }
 .the_edge .item-footer-content {
   position: absolute;
-  left: 42%;
+  left: 35%;
   right: 6%;
   bottom: 0;
   padding-bottom: 10px;
   overflow: visible;
   display: flex;
+  justify-content: end;
   align-items: center;
-  gap: 15px;
+  gap: 10px;
 }
 .the_edge .item-footer-content-entry {
   display: flex;
@@ -469,7 +471,7 @@ textarea {
   gap: 5px;
 }
 .the_edge .item-footer-input {
-  width: 40px;
+  width: 50px;
   text-align: right;
 }
 /* sheet-header */
@@ -1235,7 +1237,13 @@ textarea {
   padding: 0;
   line-height: 20px;
 }
-
 .right-aligned-text {
     text-align: right; /* Flushed to the right */
+}
+table.grenade {
+  margin: 5px 0 0 0;
+}
+table.grenade td {
+  padding: 0 0 0 10px;
+  max-height: 15px !important;
 }

@@ -36,6 +36,9 @@ THE_EDGE.cover_map = {
   Head: ["Head"],
   Entire: ["Head", "Torso", "ArmsLeft", "ArmsRight", "LegsLeft", "LegsRight"]
 }
+THE_EDGE.combat_damage_types = [
+  "energy", "kinetic", "elemental"
+]
 THE_EDGE.bleeding_threshold = {
   "energy": 25, "kinetic": 10, "elemental": 50, "fall": 15, "impact": 15, "HandToHand": 25
 }
