@@ -1,4 +1,4 @@
-<header class="sheet-header-item">
+<header class="sheet-header-item" style="{{#if (checkEqual item.system.subtype "medicine")}}flex: 0 0 56px;{{/if}}">
   {{#if (checkEqual item.system.subtype "grenade")}}
     <div class="item-columned-page" style="gap: 15px;">
       <table class="grenade">
@@ -34,10 +34,11 @@
         {{#each grenadeEffects as |value effect|}}
           <div style="display: flex; gap: 5px; align-items: center;">
             <div class="icon-selector-outer">
-              <button class="icon-selector {{#if value.selected}}icon-selector-selected{{/if}}"
-                data-action="iconSelectorClicked" data-icon-type="grenadeEffect" data-value="{{effect}}">
+              <a class="icon-selector {{#if value.selected}}icon-selector-selected{{/if}}"
+                data-action="iconSelectorClicked" data-icon-type="grenadeEffect" data-value="{{effect}}"
+                data-tooltip="{{tooltipText effect}}">
                 <i class="fa-{{value.render}} fa-{{value.icon}}" style="color: black;"></i>
-              </button>
+              </a>
             </div>
           </div>
         {{/each}}
@@ -64,7 +65,8 @@
       </div>
       <div class="item-fields" style="width: 20%;">
         <label for="Medicine Effect Selector">{{genName "Effect"}}</label><br/>
-        <select class="selection-box" name="system.subtypes.medicine.effect" id="Medicine Effect Selector">
+        <select class="selection-box" name="system.subtypes.medicine.effect" id="Medicine Effect Selector"
+          data-tooltip aria-label="{{tooltipText item.system.subtypes.medicine.effect}}">
           {{#each helpers.medicineEffects as |effect|}}
             <option value="{{effect}}" {{#if (checkEqual ../item.system.subtypes.medicine.effect effect)}}selected{{/if}}>{{itemName effect}}</option>
           {{/each}}

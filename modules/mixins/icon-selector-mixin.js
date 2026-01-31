@@ -14,11 +14,6 @@ export default function IconSelectorMixin(BaseApplication) {
       this.element.querySelector(".dynamic-icon")?.addEventListener("change", ev => {
         this.onIconSelected(ev.currentTarget.dataset.iconType, ev.currentTarget.value);
       })
-      this.element.querySelector(".dynamic-icon")?.addEventListener("keypress", ev => {
-        // Prevent Enter events, as this somehow triggers buttons
-        // The change is still registered
-        if (ev.key === "Enter") ev.preventDefault();
-      })
     }
 
     static _onIconSelected(_event, target) {

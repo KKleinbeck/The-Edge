@@ -241,6 +241,9 @@ h1, h2, h3, h4 {
 }
 .the_edge .icon-selector {
   background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   opacity: 0.6;
   width: 90%;
   border: 3px solid black;

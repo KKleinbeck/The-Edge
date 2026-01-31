@@ -473,7 +473,14 @@
     "STRAIN LEVEL 0": "Resting for an action",
     "STRAIN LEVEL 1": "Examples: Walking, striding, throwing, firing a weapon, normal swimming",
     "STRAIN LEVEL 2": "Examples: Running, jumping, climbing, fast swimming",
-    "STRAIN LEVEL 3": "Examples: Sprinting, maximal physical efforts, melee combat"
+    "STRAIN LEVEL 3": "Examples: Sprinting, maximal physical efforts, melee combat",
+
+    "HEALS": "Improves condition of the wound, allowing further treatments afterwards",
+    "TREATS": "Improves condition of the wound, but prevents further treatments",
+
+    "EMP": "Applies effects on mechs and robots",
+    "SMOKE": "Creates a smoke screen at the detonation location",
+    "SHELLSHOCK": "Applies effect on biological creatures"
   },
   "ACTION COST": "Action cost",
   "ACTION": "Action",

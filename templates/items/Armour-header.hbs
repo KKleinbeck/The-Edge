@@ -21,7 +21,7 @@
         systems/the_edge/templates/generic/progress-bar-modern.hbs
         value=item.system.structurePoints valueEditable=true valueDataPath="system.structurePoints"
         max=item.system.structurePointsOriginal maxEditable=true maxDataPath="system.structurePointsOriginal"
-        name=(combatName "Structure points") textScale=1.2
+        name=(combatName "Structure points") textScale=1.2 fillId="armour"
       }}
       <div class="item-fields" style="white-space: nowrap; float: right;">
         {{#if (checkEqual item.system.layer "Inner")}}

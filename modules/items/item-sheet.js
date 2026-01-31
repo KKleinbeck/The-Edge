@@ -681,11 +681,11 @@ class ItemSheetConsumables extends TheEdgeItemSheet {
   }
 
   async _drawGrenadeEffects() {
-    const template = "systems/the_edge/templates/items/Grenade-effects.hbs";
+    const template = "systems/the_edge/templates/items/Grenade-effects-content.hbs";
     const html = await renderTemplate(template, await this._prepareContext());
 
     const grenadeEffectsHTML = this.element.querySelector(".grenade-effects");
-    grenadeEffectsHTML.outerHTML = html;
+    grenadeEffectsHTML.innerHTML = html;
     this._attachGrenadeListener();
   }
 
