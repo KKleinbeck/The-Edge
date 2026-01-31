@@ -63,7 +63,7 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetLanguage, { makeDefault: true, types: ["Languageskill"] });
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetSkill, { makeDefault: true, types: ["Skill", "Combatskill", "Medicalskill"] });
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetVantage, { makeDefault: true, types: ["Advantage", "Disadvantage"] });
-    // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetWeapon, { makeDefault: true, types: ["Weapon"] });
+    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetWeapon, { makeDefault: true, types: ["Weapon"] });
     // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetWounds, { makeDefault: true, types: ["Wounds"] });
 
     foundry.documents.collections.Items.unregisterSheet("the_edge", TheEdgeItemSheet, {
@@ -798,67 +798,104 @@ class ItemSheetVantage extends ItemSheetGear { // Inherit Gear as a minimal inte
   }
 }
 
-// class ItemSheetWeapon extends TheEdgeItemSheet {
-//   static get defaultOptions() {
-//     return foundry.utils.mergeObject(super.defaultOptions, {
-//       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "details"}],
-//     });
-//   }
+class ItemSheetWeapon extends TheEdgeItemSheet {
+  static DEFAULT_OPTIONS = {...TheEdgeItemSheet.DEFAULT_OPTIONS,
+    actions: {
+      ...TheEdgeItemSheet.DEFAULT_OPTIONS.actions,
+      addFiringMode: ItemSheetWeapon._addFiringMode,
+      deleteFiringMode: ItemSheetWeapon._deleteFiringMode,
+    }
+  }
+  
+  static PARTS = {...TheEdgeItemSheet.PARTS,
+    form: {
+      template: `systems/the_edge/templates/items/Weapon-header.hbs`
+    },
+    effects: {
+      template: "systems/the_edge/templates/items/meta-effects.hbs"
+    }, 
+    details: {
+      template: "systems/the_edge/templates/items/Weapon-details.hbs"
+    },
+  }
 
-//   async getData(options) {
-//     const context = await super.getData(options);
-//     context.helpers = {
-//       attrs: THE_EDGE.attrs,
-//       weapon_types: Object.keys(THE_EDGE.core_value_map.weapons).filter(x => !x.includes("General"))
-//     };
-//     return context;
-//   }
+  static TABS = {
+    primary: {
+      tabs: [
+        {id: "details"}, {id: "effects"}, {id: "description"},
+      ],
+      labelPrefix: "TABS",
+      initial: "details",
+    }
+  }
 
-//   activateListeners(html) {
-//     super.activateListeners(html)
-//     html.find(".firing-mode-add").click(_ => this._onModeAdd());
-//     html.find(".firing-mode-delete").click(ev => this._onModeDelete(ev));
-//     html.find(".firing-mode-modify").on("change", ev => this._onModeModify(ev));
-//   }
+  async render(options={}, _options={}) {
+    // Disable details for hand-to-hand combat
+    if (this.item.system.type != "Hand-to-Hand combat") {
+      this.constructor.TABS.primary.tabs = [
+        {id: "details"}, {id: "effects"}, {id: "description"},
+      ];
+      this.tabGroups.primary = "details";
+    } else {
+      this.constructor.TABS.primary.tabs = [
+        {id: "effects"}, {id: "description"},
+      ];
+      this.tabGroups.primary = "description";
+    }
+    super.render(options, _options);
+  }
 
-//   async _onModeAdd() {
-//     const context = await this.getData();
-//     const fireModes = context.systemData.fireModes;
-//     fireModes.push(
-//       {name: "", damage: "1d20", dices: 1, cost: 1, precisionPenalty: [0, 0]}
-//     )
-//     this.item.update({"system.fireModes": fireModes})
-//   }
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    context.helpers = {
+      attrs: THE_EDGE.attrs,
+      weapon_types: Object.keys(THE_EDGE.core_value_map.weapons).filter(x => !x.includes("General"))
+    };
+    return context;
+  }
 
-//   async _onModeDelete(ev) {
-//     const dataHtml = ev.currentTarget.closest(".firing-mode");
-//     const index = dataHtml.dataset.index;
+  _onRender(context, options) {
+    super._onRender(context, options);
+    this.element.querySelectorAll(".firing-mode-modify").forEach(x =>
+      x.addEventListener("change", ev => this._onModeModify(ev))
+    );
+  }
 
-//     const context = await this.getData();
-//     const fireModes = context.systemData.fireModes;
-//     fireModes.splice(index, 1)
-//     this.item.update({"system.fireModes": fireModes})
-//   }
+  static _addFiringMode(_event) {
+    const fireModes = this.item.system.fireModes;
+    fireModes.push(
+      {name: "", damage: "1d20", dices: 1, cost: 1, precisionPenalty: [0, 0]}
+    )
+    this.item.update({"system.fireModes": fireModes})
+  }
 
-//   async _onModeModify(ev) {
-//     const button = ev.currentTarget;
-//     const dataHtml = ev.currentTarget.closest(".firing-mode");
-//     const index = dataHtml.dataset.index;
+  static _deleteFiringMode(event) {
+    const dataHtml = event.target.closest(".firing-mode");
+    const index = dataHtml.dataset.index;
 
-//     const target = button.dataset.target;
-//     const context = await this.getData();
-//     const fireModes = context.systemData.fireModes;
-//     if (target.includes("precisionPenalty")) {
-//       const penaltyIndex = +target.slice(-1);
-//       fireModes[+index].precisionPenalty[penaltyIndex] = +button.value
-//     } else if (target === "name" || target === "damage") {
-//       fireModes[+index][target] = button.value;
-//     } else {
-//       fireModes[+index][target] = +button.value;
-//     }
-//     this.item.update({"system.fireModes": fireModes})
-//   }
-// }
+    const fireModes = this.item.system.fireModes;
+    fireModes.splice(index, 1);
+    this.item.update({"system.fireModes": fireModes})
+  }
+
+   _onModeModify(ev) {
+    const button = ev.currentTarget;
+    const dataHtml = ev.currentTarget.closest(".firing-mode");
+    const index = dataHtml.dataset.index;
+
+    const target = button.dataset.target;
+    const fireModes = this.item.system.fireModes;
+    if (target.includes("precisionPenalty")) {
+      const penaltyIndex = +target.slice(-1);
+      fireModes[+index].precisionPenalty[penaltyIndex] = +button.value
+    } else if (target === "name" || target === "damage") {
+      fireModes[+index][target] = button.value;
+    } else {
+      fireModes[+index][target] = +button.value;
+    }
+    this.item.update({"system.fireModes": fireModes})
+  }
+}
 
 // class ItemSheetWounds extends TheEdgeItemSheet {
 //   static get defaultOptions() {
