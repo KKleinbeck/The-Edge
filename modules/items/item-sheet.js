@@ -58,13 +58,13 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetArmour, { makeDefault: true, types: ["Armour"] });
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetConsumables, { makeDefault: true, types: ["Consumables"] });
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetCredits, { makeDefault: true, types: ["Credits"] });
-    // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetWeapon, { makeDefault: true, types: ["Weapon"] });
-    // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetVantage, { makeDefault: true, types: ["Advantage", "Disadvantage"] });
+    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetEffect, { makeDefault: true, types: ["Effect"] });
+    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetGear, { makeDefault: true, types: ["Gear"] });
+    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetLanguage, { makeDefault: true, types: ["Languageskill"] });
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetSkill, { makeDefault: true, types: ["Skill", "Combatskill", "Medicalskill"] });
-    // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetLanguage, { makeDefault: true, types: ["Languageskill"] });
-    // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetGear, { makeDefault: true, types: ["Gear"] });
+    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetVantage, { makeDefault: true, types: ["Advantage", "Disadvantage"] });
+    // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetWeapon, { makeDefault: true, types: ["Weapon"] });
     // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetWounds, { makeDefault: true, types: ["Wounds"] });
-    // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetEffect, { makeDefault: true, types: ["Effect"] });
 
     foundry.documents.collections.Items.unregisterSheet("the_edge", TheEdgeItemSheet, {
       types: [
@@ -727,6 +727,77 @@ class ItemSheetCredits extends TheEdgeItemSheet {
   }
 }
 
+class ItemSheetEffect extends TheEdgeItemSheet {
+  static PARTS = {...TheEdgeItemSheet.PARTS,
+    form: {
+      template: `systems/the_edge/templates/items/meta-no-header.hbs`
+    },
+    effects: {
+      template: "systems/the_edge/templates/items/meta-effects.hbs"
+    }, 
+    details: {
+      template: "systems/the_edge/templates/items/Ammunition-details.hbs"
+    },
+  }
+
+  static TABS = {
+    primary: {
+      tabs: [
+        {id: "effects"}, {id: "description"},
+      ],
+      labelPrefix: "TABS",
+      initial: "effects",
+    }
+  }
+}
+
+class ItemSheetGear extends TheEdgeItemSheet {
+  static DEFAULT_OPTIONS = {...TheEdgeItemSheet.DEFAULT_OPTIONS,
+    position: { height: 170, },
+  }
+
+  static PARTS = {
+    form: {
+      template: `systems/the_edge/templates/items/meta-description.hbs`
+    },
+  }
+
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    context.userIsGM = false; // Prevent GM notes on credits
+    return context;
+  }
+}
+
+class ItemSheetLanguage extends ItemSheetGear { // Inherit Gear as a minimal interface
+  _footerContent() {
+    return `
+      <div style="display: flex; gap: 5px; align-items: center; white-space: nowrap">
+        <label for="hasLevels">
+          ${LocalisationServer.localise("human spoken", "item")}
+        </label>
+        <input type="checkbox" id="hasLevels" name="system.humanSpoken"
+          ${this.item.system.humanSpoken ? "checked" : ""} />
+      </div>`;
+  }
+}
+
+class ItemSheetVantage extends ItemSheetGear { // Inherit Gear as a minimal interface
+  _footerContent() {
+    return `
+      <div style="display: flex; gap: 5px; align-items: center; white-space: nowrap">
+        <input class="item-footer-input" type="number" name="system.AP" value="${this.item.system.AP}" data-dtype="Number" id="AP"/>
+        <label for="AP" data-tooltip aria-label="${LocalisationServer.localise('AdvantagePoints')}"
+          style="margin-right: 5px;">
+          AP
+        </label>
+        <input class="item-footer-input" type="number" name="system.level" value="${this.item.system.level}" data-dtype="Number"/>
+        <input class="item-footer-input" type="number" name="system.maxLevel" value="${this.item.system.maxLevel}" data-dtype="Number"/>
+        ${LocalisationServer.localise("Level")}
+      </div>`;
+  }
+}
+
 // class ItemSheetWeapon extends TheEdgeItemSheet {
 //   static get defaultOptions() {
 //     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -789,34 +860,6 @@ class ItemSheetCredits extends TheEdgeItemSheet {
 //   }
 // }
 
-// class ItemSheetVantage extends TheEdgeItemSheet {
-//   static get defaultOptions() {
-//     return foundry.utils.mergeObject(super.defaultOptions, {
-//       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}],
-//     });
-//   }
-
-//   get template() {
-//     return `systems/the_edge/templates/items/item-Vantage.html`;
-//   }
-// }
-
-// class ItemSheetLanguage extends TheEdgeItemSheet {
-//   static get defaultOptions() {
-//     return foundry.utils.mergeObject(super.defaultOptions, {
-//       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}],
-//     });
-//   }
-// }
-
-// class ItemSheetGear extends TheEdgeItemSheet {
-//   static get defaultOptions() {
-//     return foundry.utils.mergeObject(super.defaultOptions, {
-//       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}],
-//     });
-//   }
-// }
-
 // class ItemSheetWounds extends TheEdgeItemSheet {
 //   static get defaultOptions() {
 //     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -851,17 +894,5 @@ class ItemSheetCredits extends TheEdgeItemSheet {
 //       const damageChange = $(event.currentTarget).val() - this.item.system.damage;
 //       parent.update({"system.health.value": parent.system.health.value - damageChange});
 //     }
-//   }
-// }
-
-// class ItemSheetEffect extends TheEdgeItemSheet {
-//   static get defaultOptions() {
-//     return foundry.utils.mergeObject(super.defaultOptions, {
-//       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "effects"}],
-//     });
-//   }
-
-//   get template() {
-//     return `systems/the_edge/templates/items/item-Effect.html`;
 //   }
 // }
