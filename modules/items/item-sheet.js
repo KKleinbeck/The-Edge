@@ -57,12 +57,12 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetAmmunition, { makeDefault: true, types: ["Ammunition"] });
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetArmour, { makeDefault: true, types: ["Armour"] });
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetConsumables, { makeDefault: true, types: ["Consumables"] });
+    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetCredits, { makeDefault: true, types: ["Credits"] });
     // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetWeapon, { makeDefault: true, types: ["Weapon"] });
     // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetVantage, { makeDefault: true, types: ["Advantage", "Disadvantage"] });
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetSkill, { makeDefault: true, types: ["Skill", "Combatskill", "Medicalskill"] });
     // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetLanguage, { makeDefault: true, types: ["Languageskill"] });
     // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetGear, { makeDefault: true, types: ["Gear"] });
-    // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetCredits, { makeDefault: true, types: ["Credits"] });
     // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetWounds, { makeDefault: true, types: ["Wounds"] });
     // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetEffect, { makeDefault: true, types: ["Effect"] });
 
@@ -697,12 +697,33 @@ class ItemSheetConsumables extends TheEdgeItemSheet {
 }
 
 class ItemSheetCredits extends TheEdgeItemSheet {
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["the_edge", "sheet", "item-credits"],
-      height: 240,
-      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}],
-    });
+  static DEFAULT_OPTIONS = {...TheEdgeItemSheet.DEFAULT_OPTIONS,
+    position: { height: 170, },
+  }
+
+  static PARTS = {
+    form: {
+      template: `systems/the_edge/templates/items/meta-description.hbs`
+    },
+  }
+
+  _footerContent() {
+    let content = `
+      <div style="display: flex; gap: 5px; align-items: center; white-space: nowrap">
+        <label for="isSchid">
+          ${LocalisationServer.localise("offline currency", "item")}
+        </label>
+        <input type="checkbox" id="isChid" name="system.isChid"
+          ${this.item.system.isChid ? "checked" : ""} />
+      </div>`;
+    content += super._footerContent();
+    return content;
+  }
+
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    context.userIsGM = false; // Prevent GM notes on credits
+    return context;
   }
 }
 
