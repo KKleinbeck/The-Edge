@@ -74,7 +74,7 @@
               <button class="hotbar-button" type="button" style="margin-bottom: 3px;"
                 data-tooltip aria-label="{{weapon.name}}" data-action="rollAttack" data-weapon-id="{{weapon._id}}">
                 <img src="{{weapon.img}}" title="{{weapon.name}}" style="width: 24px; height: 24px;" />
-                <div class="button-text">{{weapon.name}}</div>
+                <div class="button-text">{{weapon.name}} {{weapon.ammunitionStatus}}</div>
               </button>
             {{/each}}
           </div>

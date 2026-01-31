@@ -358,7 +358,7 @@ export class TheEdgeBaseActor extends Actor {
 
   async updateStatus() {
     // Reset to a blank state
-    let update = {}
+    const update = {}
     for (const group of ["attributes", "proficiencies", "weapons"]) {
       for (const elem of THE_EDGE.effect_map[group].all) {
         update[elem] = 0;

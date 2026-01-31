@@ -93,6 +93,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     const wounds = this.actor.itemTypes["Wounds"];
 
     await this.actor.updateStatus();
+    await this.actor.determineOverload();
     context.helpers = {
       armourProtection: armourProtection,
       equippedWeapons: equippedWeapons,
@@ -263,7 +264,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     })
   }
 
-  static longRest( _) { DialogRest.start({actor: this.actor, type: "short rest"}); }
+  static longRest( _) { DialogRest.start({actor: this.actor, type: "long rest"}); }
   static shortRest(_) { DialogRest.start({actor: this.actor, type: "short rest"}); }
 
   static applyDamage(_event, target) {
