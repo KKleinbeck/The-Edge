@@ -804,6 +804,7 @@ class ItemSheetWeapon extends TheEdgeItemSheet {
       ...TheEdgeItemSheet.DEFAULT_OPTIONS.actions,
       addFiringMode: ItemSheetWeapon._addFiringMode,
       deleteFiringMode: ItemSheetWeapon._deleteFiringMode,
+      selectRange: ItemSheetWeapon._selectRange
     }
   }
   
@@ -861,7 +862,7 @@ class ItemSheetWeapon extends TheEdgeItemSheet {
     );
   }
 
-  static _addFiringMode(_event) {
+  static _addFiringMode(_event, _target) {
     const fireModes = this.item.system.fireModes;
     fireModes.push(
       {name: "", damage: "1d20", dices: 1, cost: 1, precisionPenalty: [0, 0]}
@@ -869,31 +870,33 @@ class ItemSheetWeapon extends TheEdgeItemSheet {
     this.item.update({"system.fireModes": fireModes})
   }
 
-  static _deleteFiringMode(event) {
-    const dataHtml = event.target.closest(".firing-mode");
-    const index = dataHtml.dataset.index;
+  static _deleteFiringMode(_event, target) {
+    const index = target.dataset.index;
 
     const fireModes = this.item.system.fireModes;
     fireModes.splice(index, 1);
     this.item.update({"system.fireModes": fireModes})
   }
 
-   _onModeModify(ev) {
-    const button = ev.currentTarget;
-    const dataHtml = ev.currentTarget.closest(".firing-mode");
-    const index = dataHtml.dataset.index;
+   _onModeModify(event) {
+    const target = event.target;
+    const index = +target.dataset.index;
 
-    const target = button.dataset.target;
+    const field = target.dataset.field;
     const fireModes = this.item.system.fireModes;
-    if (target.includes("precisionPenalty")) {
-      const penaltyIndex = +target.slice(-1);
-      fireModes[+index].precisionPenalty[penaltyIndex] = +button.value
-    } else if (target === "name" || target === "damage") {
-      fireModes[+index][target] = button.value;
+    if (field.includes("precisionPenalty")) {
+      const penaltyIndex = +field.slice(-1);
+      fireModes[+index].precisionPenalty[penaltyIndex] = +target.value;
+    } else if (field === "name" || field === "damage") {
+      fireModes[+index][field] = target.value;
     } else {
-      fireModes[+index][target] = +button.value;
+      fireModes[+index][field] = +target.value;
     }
     this.item.update({"system.fireModes": fireModes})
+  }
+
+  static _selectRange(event, target) {
+    console.log(target.dataset)
   }
 }
 

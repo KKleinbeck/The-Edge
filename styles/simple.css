@@ -700,6 +700,10 @@ textarea {
   align-items: center;
   gap: 10px;
 }
+.the_edge .centered-element {
+  display: flex;
+  justify-content: center;
+}
 .the_edge .damage-box {
   width: 28px;
   height: 28px;

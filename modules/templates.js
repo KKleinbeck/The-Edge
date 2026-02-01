@@ -51,6 +51,7 @@ export const preloadHandlebarsTemplates = async function() {
     "systems/the_edge/templates/generic/counter-token.hbs",
     "systems/the_edge/templates/generic/icon-selector.hbs",
     "systems/the_edge/templates/generic/progress-bar-modern.hbs",
+    "systems/the_edge/templates/generic/range-chart.hbs",
   ];
 
   // Load the template parts

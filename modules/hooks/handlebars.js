@@ -47,6 +47,7 @@ export default function() {
     checkSubtypedItem: (a) => { return (a == "Weapon" || a == "Consumables");},
     checkST: (a, b) => { return a < b; },
     checkSET: (a, b) => { return a <= b; },
+    checkIsEven: (a) => { return a % 2 ==0; },
     checkAttachment: (a) => { return a.system?.layer === "Outer"; },
     defaultTo: (a, b) => { if(a) return a; return b; },
     getSys: (a, b, c, d) => { return a.system[b][c][d]; },
@@ -167,6 +168,30 @@ export default function() {
         case "long rest":
           return LocalisationServer.localise("long rest chat");
       }
+    },
+    yForValue: (v, zeroY, unit) => zeroY - v * unit,
+    range: (from, to, step, options) => {
+      let out = ''
+      for (let i = from; i <= to; i += step) {
+        out += options.fn(i)
+      }
+      return out
+    },
+    checkRangeSelected: (range, candidate) => {
+      if (range > 0) return candidate <= range && candidate >= 0;
+      return candidate >= range && candidate <= 0;
+    },
+    hexPoints: (a) => {
+      const d = Math.sqrt(3) * a / 2;
+
+      return [
+        `${ a  },${0}`,
+        `${ a/2},${-d}`,
+        `${-a/2},${-d}`,
+        `${-a  },${0}`,
+        `${-a/2},${d}`,
+        `${ a/2},${d}`
+      ].join(' ')
     }
   })
 }

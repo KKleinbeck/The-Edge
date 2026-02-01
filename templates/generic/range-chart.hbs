@@ -1,0 +1,122 @@
+<div style="width: 100%;">
+  <svg
+    viewBox="0 0 570 210"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <defs>
+      <style>
+        .x-axis { stroke: rgb(150 193 204); stroke-width: 2; }
+        .y-axis { stroke: rgb(150 193 204); stroke-width: 4; }
+        .tick { stroke: rgb(150 193 204); stroke-width: 2; opacity: 0.7; }
+        .label { fill: white; font-size: 18px; text-anchor: middle; }
+        .tick-label { fill: rgb(150 193 204); font-size: 14px; text-anchor: end; }
+        .legend { fill: white; font-size: 16px; text-anchor=start }
+
+        .range-selector a {
+          display: block;
+          width: 100%;
+          height: 100%;
+        }
+        .selector-0 {
+          stroke-width: 1px;
+          stroke: rgba(218, 107, 255, 0.5);
+          fill: rgba(218, 107, 255, 0.05);
+        }
+        .selector-0-fill {
+          stroke-width: 1px;
+          stroke: rgb(218, 107, 255);
+          fill: rgb(218, 107, 255);
+        }
+        .selector-1 {
+          stroke-width: 1px;
+          stroke: rgba(51, 255, 255, 0.5);
+          fill: rgba(51, 255, 255, 0.05);
+        }
+        .selector-1-fill {
+          stroke-width: 1px;
+          stroke: rgb(51, 255, 255);
+          fill: rgb(51, 255, 255);
+        }
+      </style>
+
+      <marker
+        id="arrow"
+        viewBox="0 0 40 40"
+        refX="20"
+        refY="20"
+        markerWidth="12"
+        markerHeight="12"
+        markerUnits="userSpaceOnUse"
+        fill="rgb(150 193 204)"
+        orient="auto-start-reverse">
+        <path d="M 0 0 L 40 20 L 0 40 L 12 20 z" />
+      </marker>
+    </defs>
+
+    <!-- Y axis -->
+    <line x1="30" y1="15" x2="30" y2="199" class="y-axis"
+      marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+
+    {{!-- Y ticks -10 to 10 --}}
+    {{#range -10 10 2}}
+      <line
+        x1="24"
+        x2="36"
+        y1="{{yForValue this 107 7}}"
+        y2="{{yForValue this 107 7}}"
+        class="tick"
+      />
+      <text
+        x="20" y="{{add (yForValue this 107 7) 7}}"
+        class="tick-label"
+      >
+        {{this}}
+      </text>
+    {{/range}}
+
+    <!-- X axis -->
+    <line x1="30" y1="107" x2="564" y2="107" class="x-axis"
+      marker-end="url(#arrow)"/>
+
+    {{!-- Legend --}}
+    <rect x="150" y="0" width="20" height="12" class="selector-0-fill"/>
+    <text x="175" y="12" class="legend">{{combatName "unaimed"}}</text>
+    <rect x="320" y="0" width="20" height="12" class="selector-1-fill"/>
+    <text x="345" y="12" class="legend">{{combatName "aimed"}}</text>
+
+    {{!-- Bars --}}
+    {{#each rangeChart as |values rangeName|}}
+      {{#with @index as |i|}}
+        <text x="{{add 100 (mul i 100)}}" y="210" class="label">
+          {{combatName rangeName}}
+        </text>
+
+        {{!-- two bars --}}
+        {{#each values as |value j|}}
+          {{#range -11 11 1}}
+            <polygon
+              points="{{hexPoints 6}}"
+              transform="
+                translate(
+                  {{#if (checkIsEven this)}}
+                    {{add (add 100 (mul i 100)) (add -10 (mul j 30))}},
+                  {{else}}
+                    {{add (add 100 (mul i 100)) (add -20 (mul j 30))}},
+                  {{/if}}
+                  {{yForValue this 107 7}}
+                )
+              "
+              class="range-selector selector-{{j}} {{#if (checkRangeSelected value this)}}selector-{{j}}-fill{{/if}}"
+              data-action="selectRange"
+              data-label="{{key}}"
+              data-bar="{{j}}"
+              data-range="{{this}}"
+              cursor="pointer"
+              data-tooltip aria-label="{{this}}"
+            />
+          {{/range}}
+        {{/each}}
+      {{/with}}
+    {{/each}}
+  </svg>
+</div>
