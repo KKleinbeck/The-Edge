@@ -248,6 +248,7 @@ h1, h2, h3, h4 {
   width: 90%;
   border: 3px solid black;
   border-radius: 20px;
+  transition: all 0.5s linear;
 }
 .the_edge .icon-selector:focus {
   outline-color: rgba(0,0,0,0);

@@ -1,4 +1,4 @@
-<div style="width: 100%;">
+<div class="range-chart" style="width: 100%;">
   <svg
     viewBox="0 0 570 210"
     xmlns="http://www.w3.org/2000/svg"
@@ -27,6 +27,11 @@
           stroke: rgb(218, 107, 255);
           fill: rgb(218, 107, 255);
         }
+        .bar-label-0 {
+          font-size: 14px;
+          fill: rgb(218, 107, 255);
+          text-anchor: end;
+        }
         .selector-1 {
           stroke-width: 1px;
           stroke: rgba(51, 255, 255, 0.5);
@@ -36,6 +41,11 @@
           stroke-width: 1px;
           stroke: rgb(51, 255, 255);
           fill: rgb(51, 255, 255);
+        }
+        .bar-label-1 {
+          font-size: 14px;
+          fill: rgb(51, 255, 255);
+          text-anchor: start;
         }
       </style>
 
@@ -108,13 +118,21 @@
               "
               class="range-selector selector-{{j}} {{#if (checkRangeSelected value this)}}selector-{{j}}-fill{{/if}}"
               data-action="selectRange"
-              data-label="{{key}}"
-              data-bar="{{j}}"
-              data-range="{{this}}"
+              data-label="{{rangeName}}"
+              data-index="{{j}}"
+              data-modifier="{{this}}"
               cursor="pointer"
-              data-tooltip aria-label="{{this}}"
+              data-tooltip aria-label="{{barTooltip this}}"
             />
           {{/range}}
+          {{!-- Numerical label --}}
+          <text
+            x="{{add (add 100 (mul i 100)) (add -30 (mul j 60))}}"
+            y="{{yForValue (sub (alignBarLabel value) 0.5) 107 7}}"
+            class="bar-label-{{j}}"
+          >
+            {{value}}
+          </text>
         {{/each}}
       {{/with}}
     {{/each}}

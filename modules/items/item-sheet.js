@@ -280,7 +280,7 @@ class ItemSheetAmmunition extends TheEdgeItemSheet {
     const types = {};
     for (const type of ["energy", "kinetic"]) {
       types[type] =  {
-        icon: `systems/the_edge/icons/armour/${type}.png`,
+        icon: `systems/the_edge/icons/ammunition/${type}.png`,
         selected: type==this.item.system.type
       }
     }
@@ -291,7 +291,7 @@ class ItemSheetAmmunition extends TheEdgeItemSheet {
     const subtypes = {};
     for (const type of THE_EDGE.ammunitionSubtypes) {
       subtypes[type] =  {
-        icon: `systems/the_edge/icons/armour/energy.png`,
+        icon: `systems/the_edge/icons/ammunition/${type}.png`,
         selected: type==this.item.system.subtype
       }
     }
@@ -852,6 +852,10 @@ class ItemSheetWeapon extends TheEdgeItemSheet {
       attrs: THE_EDGE.attrs,
       weapon_types: Object.keys(THE_EDGE.core_value_map.weapons).filter(x => !x.includes("General"))
     };
+    context.ammunitionTypes = this._setAmmunitionTypesDict();
+    context.ammunitionTypeIsArbitrary = !THE_EDGE.ammunitionSubtypes.includes(
+      this.item.system.ammunitionType
+    );
     return context;
   }
 
@@ -860,6 +864,30 @@ class ItemSheetWeapon extends TheEdgeItemSheet {
     this.element.querySelectorAll(".firing-mode-modify").forEach(x =>
       x.addEventListener("change", ev => this._onModeModify(ev))
     );
+  }
+
+  _setAmmunitionTypesDict() {
+    const ammunitionTypes = {};
+    for (const type of THE_EDGE.ammunitionSubtypes) {
+      ammunitionTypes[type] = {
+        icon: `systems/the_edge/icons/ammunition/${type}.png`,
+        selected: type == this.item.system.ammunitionType
+      }
+    }
+    return ammunitionTypes;
+  }
+
+  onIconSelected(iconType, value) {
+    switch (iconType) {
+      case "ammunitionType":
+        this.item.system.ammunitionType = value;
+        this.updateIcons(
+          iconType, this._setAmmunitionTypesDict(),
+          THE_EDGE.ammunitionSubtypes.includes(value) ? "" : value
+        );
+        this.item.update({"system.ammunitionType": value}, {render: false})
+        break;
+    }
   }
 
   static _addFiringMode(_event, _target) {
@@ -895,8 +923,32 @@ class ItemSheetWeapon extends TheEdgeItemSheet {
     this.item.update({"system.fireModes": fireModes})
   }
 
-  static _selectRange(event, target) {
-    console.log(target.dataset)
+  static async _selectRange(_event, target) {
+    const dataset = target.dataset;
+    const rangeAccuracy = this.item.system.rangeChart[dataset.label];
+    
+    const modifier = +dataset.modifier;
+    if (modifier >= 11 || modifier <= -11) {
+      const promptValue = await Aux.promptInput();
+      if (promptValue) rangeAccuracy[dataset.index] = promptValue;
+    }
+    else rangeAccuracy[dataset.index] = modifier;
+
+    const field = `system.rangeChart.${dataset.label}`;
+    const update = {};
+    update[field] = rangeAccuracy;
+    await this.item.update(update, {render: false});
+    this._renderRangeChart()
+  }
+
+  async _renderRangeChart() {
+    const template = "systems/the_edge/templates/generic/range-chart.hbs";
+    const html = await renderTemplate(
+      template, {rangeChart: this.item.system.rangeChart}
+    );
+
+    const rangeChartHTML = this.element.querySelector(".range-chart");
+    rangeChartHTML.outerHTML = html;
   }
 }
 

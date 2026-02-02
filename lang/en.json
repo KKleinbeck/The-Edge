@@ -240,9 +240,11 @@
   "DIALOG": {
     "CANCEL": "Cancel",
     "CHEAT": "Cheat",
+    "CLICK TO INPUT": "Click to input",
     "COMBAT ACTIONS": "Combat Actions",
     "DELETE ITEM": "Delete {name}?",
     "EMPTY": "Empty",
+    "PROMPT NUMBER": "Insert number",
     "REST": "Rest",
     "ROLL": "Roll",
     "SELECT": "Select",
@@ -322,10 +324,14 @@
     "BODY PART": "Body part",
     "ARMSLEFT": "Left arm",
     "ARMSRIGHT": "Right arm",
+    "BELOW_NECK": "Below neck",
+    "ENTIRE": "Entire body",
     "HEAD": "Head",
+    "LEGS": "Legs",
     "LEGSLEFT": "Left leg",
     "LEGSRIGHT": "Right leg",
     "TORSO": "Torso",
+    "TORSO_ARMS": "Torso & Arms",
 
     "WOUND TYPE": "Kind",
 
@@ -336,7 +342,10 @@
     "DISADVANTAGE": "Disadvantage",
 
     "ACTIVATE": "Activate",
-    "DEACTIVATE": "Deactivate"
+    "DEACTIVATE": "Deactivate",
+
+    "LARGE": "Large",
+    "SMALL": "Small"
   },
   "NOTIFICATIONS": {
     "DESTROYED": "Armour piece {name} was destroyed in combat",

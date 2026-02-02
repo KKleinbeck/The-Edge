@@ -192,6 +192,20 @@ export default function() {
         `${-a/2},${d}`,
         `${ a/2},${d}`
       ].join(' ')
+    },
+    barTooltip: (value) => {
+      if (value >= 11 || value <= -11) {
+        return LocalisationServer.localise("Click to input", "dialog");
+      }
+      return value;
+    },
+    alignBarLabel: (value) => {
+      // Align outliers with top and shift 0, -1 to not collide with x axis
+      if (value > 11) return 11;
+      if (value < -11) return -11;
+      if (value == 0) return 1;
+      if (value == -1) return -2;
+      return value
     }
   })
 }
