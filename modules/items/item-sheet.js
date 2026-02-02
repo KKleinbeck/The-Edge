@@ -1,5 +1,6 @@
 import THE_EDGE from "../system/config-the-edge.js";
 import IconSelectorMixin from "../mixins/icon-selector-mixin.js";
+import RangeChartSelectorMixin from "../mixins/range-chart-selector-mixin.js";
 import Aux from "../system/auxilliaries.js";
 import LocalisationServer from "../system/localisation_server.js";
 
@@ -246,7 +247,7 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
   }
 }
 
-class ItemSheetAmmunition extends TheEdgeItemSheet {
+class ItemSheetAmmunition extends RangeChartSelectorMixin(TheEdgeItemSheet) {
   static PARTS = {...TheEdgeItemSheet.PARTS,
     form: {
       template: `systems/the_edge/templates/items/Ammunition-header.hbs`
@@ -798,13 +799,12 @@ class ItemSheetVantage extends ItemSheetGear { // Inherit Gear as a minimal inte
   }
 }
 
-class ItemSheetWeapon extends TheEdgeItemSheet {
+class ItemSheetWeapon extends RangeChartSelectorMixin(TheEdgeItemSheet) {
   static DEFAULT_OPTIONS = {...TheEdgeItemSheet.DEFAULT_OPTIONS,
     actions: {
       ...TheEdgeItemSheet.DEFAULT_OPTIONS.actions,
       addFiringMode: ItemSheetWeapon._addFiringMode,
       deleteFiringMode: ItemSheetWeapon._deleteFiringMode,
-      selectRange: ItemSheetWeapon._selectRange
     }
   }
   
@@ -921,34 +921,6 @@ class ItemSheetWeapon extends TheEdgeItemSheet {
       fireModes[+index][field] = +target.value;
     }
     this.item.update({"system.fireModes": fireModes})
-  }
-
-  static async _selectRange(_event, target) {
-    const dataset = target.dataset;
-    const rangeAccuracy = this.item.system.rangeChart[dataset.label];
-    
-    const modifier = +dataset.modifier;
-    if (modifier >= 11 || modifier <= -11) {
-      const promptValue = await Aux.promptInput();
-      if (promptValue) rangeAccuracy[dataset.index] = promptValue;
-    }
-    else rangeAccuracy[dataset.index] = modifier;
-
-    const field = `system.rangeChart.${dataset.label}`;
-    const update = {};
-    update[field] = rangeAccuracy;
-    await this.item.update(update, {render: false});
-    this._renderRangeChart()
-  }
-
-  async _renderRangeChart() {
-    const template = "systems/the_edge/templates/generic/range-chart.hbs";
-    const html = await renderTemplate(
-      template, {rangeChart: this.item.system.rangeChart}
-    );
-
-    const rangeChartHTML = this.element.querySelector(".range-chart");
-    rangeChartHTML.outerHTML = html;
   }
 }
 

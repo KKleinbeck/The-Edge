@@ -252,7 +252,7 @@
       "others": {"Recoilless Rifles": true}
     },
     "damage": {"bonus": 0, "penetration": 0},
-    "modifiers": {"less_2m": [0, 0], "less_20m": [0, 0], "less_200m": [0, 0], "less_1km": [0, 0], "more_1km": [0, 0]}
+    "rangeChart": {"less_2m": [0, 0], "less_20m": [0, 0], "less_200m": [0, 0], "less_1km": [0, 0], "more_1km": [0, 0]}
   },
   "Advantage": {"templates": ["description"], "AP": 0, "level": 1, "maxLevel": 1},
   "Disadvantage": {"templates": ["description"], "AP": 0, "level": 1, "maxLevel": 1},

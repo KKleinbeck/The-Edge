@@ -675,8 +675,8 @@ textarea {
 }
 .the_edge .checkbox-container {
   display: flex;
-  gap: 5px;
-  align-items: center;
+  gap: 10px;
+  align-items: start;
 }
 .the_edge .sheet-header-item .profile-img-item {
   flex: 0 0 100px;
