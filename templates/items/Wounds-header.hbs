@@ -1,0 +1,32 @@
+<header class="sheet-header-item" style="flex: 0 0 52px;">
+  <div class="item-columned-page">
+    <div class="item-header-fields">
+      <label for="Damaage">{{genName "Damage"}}</label>
+      <input class="damage-input" type="number" name="system.damage" value="{{item.system.damage}}"
+        id="Damage" data-dtype="Number" style="text-align: right;"/>
+    </div>
+    <div class="item-header-fields">
+      <label for="Bleeding">{{genName "Bleeding"}}</label>
+      <input type="number" name="system.bleeding" value="{{item.system.bleeding}}"
+        id="Bleeding" data-dtype="Number" style="text-align: right;"/>
+    </div>
+    <div class="item-header-fields" style="flex: 2;">
+      <label for="Location Selector">{{itemName "Body part"}}</label>
+      <select class="selection-box wound-location" name="system.bodyPart" id="Location Selector" style="text-align: right;">
+        {{#each helpers.bodyParts as |bodyPart|}}
+          <option value="{{bodyPart}}" {{#if (checkEqual ../item.system.bodyPart bodyPart)}}selected{{/if}}>{{itemName bodyPart}}</option>
+        {{/each}}
+      </select>
+    </div>
+    <div class="item-header-fields" style="flex: 2;">
+      <label for="Type Selector">{{itemName "Wound type"}}</label>
+      <select class="selection-box" name="system.type" id="Type Selector" style="text-align: right;">
+        <option value="abrasion" {{#if (checkEqual item.system.type "abrasion")}}selected{{/if}}>{{combatName "abrasion"}}</option>
+        <option value="laceration" {{#if (checkEqual item.system.type "laceration")}}selected{{/if}}>{{combatName "laceration"}}</option>
+        <option value="fracture" {{#if (checkEqual item.system.type "fracture")}}selected{{/if}}>{{combatName "fracture"}}</option>
+        <option value="light burn" {{#if (checkEqual item.system.type "light burn")}}selected{{/if}}>{{combatName "light burn"}}</option>
+        <option value="strong burn" {{#if (checkEqual item.system.type "strong burn")}}selected{{/if}}>{{combatName "strong burn"}}</option>
+      </select>
+    </div>
+  </div>
+</header>

@@ -65,7 +65,7 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetSkill, { makeDefault: true, types: ["Skill", "Combatskill", "Medicalskill"] });
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetVantage, { makeDefault: true, types: ["Advantage", "Disadvantage"] });
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetWeapon, { makeDefault: true, types: ["Weapon"] });
-    // foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetWounds, { makeDefault: true, types: ["Wounds"] });
+    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetWounds, { makeDefault: true, types: ["Wounds"] });
 
     foundry.documents.collections.Items.unregisterSheet("the_edge", TheEdgeItemSheet, {
       types: [
@@ -182,7 +182,6 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
     context.item = this.item;
-    console.log(this.item.system)
     context.descriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
       context.item.system.description, {
         secrets: this.document.isOwner,
@@ -304,6 +303,7 @@ class ItemSheetAmmunition extends RangeChartSelectorMixin(TheEdgeItemSheet) {
       case "type":
         this.item.system.type = value;
         this.updateIcons(iconType, this._setTypesDict());
+        this._renderDetails();
         break;
       
       case "subtype":
@@ -315,6 +315,16 @@ class ItemSheetAmmunition extends RangeChartSelectorMixin(TheEdgeItemSheet) {
         break;
     }
     this.item.update({"system": this.item.system}, {render: false});
+  }
+
+  async _renderDetails() {
+    const template = "systems/the_edge/templates/items/Ammunition-details-content.hbs";
+    const html = await renderTemplate(
+      template, await this._prepareContext()
+    );
+
+    const ammunitionDetailsHTML = this.element.querySelector(".ammunition-details");
+    ammunitionDetailsHTML.innerHTML = html;
   }
 }
 
@@ -924,39 +934,45 @@ class ItemSheetWeapon extends RangeChartSelectorMixin(TheEdgeItemSheet) {
   }
 }
 
-// class ItemSheetWounds extends TheEdgeItemSheet {
-//   static get defaultOptions() {
-//     return foundry.utils.mergeObject(super.defaultOptions, {
-//       classes: ["the_edge", "sheet", "item-wounds"],
-//       height: 240,
-//       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}],
-//     });
-//   }
+class ItemSheetWounds extends TheEdgeItemSheet {
+  static DEFAULT_OPTIONS = {...TheEdgeItemSheet.DEFAULT_OPTIONS,
+    position: { height: 270, },
+  }
 
-//   async getData(options) {
-//     const context = await super.getData(options);
-//     context.helpers = {bodyParts: Object.keys(THE_EDGE.wounds_pixel_coords.female)};
-//     return context;
-//   }
+  static PARTS = {...TheEdgeItemSheet.PARTS,
+    form: {
+      template: `systems/the_edge/templates/items/Wounds-header.hbs`
+    },
+  }
 
-//   activateListeners(html) {
-//     super.activateListeners(html)
-//     html.find(".wound-location").on("change", ev => this._onLocationChange(ev));
-//     html.find(".damage-input").on("change", ev => this._onDamageChange(ev));
-//   }
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    context.helpers = {bodyParts: Object.keys(THE_EDGE.wounds_pixel_coords.female)};
+    return context;
+  }
 
-//   async _onLocationChange(event) {
-//     const newLocation = $(event.currentTarget).val();
-//     await this.item.update({"system.coordinates": Aux.generateWoundLocation(
-//       false, this.item.actor?.system.sex || "female", newLocation
-//     )[1]});
-//   }
+  _onRender(context, options) {
+    super._onRender(context, options);
+    this.element.querySelector(".wound-location").addEventListener(
+      "change", ev => this._onLocationChange(ev)
+    );
+    this.element.querySelector(".damage-input").addEventListener(
+      "change", ev => this._onDamageChange(ev)
+    );
+  }
 
-//   async _onDamageChange(event) {
-//     const parent = this.item.parent;
-//     if (parent) {
-//       const damageChange = $(event.currentTarget).val() - this.item.system.damage;
-//       parent.update({"system.health.value": parent.system.health.value - damageChange});
-//     }
-//   }
-// }
+  async _onLocationChange(event) {
+    const newLocation = event.target.value;
+    await this.item.update({"system.coordinates": Aux.generateWoundLocation(
+      false, this.item.parent?.system.sex || "female", newLocation
+    )[1]}, {render: false});
+  }
+
+  async _onDamageChange(event) {
+    const parent = this.item.parent;
+    if (parent) {
+      const damageChange = event.target.value - this.item.system.damage;
+      parent.update({"system.health.value": parent.system.health.value - damageChange});
+    }
+  }
+}

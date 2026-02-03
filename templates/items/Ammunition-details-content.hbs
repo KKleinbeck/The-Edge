@@ -1,0 +1,16 @@
+<h4 style="margin-bottom: 4px;">{{genName "Available for"}}</h4>
+<div style="display: grid; grid-template-columns: 50% 50%; gap: 5px">
+{{#each item.system.whitelist as |candidates type|}}
+  {{#if (checkEqual type ../item.system.type)}}
+    {{#each candidates as |val weapon|}}
+      <div class="checkbox-container" style="margin-bottom: 3px;">
+        <input type="checkbox" id="is-{{weapon}}" name="system.whitelist.{{type}}.{{weapon}}" {{#if val}}checked{{/if}} style="width: 16px; height: 16px; margin: 0px;"/>
+        <label for="is-{{weapon}}">{{combatName weapon}}</label>
+      </div>
+    {{/each}}
+  {{/if}}
+{{/each}}
+</div>
+<hr style="margin: 4px 0 4px;"/>
+<h4 style="margin: 0 0 8px 0;">{{combatName "Range chart"}}</h4>
+{{> systems/the_edge/templates/generic/range-chart.hbs rangeChart=item.system.rangeChart}}
