@@ -58,7 +58,13 @@ export default function() {
     sub: (a, b) => { return a - b; },
     div: (a, b) => { if (b == 0) return undefined; return a / b; },
     mul: (a, b) => { return a * b; },
-    range: (n) => { return Array(n).fill(0).map((_, index)=> index); },
+    range: (from, to, step, options) => {
+      let out = ''
+      for (let i = from; i <= to; i += step) {
+        out += options.fn(i)
+      }
+      return out
+    },
     capitalise: (a) => { return a.charAt(0).toUpperCase() + a.slice(1); },
     anyObjectValues: (a) => { return Object.values(a).some(x => x); },
     storePrice: (a, b) => { return Math.round(a * b / 10) * 10; },
@@ -170,13 +176,6 @@ export default function() {
       }
     },
     yForValue: (v, zeroY, unit) => zeroY - v * unit,
-    range: (from, to, step, options) => {
-      let out = ''
-      for (let i = from; i <= to; i += step) {
-        out += options.fn(i)
-      }
-      return out
-    },
     checkRangeSelected: (range, candidate) => {
       if (range > 0) return candidate <= range && candidate >= 0;
       return candidate >= range && candidate <= 0;

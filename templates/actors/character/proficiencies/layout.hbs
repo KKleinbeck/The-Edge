@@ -32,16 +32,16 @@
                   {{getProficiency ../../../actor category proficiency 'status'}}
                 </span>
               </div>
-              {{#each (range 3) as |index|}}
+              {{#range 0 2 1}}
                 <div class="proficiency-column-dice">
                   <a
-                    class="prof-d20 d20-{{getProficiencyDice ../../../../actor category proficiency index}}"
+                    class="prof-d20 d20-{{getProficiencyDice ../../../../actor category proficiency this}}"
                     data-proficiency="{{proficiency}}"
                     data-action="rollProficiency"
-                    data-tooltip="{{getProficiencyDice ../../../../actor category proficiency index}}">
+                    data-tooltip="{{getProficiencyDice ../../../../actor category proficiency this}}">
                   </a>
                 </div>
-              {{/each}}
+              {{/range}}
             </div>
           {{/each}}
         </div>
