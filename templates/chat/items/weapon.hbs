@@ -1,0 +1,46 @@
+<h3>{{item.name}}</h3>
+<div style="display: flex; justify-content: space-between">
+  <b>{{combatName item.system.type}}</b>
+  {{#if (checkEqual item.system.type "Hand-to-Hand combat")}}
+    {{getEntry (getEntry item.system.fireModes 0) "damage"}} {{genName "damage"}}
+  {{/if}}
+</div>
+{{#unless (checkEqual item.system.type "Hand-to-Hand combat")}}
+<table class="chat-table">
+  <tr>
+    <td></td>
+    <td>{{combatName "Shots"}}</td>
+    <td>{{genName "Damage"}}</td>
+    <td>{{combatName "Precision"}}</td>
+  </tr>
+  {{#each item.system.fireModes as |mode|}}
+    <tr>
+      <td>{{mode.name}}</td>
+      <td>
+        <span data-tooltip aria-label="{{combatName 'damage dice'}}">{{mode.dices}}</span>
+        {{#unless (checkEqual mode.dices mode.cost)}}
+        <span data-tooltip aria-label="{{combatName 'ammunition cost'}}">({{mode.cost}})</span>
+        {{/unless}}
+      </td>
+      <td>{{mode.damage}}</td>
+      <td>
+        {{#each mode.precisionPenalty as |mod|}}
+          <span data-tooltip aria-label="{{combatName (concat 'Precision penalty '@index)}}">
+            {{mod}} {{#unless @last}} / {{/unless}}
+          </span>
+        {{/each}}
+      </td>
+    </tr>
+  {{/each}}
+</table>
+<h5 style="margin: 12px 0 8px 0;">{{combatName "Range Chart"}}:</h5>
+<div class="replace-hook" data-replace-by="range-chart"></div>
+{{/unless}}
+{{#if (checkNotEmpty item.system.effects)}}
+  <h5 style="margin: 12px 0 8px 0;">{{genName "Effects"}}:</h5>
+  {{> systems/the_edge/templates/chat/items/meta-effects.hbs}}
+{{/if}}
+{{#if (checkNotEmpty item.system.description)}}
+  <h5 style="margin: 12px 0 8px 0;">{{genName "Description"}}:</h5>
+  {{{item.system.description}}}
+{{/if}}

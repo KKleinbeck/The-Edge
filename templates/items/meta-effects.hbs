@@ -1,5 +1,5 @@
 <section
-  class="tab {{tabs.effects.cssClass}}"
+  class="tab {{tabs.effects.cssClass}} meta-effects"
   data-group="primary"
   data-tab="effects"
   style="overflow-y: auto; overflow-x: hidden"
@@ -10,12 +10,13 @@
   </a>
   {{#each item.system.effects as |effect|}}
     <div class="item-columned-page" style="align-items: center; padding-left: 10px;">
-      <select class="selection-box effect-modify" data-index="{{@index}}" data-field="group">
+      <select class="selection-box effect-modify" data-index="{{@index}}" data-field="group" style="padding: 0 2px 0 2px;">
         {{#each ../definedEffects as |name group|}}
           <option value="{{group}}" {{#if (checkEqual effect.group group)}}selected{{/if}}>{{genName group}}</option>
         {{/each}}
       </select>
-      <select class="selection-box effect-modify" data-index="{{@index}}" data-field="name" style="min-width: 50%;">
+      <select class="selection-box effect-modify" data-index="{{@index}}" data-field="name"
+        style="padding: 0 2px 0 px; min-width: 50%; text-overflow: ellipsis;">
         {{#each (getEntry ../definedEffects effect.group) as |target name|}}
           <option value="{{name}}" {{#if (checkEqual effect.name name)}}selected{{/if}}>{{effectRequirementName name effect.group}}</option>
         {{/each}}

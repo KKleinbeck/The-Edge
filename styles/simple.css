@@ -1255,3 +1255,10 @@ table.grenade td {
   padding: 0 0 0 10px;
   max-height: 15px !important;
 }
+table.chat-table {
+  margin: 3px 0 3px 0;
+}
+table.chat-table td {
+  padding: 0 2px 0 2px;
+  text-align: right;
+}

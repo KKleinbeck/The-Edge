@@ -60,9 +60,7 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
       case "edit":
         return item?.sheet.render(true);
       case "post":
-        ChatServer.transmitEvent("Post Item",
-          {name: item.name, description: item.system.description}
-        );
+        ChatServer.transmitEvent("Post Item", {item: item});
         break;
       case "increase":
         this.actor.addOrCreateVantage(item);

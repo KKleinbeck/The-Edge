@@ -1,0 +1,9 @@
+<table class="chat-table">
+{{#each item.system.effects as |effect|}}
+  <tr>
+    <td>{{genName effect.group}}</td>
+    <td>{{effectRequirementName effect.name effect.group}}</td>
+    <td>{{effect.value}}</td>
+  </tr>
+{{/each}}
+</table>

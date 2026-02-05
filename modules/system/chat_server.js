@@ -89,7 +89,14 @@ export default class ChatServer {
         break;
       
       case "POST ITEM":
-        html = await renderTemplate("systems/the_edge/templates/chat/item-description.html", details);
+        switch (details.item.type) {
+          case "Weapon":
+            html = await renderTemplate("systems/the_edge/templates/chat/items/weapon.hbs", details);
+            break;
+          
+          default:
+            html = await renderTemplate("systems/the_edge/templates/chat/items/generic.hbs", details);
+        }
         break;
       
       case "POST SKILL":

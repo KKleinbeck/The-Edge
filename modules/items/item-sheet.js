@@ -205,15 +205,14 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
 
   _onRender(context, options) {
     super._onRender(context, options)
-    this.element.querySelectorAll(".effect-modify")?.forEach(
-      x => x.addEventListener("change", ev => this._modifyEffect(ev))
-    );
+    this._attachEffectListeners();
   }
 
   static _createEffect(_event, _target) {
     const effects = this.item.system.effects;
     effects.push({group: "attributes", name: "end", value: 0});
-    this.item.update({"system.effects": effects});
+    this.item.update({"system.effects": effects}, {render: false});
+    this.redrawEffects();
   }
 
   async _modifyEffect(event, _target) {
@@ -223,7 +222,8 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
     for (const [key, value] of Object.entries(change)) {
       effects[index][key] = value;
     }
-    this.item.update({"system.effects": effects});
+    this.item.update({"system.effects": effects}, {render: false});
+    this.redrawEffects();
   }
 
   async _getEffectData(target) {
@@ -242,7 +242,26 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
     const index = target.dataset.index;
     const effects = this.item.system.effects;
     effects.splice(index, 1);
-    this.item.update({"system.effects": effects});
+    this.item.update({"system.effects": effects}, {render: false});
+    this.redrawEffects();
+  }
+
+  async redrawEffects() {
+    const template = "systems/the_edge/templates/items/meta-effects.hbs";
+    const html = await renderTemplate(
+      template, await this._prepareContext()
+    );
+    const newContent = document.createElement("div"); // Trick to strip outer class of html-string
+    newContent.innerHTML = html;
+    const effects = this.element.querySelector(".meta-effects");
+    effects.innerHTML = newContent.querySelector(".meta-effects").innerHTML;
+    this._attachEffectListeners();
+  }
+
+  _attachEffectListeners() {
+    this.element.querySelectorAll(".effect-modify")?.forEach(
+      x => x.addEventListener("change", ev => this._modifyEffect(ev))
+    );
   }
 }
 

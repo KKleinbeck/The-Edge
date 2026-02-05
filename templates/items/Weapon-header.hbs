@@ -5,7 +5,7 @@
         <label for="Type Selector">{{genName "Type"}}</label>
         <select class="selection-box" name="system.type" id="Type Selector">
           {{#each helpers.weapon_types as |type|}}
-            <option value="{{type}}" {{#if (checkEqual type ../item.system.type)}}selected{{/if}}>{{type}}</option>
+            <option value="{{type}}" {{#if (checkEqual type ../item.system.type)}}selected{{/if}}>{{combatName type}}</option>
           {{/each}}
         </select>
         <label for="is-elemental">{{combatName "Elemental"}}</label>
