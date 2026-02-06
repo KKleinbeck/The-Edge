@@ -1,0 +1,61 @@
+<h3>{{item.name}}</h3>
+<div style="display: flex; padding: 0 10px 0 10px; justify-content: space-between; align-items: center">
+  <div class="icon-selector-outer" style="width: 90px; align-items: center;">
+    <a class="icon-selector icon-selector-selected" data-tooltip aria-label="{{itemName item.system.bodyPart}}"
+      style="height: 42px;">
+      <img src="systems/the_edge/icons/armour/{{item.system.bodyPart}}.png" style="height: 32px;"/>
+    </a>
+  </div>
+  <div style="display: grid; grid-template-columns: auto auto; gap: 3px 5px; align-items: center; margin-bottom: 8px;">
+    <div></div>
+    <div>
+    {{#if (checkEqual item.system.layer "Inner")}}
+      {{combatName "Inner Layer"}}
+    {{else}}
+      {{combatName "Outer Layer"}}
+    {{/if}}
+    </div>
+      <div class="output" style="text-align: right; width: 40px;">{{item.system.structurePointsOriginal}}</div>
+      <div style="white-space: nowrap;">{{combatName "Structure Points"}}</div>
+      <div class="output" style="text-align: right; width: 40px;">{{item.system.attachmentPoints.max}}</div>
+      <div style="white-space: nowrap;">
+      {{#if (checkEqual item.system.layer "Inner")}}
+        {{combatName "Attachment Points"}}
+      {{else}}
+        {{combatName "Attachment Size"}}
+      {{/if}}
+      </div>
+  </div>
+</div>
+<table class="chat-table">
+  <tr>
+    <td></td>
+    <td style="text-align: right;">{{combatName "Energy"}}</td>
+    <td style="text-align: right;">{{combatName "Kinetic"}}</td>
+    <td style="text-align: right;">{{combatName "Elemental"}}</td>
+  </tr>
+  <tr style="height: 32px;">
+    <td data-tooltip="Absorbed incoming damage by this amount">{{combatName "absorption"}}</td>
+    {{#each item.system.protection as |modifier type|}}
+      <td style="text-align: right;">
+        <div class="output" style="width: 80%; text-align: right;">{{modifier.absorption}}</div>
+      </td>
+    {{/each}}
+  </tr>
+  <tr style="height: 32px;">
+    <td data-tooltip="Maximum damage before transfering further down">{{combatName "threshold"}}</td>
+    {{#each item.system.protection as |modifier type|}}
+      <td style="text-align: right;">
+        <div class="output" style="width: 80%; text-align: right;">{{modifier.threshold}}</div>
+      </td>
+    {{/each}}
+  </tr>
+</table>
+{{#if (checkNotEmpty item.system.effects)}}
+  <h5 style="margin: 12px 0 8px 0;">{{genName "Effects"}}:</h5>
+  {{> systems/the_edge/templates/chat/items/meta-effects.hbs}}
+{{/if}}
+{{#if (checkNotEmpty item.system.description)}}
+  <h5 style="margin: 12px 0 8px 0;">{{genName "Description"}}:</h5>
+  {{{item.system.description}}}
+{{/if}}

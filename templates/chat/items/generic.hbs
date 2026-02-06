@@ -1,3 +1,5 @@
 <h3>{{item.name}}</h3>
-<b>{{genName "Description"}}:</b><br />
-{{{item.system.description}}}
+{{#if (checkNotEmpty item.system.description)}}
+  <h5 style="margin: 12px 0 8px 0;">{{genName "Description"}}:</h5>
+  {{{item.system.description}}}
+{{/if}}

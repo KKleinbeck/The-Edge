@@ -298,7 +298,7 @@ class ItemSheetAmmunition extends RangeChartSelectorMixin(TheEdgeItemSheet) {
   _setTypesDict() {
     const types = {};
     for (const type of ["energy", "kinetic"]) {
-      types[type] =  {
+      types[type] = {
         icon: `systems/the_edge/icons/ammunition/${type}.png`,
         selected: type==this.item.system.type
       }
@@ -309,7 +309,7 @@ class ItemSheetAmmunition extends RangeChartSelectorMixin(TheEdgeItemSheet) {
   _setSubtypesDict() {
     const subtypes = {};
     for (const type of THE_EDGE.ammunitionSubtypes) {
-      subtypes[type] =  {
+      subtypes[type] = {
         icon: `systems/the_edge/icons/ammunition/${type}.png`,
         selected: type==this.item.system.subtype
       }

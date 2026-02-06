@@ -1,3 +1,4 @@
+import THE_EDGE from "./config-the-edge.js";
 import LocalisationServer from "./localisation_server.js";
 
 const { renderTemplate } = foundry.applications.handlebars;
@@ -90,6 +91,15 @@ export default class ChatServer {
       
       case "POST ITEM":
         switch (details.item.type) {
+          case "Ammunition":
+            details.subtypeIconExists = THE_EDGE.ammunitionSubtypes.includes(details.item.system.subtype);
+            html = await renderTemplate("systems/the_edge/templates/chat/items/ammunition.hbs", details);
+            break;
+          
+          case "Armour":
+            html = await renderTemplate("systems/the_edge/templates/chat/items/armour.hbs", details);
+            break;
+          
           case "Weapon":
             html = await renderTemplate("systems/the_edge/templates/chat/items/weapon.hbs", details);
             break;

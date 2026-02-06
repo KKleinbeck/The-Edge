@@ -1,0 +1,54 @@
+<h3>{{item.name}}</h3>
+<div style="display: flex; justify-content: space-around">
+  <div class="icon-selector-outer">
+    <a class="icon-selector icon-selector-selected" data-tooltip aria-label="{{itemName item.system.type}}">
+      <img src="systems/the_edge/icons/ammunition/{{item.system.type}}.png" style="height: 22px;"/>
+    </a>
+  </div>
+  <div class="icon-selector-outer">
+    {{#if subtypeIconExists}}
+    <a class="icon-selector icon-selector-selected" data-tooltip aria-label="{{itemName item.system.subtype}}">
+      <img src="systems/the_edge/icons/ammunition/{{item.system.subtype}}.png" style="height: 22px;"/>
+    </a>
+    {{else}}
+    <a class="icon-selector icon-selector-selected"
+      style="text-align: right; color: black; white-space: nowrap; font-weight: 600;">
+      {{item.system.subtype}}
+    </a>
+    {{/if}}
+  </div>
+</div>
+<div style="display: flex; justify-content: space-between; padding: 0 10px 0 10px; margin-top: 5px;">
+  <div style="display: flex; gap: 5px; align-items: end;">
+    <div class="output" style="width: 40px; text-align: right;">{{item.system.damage.bonus}}</div>
+    <div style="white-space: nowrap;">{{genName "Damage"}}</div>
+  </div>
+  <div style="display: flex; gap: 5px; align-items: end;">
+    <div class="output" style="width: 40px; text-align: right;">{{item.system.damage.penetration}}</div>
+    <div style="white-space: nowrap;">{{genName "Penetration"}}</div>
+  </div>
+</div>
+<div style="display: flex; gap: 5px; align-items: end; justify-content: space-between; padding: 0 10px 0 10px;">
+  <div style="display: flex; gap: 5px; align-items: end;">
+    <div class="output" style="width: 40px; text-align: right;">{{item.system.reloadDuration}}</div>
+    <div>{{combatName "Reload duration"}}</div>
+  </div>
+</div>
+<h5 style="margin: 12px 0 8px 0;">{{genName "available for"}}</h5>
+<div style="display: grid; grid-template-columns: auto auto; padding: 0 10px 0 10px;">
+{{#each item.system.whitelist as |candidates type|}}
+  {{#if (checkEqual type ../item.system.type)}}
+    {{#each candidates as |val weapon|}}
+      {{#if val}}
+        <b>{{combatName weapon}}</b>
+      {{/if}}
+    {{/each}}
+  {{/if}}
+{{/each}}
+</div>
+<h5 style="margin: 12px 0 8px 0;">{{combatName "Range Chart"}}:</h5>
+<div class="replace-hook" data-replace-by="range-chart"></div>
+{{#if (checkNotEmpty item.system.description)}}
+  <h5 style="margin: 12px 0 8px 0;">{{genName "Description"}}:</h5>
+  {{{item.system.description}}}
+{{/if}}
