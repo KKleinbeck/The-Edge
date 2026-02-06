@@ -239,6 +239,7 @@
   },
   "DIALOG": {
     "CANCEL": "Cancel",
+    "CHANGE DICE": "Change dice",
     "CHEAT": "Cheat",
     "CLICK TO INPUT": "Click to input",
     "COMBAT ACTIONS": "Combat Actions",
@@ -530,7 +531,6 @@
   "BUYS FROM PLAYER": "Buys from player",
   "CAPACITY": "Capacity",
   "CHANGE": "Change",
-  "CHANGE DICE": "Change dice",
   "CHECK": "Check",
   "COAGULATION": "Coagulation",
   "COAGULATES": "coagulates",
