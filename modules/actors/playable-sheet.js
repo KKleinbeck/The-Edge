@@ -186,7 +186,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       return undefined;
     }
 
-    if (weapon.system.type === "Hand-to-Hand combat") {
+    if (!weaponID || weapon.system.type === "Hand-to-Hand combat") {
       if (targetIds.length > 1) {
         const msg = LocalisationServer.parsedLocalisation(
           "Too many targets", "Notifications", {weapon: "hand to hand", max: 1}
