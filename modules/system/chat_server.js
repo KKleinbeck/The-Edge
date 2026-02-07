@@ -100,10 +100,21 @@ export default class ChatServer {
             html = await renderTemplate("systems/the_edge/templates/chat/items/armour.hbs", details);
             break;
           
+          case "Consumables":
+            switch (details.item.system.subtype) {
+              case "grenade":
+                html = await renderTemplate("systems/the_edge/templates/chat/items/grenade.hbs", details);
+                break;
+
+              default:
+                html = await renderTemplate("systems/the_edge/templates/chat/items/generic.hbs", details);
+            }
+            break;
+          
           case "Weapon":
             html = await renderTemplate("systems/the_edge/templates/chat/items/weapon.hbs", details);
             break;
-          
+
           default:
             html = await renderTemplate("systems/the_edge/templates/chat/items/generic.hbs", details);
         }
