@@ -1,0 +1,57 @@
+<h3>{{item.name}} - {{itemName "grenade"}}</h3>
+{{!-- Damage --}}
+<table class="grenade">
+  <tr>
+    <td></td>
+    <td style="width: 26%; text-align: center;">{{combatName "close"}}</td>
+    <td style="width: 26%; text-align: center;">{{combatName "far"}}</td>
+  </tr>
+  <tr>
+    <td>{{combatName "Blast distance"}}</td>
+    {{#each item.system.subtypes.grenade.blastDistance as |distance|}}
+      <td><div class="output">{{distance}}</div></td>
+    {{/each}}
+  </tr>
+  <tr>
+    <td>{{genName "Damage"}}</td>
+    {{#each item.system.subtypes.grenade.damage as |damage|}}
+      <td><div class="output">{{damage}}</div></td>
+    {{/each}}
+  </tr>
+  <tr>
+    <td>{{genName "Damage type"}}</td>
+    <td colspan="2">
+      {{combatName item.system.subtypes.grenade.type}}
+    </td>
+  </tr>
+</table>
+{{!-- Effects --}}
+{{#each item.system.subtypes.grenade.effects as |effectGroups category|}}
+  {{#unless (checkEqual category "smoke")}}
+  {{#if effectGroups.active}}
+    <h5 style="margin: 12px 0 8px 0;">{{combatName category}}</h5>
+    {{#each effectGroups as |effects distance|}}
+      {{#unless (checkEqual distance "active")}}
+      {{#if (checkNotEmpty effects)}}
+      <div class="effect-data" data-category="{{category}}" data-distance="{{distance}}">
+        <b>{{combatName distance}}</b>
+        {{#each effects as |effect|}}
+          <div class="item-columned-page" style="align-items: center; padding-left: 10px;">
+            {{genName effect.group}}
+            {{effectRequirementName effect.name effect.group}}
+            <div class="output" style="width: 45px; text-align: right;">
+              {{effect.value}}
+            </div>
+          </div>
+        {{/each}}
+      </div>
+      {{/if}}
+      {{/unless}}
+    {{/each}}
+  {{/if}}
+  {{/unless}}
+{{/each}}
+{{#if (checkNotEmpty item.system.description)}}
+  <h5 style="margin: 12px 0 8px 0;">{{genName "Description"}}:</h5>
+  {{{item.system.description}}}
+{{/if}}

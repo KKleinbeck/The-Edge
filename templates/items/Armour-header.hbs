@@ -1,0 +1,45 @@
+<header class="sheet-header-item">
+  <div class="item-columned-page">
+    <div style="flex: 1; padding: 5px 5px 0 5px;">
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); height: 70px;">
+        {{#each types as |details type|}}
+          {{>
+            systems/the_edge/templates/generic/icon-selector.hbs
+            icon=details.icon iconType="bodyPart" value=type selected=details.selected
+          }}
+        {{/each}}
+      </div>
+      <h5 style="margin-top: 0; width: 100%; align-items: center;">
+        <select class="selection-box" name="system.layer" id="Type Selector" style="height: 28px; font-size: 14px;">
+          <option value="Inner" {{#if (checkEqual item.system.layer "Inner")}}selected{{/if}}>{{combatName "Inner Layer"}}</option>
+          <option value="Outer" {{#if (checkEqual item.system.layer "Outer")}}selected{{/if}}>{{combatName "Outer Layer"}}</option>
+        </select>
+      </h5>
+    </div>
+    <div style="flex: 1; padding-top: 15px;">
+      {{>
+        systems/the_edge/templates/generic/progress-bar-modern.hbs
+        value=item.system.structurePoints valueEditable=true valueDataPath="system.structurePoints"
+        max=item.system.structurePointsOriginal maxEditable=true maxDataPath="system.structurePointsOriginal"
+        name=(combatName "Structure points") textScale=1.2 fillId="armour"
+      }}
+      <div class="item-fields" style="white-space: nowrap; float: right;">
+        {{#if (checkEqual item.system.layer "Inner")}}
+          <div>
+            <div class="output" title="{{genName 'available'}}" style="width: 44%; height: 26px; line-height: 1.45rem;">
+              {{sub item.system.attachmentPoints.max item.system.attachmentPoints.used}}
+            </div>
+            /
+            <input type="number" name="system.attachmentPoints.max" value="{{item.system.attachmentPoints.max}}"
+              data-dtype="Number" style="width: 44%; text-align: center;"/>
+          </div>
+          {{combatName "Attachment Points"}}
+        {{else}}
+          <input type="number" name="system.attachmentPoints.max" value="{{item.system.attachmentPoints.max}}"
+            data-dtype="Number" style="text-align: right;"/>
+          {{combatName "Attachment Size"}}
+        {{/if}}
+      </div>
+    </div>
+  </div>
+</header>

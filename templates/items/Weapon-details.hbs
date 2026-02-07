@@ -1,0 +1,64 @@
+<section
+  class="tab {{tabs.details.cssClass}}"
+  data-group="primary"
+  data-tab="details"
+  style="overflow-y: auto; overflow-x: hidden"
+>
+  <!-- Fire modes -->
+  <h4 style="margin-bottom: 8px;">{{combatName "Fire modes"}}</h4>
+  <div style="display: grid; grid-template-columns: 11fr 8fr 1fr 11fr 8fr 2fr; gap: 5px 3px; align-items: center;">
+    {{!-- Headers --}}
+    <div></div>
+    <div style="display: flex; gap: 3px;">
+      <div class="centered-element" style="flex: 1;">{{combatName "ammu"}}</div>
+      <div class="centered-element" style="flex: 1;">{{combatName "shots"}}</div>
+    </div>
+    <div></div>
+    <div class="centered-element">{{genName "damage"}}</div>
+    <div class="centered-element">{{combatName "precision"}}</div>
+    <a data-action="addFiringMode" data-tooltip aria-label="{{ combatName 'Add Firing mode' }}"
+      style="display: flex; justify-content: end;">
+      <i class="fas fa-plus"></i>
+    </a>
+    {{!-- Individual Modes --}}
+    {{#each item.system.fireModes as |mode|}}
+      <input class="firing-mode-modify" data-field="name" data-index="{{@index}}" type="text" value="{{mode.name}}"
+        style="text-align: left;"/>
+      <div style="display: flex; gap: 3px">
+        <input class="firing-mode-modify" data-field="cost" data-index="{{@index}}" type="number" value="{{mode.cost}}"
+          style="text-align: right;" data-tooltip aria-label="{{combatName 'Ammunition cost'}}"/>
+        <input class="firing-mode-modify" data-field="dices" data-index="{{@index}}" type="number" value="{{mode.dices}}"
+          style="text-align: right;" data-tooltip aria-label="{{combatName 'damage dice'}}"/>
+      </div>
+      <div class="centered-element">x</div>
+      <input class="firing-mode-modify" data-field="damage" data-index="{{@index}}" type="text" value="{{mode.damage}}"
+        style="text-align: right;"/>
+      <div style="display: flex; gap: 3px">
+        {{#each mode.precisionPenalty as |mod|}}
+          <input class="firing-mode-modify" data-field="{{concat 'precisionPenalty' @index}}" data-index="{{@../index}}" type="number" value="{{mod}}"
+            style="flex: 1; text-align: right;" data-tooltip aria-label="{{combatName (concat 'Precision penalty '@index)}}"/>
+        {{/each}}
+      </div>
+      <a data-action="deleteFiringMode" data-index="{{@index}}" data-tooltip aria-label="{{ combatName 'Delete Firing mode' }}"
+        style="display: flex; justify-content: end;">
+        <i class="fas fa-trash"></i>
+      </a>
+    {{/each}}
+  </div>
+  <div style="display: flex; flex-flow: nowrap; justify-content: space-between; padding-top: 2px; margin-right: 14px;">
+    <div class="checkbox-container">
+      <label for="multiple-targets" data-tooltip aria-label="{{combatName 'Multi target help'}}">{{combatName "multiple targets"}}</label>
+      <input type="checkbox" id="multiple-targets" name="system.multipleTargets" {{#if item.system.multipleTargets}}checked{{/if}} />
+    </div>
+    <div class="checkbox-container">
+      <label for="ReloadDuration">{{combatName 'Reload duration'}}</label>
+      <input type="number" name="system.reloadDuration" value="{{item.system.reloadDuration}}"
+        data-tooltip aria-label="{{combatName 'reload duration description'}}" id="ReloadDuration"
+        style="width: 30px; height: 20px; text-align: right; margin: 3px 0 3px 3px;"/>
+    </div>
+  </div>
+  <hr style="margin: 4px 0 4px;"/>
+  <!-- Range Chart -->
+  <h4 style="margin: 0 0 8px 0;">{{combatName "Range chart"}}</h4>
+  {{> systems/the_edge/templates/generic/range-chart.hbs rangeChart=item.system.rangeChart}}
+</section>

@@ -156,7 +156,7 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
     game.the_edge.socketHandler.emit("END_TURN");
   }
 
-  static _undoAction(event, target) {
+  static _undoAction(_event, target) {
     const index = +target.dataset.index;
     this.strainLog.splice(index, 1);
     game.the_edge.socketHandler.emit("UNDO_ACTION", index);

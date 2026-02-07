@@ -11,24 +11,26 @@ export default class DialogReload extends Dialog{
 
   static async start(checkData) {
     const template = "systems/the_edge/templates/dialogs/reload.html";
-    let weaponSys = checkData.weapon.system
+    const weaponSys = checkData.weapon.system;
+    const filteredOptions = checkData.ammunitionOptions.filter(
+      x => x.id !== weaponSys.ammunitionID
+    );
     let html = await renderTemplate(template, {
-      ammunition: checkData.ammunition.filter(x => x.id !== weaponSys.ammunitionID),
+      ammunition: filteredOptions,
       weaponReloadDuration: weaponSys.reloadDuration
     });
 
     const buttons = {}
-    if (checkData.ammunition.length > 0 &&
-        !(checkData.ammunition.length == 1 && weaponSys.ammunitionID !== "")) {
+    if (filteredOptions.length > 0) {
       foundry.utils.mergeObject(buttons, {
         select: {
           label: game.i18n.localize("DIALOG.SELECT"),
           callback: async (html) => {
-            let selectedID = html.find('[name="AmmunitionSelector"]').val();
-            let loadedID = weaponSys.ammunitionID;
+            const selectedID = html.find('[name="AmmunitionSelector"]').val();
+            const loadedID = weaponSys.ammunitionID;
 
             let reloadDuration = weaponSys.reloadDuration;
-            for (const ammu of checkData.ammunition) {
+            for (const ammu of checkData.ammunitionOptions) {
               if (ammu.id == loadedID) {
                 // If we currently have a mag loaded, we unload it
                 ammu.update({"system.loaded": false});
@@ -36,7 +38,7 @@ export default class DialogReload extends Dialog{
               }
               if (ammu.id == selectedID) {
                 // Copy the ammuniation and load the weapon with it
-                let created = await Item.create(ammu, {parent: checkData.actor})
+                const created = await Item.create(ammu, {parent: checkData.actor})
                 created.update({"system.loaded": true, "system.quantity": 1})
                 await checkData.weapon.update({"system.ammunitionID": created.id})
 
@@ -63,7 +65,7 @@ export default class DialogReload extends Dialog{
         empty: {
           label: game.i18n.localize("DIALOG.EMPTY"),
           callback: async (html) => {
-            for (const ammu of checkData.ammunition) {
+            for (const ammu of checkData.ammunitionOptions) {
               if (ammu.id == weaponSys.ammunitionID) {
                 // If we currently have a mag loaded, we unload it
                 ammu.update({"system.loaded": false});

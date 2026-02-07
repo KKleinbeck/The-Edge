@@ -204,4 +204,17 @@ export default class Aux {
       "system.attachmentPoints.used": parent.system.attachmentPoints.used - regainedAttachmentPoints
     });
   }
+
+  static async promptInput(title_dialog_id = "Prompt number") {
+    var result = await foundry.applications.api.DialogV2.prompt({
+      window: { title: LocalisationServer.localise(title_dialog_id, "dialog") },
+      position: { width: 100 },
+      content: '<input name="input" type="number" step="1" autofocus style="text-align: right;">',
+      ok: {
+        label: LocalisationServer.localise("Submit", "dialog"),
+        callback: (_event, button, _dialog) => button.form.elements.input.valueAsNumber
+      }
+    });
+    return result;
+  }
 }

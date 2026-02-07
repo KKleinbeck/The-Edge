@@ -1,0 +1,52 @@
+<header class="sheet-header-item">
+  <div class="item-columned-page">
+    <div style="flex: 1; padding-top: 5px;">
+      <div class="icon-selector-row" style="padding: 0 30px 0 30px;">
+        {{#each types as |details type|}}
+          {{>
+            systems/the_edge/templates/generic/icon-selector.hbs
+            icon=details.icon iconType="type" value=type selected=details.selected
+          }}
+        {{/each}}
+      </div>
+      <div class="icon-selector-row">
+        {{#each subtypes as |details type|}}
+          {{>
+            systems/the_edge/templates/generic/icon-selector.hbs
+            icon=details.icon iconType="subtype" value=type selected=details.selected
+          }}
+        {{/each}}
+        <div class="icon-selector-outer">
+          <input class="dynamic-icon icon-selector-text {{#if subtypeIsArbitrary}}icon-selector-selected{{/if}}"
+            value="{{dynamicSubtype}}" placeholder="{{genName 'Other'}}" data-icon-type="subtype"/>
+        </div>
+      </div>
+    </div>
+    <div style="flex: 1; padding-top: 15px;">
+      {{>
+        systems/the_edge/templates/generic/progress-bar-modern.hbs
+        value=item.system.capacity.value valueEditable=true valueDataPath="system.capacity.value"
+        max=item.system.capacity.max maxEditable=true maxDataPath="system.capacity.max"
+        name=(genName "Capacity") textScale=1.2
+      }}
+    </div>
+  </div>
+  <div style="display: flex; width: 100%; justify-content: space-between;">
+    <div>
+      <input type="number" id="damage-bonus" name="system.damage.bonus" value="{{item.system.damage.bonus}}"
+        style="width: 35px; height: 20px; text-align: right; margin-top: 3px;"/>
+      <label for="damage-bonus">{{genName "Damage"}}</label>
+    </div>
+    <div>
+      <input type="number" id="penetr-bonus" name="system.damage.penetration" value="{{item.system.damage.penetration}}"
+        style="width: 35px; height: 20px; text-align: right; margin-top: 3px;"/>
+      <label for="penetr-bonus">{{genName "Penetration"}}</label>
+    </div>
+    <div>
+      <input type="number" id="reload-duration" name="system.reloadDuration" value="{{item.system.reloadDuration}}"
+        data-tooltip aria-label="{{combatName 'reload duration extension'}}"
+        style="width: 35px; height: 20px; text-align: right; margin-top: 3px;"/>
+      <label for="reload-duration">{{combatName "Reload duration"}}</label>
+    </div>
+  </div>
+</header>

@@ -11,28 +11,25 @@ import THE_EDGE from "../system/config-the-edge.js";
 import { TheEdgeActorSheet } from "./actor-sheet.js";
 
 export class TheEdgePlayableSheet extends TheEdgeActorSheet {
-  static DEFAULT_OPTIONS = foundry.utils.mergeObject(
-    TheEdgeActorSheet.DEFAULT_OPTIONS,
-    {
-      actions: {
-        // Hero Token
-        heroTokenUsed: TheEdgePlayableSheet.useHeroToken,
-        heroTokenRegen: TheEdgePlayableSheet.regenerateHeroToken,
-        // Leveling
-        advanceAttr: TheEdgePlayableSheet.advanceAttr,
-        // Rolls
-        rollAttribute: TheEdgePlayableSheet.rollAttribute,
-        rollProficiency: TheEdgePlayableSheet.rollProficiency,
-        rollAttack: TheEdgePlayableSheet.rollAttack,
-        // Health
-        longRest: TheEdgePlayableSheet.longRest,
-        shortRest: TheEdgePlayableSheet.shortRest,
-        applyDamage: TheEdgePlayableSheet.applyDamage,
-        // Other
-        reload: TheEdgePlayableSheet.reload,
-      }
+  static DEFAULT_OPTIONS = {...TheEdgeActorSheet.DEFAULT_OPTIONS,
+    actions: {
+      // Hero Token
+      heroTokenUsed: TheEdgePlayableSheet.useHeroToken,
+      heroTokenRegen: TheEdgePlayableSheet.regenerateHeroToken,
+      // Leveling
+      advanceAttr: TheEdgePlayableSheet.advanceAttr,
+      // Rolls
+      rollAttribute: TheEdgePlayableSheet.rollAttribute,
+      rollProficiency: TheEdgePlayableSheet.rollProficiency,
+      rollAttack: TheEdgePlayableSheet.rollAttack,
+      // Health
+      longRest: TheEdgePlayableSheet.longRest,
+      shortRest: TheEdgePlayableSheet.shortRest,
+      applyDamage: TheEdgePlayableSheet.applyDamage,
+      // Other
+      reload: TheEdgePlayableSheet.reload,
     }
-  )
+  }
 
   static PARTS = {
     form: {
@@ -189,7 +186,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       return undefined;
     }
 
-    if (weapon.system.type === "Hand-to-Hand combat") {
+    if (!weaponID || weapon.system.type === "Hand-to-Hand combat") {
       if (targetIds.length > 1) {
         const msg = LocalisationServer.parsedLocalisation(
           "Too many targets", "Notifications", {weapon: "hand to hand", max: 1}
@@ -253,25 +250,18 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   }
 
   static async reload(_event, target) {
-    const weaponID = target.closest(".weapon-id").dataset.weaponId
-    const ammunition = []
-    let weapon = this.actor.items.get(weaponID);
-    for (const ammu of this.actor.itemTypes["Ammunition"]) {
-      let sys = ammu.system
-      let designatedWeapons = sys.designatedWeapons
-        .replace(/<[^>]*>?/gm, '') // Strip html tags
-        .split(",")
-        .map(x => x.trim())
-      if (designatedWeapons.includes(weapon.name)) {
-        ammunition.push(ammu);
-      } else if (sys.whitelist[sys.type][weapon.system.type]) ammunition.push(ammu);
-    }
+    const weaponID = target.closest(".weapon-id").dataset.weaponId;
+    const weapon = this.actor.items.get(weaponID);
+    const ammunitionOptions = this.actor.itemTypes["Ammunition"].filter(
+      x => x.system.whitelist[x.system.type][weapon.system.type] && 
+        x.system.subtype == weapon.system.ammunitionType
+    );
 
     await DialogReload.start({
       weaponID: weaponID,
       actor: this.actor,
       weapon: weapon,
-      ammunition: ammunition
+      ammunitionOptions: ammunitionOptions
     })
   }
 

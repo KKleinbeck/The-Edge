@@ -1,0 +1,36 @@
+{{#each item.system.subtypes.grenade.effects as |effectGroups category|}}
+  {{#unless (checkEqual category "smoke")}}
+  {{#if effectGroups.active}}
+    <h4>{{combatName category}}</h4>
+    {{#each effectGroups as |effects distance|}}
+      {{#unless (checkEqual distance "active")}}
+        <div class="effect-data" data-category="{{category}}" data-distance="{{distance}}">
+          <div style="display: flex; justify-content: space-between; padding-bottom: 10px;">
+            <div>{{combatName distance}}</div>
+            <a title="{{ itemName 'Create' }}" data-action="createGrenadeEffect"
+              style="display: flex; align-items: end; gap: 10px;">
+              {{ itemName "Add" }}<i class="fas fa-plus"></i>
+            </a>
+          </div>
+          {{#each effects as |effect|}}
+            <div class="item-columned-page" style="align-items: center; padding-left: 10px;">
+              <select class="selection-box grenade-effect-modify" data-index="{{@index}}" data-field="group">
+                {{#each ../../../definedEffects as |name group|}}
+                  <option value="{{group}}" {{#if (checkEqual effect.group group)}}selected{{/if}}>{{genName group}}</option>
+                {{/each}}
+              </select>
+              <select class="selection-box grenade-effect-modify" data-index="{{@index}}" data-field="name" style="min-width: 50%;">
+                {{#each (getEntry ../../../definedEffects effect.group) as |target name|}}
+                  <option value="{{name}}" {{#if (checkEqual effect.name name)}}selected{{/if}}>{{effectRequirementName name effect.group}}</option>
+                {{/each}}
+              </select>
+              <input class="grenade-effect-modify" data-index="{{@index}}" type="number" data-field="value" value="{{effect.value}}" style="width: 45px; text-align: right;"/>
+              <a data-action="deleteGrenadeEffect" data-index="{{@index}}" title="{{ itemName 'delete' }}"><i class="fas fa-trash"></i></a>
+            </div>
+          {{/each}}
+        </div>
+      {{/unless}}
+    {{/each}}
+  {{/if}}
+  {{/unless}}
+{{/each}}

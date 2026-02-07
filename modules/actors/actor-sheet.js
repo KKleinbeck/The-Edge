@@ -18,7 +18,6 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
     form: {
       submitOnChange: true,
     },
-    window: {title: ""},
     classes: ["the_edge", "actor"],
     actions: {
       itemControl: TheEdgeActorSheet._onItemControl,
@@ -27,7 +26,7 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
     },
   }
 
-  get title () { return this.actor.name; } // Override in tandom with option.window.title
+  get title () { return this.actor.name; }
 
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
@@ -61,9 +60,7 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
       case "edit":
         return item?.sheet.render(true);
       case "post":
-        ChatServer.transmitEvent("Post Item",
-          {name: item.name, description: item.system.description}
-        );
+        ChatServer.transmitEvent("Post Item", {item: item});
         break;
       case "increase":
         this.actor.addOrCreateVantage(item);
@@ -287,6 +284,13 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
         this._onCounterChange(ev, ev.target.dataset.subtype)
       })
     }
+
+    const quantityItems = this.element.querySelectorAll(".quantity-input");
+    for (const input of quantityItems) {
+      input.addEventListener("change", (ev) => {
+        this._onItemQuantiyChange(ev);
+      })
+    }
   }
 
   async _onCounterChange(event, changeId) {
@@ -310,6 +314,18 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
         break;
     }
     this.actor.update({"system.counters": counters});
+  }
+
+  async _onItemQuantiyChange(ev) {
+    const target = ev.target;
+    const itemDetails = target.closest(".item");
+    console.log(target.valueAsNumber, itemDetails.dataset)
+    const newQuantity = target.valueAsNumber;
+    if (newQuantity && newQuantity > 0) {
+      const item = this.actor.items.get(itemDetails.dataset.itemId);
+      item.update({"system.quantity": newQuantity});
+      console.log(item)
+    }
   }
 
   // Item dropping

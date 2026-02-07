@@ -106,12 +106,12 @@ Hooks.once("init", async function() {
   CONFIG.Token.objectClass = TheEdgeToken;
 
   // Alter the default chat system
-  CONFIG.ChatMessage.template = "systems/the_edge/templates/chat/chat_message.html";
+  CONFIG.ChatMessage.template = "systems/the_edge/templates/chat/chat_message.hbs";
   CONFIG.ui.chat.MESSAGE_PATTERNS = {
     givePH: /^(\/givePH)\s*(\d+)?\s*([a-zA-Z0-9 ]*)?$/, ...CONFIG.ui.chat.MESSAGE_PATTERNS
   }
 
-  // Register sheet application classes
+  // Register item sheets
   TheEdgeItemSheet.setupSheets()
 
   // UI setup

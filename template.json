@@ -224,7 +224,7 @@
     "leadAttr2": {"name": "str", "value": 10},
     "rangeChart": {"less_2m": [0, 0], "less_20m": [0, 0], "less_200m": [0, 0], "less_1km": [0, 0], "more_1km": [0, 0]},
     "attachments": [],
-    "ammunitionID": ""
+    "ammunitionType": "small"
   },
   "Armour": {
     "templates": ["non-stackable", "description", "equipable"],
@@ -242,17 +242,17 @@
   },
   "Ammunition": {
     "templates": ["stackable", "description"],
-    "capacity": {"max": 30, "used": 0},
+    "capacity": {"max": 30, "value": 30},
     "reloadDuration": 0,
     "type": "energy",
+    "subtype": "small",
     "whitelist": {
       "energy": {"Blaster Pistols": true, "Pulse Rifle": true, "SABs": true, "Blaster Shockguns": true, "Blaster Snipers": true},
       "kinetic": {"Kinetic Pistols": true, "Slug Throwers": true, "LMGs": true, "Shotguns": true, "Projectile Snipers": true},
       "others": {"Recoilless Rifles": true}
     },
-    "designatedWeapons": "",
     "damage": {"bonus": 0, "penetration": 0},
-    "modifiers": {"less_2m": [0, 0], "less_20m": [0, 0], "less_200m": [0, 0], "less_1km": [0, 0], "more_1km": [0, 0]}
+    "rangeChart": {"less_2m": [0, 0], "less_20m": [0, 0], "less_200m": [0, 0], "less_1km": [0, 0], "more_1km": [0, 0]}
   },
   "Advantage": {"templates": ["description"], "AP": 0, "level": 1, "maxLevel": 1},
   "Disadvantage": {"templates": ["description"], "AP": 0, "level": 1, "maxLevel": 1},
@@ -268,7 +268,11 @@
       "medicine": { "healing": "0", "coagulation": "0", "effect": "heals", "actionCost": "1" },
       "grenade": {
         "blastDistance": [0, 0], "damage": ["0", "0"], "type": "kinetic",
-        "effects": {"blind": false, "deafen": false, "emp": false, "smoke": false, "shellShock": false}
+        "effects": {
+          "shellshock": {"active": false, "close": [], "far": []},
+          "emp": {"active": false, "close": [], "far": []},
+          "smoke": {"active": false}
+        }
       },
       "food": {}, "drugs": {}, "generic": {}
     },

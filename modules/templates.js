@@ -39,12 +39,11 @@ export const preloadHandlebarsTemplates = async function() {
     "systems/the_edge/templates/actors/store/meta-weapon.html",
 
     // Item templates
-    "systems/the_edge/templates/items/meta-attachments.html",
-    "systems/the_edge/templates/items/meta-description.html",
-    "systems/the_edge/templates/items/meta-effects.html",
-    "systems/the_edge/templates/items/meta-leading-attr.html",
+    "systems/the_edge/templates/items/Ammunition-details-content.hbs",
+    "systems/the_edge/templates/items/Grenade-effects-content.hbs",
 
     // Chat templates
+    "systems/the_edge/templates/chat/items/meta-effects.hbs",
     "systems/the_edge/templates/chat/meta-damage.html",
     "systems/the_edge/templates/chat/meta-apply-damage.html",
     "systems/the_edge/templates/chat/meta-protection-log.html",
@@ -52,7 +51,9 @@ export const preloadHandlebarsTemplates = async function() {
 
     // Generic templates
     "systems/the_edge/templates/generic/counter-token.hbs",
+    "systems/the_edge/templates/generic/icon-selector.hbs",
     "systems/the_edge/templates/generic/progress-bar-modern.hbs",
+    "systems/the_edge/templates/generic/range-chart.hbs",
   ];
 
   // Load the template parts

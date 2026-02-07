@@ -1,0 +1,7 @@
+<div class="icon-selector-outer" {{#if width}}style="width: {{width}}"{{/if}}>
+  <a class="icon-selector {{#if selected}}icon-selector-selected{{/if}}"
+    data-action="iconSelectorClicked" data-icon-type="{{iconType}}" data-value="{{value}}"
+    data-tooltip aria-label="{{itemName value}}">
+    <img src="{{icon}}" style="height: 22px;"/>
+  </a>
+</div>

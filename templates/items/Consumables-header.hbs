@@ -1,0 +1,77 @@
+<header class="sheet-header-item" style="{{#if (checkEqual item.system.subtype "medicine")}}flex: 0 0 56px;{{/if}}">
+  {{#if (checkEqual item.system.subtype "grenade")}}
+    <div class="item-columned-page" style="gap: 15px;">
+      <table class="grenade">
+        <tr>
+          <td></td>
+          <td style="width: 26%; text-align: center;">{{combatName "close"}}</td>
+          <td style="width: 26%; text-align: center;">{{combatName "far"}}</td>
+        </tr>
+        <tr>
+          <td>{{combatName "Blast distance"}}</td>
+          {{#each item.system.subtypes.grenade.blastDistance as |distance|}}
+            <td><input type="number" style="text-align: right;" name="system.subtypes.grenade.blastDistance" value="{{distance}}"/></td>
+          {{/each}}
+        </tr>
+        <tr>
+          <td>{{genName "Damage"}}</td>
+          {{#each item.system.subtypes.grenade.damage as |damage|}}
+            <td><input type="text" style="text-align: right;" name="system.subtypes.grenade.damage" value="{{damage}}"/></td>
+          {{/each}}
+        </tr>
+        <tr>
+          <td>{{genName "Damage type"}}</td>
+          <td colspan="2">
+            <select class="selection-box" name="system.subtypes.grenade.type" id="Grenade Damage Type Selector" style="text-align: right;">
+              {{#each helpers.damageTypes as |type|}}
+                <option value="{{type}}" {{#if (checkEqual ../item.system.subtypes.grenade.type type)}}selected{{/if}}>{{combatName type}}</option>
+              {{/each}}
+            </select>
+          </td>
+        </tr>
+      </table>
+      <div style="display: flex; flex-direction: column; justify-content: space-between; margin: 5px 5px 0 0; height: 90%">
+        {{#each grenadeEffects as |value effect|}}
+          <div style="display: flex; gap: 5px; align-items: center;">
+            <div class="icon-selector-outer">
+              <a class="icon-selector {{#if value.selected}}icon-selector-selected{{/if}}"
+                data-action="iconSelectorClicked" data-icon-type="grenadeEffect" data-value="{{effect}}"
+                data-tooltip="{{tooltipText effect}}">
+                <i class="fa-{{value.render}} fa-{{value.icon}}" style="color: black;"></i>
+              </a>
+            </div>
+          </div>
+        {{/each}}
+        </select>
+      </div>
+    </div> 
+  {{/if}}
+  {{#if (checkEqual item.system.subtype "medicine")}}
+    <div class="item-columned-page" style="align-items: baseline;">
+      <div class="item-fields" style="width: 20%;">
+        <label for="Healing">{{genName "Healing"}}</label><br/>
+        <input type="text" id="Healing" name="system.subtypes.medicine.healing" value="{{item.system.subtypes.medicine.healing}}"
+          style="text-align: right;"/>
+      </div>
+      <div class="item-fields" style="width: 20%;">
+        <label for="Coagulation">{{genName "Coagulation"}}</label><br/>
+        <input type="text" id="Coagulation" name="system.subtypes.medicine.coagulation" value="{{item.system.subtypes.medicine.coagulation}}"
+          style="text-align: right;"/>
+      </div>
+      <div class="item-fields" style="width: 20%; white-space: nowrap;">
+        <label for="ActionCost">{{genName "Action Cost"}}</label><br/>
+        <input type="number" id="ActionCost" name="system.subtypes.medicine.actionCost" value="{{item.system.subtypes.medicine.actionCost}}"
+          style="text-align: right;"/>
+      </div>
+      <div class="item-fields" style="width: 20%;">
+        <label for="Medicine Effect Selector">{{genName "Effects"}}</label><br/>
+        <select class="selection-box" name="system.subtypes.medicine.effect" id="Medicine Effect Selector"
+          data-tooltip aria-label="{{tooltipText item.system.subtypes.medicine.effect}}">
+          {{#each helpers.medicineEffects as |effect|}}
+            <option value="{{effect}}" {{#if (checkEqual ../item.system.subtypes.medicine.effect effect)}}selected{{/if}}>{{itemName effect}}</option>
+          {{/each}}
+        </select>
+      </div>
+    </div> 
+  {{/if}}
+</header>

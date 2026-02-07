@@ -1,0 +1,17 @@
+<h3>{{item.name}}</h3>
+{{#if item.system.effects}}
+<h5 style="margin: 12px 0 8px 0;">{{genName "Effects"}}:</h5>
+{{#each item.system.effects as |effect|}}
+<div style="display: flex; justify-content: space-between; align-items: center; padding-left: 10px;">
+  {{genName effect.group}}
+  {{effectRequirementName effect.name effect.group}}
+  <div class="output" style="width: 45px; text-align: right;">
+    {{effect.value}}
+  </div>
+</div>
+{{/each}}
+{{/if}}
+{{#if (checkNotEmpty item.system.description)}}
+  <h5 style="margin: 12px 0 8px 0;">{{genName "Description"}}:</h5>
+  {{{item.system.description}}}
+{{/if}}

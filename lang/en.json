@@ -153,13 +153,15 @@
     "COMBAT STATS": "Combat stats",
     "DAMAGE DICE": "Shots fired (Number of damage rolls)",
     "DELETE FIRING MODE": "Delete firing mode",
-    "PRECISION PENALTY 0": "Precision penalty unaimed shot",
-    "PRECISION PENALTY 1": "Precision penalty aimed shot",
+    "PRECISION PENALTY 0": "Precision modifier unaimed shot",
+    "PRECISION PENALTY 1": "Precision modifier aimed shot",
     "PRECISION": "Precision",
     "PRECISION MALI": "Precision mali",
     "RELOAD DURATION": "Reload duration",
     "RELOAD DURATION DESCRIPTION": "Actions needed to reload",
     "RELOAD DURATION EXTENSION": "Additional time to reload this ammunation",
+    "AMMU": "Ammu.",
+    "SHOTS": "Shots",
     "AIMED": "Aimed",
     "UNAIMED": "Unaimed",
     
@@ -170,7 +172,9 @@
 
     "LAYER": "Layer",
     "INNER": "Inner",
+    "INNER LAYER": "Inner Layer",
     "OUTER": "Outer",
+    "OUTER LAYER": "Outer Layer",
     "ARMOUR ATTACHMENT": "Armour attachment",
     "ATTACHMENT POINTS": "Attachments Slots",
     "ATTACHMENT SIZE": "Attachment size",
@@ -235,10 +239,13 @@
   },
   "DIALOG": {
     "CANCEL": "Cancel",
+    "CHANGE DICE": "Change dice",
     "CHEAT": "Cheat",
+    "CLICK TO INPUT": "Click to input",
     "COMBAT ACTIONS": "Combat Actions",
     "DELETE ITEM": "Delete {name}?",
     "EMPTY": "Empty",
+    "PROMPT NUMBER": "Insert number",
     "REST": "Rest",
     "ROLL": "Roll",
     "SELECT": "Select",
@@ -270,6 +277,8 @@
     "TOGGLE EQUIPPED": "Toggle equipped",
     "UNEQUIP": "Unequip",
     "DETACH": "Detach",
+    "DECREASE": "Decrease item quantity",
+    "INCREASE": "Increase item quantity",
 
     "AMMUNITION": "Ammunition",
     "ARMOUR": "Armour",
@@ -318,10 +327,14 @@
     "BODY PART": "Body part",
     "ARMSLEFT": "Left arm",
     "ARMSRIGHT": "Right arm",
+    "BELOW_NECK": "Below neck",
+    "ENTIRE": "Entire body",
     "HEAD": "Head",
+    "LEGS": "Legs",
     "LEGSLEFT": "Left leg",
     "LEGSRIGHT": "Right leg",
     "TORSO": "Torso",
+    "TORSO_ARMS": "Torso & Arms",
 
     "WOUND TYPE": "Kind",
 
@@ -332,7 +345,10 @@
     "DISADVANTAGE": "Disadvantage",
 
     "ACTIVATE": "Activate",
-    "DEACTIVATE": "Deactivate"
+    "DEACTIVATE": "Deactivate",
+
+    "LARGE": "Large",
+    "SMALL": "Small"
   },
   "NOTIFICATIONS": {
     "DESTROYED": "Armour piece {name} was destroyed in combat",
@@ -449,9 +465,13 @@
     "SKILL": "Skill"
   },
   "TABS": {
+    "attachments": "Attachments",
     "attributes": "Attributes",
     "biography": "Biography",
     "combat": "Combat",
+    "description": "Description",
+    "details": "Details",
+    "effects": "Effects",
     "health": "Health",
     "items": "Items",
     "proficiencies": "Proficiencies"
@@ -467,7 +487,14 @@
     "STRAIN LEVEL 0": "Resting for an action",
     "STRAIN LEVEL 1": "Examples: Walking, striding, throwing, firing a weapon, normal swimming",
     "STRAIN LEVEL 2": "Examples: Running, jumping, climbing, fast swimming",
-    "STRAIN LEVEL 3": "Examples: Sprinting, maximal physical efforts, melee combat"
+    "STRAIN LEVEL 3": "Examples: Sprinting, maximal physical efforts, melee combat",
+
+    "HEALS": "Improves condition of the wound, allowing further treatments afterwards",
+    "TREATS": "Improves condition of the wound, but prevents further treatments",
+
+    "EMP": "Applies effects on mechs and robots",
+    "SMOKE": "Creates a smoke screen at the detonation location",
+    "SHELLSHOCK": "Applies effect on biological creatures"
   },
   "ACTION COST": "Action cost",
   "ACTION": "Action",
@@ -506,7 +533,6 @@
   "BUYS FROM PLAYER": "Buys from player",
   "CAPACITY": "Capacity",
   "CHANGE": "Change",
-  "CHANGE DICE": "Change dice",
   "CHECK": "Check",
   "COAGULATION": "Coagulation",
   "COAGULATES": "coagulates",
@@ -583,6 +609,7 @@
   "MAKE STORAGE": "Make Storage",
   "MALE": "Male",
   "MAXIMUM": "maximum",
+  "MAX LEVEL": "Max level",
   "MEDICAL SKILLS": "Medical skills",
   "MEDICINE EFFECT": "Effect",
   "MOD": "Mod",
@@ -596,6 +623,7 @@
   "NOTES": "Notes",
   "OR": "or",
   "OF": "of",
+  "OTHER": "Other",
   "OTHERS": "Others",
   "OUTCOME": "Outcome",
   "OVERLOAD": "Overload",

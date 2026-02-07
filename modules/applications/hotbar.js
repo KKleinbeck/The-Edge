@@ -100,10 +100,9 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
     }
     context.equippedWeapons.forEach(weapon => {
       if (weapon.system.ammunitionID) {
-        // TODO: Refactor at Version 0.13.0
         const ammunition = actor.items.get(weapon.system.ammunitionID);
         const ammunitionMax = ammunition.system.capacity.max;
-        const ammunitionValue = ammunitionMax - ammunition.system.capacity.used;
+        const ammunitionValue = ammunition.system.capacity.value;
         weapon.ammunitionStatus = `(${ammunitionValue} / ${ammunitionMax})`;
       } else {
         weapon.ammunitionStatus = `(${LocalisationServer.localise("Empty", "Dialog")})`;

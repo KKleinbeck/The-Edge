@@ -30,7 +30,11 @@ export default function() {
     round: (a, b) => { return a.toFixed(b); },
     strCombine: (a, b) => { return a + " " + b; },
 
-    concat: (a, b) => { return a.toString().concat(b.toString()); },
+    concat: (...args) => {
+      let result = "";
+      args.slice(0, -1).forEach(arg => result = result.concat(arg.toString()) );
+      return result;
+    },
     checkEqual: (a, b) => { return a === b; },
     checkIn: (a, b) => { return b[a] !== undefined; },
     checkInstance: (a, b) => { return b.includes(a); },
@@ -39,9 +43,11 @@ export default function() {
       if (!a) return false;
       return Object.keys(a).length !== 0;
     },
+    checkNotUndefined: (a) => {return (typeof a !== "undefined");},
     checkSubtypedItem: (a) => { return (a == "Weapon" || a == "Consumables");},
     checkST: (a, b) => { return a < b; },
     checkSET: (a, b) => { return a <= b; },
+    checkIsEven: (a) => { return a % 2 ==0; },
     checkAttachment: (a) => { return a.system?.layer === "Outer"; },
     defaultTo: (a, b) => { if(a) return a; return b; },
     getSys: (a, b, c, d) => { return a.system[b][c][d]; },
@@ -52,7 +58,13 @@ export default function() {
     sub: (a, b) => { return a - b; },
     div: (a, b) => { if (b == 0) return undefined; return a / b; },
     mul: (a, b) => { return a * b; },
-    range: (n) => { return Array(n).fill(0).map((_, index)=> index); },
+    range: (from, to, step, options) => {
+      let out = ''
+      for (let i = from; i <= to; i += step) {
+        out += options.fn(i)
+      }
+      return out
+    },
     capitalise: (a) => { return a.charAt(0).toUpperCase() + a.slice(1); },
     anyObjectValues: (a) => { return Object.values(a).some(x => x); },
     storePrice: (a, b) => { return Math.round(a * b / 10) * 10; },
@@ -77,8 +89,8 @@ export default function() {
       if (weapon.system.type == "Hand-to-Hand combat") return "";
       for (const ammu of actor.itemTypes["Ammunition"]) {
         if (ammu.id == weapon.system.ammunitionID) {
-          let asc = ammu.system.capacity;
-          return `(${asc.max - asc.used} / ${asc.max})`;
+          const asc = ammu.system.capacity;
+          return `(${asc.value} / ${asc.max})`;
         }
       }
       return "(empty)";
@@ -113,7 +125,7 @@ export default function() {
     getSizeModifier: (size) => {
       return `(${THE_EDGE.sizeModifiers[size][0]} / ${THE_EDGE.sizeModifiers[size][1]})`
     },
-    getAmmunitionCount: (a) => {return `(${a.system.capacity.max - a.system.capacity.used} / ${a.system.capacity.max})`},
+    getAmmunitionCount: (a) => {return `(${a.system.capacity.value} / ${a.system.capacity.max})`},
     getStructurePoints: (a) => {return `(${a.system.structurePoints})`},
     getAttachmentDetails: (actorId, tokenId, shellId) => {
       const actor = Aux.getActor(actorId, tokenId);
@@ -162,6 +174,37 @@ export default function() {
         case "long rest":
           return LocalisationServer.localise("long rest chat");
       }
+    },
+    yForValue: (v, zeroY, unit) => zeroY - v * unit,
+    checkRangeSelected: (range, candidate) => {
+      if (range > 0) return candidate <= range && candidate >= 0;
+      return candidate >= range && candidate <= 0;
+    },
+    hexPoints: (a) => {
+      const d = Math.sqrt(3) * a / 2;
+
+      return [
+        `${ a  },${0}`,
+        `${ a/2},${-d}`,
+        `${-a/2},${-d}`,
+        `${-a  },${0}`,
+        `${-a/2},${d}`,
+        `${ a/2},${d}`
+      ].join(' ')
+    },
+    barTooltip: (value) => {
+      if (value >= 11 || value <= -11) {
+        return LocalisationServer.localise("Click to input", "dialog");
+      }
+      return value;
+    },
+    alignBarLabel: (value) => {
+      // Align outliers with top and shift 0, -1 to not collide with x axis
+      if (value > 11) return 11;
+      if (value < -11) return -11;
+      if (value == 0) return 1;
+      if (value == -1) return -2;
+      return value
     }
   })
 }

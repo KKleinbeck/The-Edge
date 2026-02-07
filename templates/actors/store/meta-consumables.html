@@ -34,7 +34,7 @@
 </div>
 {{#if (checkEqual system.subtype "grenade")}}
   {{#if (anyObjectValues system.subtypes.grenade.effects)}}
-    <b>{{genName "Effect"}}:</b>
+    <b>{{genName "Effects"}}:</b>
     <div style="padding-left: 10px;">
       {{#each (getActiveGrenadeEffects system.subtypes.grenade.effects) as |effect|}}
         {{combatName effect}}{{#unless @last}}, {{/unless}}

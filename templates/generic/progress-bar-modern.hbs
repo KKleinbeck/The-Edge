@@ -1,5 +1,5 @@
 <div class="progress-wrapper">
-  <svg viewBox="-2 -4 102 24"
+  <svg viewBox="-2 {{#if max}}-8{{else}}-4{{/if}} 102 {{#if (checkNotEmpty segments)}}28{{else}}24{{/if}}"
     style="overflow: visible"
     xmlns="http://www.w3.org/2000/svg"> {{!-- Extra padding for strokes --}}
     <defs>
@@ -83,7 +83,7 @@
       fill="none" />
 
     {{!-- Informations --}}
-    {{#if editable}}
+    {{#if nameEditable}}
       <foreignObject x="0" y="12" width="100" height="28" overflow="visible">
         <div style="display: flex; justify-content: start; align-items: top;">
           <a data-tooltip aria-label="{{ itemName 'Delete Counter' }}"
@@ -91,7 +91,7 @@
             <i class="fas fa-trash" style="font-size: 8px;"></i>
           </a>
           <input xmlns="http://www.w3.org/1999/xhtml" class="svg-progress-input svg-progress-name {{inputClass}}"
-            type="text" value="{{name}}" data-subtype="name" />
+            type="text" name="{{nameDataPath}}" value="{{name}}" data-subtype="name" />
         </div>
       </foreignObject>
     {{else}}
@@ -102,18 +102,18 @@
       <foreignObject x="0" y="-8" width="100" height="14" overflow="visible">
         <div style="display: flex; justify-content: end; align-items: top;
           transform: scale({{defaultTo textScale 1.0}}); transform-origin: bottom right;">
-            {{#if (or partiallyEditable editable)}}
+            {{#if valueEditable}}
               <input xmlns="http://www.w3.org/1999/xhtml" class="svg-progress-input {{inputClass}}"
-                type="number" name="{{dataPath}}" value="{{value}}" data-subtype="value" data-max={{max}} />
-              {{#if editable}}
-                <div class="svg-div-text"> / </div>
-                <input xmlns="http://www.w3.org/1999/xhtml" class="svg-progress-input {{inputClass}}"
-                  type="number" value="{{max}}" data-subtype="max" />
-              {{else}}
-                <div class="svg-div-text">&nbsp;/ {{max}}</div>
-              {{/if}}
+                type="number" name="{{valueDataPath}}" value="{{value}}" data-subtype="value" data-max={{max}} />
             {{else}}
-              <div class="svg-div-text">{{value}} / {{max}}</div>
+              <div class="svg-div-text">{{value}}</div>
+            {{/if}}
+            <div class="svg-div-text">&nbsp;/&nbsp;</div>
+            {{#if maxEditable}}
+              <input xmlns="http://www.w3.org/1999/xhtml" class="svg-progress-input {{inputClass}}"
+                type="number" name="{{maxDataPath}}" value="{{max}}" data-subtype="max" />
+            {{else}}
+              <div class="svg-div-text">{{max}}</div>
             {{/if}}
           </div>
         </foreignObject>
