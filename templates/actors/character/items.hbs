@@ -16,14 +16,11 @@
         {{#if (checkRenderItem item type)}}
           <li class="item" data-item-id="{{item._id}}" style="break-inside: avoid;">
             <div class="flexrow">
-              <div data-action="itemControl" data-subaction="edit" style="cursor: pointer; display: flex; vertical-align: center;">
+              <div data-action="itemControl" data-subaction="edit" style="cursor: pointer; display: flex; align-items: center;">
                 <img class="item-img" src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
                 <b>
                   {{#if (checkAttachment item)}}
                     ({{genName "Attachment"}})
-                  {{/if}}
-                  {{#if (checkIn "quantity" item.system)}}
-                    {{item.system.quantity}} x 
                   {{/if}}
                   {{item.name}}
                   {{#if (checkEqual item.type "Ammunition")}}
@@ -35,6 +32,12 @@
                 </b>
               </div>
               <div class="item-controls">
+                {{#if (checkIn "quantity" item.system)}}
+                  <div style="display: flex; margin-right: 8px; gap: 2px;">
+                    x
+                    <input class="dynamic-size quantity-input" type="number" min="1" value="{{item.system.quantity}}"/>
+                  </div>
+                {{/if}}
                 {{#if (checkIn "equipped" item.system)}}
                   {{#if item.system.equipped}}
                     <a title="{{ itemName 'Unequip' }}" data-action="itemControl" data-subaction="toggle-equip"><i class="far fa-check-circle"></i></a>
@@ -45,7 +48,6 @@
                 {{#if (checkEqual item.type "Consumables")}}
                     <a title="{{ itemName 'Use' }}" data-action="itemControl" data-subaction="consume"><i class="far fa-dice-d20"></i></a>
                 {{/if}}
-                <!-- <a title="{{ itemName 'Edit' }}" data-action="itemControl" data-subaction="edit"><i class="fas fa-edit"></i></a> -->
                 <a title="{{ genName 'Post to chat' }}" data-action="itemControl" data-subaction="post"><i class="fas fa-message"></i></a>
                 <a title="{{ itemName 'Delete' }}" data-action="itemControl" data-subaction="delete"><i class="fas fa-trash"></i></a>
               </div>

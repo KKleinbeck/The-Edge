@@ -277,6 +277,8 @@
     "TOGGLE EQUIPPED": "Toggle equipped",
     "UNEQUIP": "Unequip",
     "DETACH": "Detach",
+    "DECREASE": "Decrease item quantity",
+    "INCREASE": "Increase item quantity",
 
     "AMMUNITION": "Ammunition",
     "ARMOUR": "Armour",

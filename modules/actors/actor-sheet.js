@@ -284,6 +284,13 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
         this._onCounterChange(ev, ev.target.dataset.subtype)
       })
     }
+
+    const quantityItems = this.element.querySelectorAll(".quantity-input");
+    for (const input of quantityItems) {
+      input.addEventListener("change", (ev) => {
+        this._onItemQuantiyChange(ev);
+      })
+    }
   }
 
   async _onCounterChange(event, changeId) {
@@ -307,6 +314,18 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
         break;
     }
     this.actor.update({"system.counters": counters});
+  }
+
+  async _onItemQuantiyChange(ev) {
+    const target = ev.target;
+    const itemDetails = target.closest(".item");
+    console.log(target.valueAsNumber, itemDetails.dataset)
+    const newQuantity = target.valueAsNumber;
+    if (newQuantity && newQuantity > 0) {
+      const item = this.actor.items.get(itemDetails.dataset.itemId);
+      item.update({"system.quantity": newQuantity});
+      console.log(item)
+    }
   }
 
   // Item dropping
