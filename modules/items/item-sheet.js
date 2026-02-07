@@ -124,7 +124,7 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
       content += `
         <div class="item-footer-content-entry" style="margin-right: 10px;">
           <input class="item-footer-input" type="number" name="system.value" value="${this.item.system.value}" data-dtype="Number"/>
-          <img src="systems/the_edge/icons/credits.png" style="height: 16px;"/>
+          <img src="systems/the_edge/icons/credits_white.png" style="height: 16px;"/>
         </div>
       `
     }
