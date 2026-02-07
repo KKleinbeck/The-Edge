@@ -276,10 +276,12 @@ h1, h2, h3, h4 {
 }
 .message-content {
   background-image: url("../assets/background.png") !important;
-  border: 1.333px solid #bd9f09;
-  border-radius: 4px;
+  border-top: 2px solid #bd9f09;
+  border-bottom: none;
+  border-top-right-radius: 4px;
+  border-top-left-radius: 4px;
   padding: 5px;
-  color: var(--font-main-color) !important;
+  color: var(--font-main-color);
 }
 .message-header {
   margin-top: 5px;
