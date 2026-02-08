@@ -51,13 +51,12 @@
       {{else}}
         <img src="systems/the_edge/icons/body_male.png" alt="Background" class="background-image">
       {{/if}}
-      <div class="overlay">
-        {{#each data.items as |item id|}}
-          {{#if (checkEqual item.type "Wounds")}}
-            <div class="item-control item" data-action="edit" data-item-id="{{item._id}}" style="cursor: pointer;">
-              {{{getWoundCoords item.system}}}
-            </div>
-          {{/if}}
+      <div class="wound-overlay">
+        {{#each Wounds as |wound|}}
+          <div class="item-control item" data-action="itemControl" data-subaction="edit"
+            data-item-id="{{wound.id}}" style="cursor: pointer;">
+            {{{getWoundHTML wound false}}}
+          </div>
         {{/each}}
       </div>
     </div>

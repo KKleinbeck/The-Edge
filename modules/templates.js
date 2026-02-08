@@ -49,6 +49,13 @@ export const preloadHandlebarsTemplates = async function() {
     "systems/the_edge/templates/chat/meta-protection-log.html",
     "systems/the_edge/templates/dialogs/meta-chat-options.html",
 
+    // Hotbar
+    "systems/the_edge/modules/applications/templates/hotbar/dynamic-field.hbs",
+    "systems/the_edge/modules/applications/templates/hotbar/health.hbs",
+    "systems/the_edge/modules/applications/templates/hotbar/item.hbs",
+    "systems/the_edge/modules/applications/templates/hotbar/proficiency.hbs",
+    "systems/the_edge/modules/applications/templates/hotbar/weapon.hbs",
+
     // Generic templates
     "systems/the_edge/templates/generic/counter-token.hbs",
     "systems/the_edge/templates/generic/icon-selector.hbs",

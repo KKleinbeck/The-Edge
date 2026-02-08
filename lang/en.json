@@ -259,7 +259,8 @@
     "WEAPON": "{name} used a hero token to improve a combat check."
   },
   "HOTBAR": {
-    "RELOAD": "Choose selected actor"
+    "RELOAD": "Choose selected actor",
+    "NO EFFECT": "No effects acting on {name}"
   },
   "ITEM": {
     "ADD": "Add entry",

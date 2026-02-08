@@ -113,22 +113,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       ]
     }
 
-    context.effectDict = {statusEffects: [], effects: [], itemEffects: [], skillEffects: []}
-    for (const item of this.actor.items) {
-      if (item.type ==  "Effect") {
-        if (item.system.statusEffect) context.effectDict.statusEffects.push(item);
-        else context.effectDict.effects.push(item);
-      } else if (item.type == "Skill" || item.type == "Combatskill" || item.type == "Medicalskill") {
-        for (const effect of item.system.levelEffects) {
-          if (effect.length != 0) {
-            context.effectDict.skillEffects.push(item);
-            break;
-          }
-        }
-      } else if (item.system.equipped && item.system.effects.length !== 0) {
-        context.effectDict.itemEffects.push(item);
-      }
-    }
+    context.effectDict = this.getEffectDict();
     context.effectToggle = {statusEffects: false, effects: true, itemEffects: false, skillEffects: true};
     context.tabs = this._prepareTabs("primary");
     return context;
@@ -140,6 +125,26 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
         this._prepareAttributeContext(context);
         break
     }
+  }
+
+  getEffectDict() {
+    const effectDict = {statusEffects: [], effects: [], itemEffects: [], skillEffects: []};
+    for (const item of this.actor.items) {
+      if (item.type ==  "Effect") {
+        if (item.system.statusEffect) effectDict.statusEffects.push(item);
+        else effectDict.effects.push(item);
+      } else if (item.type == "Skill" || item.type == "Combatskill" || item.type == "Medicalskill") {
+        for (const effect of item.system.levelEffects) {
+          if (effect.length != 0) {
+            effectDict.skillEffects.push(item);
+            break;
+          }
+        }
+      } else if (item.system.equipped && item.system.effects.length !== 0) {
+        effectDict.itemEffects.push(item);
+      }
+    }
+    return effectDict;
   }
 
   // actions

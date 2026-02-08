@@ -8,6 +8,8 @@ export default class Aux {
 
   static parseRollType(html) { return html.find('[name="rolltype"]').val() || "roll"; }
 
+  static sleep(duration) { return new Promise(r => setTimeout(r, duration)); }
+
   static hasRaceCondDanger(id) {
     const lastUpdate = game.data[id]
     if (lastUpdate === undefined || Date.now() - lastUpdate > 350) {

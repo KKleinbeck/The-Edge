@@ -1,0 +1,23 @@
+<div class="item-element" style="display: flex; height: 82%;">
+  {{#if itemsScroll}}
+    <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between; margin-right: 5px;">
+      <button type="button" data-action="scroll" data-type="items" data-dir="down"
+        style="border: none; background: none; color: white;">
+        &#9650;
+      </button>
+      <button type="button" data-action="scroll" data-type="items" data-dir="up"
+        style="border: none; background: none; color: white;">
+        &#9660;
+      </button>
+    </div>
+  {{/if}}
+  <div class="double-column" style="height: 65%">
+    {{#each consumables as |consumable|}}
+      <button class="hotbar-button item" type="button" data-tooltip aria-label="{{consumable.tooltip}}"
+        data-action="useItem" data-item-id="{{consumable._id}}" data-subaction="consume">
+        <img src="{{consumable.img}}" title="{{consumable.name}}" width="24" height="24" />
+        <div class="button-text">{{consumable.displayName}}</div>
+      </button>
+    {{/each}}
+  </div>
+</div>

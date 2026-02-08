@@ -319,12 +319,10 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
   async _onItemQuantiyChange(ev) {
     const target = ev.target;
     const itemDetails = target.closest(".item");
-    console.log(target.valueAsNumber, itemDetails.dataset)
     const newQuantity = target.valueAsNumber;
     if (newQuantity && newQuantity > 0) {
       const item = this.actor.items.get(itemDetails.dataset.itemId);
       item.update({"system.quantity": newQuantity});
-      console.log(item)
     }
   }
 

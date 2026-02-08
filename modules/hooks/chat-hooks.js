@@ -102,7 +102,6 @@ export default function() {
           const index = +contextHtml.dataset.index;
           const newRoll = await Aux.promptInput("Change dice");
           if (!(newRoll && newRoll >= 1 && newRoll <= 20)) return;
-          console.log(newRoll)
 
           switch (contextHtml.dataset.type) {
             case "attribute":

@@ -1,0 +1,26 @@
+<div class="weapon-element" style="flex: 4;">
+  <h5>{{genName "Weapons"}}</h5>
+  <div style="display: flex; height: 72%;">
+    {{#if weaponsScroll}}
+      <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between; margin-right: 5px;">
+        <button type="button" data-action="scroll" data-type="weapons" data-dir="down"
+          style="border: none; background: none; color: white;">
+          &#9650;
+        </button>
+        <button type="button" data-action="scroll" data-type="weapons" data-dir="up"
+          style="border: none; background: none; color: white;">
+          &#9660;
+        </button>
+      </div>
+    {{/if}}
+    <div style="width: 100%">
+      {{#each equippedWeapons as |weapon|}}
+        <button class="hotbar-button" type="button" style="margin-bottom: 3px;"
+          data-tooltip aria-label="{{weapon.name}}" data-action="rollAttack" data-weapon-id="{{weapon._id}}">
+          <img src="{{weapon.img}}" title="{{weapon.name}}" style="width: 24px; height: 24px;" />
+          <div class="button-text">{{weapon.name}} {{weapon.ammunitionStatus}}</div>
+        </button>
+      {{/each}}
+    </div>
+  </div>
+</div>

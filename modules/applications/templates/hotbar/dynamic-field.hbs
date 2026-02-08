@@ -1,0 +1,25 @@
+<div class="dynamic-field-element" style="flex: 7;">
+  <h5 style="display: flex; gap: 10px; align-items: center; margin-bottom: 2px;">
+    <button type="button" data-action="changeDynamicField" data-type="items" data-dir="decrement"
+      style="border: none; background: none; color: white;">
+      &#9664;
+    </button>
+    {{#if (checkEqual dynamicField "item")}}
+      {{genName "Items"}}
+    {{/if}}
+    {{#if (checkEqual dynamicField "health")}}
+      {{genName "Health"}}
+    {{/if}}
+    <button type="button" data-action="changeDynamicField" data-type="items" data-dir="increment"
+      style="border: none; background: none; color: white;">
+      &#9654;
+    </button>
+  </h5>
+
+  {{#if (checkEqual dynamicField "item")}}
+    {{> systems/the_edge/modules/applications/templates/hotbar/item.hbs}}
+  {{/if}}
+  {{#if (checkEqual dynamicField "health")}}
+    {{> systems/the_edge/modules/applications/templates/hotbar/health.hbs}}
+  {{/if}}
+</div>

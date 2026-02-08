@@ -133,6 +133,13 @@ h1, h2, h3, h4 {
   white-space: nowrap;
   text-align: start;
 }
+.hotbar-content .double-column {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-gap: 5px;
+  margin-top: 5px;
+  width: 100%;
+}
 .hotbar-content .hotbar-d20 {
   width: 130%;
 }
@@ -148,6 +155,7 @@ h1, h2, h3, h4 {
 }
 .the_edge .hotbar-proficiency-d20 {
   width: 10%;
+  min-width: 10%;
 }
 .the_edge .hotbar-d20-end {
   content: url('../icons/d20r1.png');
@@ -1180,14 +1188,14 @@ textarea {
   display: block;
   border: 0;
 }
-.the_edge .wound-overview .overlay {
+.the_edge .wound-overlay {
   position: absolute; 
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
 }
-.the_edge .wound-overview .red-dot {
+.the_edge .wound-overlay .red-dot {
   position: absolute; 
   left: 50%;
   transform: translate(-50%, 0); 
@@ -1197,7 +1205,7 @@ textarea {
   border-radius: 50%;
   filter: blur(4px); /* Gaussian blur effect */
 }
-.the_edge .wound-overview .orange-dot {
+.the_edge .wound-overlay .orange-dot {
   position: absolute; 
   left: 50%;
   transform: translate(-50%, 0); 
@@ -1207,7 +1215,7 @@ textarea {
   border-radius: 50%;
   filter: blur(4px); /* Gaussian blur effect */
 }
-.the_edge .wound-overview .dot-label {
+.the_edge .wound-overlay .dot-label {
   position: absolute;
   left: 50%;
   transform: translate(-50%, 0); 

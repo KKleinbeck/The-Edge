@@ -137,26 +137,6 @@ export default function() {
     getNextWeightClass: (weightTillNextOverload) => {
       return `${Math.floor(10 * weightTillNextOverload)/10}kg ${LocalisationServer.localise("to next level")}`
     },
-    getWoundCoords: (details) => {
-      let colour = details.bleeding > 0 ? "red" : "orange";
-      let coords = details.coordinates;
-      let icon = undefined;
-      switch (details.status) {
-        case "treatable":
-          icon = "fa-regular fa-droplet";
-          break;
-        // case "coagulated":
-        //   icon = "fa-regular fa-droplet-slash";
-        //   break;
-        case "treated":
-          icon = "fa-light fa-bandage";
-          break;
-      }
-      return `<div class="${colour}-dot" style="left: ${coords[0]}%; top: ${coords[1]}%;"></div>` +
-      `<div class="dot-label" title="${LocalisationServer.localise(details.status, "item")}" style="left: ${coords[0]}%; top: ${coords[1]}%;">` +
-      `<i class="${icon}"></i>` +
-      `</div>`
-    },
     getWoundIcon: (status) => {
       switch (status) {
         case "treatable":

@@ -1,0 +1,39 @@
+<div class="health-element" style="display: flex; height: 100%; justify-content: space-between;">
+  <div style="display: flex; width: 75%">
+    {{#if effectsScroll}}
+    <div style="height: calc(100% - 30px); display: flex; flex-direction: column; justify-content: space-between; margin-right: 5px;">
+      <button type="button" data-action="scroll" data-type="effects" data-dir="down"
+        style="border: none; background: none; color: white;">
+        &#9650;
+      </button>
+      <button type="button" data-action="scroll" data-type="effects" data-dir="up"
+        style="border: none; background: none; color: white;">
+        &#9660;
+      </button>
+    </div>
+    {{/if}}
+    <div style="width: 100%;">
+    {{#if (checkNotEmpty effects)}}
+      {{#each effects as |effect|}}
+        <div class="output" style="text-align: left; margin-bottom: 3px; color: white; padding: 2px 0 2px 5px; height: 28px; width: 100%">
+          {{genName effect.group}}
+          {{effectRequirementName effect.name effect.group}}
+          {{effect.value}}
+        </div>
+      {{/each}}
+    {{else}}
+      {{detailedLocalisation "hotbar" "no effect" actor}}
+    {{/if}}
+    </div>
+  </div>
+  <div style="height: 100%; transform: translateY(-30px);">
+    {{{bodyImg}}}
+    <div class="wound-overlay">
+      {{#each wounds as |wound|}}
+        <div style="pointer-events: auto;">
+          {{{getWoundHTML wound true}}}
+        </div>
+      {{/each}}
+    </div>
+  </div>
+</div>
