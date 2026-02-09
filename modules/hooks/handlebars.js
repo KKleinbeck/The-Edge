@@ -58,6 +58,7 @@ export default function() {
     sub: (a, b) => { return a - b; },
     div: (a, b) => { if (b == 0) return undefined; return a / b; },
     mul: (a, b) => { return a * b; },
+    or: (a, b) => { return a || b; },
     range: (from, to, step, options) => {
       let out = ''
       for (let i = from; i <= to; i += step) {

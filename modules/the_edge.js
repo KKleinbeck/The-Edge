@@ -108,7 +108,9 @@ Hooks.once("init", async function() {
   // Alter the default chat system
   CONFIG.ChatMessage.template = "systems/the_edge/templates/chat/chat_message.hbs";
   CONFIG.ui.chat.MESSAGE_PATTERNS = {
-    givePH: /^(\/givePH)\s*(\d+)?\s*([a-zA-Z0-9 ]*)?$/, ...CONFIG.ui.chat.MESSAGE_PATTERNS
+    givePH: /^\/givePH\s*(\d+)?\s*([a-zA-Z0-9 ]*)?$/,
+    changeHR: /^\/changeHR\s*(\d+|[zZ][123])?\s*([a-zA-Z0-9 ]*)?$/,
+    ...CONFIG.ui.chat.MESSAGE_PATTERNS,
   }
 
   // Register item sheets

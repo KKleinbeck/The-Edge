@@ -12,7 +12,12 @@ export default function() {
     // costum chat commands
     const regexPH = CONFIG.ui.chat.MESSAGE_PATTERNS.givePH;
     const matchPH = regexPH.exec(message);
-    if (matchPH) { return parseGivePH(message, matchPH, chatData) }
+    if (matchPH) { return processGivePH(message, matchPH, chatData) }
+    
+    const regexHR = CONFIG.ui.chat.MESSAGE_PATTERNS.changeHR;
+    const matchHR = regexHR.exec(message);
+    console.log("chatMessage")
+    if (matchHR) { return processChangeHR(message, matchHR, chatData) }
 
     return true;
   })
@@ -383,7 +388,7 @@ async function updateWeaponCheck(chatMsgCls, actor, sys, newResults, index) {
   updateChatMessage(chatMsgCls, newContent, sys);
 }
 
-function parseGivePH(message, matches, chatData) {
+function processGivePH(message, matches, chatData) {
   const user = game.users.get(chatData.user);
   if (!user.isGM) {
     const msg = LocalisationServer.localise("givePH permission", "chat");
@@ -392,41 +397,108 @@ function parseGivePH(message, matches, chatData) {
     return false;
   }
 
-  if (matches[2] === undefined) {
+  if (matches[1] === undefined) {
     chatData.content = message + "<br />" + LocalisationServer.localise("givePH help", "chat");
     return true;
   }
-  const ph = +matches[2];
-  const name = matches[3] ? matches[3].toLowerCase() : "all";
+  const ph = +matches[1];
+  const name = matches[2] ? matches[2].toLowerCase() : "all";
+  const actors = _getActors(name);
+  if (!actors.length) {
+    chatData.content = message + _missingActorError(name);
+    return true;
+  }
+
+  const names = [];
+  for (const actor of actors) {
+    actor.update({"system.PracticeHours.max": actor.system.PracticeHours.max + ph});
+    names.push(actor.name);
+  }
+
+  chatData.content = `<h3>${LocalisationServer.localise("practice time", "chat")}</h3>` +
+    LocalisationServer.parsedLocalisation("Practice message", "chat", {actors: names, phGain: ph})
+  return true;
+}
+
+function processChangeHR(message, matches, chatData) {
+  const user = game.users.get(chatData.user);
+  if (!user.isGM) {
+    const msg = LocalisationServer.parsedLocalisation(
+      "command permission", "chat", {command: matches[1]}
+    );
+    ui.notifications.notify(msg);
+    chatData.content = msg;
+    return false;
+  }
+  
+  if (matches[1] === undefined) {
+    chatData.content = message + "<br />" + LocalisationServer.localise("changeHR help", "chat");
+    return true;
+  }
+  const hr = matches[1];
+  const name = matches[2] ? matches[2].toLowerCase() : "all";
+  const actors = _getActors(name);
+  if (!actors.length) {
+    chatData.content = message + _missingActorError(name);
+    return true;
+  }
+
+  const names = [];
+  let newHRTitle = "";
+  for (const actor of actors) {
+    let newHR = 0;
+    switch (hr) {
+      case "Z1":
+        newHR = actor.system.heartRate.min.value;
+        console.log(newHR)
+        newHRTitle = LocalisationServer.localise("Zone") + " 1";
+        break;
+
+      case "Z2":
+        newHR = actor.hrZone1();
+        newHRTitle = LocalisationServer.localise("Zone") + " 2";
+        break;
+
+      case "Z3":
+        newHR = actor.hrZone2();
+        newHRTitle = LocalisationServer.localise("Zone") + " 3";
+        break;
+
+      default:
+        newHR = +hr;
+        newHRTitle = hr;
+    }
+    actor.update({"system.heartRate.value": newHR});
+    names.push(actor.name);
+  }
+
+  chatData.content = `<h3>${LocalisationServer.localise("change hr title", "chat")}</h3>` +
+    LocalisationServer.parsedLocalisation("change hr message", "chat", {actors: names, newHR: newHRTitle});
+  return true;
+}
+
+function _getActors(name) {
   const actors = [];
   if (name == "all") {
     for (const actor of game.actors) {
       if (actor.hasPlayerOwner && actor.type == "character") {
-        actors.push(actor.name);
-        actor.update({"system.PracticeHours.max": actor.system.PracticeHours.max + ph});
+        actors.push(actor);
       }
     }
   } else {
     const actor = game.actors.find(x => x.name.toLowerCase() == name);
-    if (!actor) {
-      chatData.content = message + "<br />" +
-        LocalisationServer.parsedLocalisation("missing actor", "chat", {actor: name});
-      return true;
-    }
-
-    actors.push(actor.name);
-    actor.update({"system.PracticeHours.max": actor.system.PracticeHours.max + ph});
+    if (!actor) return [];
+    actors.push(actor);
   }
+  return actors;
+}
 
-  if (actors.length > 0) {
-    chatData.content = `<h3>${LocalisationServer.localise("practice time", "chat")}</h3>` +
-      LocalisationServer.parsedLocalisation("Practice message", "chat", {actors: actors, phGain: ph})
+function _missingActorError(name) {
+  if (name == "all") {
+    return "<br />" + LocalisationServer.localise("No player actors", "Notifications");
   } else {
-    const msg = LocalisationServer.localise("No actors to level up", "Notifications");
-    ui.notifications.notify(msg);
-    return false;
+    return "<br />" + LocalisationServer.parsedLocalisation("missing actor", "chat", {actor: name});
   }
-  return true;
 }
 
 async function applyDamage(target, damage, penetration, crits, damageType, name) {

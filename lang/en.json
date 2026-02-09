@@ -39,9 +39,13 @@
     "INT": "INT"
   },
   "CHAT": {
+    "CHANGEHR HELP": "Use as: '/changeHR amount CharacterName|[all]'",
+    "CHANGE HR TITLE": "Heartrate changes",
+    "CHANGE HR MESSAGE": "<b>{actors}</b>: Changed their heart rate to {newHR}.",
     "GIVEPH": "",
     "GIVEPH HELP": "Use as: '/givePH amount CharacterName|[all]'",
     "GIVEPH PERMISSION": "Only a GM can increase PH",
+    "COMMAND PERMISSION": "Only a GM can use command {command}",
     "LEVEL UP HELP": "Use '/givePH' to increase",
     "MISSING ACTOR": "Cannot find any character with the name {actor}.",
     "PRACTICE TIME": "Level up - Time for practice.",
@@ -386,7 +390,7 @@
     "CORE VALUE TOO SMALL": "'General weapon proficiency' too small. Level {level} needed but it is at {basic}.",
     "CORE VALUE COMBATICS TOO SMALL": "Basic combat proficiency (average str and crd) for 'Hand-to-Hand combat' is too small. {level} needed but it is at {basic}.",
 
-    "NO ACTORS TO LEVEL UP": "Could not give PH to any character. Make sure they have a player owner."
+    "NO PLAYER ACTORS": "Could not find any suitable characters. Make sure they have a player owner."
   },
   "PROFICIENCY": {
     "ENVIRONMENTAL": "Environmental",

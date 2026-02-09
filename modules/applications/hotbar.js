@@ -117,7 +117,8 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
     context.dynamicField = TheEdgeHotbar.DYNAMIC_FIELDS[
       this.dynamicFieldIndex.mod(TheEdgeHotbar.DYNAMIC_FIELDS.length)
     ];
-    const img = await fetch(`systems/the_edge/icons/body_${context.actor?.system.sex}.svg`)
+    const sex = context.actor?.system.sex ?? "female";
+    const img = await fetch(`systems/the_edge/icons/body_${sex}.svg`)
       .then(res => res.text())
     context.bodyImg = img;
     context.wounds = context.actor?.itemTypes["Wounds"];

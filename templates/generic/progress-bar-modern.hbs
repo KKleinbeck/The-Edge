@@ -1,5 +1,5 @@
 <div class="progress-wrapper">
-  <svg viewBox="-2 {{#if max}}-8{{else}}-4{{/if}} 102 {{#if (checkNotEmpty segments)}}28{{else}}24{{/if}}"
+  <svg viewBox="-2 {{#if max}}-8{{else}}-4{{/if}} 102 {{#if (or (checkNotEmpty segments) nameEditable)}}28{{else}}24{{/if}}"
     style="overflow: visible"
     xmlns="http://www.w3.org/2000/svg"> {{!-- Extra padding for strokes --}}
     <defs>
