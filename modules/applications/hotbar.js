@@ -14,6 +14,7 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
     this.weaponSelectedIndex = 0;
     this.itemSelectedIndex = 0;
     this.effectSelectedIndex = 0;
+    this.counterSelectedIndex = 0;
     this.dynamicFieldIndex = 0;
     this.token = undefined;
     this.selectedActor = undefined;
@@ -32,8 +33,6 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
     this.searchCandidate = undefined;
     this.searchBuffer = "";
   }
-
-  static DYNAMIC_FIELDS = ["item", "health"];
 
   static DEFAULT_OPTIONS = {
     // ...foundry.applications.ui.Hotbar.DEFAULT_OPTIONS,
@@ -95,13 +94,9 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
       w => w.system.equipped) ?? [];
     context.weaponsScroll = context.equippedWeapons.length > this.nItemsShown;
     if (context.weaponsScroll) {
-      const actualList = [];
-      for (let i = 0; i < this.nItemsShown; i++) {
-        actualList.push(context.equippedWeapons[
-          (i + this.weaponSelectedIndex).mod(context.equippedWeapons.length)
-        ]);
-      }
-      context.equippedWeapons = actualList;
+      context.equippedWeapons = this._getVisibleSubset(
+        context.equippedWeapons, this.weaponSelectedIndex, this.nItemsShown
+      );
     }
     context.equippedWeapons.forEach(weapon => {
       if (weapon.system.ammunitionID) {
@@ -114,9 +109,10 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
       }
     })
 
-    context.dynamicField = TheEdgeHotbar.DYNAMIC_FIELDS[
-      this.dynamicFieldIndex.mod(TheEdgeHotbar.DYNAMIC_FIELDS.length)
-    ];
+    const dynamicFields = ["item", "health"];
+    if (context.actor?.system.counters.length) { dynamicFields.push("counter"); }
+    context.dynamicField = dynamicFields[this.dynamicFieldIndex.mod(dynamicFields.length)];
+
     const sex = context.actor?.system.sex ?? "female";
     const img = await fetch(`systems/the_edge/icons/body_${sex}.svg`)
       .then(res => res.text())
@@ -143,13 +139,9 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
     context.effectsScroll = nEffects > this.nItemsShown;
     context.effects = Object.keys(effects).map(key => ({name: key, ...effects[key]}));
     if(context.effectsScroll) {
-      const actualList = [];
-      for (let i = 0; i < this.nItemsShown; i++) {
-        actualList.push(context.effects[
-          (i + this.effectSelectedIndex).mod(nEffects)
-        ]);
-      }
-      context.effects = actualList;
+      context.effects = this._getVisibleSubset(
+        context.effects, this.effectSelectedIndex, this.nItemsShown
+      );
     }
 
     context.consumables = [];
@@ -175,14 +167,28 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
     }
     context.itemsScroll = context.consumables.length > this.nItemsShown * 2;
     if (context.itemsScroll) {
-      const actualList = [];
-      for (let i = 0; i < this.nItemsShown * 2; i++) {
-        actualList.push(context.consumables[
-          (i + this.itemSelectedIndex).mod(context.consumables.length)
-        ]);
-      }
-      context.consumables = actualList;
+      context.consumables = this._getVisibleSubset(
+        context.consumables, this.itemSelectedIndex, this.nItemsShown * 2
+      );
     }
+
+    context.counters = context.actor?.system.counters ?? [];
+    context.counterScroll = context.counters.length > 4;
+    if (context.counterScroll) {
+      context.counters = this._getVisibleSubset(
+        context.counters, this.counterSelectedIndex, 4
+      );
+    }
+    context.equippedWeapons.forEach(weapon => {
+      if (weapon.system.ammunitionID) {
+        const ammunition = context.actor.items.get(weapon.system.ammunitionID);
+        const ammunitionMax = ammunition.system.capacity.max;
+        const ammunitionValue = ammunition.system.capacity.value;
+        weapon.ammunitionStatus = `(${ammunitionValue} / ${ammunitionMax})`;
+      } else {
+        weapon.ammunitionStatus = `(${LocalisationServer.localise("Empty", "Dialog")})`;
+      }
+    })
 
     context.proficiencySearchHistory = this.proficiencySearchHistory;
     context.searchCandidate = this.searchCandidate;
@@ -206,6 +212,15 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
       }
     }
     return undefined;
+  }
+
+  _getVisibleSubset(list, startIndex, max) {
+    const actualList = [];
+    for (let i = 0; i < max; i++) {
+      actualList.push(list[(i + startIndex).mod(list.length)]);
+    }
+    context.consumables = actualList;
+    return actualList;
   }
 
   render(options, _options) {
@@ -240,6 +255,8 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
         this._redrawProficiencies();
       }
     });
+
+    this._attachCounterListeners();
   }
 
   _saveSearchAndReset() {
@@ -307,6 +324,7 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
     this.weaponSelectedIndex = 0;
     this.itemSelectedIndex = 0;
     this.dynamicFieldIndex = 0;
+    this.counterSelectedIndex = 0;
     this.effectSelectedIndex = 0;
   }
 
@@ -344,6 +362,11 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
         this.effectSelectedIndex += change;
         this._redrawElement("health");
         break;
+      
+      case "counters":
+        this.counterSelectedIndex += change;
+        this._redrawElement("counter");
+        break;
     }
   }
 
@@ -364,7 +387,30 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
     const template = `systems/the_edge/modules/applications/templates/hotbar/${element}.hbs`;
     const html = await renderTemplate(template, context);
 
-    const proficiencyElement = this.element.querySelector(`.${element}-element`);
-    proficiencyElement.outerHTML = html;
+    const alteredElement = this.element.querySelector(`.${element}-element`);
+    alteredElement.outerHTML = html;
+
+    const currentField = element == "dynamic-field" ? context.dynamicField : element;
+    switch (currentField) {
+      case "counter":
+        this._attachCounterListeners();
+        break;
+   }
+  }
+
+  _attachCounterListeners() {
+    this.element.querySelectorAll(".svg-progress-input").forEach(x => {
+      x.addEventListener("change", ev => {
+        const counters = this.token.actor.system.counters;
+        const index = +ev.target.closest(".counter-index").dataset.index;
+        counters[index].value = Math.min(
+          ev.target.valueAsNumber, counters[index].max
+        );
+
+        this.token.actor.update({"system.counters": counters});
+
+        this._redrawElement("counter");
+      })
+    })
   }
 }

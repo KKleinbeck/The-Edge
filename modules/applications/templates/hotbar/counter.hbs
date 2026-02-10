@@ -1,9 +1,24 @@
-{{!-- <h5>{{genName "Counters"}}</h5>
-<div style="display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 5px; margin-top: 5px; width: 100%; height: 65%">
-  {{#each counters as |counter|}}
-    {{>
-      systems/the_edge/templates/generic/progress-bar-modern.hbs
-      value=counter.value max=counter.max fillId="counter"
-    }}
-  {{/each}}
-</div> --}}
+<div class="counter-element" style="display: flex; height: calc(100% - 30px)">
+  {{#if counterScroll}}
+  <div style="display: flex; flex-direction: column; justify-content: space-between; margin-right: 5px;">
+    <button type="button" data-action="scroll" data-type="counters" data-dir="down"
+      style="border: none; background: none; color: white;">
+      &#9650;
+    </button>
+    <button type="button" data-action="scroll" data-type="counters" data-dir="up"
+      style="border: none; background: none; color: white;">
+      &#9660;
+    </button>
+  </div>
+  {{/if}}
+  <div style="display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 5px; width: 100%; pointer-events: auto">
+    {{#each counters as |counter|}}
+      <div class="counter-index" data-index="{{@index}}">
+      {{>
+        systems/the_edge/templates/generic/progress-bar-modern.hbs
+        value=counter.value max=counter.max valueEditable=true fillId="counter"
+      }}
+      </div>
+    {{/each}}
+  </div>
+</div>

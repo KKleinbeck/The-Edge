@@ -51,6 +51,7 @@ export const preloadHandlebarsTemplates = async function() {
 
     // Hotbar
     "systems/the_edge/modules/applications/templates/hotbar/dynamic-field.hbs",
+    "systems/the_edge/modules/applications/templates/hotbar/counter.hbs",
     "systems/the_edge/modules/applications/templates/hotbar/health.hbs",
     "systems/the_edge/modules/applications/templates/hotbar/item.hbs",
     "systems/the_edge/modules/applications/templates/hotbar/proficiency.hbs",
