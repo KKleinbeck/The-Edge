@@ -16,7 +16,6 @@ export default function() {
     
     const regexHR = CONFIG.ui.chat.MESSAGE_PATTERNS.changeHR;
     const matchHR = regexHR.exec(message);
-    console.log("chatMessage")
     if (matchHR) { return processChangeHR(message, matchHR, chatData) }
 
     return true;
@@ -450,7 +449,6 @@ function processChangeHR(message, matches, chatData) {
     switch (hr) {
       case "Z1":
         newHR = actor.system.heartRate.min.value;
-        console.log(newHR)
         newHRTitle = LocalisationServer.localise("Zone") + " 1";
         break;
 

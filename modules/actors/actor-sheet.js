@@ -30,6 +30,7 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
 
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
+    context.userIsGM = game.user.isGM;
     context.actor = this.actor;
     context.system = context.document.system;
     context.prepare = this.actor.prepareSheet()

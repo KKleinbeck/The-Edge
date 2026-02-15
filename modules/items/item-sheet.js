@@ -885,6 +885,8 @@ class ItemSheetWeapon extends RangeChartSelectorMixin(TheEdgeItemSheet) {
     context.ammunitionTypeIsArbitrary = !THE_EDGE.ammunitionSubtypes.includes(
       this.item.system.ammunitionType
     );
+    context.dynamicSubtype = context.ammunitionTypeIsArbitrary ?
+      this.item.system.ammunitionType : "";
     return context;
   }
 

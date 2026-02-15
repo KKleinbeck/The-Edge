@@ -70,9 +70,11 @@ export default class DialogReload extends Dialog{
                 // If we currently have a mag loaded, we unload it
                 ammu.update({"system.loaded": false});
                 checkData.weapon.update({"system.ammunitionID": ""})
-                continue;
+                return
               }
             }
+            // capture all in case of bug
+            checkData.weapon.update({"system.ammunitionID": ""})
           }
         },
       })

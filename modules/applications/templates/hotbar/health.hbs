@@ -15,7 +15,9 @@
     <div style="width: 100%;">
     {{#if (checkNotEmpty effects)}}
       {{#each effects as |effect|}}
-        <div class="output" style="text-align: left; margin-bottom: 3px; color: white; padding: 2px 0 2px 5px; height: 28px; width: 100%">
+        <div class="output" data-tooltip aria-label="{{effect.sources}}"
+          style="text-align: left; margin-bottom: 3px; color: white; padding: 2px 0 2px 5px;
+            height: 28px; width: 100%; pointer-events: auto;">
           {{genName effect.group}}
           {{effectRequirementName effect.name effect.group}}
           {{effect.value}}
