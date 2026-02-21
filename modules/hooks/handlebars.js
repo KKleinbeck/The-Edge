@@ -29,6 +29,7 @@ export default function() {
     objectLength: (a) => { return Object.keys(a).length; },
     round: (a, b) => { return a.toFixed(b); },
     strCombine: (a, b) => { return a + " " + b; },
+    toLowerCase: (a) => { return a.toLowerCase(); },
 
     concat: (...args) => {
       let result = "";
@@ -53,11 +54,19 @@ export default function() {
     getSys: (a, b, c, d) => { return a.system[b][c][d]; },
     getSys5: (a, b, c, d, e) => { return a.system[b][c][d][e]; },
     getEntry: (a, b) => { return a[b]; },
+    getEntries: (a, ...args) => {
+      const argsWithoutCall = args.slice(0, -1); // Handlebars adds call to the end
+      return argsWithoutCall.reduce(
+        (obj, key) => (obj && obj[key] !== 'undefined') ? obj[key] : undefined,
+        a
+      );
+    },
     log: (a) => console.log(a),
     add: (a, b) => { return +a + +b; },
     sub: (a, b) => { return a - b; },
     div: (a, b) => { if (b == 0) return undefined; return a / b; },
     mul: (a, b) => { return a * b; },
+    and: (a, b) => { return a && b; },
     or: (a, b) => { return a || b; },
     range: (from, to, step, options) => {
       let out = ''
@@ -78,7 +87,7 @@ export default function() {
     getActiveGrenadeEffects: (a) => {
       const effects = [];
       for (const [key, value] of Object.entries(a)) {
-        if (value) effects.push(key);
+        if (value.active) effects.push(key);
       }
       return effects;
     },

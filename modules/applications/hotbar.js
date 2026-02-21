@@ -201,20 +201,20 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
   }
 
   getActor() {
-    const controlled = canvas.tokens?.controlled;
+    const controlled = canvas.tokens?.controlled
+      .filter(x => x.actor?.type == "character");
     if (controlled?.length) {
-      this.token = controlled[0];
+      this.token = controlled
       return controlled[0].actor;
     }
 
-    const tokens = canvas.scene?.tokens ?? [];
-    for (const token of tokens) {
-      const actor = token.actor;
-      // permission == 2: Observer, permission == 3: Owner
-      if (actor?.permission >= 2 && actor?.type == "character") {
-        this.token = token;
-        return actor;
-      }
+    // permission == 2: Observer, permission == 3: Owner
+    const tokens = (canvas.scene?.tokens ?? [])
+      .filter(x => x.actor?.permission >= 2 && x.actor?.type == "character");
+    if (tokens.length) {
+      const actor = tokens[0].actor;
+      this.token = tokens[0];
+      return actor;
     }
     return undefined;
   }

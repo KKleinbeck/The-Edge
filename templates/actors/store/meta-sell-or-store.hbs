@@ -1,0 +1,9 @@
+<div class="store-buy">
+  <a class="store-buy-inner beveled-box" data-action="sellOrStore">
+    {{#if storeDetails.isStorage}}
+      {{genName "Store"}}
+    {{else}}
+      {{genName "Sell"}}
+    {{/if}}
+  </a>
+</div>

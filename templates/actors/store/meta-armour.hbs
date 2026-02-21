@@ -1,5 +1,15 @@
 <div style="display: table;">
   <div style="display: table-row;">
+    <div style="display: table-cell; vertical-align: middle;"><b>{{itemName "Body Part"}}:</b></div>
+    <div class="icon-selector-outer">
+      <a class="icon-selector icon-selector-selected"
+        data-tooltip aria-label="{{itemName system.bodyPart}}">
+        <img src="systems/the_edge/icons/armour/{{toLowerCase system.bodyPart}}.png" style="height: 22px;"/>
+      </a>
+    </div>
+  </div>
+
+  <div style="display: table-row;">
     <div style="display: table-cell;"><b>{{combatName "Structure Points"}}:</b></div>
     <div style="display: table-cell; padding-left: 10px;">{{system.structurePoints}}</div>
   </div>
@@ -9,10 +19,6 @@
     <div style="display: table-cell; padding-left: 10px;">{{system.attachmentPoints.max}}</div>
   </div>
 
-  <div style="display: table-row;">
-    <div style="display: table-cell;"><b>{{itemName "Body Part"}}:</b></div>
-    <div style="display: table-cell; padding-left: 10px;">{{actorName system.bodyPart}}</div>
-  </div>
   <div style="display: table-row;">
     <div style="display: table-cell;"></div>
     <div style="display: table-cell; padding-left: 10px;">({{combatName system.layer}})</div>

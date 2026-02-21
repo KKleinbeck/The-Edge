@@ -229,7 +229,7 @@
   },
   "CRIT FAIL EVENT": {
     "SPONTANEOUS DISCHARGE": "Weapon Spontaneously discharges and fires again with the currently selected fire mode.<br />Perform a Crd check:<br /> - QL 0 - 3: The shot hits a random structure within a 90deg arc infront of you.<br /> - QL > 3: Perform another attack modified -8+QL against your last target. - FL < 0: Attack a random creature within 20m and a 90deg arch infront of you, with modifier -FL.",
-    "JAM": "Weapon jams, which takes 2 actions to fix (strding permited during this). Pass a Foc check +5 to recognise this immediatly, otherwise only recognise it when you attempt your next fire action.",
+    "JAM": "Weapon jams, which takes 2 actions to fix (striding permited during this). Pass a Foc check +5 to recognise this immediatly, otherwise only recognise it when you attempt your next fire action.",
     "OPTICS DE-ADJUSTED": "Weapon now has a -2 on all aimed shots until optics are realigned, taking one action.",
     "OVERHEATING": "Barrel overheats. Weapon cannot be used for one BR or obtain 1d3 damage and a burn with at a 25% chance per firing action in the next BR.",
     "FLICKED SAFETY ON": "Weapons safety accidentally switched on, taking no actions to fix. Pass a Foc check to recognise this immediatly, otherwise only recognise this when you attempt your next fire action.",
@@ -238,7 +238,7 @@
     "RANDOM DISCHARGE": "At the beginning of the next BR your weapon discharges randomly at your last selected firing mode. Pass a Crd check, otherwise hit a random creature within 20m and a 90deg arc infront of you. At FL < -3 you hit yourself in the foot.",
     "BROKEN GRIP": "Parts of the grips broke, both leading attributes of your weapon increase by 2 until fixed, taking 5min.",
     "BARREL MISALIGNED": "Weapon now has a -1 on all shots until barrel is realigned, taking two actions.",
-    "BARRAL DAMAGED": "Barrel tip fractures. All shots now deal 1 less damage untill barrel is changed (this can stack).",
+    "BARREL DAMAGED": "Barrel tip fractures. All shots now deal 1 less damage untill barrel is changed (this can stack).",
     "CATASTROPHIC FAILURE": "The weapon suffers a critical failure, becoming unusable until repaired (taking an hour)."
   },
   "DIALOG": {
@@ -390,7 +390,9 @@
     "CORE VALUE TOO SMALL": "'General weapon proficiency' too small. Level {level} needed but it is at {basic}.",
     "CORE VALUE COMBATICS TOO SMALL": "Basic combat proficiency (average str and crd) for 'Hand-to-Hand combat' is too small. {level} needed but it is at {basic}.",
 
-    "NO PLAYER ACTORS": "Could not find any suitable characters. Make sure they have a player owner."
+    "NO PLAYER ACTORS": "Could not find any suitable characters. Make sure they have a player owner.",
+
+    "TOO EXPENSIVE": "{name} cannot afford item. Price: {price} - Available credits: {credits}"
   },
   "PROFICIENCY": {
     "ENVIRONMENTAL": "Environmental",
@@ -479,7 +481,15 @@
     "effects": "Effects",
     "health": "Health",
     "items": "Items",
-    "proficiencies": "Proficiencies"
+    "proficiencies": "Proficiencies",
+
+    "Ammunition": "Ammunition",
+    "Armour": "Armour",
+    "Consumables": "Consumables",
+    "Gear": "Gear",
+    "Sell": "Sell",
+    "Store": "Store",
+    "Weapon": "Weapons"
   },
   "TEXT": {
     "EFFECTS": "Add a status modifiery to your attributes, proficiencies, weapon proficiencies and other character attributes.\nFor this write 'Attributes.NAME', 'Proficiencies.NAME', 'Weapons.NAME'. This is generally case-insensitive, except for specific proficiency and weapon names. You can also use group names, for example 'attributes.physical' or 'weapons.Energy'. Furthermore there is an 'all' specifier to affect everything.\nOther modifiers: 'health', 'heartRate.[min,max]', 'bloodVolumn'.",
@@ -624,6 +634,7 @@
   "NATIVE LANGUAGE": "Native language",
   "NATIVE": "Native speaker",
   "NEW WOUND": "New Wound",
+  "NOBODY": "Nobody",
   "NO HIT": "No hits",
   "NOTES": "Notes",
   "OR": "or",
@@ -686,6 +697,7 @@
   "TEMPORARY": "Temporary",
   "THRESHOLD": "threshold",
   "TO NEXT LEVEL": "to next level",
+  "TRADES WITH": "trades with",
   "TRADE FACTOR": "Trade factor",
   "TTL": "Ttl",
   "TOTAL": "Total",

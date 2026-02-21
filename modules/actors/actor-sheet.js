@@ -292,6 +292,24 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
         this._onItemQuantiyChange(ev);
       })
     }
+
+    this.element.querySelectorAll(".dynamic-size").forEach(input => {
+      this._adjustInputWidth(input);
+      input.addEventListener('input', () => this._adjustInputWidth(input));
+    })
+  }
+
+  _adjustInputWidth(input) {
+    const span = document.createElement('span');
+    span.style.visibility = 'hidden';
+    span.style.whiteSpace = 'pre';
+    span.style.position = 'absolute';
+    span.style.font = getComputedStyle(input).font;
+    span.textContent = input.value || input.placeholder || '';
+    document.body.appendChild(span);
+    const width = span.offsetWidth + 20;
+    document.body.removeChild(span);
+    input.style.width = `${width}px`;
   }
 
   async _onCounterChange(event, changeId) {
@@ -321,6 +339,8 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
     const target = ev.target;
     const itemDetails = target.closest(".item");
     const newQuantity = target.valueAsNumber;
+    // Todo: Prevent negative quantities (do nothing)
+    // Todo: Quantity == 0: Deletion dialog
     if (newQuantity && newQuantity > 0) {
       const item = this.actor.items.get(itemDetails.dataset.itemId);
       item.update({"system.quantity": newQuantity});

@@ -1,3 +1,4 @@
+import Aux from "../system/auxilliaries.js";
 import ChatServer from "../system/chat_server.js";
 import LocalisationServer from "../system/localisation_server.js";
 import THE_EDGE from "../system/config-the-edge.js";
@@ -102,24 +103,15 @@ export default class DialogWeapon extends Dialog{
   }
 
   static getDistance(aggressor, targetIds, sceneId) {
-    // get the scene
     const scene = game.scenes.get(sceneId);
     if (scene === undefined) return undefined;
 
-    const targetPos = targetIds.map(id => {
-      const token = scene.tokens.get(id);
-      return [token.x, token.y];
-    })
-    const aggressorPos = [aggressor.x, aggressor.y];
-    if (targetPos.length == 0) return undefined;
+    const targets = targetIds.map(id => scene.tokens.get(id) );
+    if (targets.length == 0) return undefined;
 
     // determine distance
     const factor = scene.grid.distance / scene.grid.size
-    const distances = []
-    for (const tp of targetPos) {
-      distances.push(factor * Math.hypot(aggressorPos[0] - tp[0], aggressorPos[1] - tp[1]))
-    }
-
+    const distances = targets.map(target => factor * Aux.tokenDistance(aggressor, target));
     return Math.max(...distances)
   }
 

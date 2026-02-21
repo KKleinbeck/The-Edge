@@ -373,12 +373,6 @@ input[type="checkbox"]::after {
   color: var(--color-background-night-black);
   font-weight: 100;
 }
-input.dynamic-size {
-  display: inline-block;
-  text-align: right;
-  padding-left: 5px;
-  field-sizing: content;
-}
 input::placeholder {
   color: var(--font-secondary-color);
 }
@@ -411,6 +405,15 @@ textarea {
   background-image: url("../assets/background.png") !important;
 }
 
+/* JS Controlled */
+.dynamic-size {
+  /* Intend: scaled to width of content through js */
+  display: inline-block;
+  text-align: right;
+  padding-left: 5px;
+}
+
+/* Styles */
 .the_edge {
   /* Sheet Tabs */
   /* Items List */
@@ -1244,7 +1247,7 @@ textarea {
   padding: 10px;
   transition: all 0.2s ease-in-out;
 }
-.the_edge .store-item-glow:hover {
+.the_edge .store-item:hover {
   box-shadow: 0 5px 15px rgba(145, 92, 182, .4);
 }
 .the_edge .store-currency {
@@ -1261,7 +1264,6 @@ textarea {
   cursor: pointer; 
   box-sizing: content-box;
   width: fit-content;
-  padding: 0;
   line-height: 20px;
 }
 .right-aligned-text {
@@ -1280,4 +1282,20 @@ table.chat-table {
 table.chat-table td {
   padding: 0 2px 0 2px;
   text-align: right;
+}
+
+.beveled-box {
+  display: flex;
+  height: 22px;
+  padding: 0 6px 0 6px;
+  position: relative;
+  align-items: center;
+  background: url("../assets/button.svg") no-repeat;
+  background-size: 100% 100%;
+}
+
+.beveled-box:hover {
+  filter: drop-shadow(
+    0 0 4px color-mix(in srgb, var(--theme-color-secondary) 60%, rgb(0,0,0))
+  );
 }

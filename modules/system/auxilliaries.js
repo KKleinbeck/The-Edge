@@ -55,8 +55,7 @@ export default class Aux {
   }
 
   static getPlayerTokens() {
-    const sceneID = game.canvas.id;
-    const scene = game.scenes.get(sceneID);
+    const scene = game.canvas.scene;
 
     const tokens = [];
     const userID = game.user.id;
@@ -219,4 +218,6 @@ export default class Aux {
     });
     return result;
   }
+
+  static tokenDistance(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
 }

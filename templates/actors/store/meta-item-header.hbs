@@ -1,0 +1,13 @@
+<h3 style="display: flex; justify-content: space-between; align-items: end;">
+  {{name}}
+  {{#unless storeDetails.isStorage}}
+    <div style="display: flex; align-items: end; gap: 5px; padding-right: 5px;">
+      {{#if isSell}}
+        {{storePrice system.value (div 1 storeDetails.tradeFactor)}}
+      {{else}}
+        {{storePrice system.value storeDetails.tradeFactor}}
+      {{/if}}
+      <img class="store-currency" src="systems/the_edge/icons/credits_white.png" title="{{name}}" style="margin-bottom: 1px;"/>
+    </div>
+  {{/unless}}
+</h3>

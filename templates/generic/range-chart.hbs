@@ -1,6 +1,6 @@
 <div class="range-chart" style="width: 100%;">
   <svg
-    viewBox="0 0 570 210"
+    viewBox="0 0 570 230"
     xmlns="http://www.w3.org/2000/svg"
   >
     <defs>
@@ -28,7 +28,7 @@
           fill: rgb(218, 107, 255);
         }
         .bar-label-0 {
-          font-size: 14px;
+          font-size: 15px;
           fill: rgb(218, 107, 255);
           text-anchor: end;
         }
@@ -43,7 +43,7 @@
           fill: rgb(51, 255, 255);
         }
         .bar-label-1 {
-          font-size: 14px;
+          font-size: 15px;
           fill: rgb(51, 255, 255);
           text-anchor: start;
         }
@@ -64,7 +64,7 @@
     </defs>
 
     <!-- Y axis -->
-    <line x1="30" y1="15" x2="30" y2="199" class="y-axis"
+    <line x1="30" y1="15" x2="30" y2="221" class="y-axis"
       marker-start="url(#arrow)" marker-end="url(#arrow)"/>
 
     {{!-- Y ticks -10 to 10 --}}
@@ -72,12 +72,12 @@
       <line
         x1="24"
         x2="36"
-        y1="{{yForValue this 107 7}}"
-        y2="{{yForValue this 107 7}}"
+        y1="{{yForValue this 118 8}}"
+        y2="{{yForValue this 118 8}}"
         class="tick"
       />
       <text
-        x="20" y="{{add (yForValue this 107 7) 7}}"
+        x="20" y="{{add (yForValue this 118 8) 8}}"
         class="tick-label"
       >
         {{this}}
@@ -85,7 +85,7 @@
     {{/range}}
 
     <!-- X axis -->
-    <line x1="30" y1="107" x2="564" y2="107" class="x-axis"
+    <line x1="30" y1="118" x2="564" y2="118" class="x-axis"
       marker-end="url(#arrow)"/>
 
     {{!-- Legend --}}
@@ -97,7 +97,7 @@
     {{!-- Bars --}}
     {{#each rangeChart as |values rangeName|}}
       {{#with @index as |i|}}
-        <text x="{{add 100 (mul i 100)}}" y="210" class="label">
+        <text x="{{add 90 (mul i 105)}}" y="230" class="label">
           {{combatName rangeName}}
         </text>
 
@@ -105,15 +105,15 @@
         {{#each values as |value j|}}
           {{#range -11 11 1}}
             <polygon
-              points="{{hexPoints 6}}"
+              points="{{hexPoints 8}}"
               transform="
                 translate(
                   {{#if (checkIsEven this)}}
-                    {{add (add 100 (mul i 100)) (add -10 (mul j 30))}},
+                    {{add (add 90 (mul i 105)) (add -10 (mul j 34))}},
                   {{else}}
-                    {{add (add 100 (mul i 100)) (add -20 (mul j 30))}},
+                    {{add (add 90 (mul i 105)) (add -24 (mul j 34))}},
                   {{/if}}
-                  {{yForValue this 107 7}}
+                  {{yForValue this 118 8}}
                 )
               "
               class="range-selector selector-{{j}} {{#if (checkRangeSelected value this)}}selector-{{j}}-fill{{/if}}"
@@ -127,8 +127,8 @@
           {{/range}}
           {{!-- Numerical label --}}
           <text
-            x="{{add (add 100 (mul i 100)) (add -30 (mul j 60))}}"
-            y="{{yForValue (sub (alignBarLabel value) 0.5) 107 7}}"
+            x="{{add (add 90 (mul i 105)) (add -36 (mul j 72))}}"
+            y="{{yForValue (sub (alignBarLabel value) 0.5) 118 8}}"
             class="bar-label-{{j}}"
           >
             {{value}}

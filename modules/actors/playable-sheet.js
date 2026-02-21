@@ -119,13 +119,13 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     return context;
   }
 
-  async _prepatePartContext(partId, context) {
-    switch (partId) {
-      case "attributes":
-        this._prepareAttributeContext(context);
-        break
-    }
-  }
+  // async _preparePartContext(partId, context) {
+  //   switch (partId) {
+  //     case "attributes":
+  //       this._prepareAttributeContext(context);
+  //       break
+  //   }
+  // }
 
   getEffectDict() {
     const effectDict = {statusEffects: [], effects: [], itemEffects: [], skillEffects: []};

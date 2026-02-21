@@ -1,0 +1,20 @@
+<!-- Set 'StoreDetails', 'id' as input -->
+<div class="store-item item" data-item-id="{{id}}" data-price="{{storePrice system.value storeDetails.tradeFactor}}">
+  <div data-action="itemInformation">
+    {{> systems/the_edge/templates/actors/store/meta-item-header.hbs}}
+
+    {{#if (checkEqual type "Weapon")}}
+      {{> systems/the_edge/templates/actors/store/meta-weapon.hbs}}
+    {{/if}}
+    {{#if (checkEqual type "Ammunition")}}
+      {{> systems/the_edge/templates/actors/store/meta-ammunition.hbs}}
+    {{/if}}
+    {{#if (checkEqual type "Armour")}}
+      {{> systems/the_edge/templates/actors/store/meta-armour.hbs}}
+    {{/if}}
+    {{#if (checkEqual type "Consumables")}}
+      {{> systems/the_edge/templates/actors/store/meta-consumables.hbs}}
+    {{/if}}
+  </div>
+  {{> systems/the_edge/templates/actors/store/meta-buy-or-retrieve.hbs}}
+</div>

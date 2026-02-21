@@ -33,12 +33,14 @@
   {{/if}}
 </div>
 {{#if (checkEqual system.subtype "grenade")}}
-  {{#if (anyObjectValues system.subtypes.grenade.effects)}}
-    <b>{{genName "Effects"}}:</b>
-    <div style="padding-left: 10px;">
-      {{#each (getActiveGrenadeEffects system.subtypes.grenade.effects) as |effect|}}
-        {{combatName effect}}{{#unless @last}}, {{/unless}}
-      {{/each}}
-    </div>
-  {{/if}}
+  {{#with system.subtypes.grenade.effects as |effects|}}
+    {{#if (checkNotEmpty (getActiveGrenadeEffects effects))}}
+      <b>{{genName "Effects"}}:</b>
+      <div style="padding-left: 10px;">
+        {{#each (getActiveGrenadeEffects effects) as |effect|}}
+          {{combatName effect}}{{#unless @last}}, {{/unless}}
+        {{/each}}
+      </div>
+    {{/if}}
+  {{/with}}
 {{/if}}
