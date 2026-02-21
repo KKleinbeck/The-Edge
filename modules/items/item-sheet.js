@@ -145,8 +145,16 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
     const footer = document.createElement("div");
     footer.classList.add("item-footer");
     frame.appendChild(footer);
+    footer.outerHTML = await this._dynamicFooter(this.headerWidth, this.headerHeight);
     return frame;
   }
+  
+  _attachFrameListeners() {
+    super._attachFrameListeners();
+    this._attachAdditionalFrameListeners();
+  }
+
+  _attachAdditionalFrameListeners() {}
 
   async minimize() {
     super.minimize();
@@ -177,6 +185,7 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
       const footer = footers[0];
       footer.outerHTML = await this._dynamicFooter(this.headerWidth, this.headerHeight);
     }
+    this._attachAdditionalFrameListeners();
   }
 
   async _prepareContext(options) {
@@ -587,11 +596,14 @@ class ItemSheetConsumables extends TheEdgeItemSheet {
   _footerContent() {
     let content = super._footerContent();
     content += `
-      <select class="selection-box" name="system.subtype" id="Type Selector"
-        style="padding-left: 1px; padding-right: 1px;" data-dtype="String">`;
+      <select class="selection-box type-selection-hook" name="system.current_type"
+        style="padding-left: 1px; padding-right: 1px;">`;
     for (const typeName of Object.keys(this.item.system.subtypes)) {
-      const selected = this.item.system.subtype == typeName ? "selected" : "";
-      content += `<option value="${typeName}" ${selected}>${LocalisationServer.localise(typeName, "Item")}</option>`
+      const selected = this.item.system.current_type == typeName ? "selected" : "";
+      content += `
+        <option value="${typeName}" ${selected}>
+          ${LocalisationServer.localise(typeName, "Item")}
+        </option>`
     }
     content += `</select>`;
     return content;
@@ -599,7 +611,7 @@ class ItemSheetConsumables extends TheEdgeItemSheet {
 
   async render(options={}, _options={}) {
     // Disable effects for generic
-    if (this.item.system.subtype != "generic") {
+    if (this.item.system.current_type != "generic") {
       this.constructor.TABS.primary.tabs = [{id: "effects"}, {id: "description"}];
     } else {
       this.constructor.TABS.primary.tabs =
@@ -608,14 +620,15 @@ class ItemSheetConsumables extends TheEdgeItemSheet {
     }
     
     // Special Effects tab for Grenades
-    if (this.item.system.subtype == "grenade") {
+    if (this.item.system.current_type == "grenade") {
         this.constructor.PARTS.effects.template = "systems/the_edge/templates/items/Grenade-effects.hbs";
     } else {
         this.constructor.PARTS.effects.template = "systems/the_edge/templates/items/meta-effects.hbs";
     }
 
     // Remove non necessary headers
-    switch (this.item.system.subtype) {
+        console.log(this.item.system)
+    switch (this.item.system.current_type) {
       case "drugs":
       case "food":
       case "generic":
