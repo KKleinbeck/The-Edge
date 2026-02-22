@@ -4,11 +4,11 @@
       <thead>
         <tr>
           <th style="width: 60%"><p style="font-size: 14; text-transform: uppercase;">{{itemName groupName}}</p></th>
-          <th title="{{genName 'Level'}}">{{genName "Lvl"}}</th>
-          <th title="{{genName 'Status'}}">{{genName "Sta"}}</th>
+          <th class="combat-table-element" data-tooltip aria-label="{{genName 'Level'}}">{{genName "Lvl"}}</th>
+          <th class="combat-table-element" data-tooltip aria-label="{{genName 'Status'}}">{{genName "Sta"}}</th>
           {{#if (checkEqual groupName "general")}}
           {{else}}
-            <th title="{{genName 'Total'}}">{{genName "Ttl"}}</th>
+            <th class="combat-table-element" data-tooltip aria-label="{{genName 'Total'}}">{{genName "Ttl"}}</th>
           {{/if}}
         </tr>
       </thead>
@@ -16,21 +16,22 @@
         {{#each group as |modifiers weapon|}}
           <tr>
             <td style="font-weight: bold;">{{combatName weapon}}</td>
-            <td align="center">
+            <td class="combat-table-element" align="right">
               <input
                 class="core-value" data-target="system.weapons.{{groupName}}.{{weapon}}.advances" type="number"
                 value="{{getWeaponProficiency ../../actor groupName weapon 'advances'}}" data-dtype="Number"
                 style="max-height: 22px; text-align: right; width: 28px; padding: 0 2px 0 0;"
               >
             </td>
-            <td align="center">
+            <td class="combat-table-element" align="right">
               <div class="output" style="max-height: 22px; width: 28px; text-align: right;">
                 {{getWeaponProficiency ../../actor groupName weapon 'status'}}
               </div>
             </td>
             {{#if (checkEqual groupName "general")}}
             {{else}}
-              <td align="center" title="{{combatName 'Weapon Prof Total'}}">
+              <td class="combat-table-element" align="right"
+                data-tooltip aria-label="{{combatName 'Weapon Prof Total'}}">
                 <div class="output" style="max-height: 22px; width: 28px; text-align: right;">
                   {{getWeaponLevel ../../actor weapon}}
                 </div>

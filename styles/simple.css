@@ -1147,6 +1147,11 @@ textarea {
   line-height: 26px;
 }
 
+.the_edge .combat-table-element {
+  text-align: right;
+  padding: 4px 8px 4px 8px;
+
+}
 
 .the_edge .section {
   margin-bottom: 10px; /* Space between sections */
@@ -1293,7 +1298,6 @@ table.chat-table td {
   background: url("../assets/button.svg") no-repeat;
   background-size: 100% 100%;
 }
-
 .beveled-box:hover {
   filter: drop-shadow(
     0 0 4px color-mix(in srgb, var(--theme-color-secondary) 60%, rgb(0,0,0))
