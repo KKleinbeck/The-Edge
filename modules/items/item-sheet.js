@@ -627,7 +627,6 @@ class ItemSheetConsumables extends TheEdgeItemSheet {
     }
 
     // Remove non necessary headers
-        console.log(this.item.system)
     switch (this.item.system.current_type) {
       case "drugs":
       case "food":

@@ -111,7 +111,7 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
         this.render();
         break;
       case "consume":
-        switch (item.system.subtype) {
+        switch (item.system.current_type) {
           case "medicine":
             const wounds = this.actor.itemTypes["Wounds"];
             DialogMedicine.start({medicineItem: item, wounds: wounds, actor: this.actor});
