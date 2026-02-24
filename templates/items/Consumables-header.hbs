@@ -1,5 +1,5 @@
-<header class="sheet-header-item" style="{{#if (checkEqual item.system.subtype "medicine")}}flex: 0 0 56px;{{/if}}">
-  {{#if (checkEqual item.system.subtype "grenade")}}
+<header class="sheet-header-item" style="{{#if (checkEqual item.system.current_type "medicine")}}flex: 0 0 56px;{{/if}}">
+  {{#if (checkEqual item.system.current_type "grenade")}}
     <div class="item-columned-page" style="gap: 15px;">
       <table class="grenade">
         <tr>
@@ -46,7 +46,7 @@
       </div>
     </div> 
   {{/if}}
-  {{#if (checkEqual item.system.subtype "medicine")}}
+  {{#if (checkEqual item.system.current_type "medicine")}}
     <div class="item-columned-page" style="align-items: baseline;">
       <div class="item-fields" style="width: 20%;">
         <label for="Healing">{{genName "Healing"}}</label><br/>

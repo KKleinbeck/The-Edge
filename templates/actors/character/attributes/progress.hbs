@@ -22,8 +22,12 @@
       <div class="table-data center-cell">
         <span class="output" style="width: 80px;">{{system.PracticeHours.used}}</span>
       </div>
-      <div class="table-data center-cell" title="{{chatName 'level up help'}}">
+      <div class="table-data center-cell" {{#if userIsGM}}title="{{chatName 'level up help'}}"{{/if}}>
+        {{#if userIsGM}}
+        <input style="width: 80px; text-align: center;" value="{{system.PracticeHours.max}}" name="system.PracticeHours.max" type="number">
+        {{else}}
         <span class="output" style="width: 80px;">{{system.PracticeHours.max}}</span>
+        {{/if}}
       </div>
     </div>
     <div class="table-row">

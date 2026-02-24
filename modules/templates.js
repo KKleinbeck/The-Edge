@@ -28,15 +28,15 @@ export const preloadHandlebarsTemplates = async function() {
     "systems/the_edge/templates/actors/character/biography.hbs",
 
     // Store templates
-    "systems/the_edge/templates/actors/store/buy-from-player.html",
-    "systems/the_edge/templates/actors/store/meta-ammunition.html",
-    "systems/the_edge/templates/actors/store/meta-armour.html",
-    "systems/the_edge/templates/actors/store/meta-buy-or-retrieve.html",
-    "systems/the_edge/templates/actors/store/meta-consumables.html",
-    "systems/the_edge/templates/actors/store/meta-header.html",
-    "systems/the_edge/templates/actors/store/meta-item.html",
-    "systems/the_edge/templates/actors/store/meta-sell-or-store.html",
-    "systems/the_edge/templates/actors/store/meta-weapon.html",
+    "systems/the_edge/templates/actors/store/buy-from-player.hbs",
+    "systems/the_edge/templates/actors/store/meta-ammunition.hbs",
+    "systems/the_edge/templates/actors/store/meta-armour.hbs",
+    "systems/the_edge/templates/actors/store/meta-buy-or-retrieve.hbs",
+    "systems/the_edge/templates/actors/store/meta-consumables.hbs",
+    "systems/the_edge/templates/actors/store/meta-item-header.hbs",
+    "systems/the_edge/templates/actors/store/meta-item.hbs",
+    "systems/the_edge/templates/actors/store/meta-sell-or-store.hbs",
+    "systems/the_edge/templates/actors/store/meta-weapon.hbs",
 
     // Item templates
     "systems/the_edge/templates/items/Ammunition-details-content.hbs",

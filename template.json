@@ -263,7 +263,7 @@
   "Gear": {"templates": ["description", "stackable"]},
   "Consumables": {
     "templates": ["description", "stackable"],
-    "subtype": "food",
+    "current_type": "food",
     "subtypes": {
       "medicine": { "healing": "0", "coagulation": "0", "effect": "heals", "actionCost": "1" },
       "grenade": {

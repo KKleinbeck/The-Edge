@@ -124,13 +124,17 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
     const effects = {};
     for (const [_key, items] of Object.entries(effectDict)) {
       for (const item of items) {
-        for (const effect of item.system.effects) {
-          if (effect.name in effects) {
-            effects[effect.name].value += effect.value;
+        for (const effect of item.system.effects ?? []) {
+          const hash = effect.name + effect.group;
+          if (hash in effects) {
+            effects[hash].value += effect.value;
+            effects[hash].sources.push(item.name);
           } else {
-            effects[effect.name] = {
+            effects[hash] = {
               value: effect.value,
-              group: effect.group
+              name: effect.name,
+              group: effect.group,
+              sources: [item.name]
             }
           }
         }
@@ -138,7 +142,7 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
     }
     const nEffects = Object.keys(effects).length;
     context.effectsScroll = nEffects > this.nItemsShown;
-    context.effects = Object.keys(effects).map(key => ({name: key, ...effects[key]}));
+    context.effects = Object.keys(effects).map(key => ({...effects[key]}));
     if(context.effectsScroll) {
       context.effects = this._getVisibleSubset(
         context.effects, this.effectSelectedIndex, this.nItemsShown
@@ -198,19 +202,20 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
   }
 
   getActor() {
-    const controlled = canvas.tokens?.controlled;
+    const controlled = canvas.tokens?.controlled
+      .filter(x => x.actor?.type == "character");
     if (controlled?.length) {
-      this.token = controlled[0];
+      this.token = controlled
       return controlled[0].actor;
     }
 
-    const tokens = canvas.scene?.tokens ?? [];
-    for (const token of tokens) {
-      const actor = token.actor;
-      if (actor?.isOwner && actor?.type == "character") {
-        this.token = token;
-        return actor;
-      }
+    // permission == 2: Observer, permission == 3: Owner
+    const tokens = (canvas.scene?.tokens ?? [])
+      .filter(x => x.actor?.permission >= 2 && x.actor?.type == "character");
+    if (tokens.length) {
+      const actor = tokens[0].actor;
+      this.token = tokens[0];
+      return actor;
     }
     return undefined;
   }

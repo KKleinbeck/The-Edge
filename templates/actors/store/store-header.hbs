@@ -1,0 +1,69 @@
+<header class="sheet-header" style="display: flex; max-height: 70px; gap: 30px; padding: 0 5px 0 5px;">
+  <div>
+    <h4 class="charname" style="flex: 2; margin-bottom: 8px;">
+      <input name="name" type="text" value="{{store.name}}" placeholder="Name" style="min-height: 32px;"/>
+    </h4>
+    <div style="display: flex; align-items: center; gap: 3px;">
+      {{genName "Trades with"}}:
+      {{#if (checkNotEmpty tokens)}}
+        {{#if userIsGM}}
+          <select class="actor-selection-hook" style="width: 70%; text-align: right; height: 28px; margin-left: auto">
+            {{#each tokens as |token|}}
+              <option class="skill-option" value="{{@index}}" {{#if (checkEqual @index selectedTokenIndex)}}selected{{/if}}>
+                {{token.name}}
+              </option>
+            {{/each}}
+          </select>
+        {{else}}
+          <b>{{getEntries tokens selectedTokenIndex "name"}}</b>
+        {{/if}}
+      {{else}}
+        {{genName "Nobody"}}
+      {{/if}}
+    </div>
+  </div>
+  <div style="flex: 3">
+    <div style="display: flex; align-items: center; gap: 5px; margin-top: 3px;">
+      {{#if userIsGM}}
+      <div class="icon-selector-outer">
+        <a class="icon-selector {{#if store.system.isStorage}}icon-selector-selected{{/if}}"
+          data-action="iconSelectorClicked" data-icon-type="storeType" data-value="Storage"
+          style="color: black; font-weight: 600">
+          {{genName "Storage"}}
+        </a>
+      </div>
+      <div class="icon-selector-outer">
+        <a class="icon-selector {{#unless store.system.isStorage}}icon-selector-selected{{/unless}}"
+          data-action="iconSelectorClicked" data-icon-type="storeType" data-value="Shop"
+          style="color: black; font-weight: 600">
+          {{genName "Shop"}}
+        </a>
+      </div>
+      {{/if}}
+      <label for="credits-chids" style="flex: 1; text-align: right;">Chids</label>
+      {{#if userIsGM}}
+        <input name="system.credits.chids" type="number" value="{{store.system.credits.chids}}" id="credits-chids" style="flex: 1; text-align: right;">
+      {{else}}
+        <div class="output" style="flex: 1; text-align: right;">{{store.system.credits.chids}}</div>
+      {{/if}}
+      <label for="credits-chids" style="flex: 1; text-align: right;">{{genName "digital"}}</label>
+      {{#if userIsGM}}
+        <input name="system.credits.digital" type="number" value="{{store.system.credits.digital}}" id="credits-digital" style="flex: 1; text-align: right;">
+      {{else}}
+        <div class="output" style="flex: 1; text-align: right;">{{store.system.credits.digital}}</div>
+      {{/if}}
+    </div>
+    {{#if userIsGM}}
+      <div style="display: flex; padding-top: 10px; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 5px;">
+          <input type="checkbox" name="system.buysFromPlayer" id="toggle-buys-from-player" {{#if store.system.buysFromPlayer}}checked{{/if}}/>
+          <label for="toggle-buys-from-player">{{genName "buys from player"}}</label>
+        </div>
+        <div style="display: flex; align-items: center; gap: 5px;">
+          <label for="tradeFactor">{{genName "trade factor"}}</label>
+          <input type="number" name="system.tradeFactor" id="tradeFactor" value="{{store.system.tradeFactor}}" style="width: 40px; text-align: right;"/>
+        </div>
+      </div>
+    {{/if}}
+  </div>
+</header>

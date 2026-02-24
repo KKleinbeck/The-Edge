@@ -11,6 +11,7 @@ import { TheEdgeItemSheet } from "./items/item-sheet.js";
 import { TheEdgePlayableSheet } from "./actors/playable-sheet.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
 import { TheEdgeToken, TheEdgeTokenDocument } from "./token.js";
+import { TheEdgeStoreSheet } from "./actors/store-sheet.js";
 
 Hooks.once("init", async function() {
   console.log(`Initializing the Galaxy`);
@@ -95,6 +96,7 @@ Hooks.once("init", async function() {
 
   const actorSheets = [
     { sheetClass: TheEdgePlayableSheet, types: ['character'], makeDefault: true },
+    { sheetClass: TheEdgeStoreSheet, types: ['Store'], makeDefault: true },
   ];
   actorSheets.forEach(({ sheetClass, types, makeDefault }) => {
     foundry.documents.collections.Actors.registerSheet('the_edge', sheetClass, { types, makeDefault });

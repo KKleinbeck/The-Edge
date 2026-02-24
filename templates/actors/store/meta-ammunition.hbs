@@ -6,7 +6,14 @@
 
   <div style="display: table-row;">
     <div style="display: table-cell;"><b>{{genName "Type"}}:</b></div>
-    <div style="display: table-cell; padding-left: 10px;">{{system.type}}</div>
+    <div style="display: table-cell; padding-left: 10px;">
+      {{combatName system.type}}
+      {{#if (or (checkEqual system.subtype "small") (checkEqual system.subtype "large"))}}
+        ({{itemName system.subtype}})
+      {{else}}
+        ({{system.subtype}})
+      {{/if}}
+    </div>
   </div>
 
   <div style="display: table-row;">
@@ -18,7 +25,5 @@
     <div style="display: table-cell; padding-left: 10px;">{{system.damage.penetration}} {{genName "penetration"}}</div>
   </div>
 </div>
-{{#unless (checkEqual system.designatedWeapons "")}}
-  <b>{{genName "Designated Weapons"}}:</b>
-  <div style="padding-left: 10px;">{{system.designatedWeapons}}</div>
-{{/unless}}
+<b style="margin-bottom: 5px;">{{combatName "Precision"}}</b>
+{{> systems/the_edge/templates/generic/range-chart.hbs rangeChart=system.rangeChart}}

@@ -1,4 +1,5 @@
 import GrenadePicker from "../applications/grenades-picker.js";
+import { TheEdgeStoreSheet } from "../actors/store-sheet.js";
 
 export class SocketHandler {
     constructor() {
@@ -31,10 +32,21 @@ export class SocketHandler {
         
         // Grenade related
         case "CREATE_GRENADE_TILE":
-          GrenadePicker.createGrenadeTile(
-            payload.proficiencyRoll, payload.rollOutcome, payload.token,
-            payload.checkData, payload.targetPosition
-          );
+          if (game.user.isGM) {
+            GrenadePicker.createGrenadeTile(
+              payload.proficiencyRoll, payload.rollOutcome, payload.token,
+              payload.checkData, payload.targetPosition
+            );
+          }
+          break;
+        
+        // Store related
+        case "BUY_OR_RETRIEVE":
+          TheEdgeStoreSheet.handleBuyOrRetrieve(payload)
+          break;
+
+        case "SELL_OR_STORE":
+          TheEdgeStoreSheet.handleSellOrStore(payload)
           break;
         
         // Other actions

@@ -93,15 +93,6 @@ export class TheEdgeBaseActor extends Actor {
         refund: n == 0 ? 0 : this._attrCost(n-1)
       }
     }
-    for (const [category, weapons] of Object.entries(this.system.weapons)) {
-      for (const weapon of Object.keys(weapons)) {
-        let n = this.system.weapons[category][weapon].advances
-        preparedData.system.weapons[weapon] = {
-          cost: this._attrCost(n),
-          refund: n == 0 ? 0 : this._attrCost(n-1)
-        }
-      }
-    }
 
     foundry.utils.mergeObject(preparedData, {proficienciesLeft: {}, proficienciesRight: {}})
     preparedData.system.profGroups.push({
@@ -164,7 +155,7 @@ export class TheEdgeBaseActor extends Actor {
     const attrValue = this.system.attributes[attrName].advances;
     const newVal = attrValue + (type == "advance" ? 1 : -1);
 
-    this.changeCoreValue(`system.attributes.${attrName}.advances`, newVal);
+    this.changeCoreValue(`system.attributes.${attrName}.advances`, Math.max(newVal, 0));
   }
 
   coreValueChangeCost(coreName, newVal) {
@@ -184,6 +175,7 @@ export class TheEdgeBaseActor extends Actor {
   }
 
   changeCoreValue(coreName, newVal) {
+    // TODO: this should just get the core values plain text name in the data model refactor
     newVal = newVal ? +newVal : 0; // If empty / undefined
     if (!Number.isInteger(+newVal)) {return;}
 

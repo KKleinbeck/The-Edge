@@ -120,13 +120,13 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     return context;
   }
 
-  async _prepatePartContext(partId, context) {
-    switch (partId) {
-      case "attributes":
-        this._prepareAttributeContext(context);
-        break
-    }
-  }
+  // async _preparePartContext(partId, context) {
+  //   switch (partId) {
+  //     case "attributes":
+  //       this._prepareAttributeContext(context);
+  //       break
+  //   }
+  // }
 
   getEffectDict() {
     const effectDict = {statusEffects: [], effects: [], itemEffects: [], skillEffects: []};
@@ -259,7 +259,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     const weaponID = target.closest(".weapon-id").dataset.weaponId;
     const weapon = this.actor.items.get(weaponID);
     const ammunitionOptions = this.actor.itemTypes["Ammunition"].filter(
-      x => x.system.whitelist[x.system.type][weapon.system.type] && 
+      x => (x.system.whitelist[x.system.type][weapon.system.type] || weapon.system.type === "Recoilless Rifles") && 
         x.system.subtype == weapon.system.ammunitionType
     );
 
@@ -303,6 +303,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       game.tooltip.activate(event.currentTarget, {text: text, direction: "UP"});
     }
     else {
+      if (cost <= 0) return; // No negative gains
       const text = LocalisationServer.parsedLocalisation("Gain", "notifications", {gain: cost});
       game.tooltip.activate(event.currentTarget, {text: text, direction: "UP"});
     }
@@ -312,7 +313,8 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     const field = $(event.currentTarget);
     const name = event.currentTarget.dataset.target;
 
-    const cost = actor.coreValueChangeCost(name, field.val());
+    const newVal = field.val() >= 0 ? field.val() : 0;
+    const cost = actor.coreValueChangeCost(name, newVal);
 
     if (cost == 0) return;
     else if (cost > 0) {
@@ -328,7 +330,8 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   _onChangeCoreValues(event, actor) {
     const target = event.target;
     const name = target.dataset.target;
-    actor.changeCoreValue(name, target.value);
+    actor.changeCoreValue(name, Math.max(target.value, 0));
+    if (target.value < 0) this.render(true); // As this might not trigger an update
   }
 }
 

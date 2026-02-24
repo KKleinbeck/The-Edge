@@ -1,0 +1,17 @@
+<div class="store-buy" style="align-items: center; justify-content: space-between;">
+  <div style="display: flex; gap: 5px; align-items: center">
+    {{#if userIsGM}}
+      <a title="{{ itemName 'Delete' }}" data-action="delete"><i class="fas fa-trash"></i></a>
+    {{/if}}
+    {{#if system.quantity}}
+      <input class="quantity-input dynamic-size" type="number" value="{{system.quantity}}" style="text-align: right;">
+    {{/if}}
+  </div>
+  <a class="store-buy-inner beveled-box" data-action="buyOrRetrieve">
+    {{#if storeDetails.isStorage}}
+      {{genName "Retrieve"}}
+    {{else}}
+      {{genName "Buy"}}
+    {{/if}}
+  </a>
+</div>
