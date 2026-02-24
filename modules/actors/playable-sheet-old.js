@@ -70,7 +70,6 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
 
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
-    console.log(this.actor.system)
 
     const equippedArmour = this.actor.itemTypes["Armour"]?.filter(
       a => a.system.equipped && a.system.layer == "Inner");
@@ -93,7 +92,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     const weight = this.actor.determineWeight();
     const wounds = this.actor.itemTypes["Wounds"];
 
-    // await this.actor.updateStatus();
+    await this.actor.updateStatus();
     await this.actor.determineOverload();
     context.helpers = {
       armourProtection: armourProtection,

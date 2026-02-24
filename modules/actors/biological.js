@@ -9,10 +9,6 @@ export class TheEdgeBiologicalActor extends TheEdgeBaseActor {
     foundry.utils.mergeObject(preparedData, {
       attrs: THE_EDGE.attrs,
       canAdvance: true,
-      zones: {
-        1: {value: this.hrZone1(), tooltip: "75% Max Heart Rate".replace(/[ ]/g, "\u00a0")},
-        2: {value: this.hrZone2(), tooltip: "90% Max Heart Rate".replace(/[ ]/g, "\u00a0")}
-      },
       speeds: {
         Stride: { 
           value: this.getStrideSpeed(),
@@ -33,19 +29,9 @@ export class TheEdgeBiologicalActor extends TheEdgeBaseActor {
   }
 
   async updateHr(newHr) {
-    const zone = this.getHRZone();
+    const zone = this.system.getHRZone();
     await this.update({"system.heartRate.value": newHr});
     const newZone = this.getHRZone();
     if (newZone != zone) {this.updateStrain()}
   }
-
-  getHRZone(hr = undefined) {
-    hr = hr ? hr : this.system.heartRate.value;
-    if (hr < this.hrZone1()) return 1;
-    if (hr < this.hrZone2()) return 2;
-    return 3;
-  }
-
-  hrZone1() {return 5 * Math.floor(this.system.heartRate.max.value * 75 / 500)}
-  hrZone2() {return 5 * Math.floor(this.system.heartRate.max.value * 90 / 500)}
 }

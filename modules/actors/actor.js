@@ -15,6 +15,7 @@ export class TheEdgeBaseActor extends Actor {
     this.diceServer = new DiceServer();
     this.overloadLevel = 0;
     this.weightTillNextOverload = 0;
+    console.log(this.system)
   }
 
   /** @inheritdoc */
@@ -27,12 +28,12 @@ export class TheEdgeBaseActor extends Actor {
       const coreVal = Aux.objectAt(this.system, coreValPath);
       coreVal.value = coreVal.advances + coreVal.status;
     }
-    sys.health.max.value = sys.health.max.baseline + sys.health.max.status +
-      sys.attributes.str.advances + Math.floor((sys.attributes.end.advances + sys.attributes.res.advances) / 2);
+    // sys.health.max.value = sys.health.max.baseline + sys.health.max.status +
+    //   sys.attributes.str.advances + Math.floor((sys.attributes.end.advances + sys.attributes.res.advances) / 2);
     
-    sys.heartRate.max.value = sys.heartRate.max.baseline + sys.heartRate.max.status +
-      sys.attributes.end.value - 2 * Math.floor((sys.age - 21) / 3) - sys.bloodLoss.value;
-    sys.heartRate.min.value = Math.max(20, sys.heartRate.min.baseline + sys.heartRate.min.status - sys.attributes.end.value);
+    // sys.heartRate.max.value = sys.heartRate.max.baseline + sys.heartRate.max.status +
+    //   sys.attributes.end.value - 2 * Math.floor((sys.age - 21) / 3) - sys.bloodLoss.value;
+    // sys.heartRate.min.value = Math.max(20, sys.heartRate.min.baseline + sys.heartRate.min.status - sys.attributes.end.value);
 
     sys.wounds = {}
   }

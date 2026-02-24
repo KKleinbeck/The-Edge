@@ -28,6 +28,13 @@
     "minimum": "13",
     "verified": "13"
   },
+  "documentTypes": {
+    "Actor": {
+      "character": {
+        "htmlFields": ["biography"]
+      }
+    }
+  },
   "grid": {
     "distance": 1,
     "units": "m"

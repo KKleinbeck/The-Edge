@@ -488,6 +488,9 @@
   "TOOLTIP": {
     "DESIGNATED WEAPON": "Some types of ammunition are only useable with specific names. Specify these here by their names (comma separated).",
     "PENETRATION": "The penetration value reduces the armour's threshold.",
+    
+    "HEARTRATE ZONE 1": "75% Max Heart Rate",
+    "HEARTRATE ZONE 2": "90% Max Heart Rate",
 
     "STRAIN LEVEL 0": "Resting for an action",
     "STRAIN LEVEL 1": "Examples: Walking, striding, throwing, firing a weapon, normal swimming",
