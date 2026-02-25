@@ -503,7 +503,7 @@ async function applyDamage(target, damage, penetration, crits, damageType, name)
   const protectionLog = {};
   const partialLogs = [];
   for (let i = 0; i < damage.length; ++i){
-    const partialLog = await target.applyDamage(damage[i], crits[i], penetration, damageType, name);
+    const partialLog = await target.system.applyDamage(damage[i], crits[i], penetration, damageType, name);
     partialLogs.push(partialLog);
   }
 

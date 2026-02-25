@@ -11,15 +11,15 @@ export class TheEdgeBiologicalActor extends TheEdgeBaseActor {
       canAdvance: true,
       speeds: {
         Stride: { 
-          value: this.getStrideSpeed(),
+          value: this.system.strideSpeed,
           tooltip: "Min(5 + Spd/6, 75% foc)".replace(/[ ]/g, "\u00a0")
          },
         Run: { 
-          value: this.getRunSpeed(),
+          value: this.system.runSpeed,
           tooltip: "Min(7 + Spd/3, 125% Foc)".replace(/[ ]/g, "\u00a0")
          },
         Sprint: { 
-          value: this.getSprintSpeed(),
+          value: this.system.sprintSpeed,
           tooltip: "Min(8 + Spd/1.5, 175% Foc)".replace(/[ ]/g, "\u00a0")
          }
       },
@@ -31,7 +31,7 @@ export class TheEdgeBiologicalActor extends TheEdgeBaseActor {
   async updateHr(newHr) {
     const zone = this.system.getHRZone();
     await this.update({"system.heartRate.value": newHr});
-    const newZone = this.getHRZone();
+    const newZone = this.system.getHRZone();
     if (newZone != zone) {this.updateStrain()}
   }
 }

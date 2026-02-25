@@ -1,9 +1,11 @@
 import { DataModelComponent } from "../../abstracts.js";
+import THE_EDGE from "../../../modules/system/config-the-edge.js";
+import ValueSchemaField from "../../Fields/value_schema.js";
 
 const { NumberField, SchemaField } = foundry.data.fields;
 
 function WEAPON_FIELD() {
-  return new SchemaField({
+  return new ValueSchemaField({
     status: new NumberField({ initial: 0 }),
     advances: new NumberField({ initial: 0 }),
   });
@@ -32,5 +34,21 @@ export default class WeaponData extends DataModelComponent {
         "Projectile Snipers": WEAPON_FIELD(),
       })
     })
+  }
+
+  getWeaponLevel(weaponType) {
+    const type = THE_EDGE.weapon_damage_types[weaponType];
+    const level = Math.floor((
+      this.weapons[type][weaponType].value +
+      this.weapons.general["General weapon proficiency"].value
+    ) / 2);
+    if (weaponType == "Hand-to-Hand combat") return level;
+
+    const partner = THE_EDGE.weapon_partners[weaponType];
+    if (partner) {
+      const partnerType = THE_EDGE.weapon_damage_types[partner];
+      level += Math.floor(this.system.weapons[partnerType][partner].value / 4);
+    }
+    return level;
   }
 }

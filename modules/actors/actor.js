@@ -24,10 +24,10 @@ export class TheEdgeBaseActor extends Actor {
     if (this.type !== "character") return;
 
     const sys = this.system;
-    for (const coreValPath of Object.values(foundry.utils.flattenObject(THE_EDGE.core_value_map))) {
-      const coreVal = Aux.objectAt(this.system, coreValPath);
-      coreVal.value = coreVal.advances + coreVal.status;
-    }
+    // for (const coreValPath of Object.values(foundry.utils.flattenObject(THE_EDGE.core_value_map))) {
+    //   const coreVal = Aux.objectAt(this.system, coreValPath);
+    //   coreVal.value = coreVal.advances + coreVal.status;
+    // }
     // sys.health.max.value = sys.health.max.baseline + sys.health.max.status +
     //   sys.attributes.str.advances + Math.floor((sys.attributes.end.advances + sys.attributes.res.advances) / 2);
     
@@ -66,21 +66,6 @@ export class TheEdgeBaseActor extends Actor {
 
   async regenerateHeroToken() {
     await this.update({"system.heroToken.available": this.system.heroToken.available + 1});
-  }
-
-  getStrideSpeed() {
-    const ch = this.system.attributes;
-    return Math.min(5 + Math.floor(ch.spd.value / 6  ), Math.floor(ch.foc.value * 0.75));
-  }
-
-  getRunSpeed() {
-    const ch = this.system.attributes;
-    return Math.min(7 + Math.floor(ch.spd.value / 3  ), Math.floor(ch.foc.value * 1.25));
-  }
-
-  getSprintSpeed() {
-    const ch = this.system.attributes;
-    return Math.min(8 + Math.floor(ch.spd.value / 1.5), Math.floor(ch.foc.value * 1.75));
   }
 
   // Generates dict for the charactersheet to parse
@@ -251,7 +236,7 @@ export class TheEdgeBaseActor extends Actor {
   };
 
   async updateStrain() {
-    let zone = this.getHRZone();
+    let zone = this.system.getHRZone();
     if (zone == 1) {
       this._deleteEffect("Strain");
       return;
@@ -629,151 +614,14 @@ export class TheEdgeBaseActor extends Actor {
     });
   }
 
-  getWeaponLevel(weaponType) {
-    const type = THE_EDGE.weapon_damage_types[weaponType];
-    let level = Math.floor((
-      this.system.weapons[type][weaponType].value +
-      this.system.weapons.general["General weapon proficiency"].value
-    ) / 2);
-    if (weaponType == "Hand-to-Hand combat") return level;
-
-    const partner = THE_EDGE.weapon_partners[weaponType];
-    if (partner) {
-      const partnerType = THE_EDGE.weapon_damage_types[partner];
-      level += Math.floor(this.system.weapons[partnerType][partner].value / 4);
-    }
-    return level;
-  }
-
-  _getWeaponPL(weaponID) {
-    const weapon = this.items.get(weaponID).system;
-
-    const level = this.getWeaponLevel(weapon.type);
-
-    let attr_mod = Math.floor( (
-      this.system.attributes[weapon.leadAttr1.name].value - weapon.leadAttr1.value +
-      this.system.attributes[weapon.leadAttr2.name].value - weapon.leadAttr2.value
-    ) / 4)
-
-    return Math.max(level + attr_mod, 0)
-  }
-
-  _getCombaticsPL() {
-    const sys = this.system;
-    const attr_mod = Math.floor((sys.attributes.str.value + sys.attributes.crd.value) / 4);
-    const level = Math.floor((sys.weapons.general["Hand-to-Hand combat"].value +
-      sys.weapons.general["General weapon proficiency"].value) / 2);
-
-    return Math.max(level + attr_mod, 0);
-  }
-
-  _getCombaticsDamage() {
-    const str = this.system.attributes.str.value;
-    const crd = this.system.attributes.crd.value;
-    return `1d${str+crd}+${str}`;
-  }
-  
-  async applyDamage(damage, crit, penetration, damageType, name, givenLocation = undefined) {
-    const [location, locationCoord] = Aux.generateWoundLocation(crit, this.system.sex, givenLocation)
-
-    const protectionLog = {};
-    let runningPenetration = penetration;
-    for (const armour of this.itemTypes["Armour"]) {
-      if(!armour.system.equipped || armour.system.layer == "Outer") continue;
-      [damage, runningPenetration] = await ArmourItemTheEdge.protect.call(
-        armour, damage, runningPenetration, damageType, location, protectionLog
-      );
-    }
-      
-    if (runningPenetration != penetration) {
-      protectionLog[LocalisationServer.localise("Armour penetration", "Combat")] =
-        penetration - runningPenetration;
-    }
-
-    if (damage > 0) {
-      const health = this.system.health.value;
-      const heartRate = this.system.heartRate;
-      const update = {};
-      update["system.health.value"] = Math.max(health - damage, 0)
-      const hrChange = Math.max(damage - this.system.heartRate.damageThreshold.status, 0);
-      if (health > damage) { // increase heartrate upon damage
-        update["system.heartRate.value"] = Math.min(heartRate.value + hrChange, heartRate.max.value)
-      } else if (health > 0) { // Dying damage
-        update["system.heartRate.value"] = Math.max(heartRate.max.value - (hrChange - health), 0)
-      } else { // bleeding out
-        update["system.heartRate.value"] = Math.max(heartRate.value - hrChange, 0)
-      }
-      await this.update(update)
-
-      const bt = THE_EDGE.bleeding_threshold[damageType];
-      const bleeding = Math.floor(damage / bt) + ((damage % bt) / bt < Math.random());
-
-      this.generateNewWound(name, location, locationCoord, damage, bleeding, damageType);
-    }
-
-    return protectionLog;
-  }
-
-  async applyFallDamage(height, location) {
-    const damageRoll = `${height}d12 + ${4*height-22}`;
-    const damage = Math.max((await DiceServer.genericRoll(damageRoll)), 0);
-    const n = Math.floor(height / 2);
-    await this._applyImpactOrFallDamage(n, damage, "fall", `${height}m`, location)
-    ChatServer.transmitEvent("fall", {actor: this.name, height: height, damage: damage, damageRoll: damageRoll});
-  }
-
-  async applyImpactDamage(speed, location) {
-    const damageRoll = `${speed}d${speed}+${speed-30}`;
-    const damage = Math.max((await DiceServer.genericRoll(damageRoll)), 0);
-    const n = Math.floor(speed / 3);
-    await this._applyImpactOrFallDamage(n, damage, "impact", `${speed}m/s`, location)
-    ChatServer.transmitEvent("impact", {actor: this.name, speed: speed, damage: damage, damageRoll: damageRoll});
-  }
-
-  async _applyImpactOrFallDamage(n, damage, damageType, description, location = undefined) {
-    const nApproxWounds = Aux.randomInt(Math.ceil(n/3), n);
-    const approxIncr = Math.ceil(damage / nApproxWounds)
-    for (let i = 0; i < 2*nApproxWounds; i++) {
-      const nextDamage = Math.min(damage, Math.floor(approxIncr / 2) + Aux.randomInt(1, approxIncr));
-      await this.applyDamage(
-        nextDamage, false, 0, damageType,
-        LocalisationServer.localise(`${damageType} damage title`) + " " + description,
-        location
-      );
-      damage -= Math.ceil(nextDamage);
-      if (damage <= 0) break;
-    }
-  }
-
   async generateNewWound(name, location, locationCoord, damage, bleeding, damageType) {
     const cls = getDocumentClass("Item");
     const wound = await cls.create({name: name, type: "Wounds"}, {parent: this});
-    const type = this._generateWoundType(damage, damageType);
+    const type = Aux.pickFromOdds(THE_EDGE.wound_odds(damage, damageType));
     await wound.update({
       "system.bodyPart": location, "system.coordinates": locationCoord,
       "system.damage": damage, "system.bleeding": bleeding, "system.type": type
     });
-  }
-
-  _generateWoundType(damage, damageType) {
-    let odds = undefined;
-    switch (damageType) {
-      case "energy":
-        odds = {"abrasion": 10, "light burn": damage, "strong burn": Math.max(0, Math.ceil(damage*(damage - 10)/10))};
-        break;
-      case "kinetic":
-        odds = {"abrasion": 10, "laceration": damage, "fracture":    Math.max(0, Math.ceil(damage*(damage - 10)/10))};
-        break;
-      case "elemental":
-        odds = {"light burn": damage, "strong burn": Math.max(0, damage*(damage - 10)/10)};
-        break;
-      case "fall": case "impact":
-        odds = {"abrasion": 20, "laceration": Math.ceil(damage/2), "fracture": Math.max(0, Math.ceil(damage*(damage - 10)/10))};
-        break;
-      case "HandToHand":
-        odds = {"abrasion": 20, "fracture": Math.max(0, Math.ceil(damage*(damage - 10)/10))};
-    }
-    return Aux.pickFromOdds(odds);
   }
 
   attachOuterArmour(armourId, shellId, tokenId) {
@@ -807,7 +655,7 @@ export class TheEdgeBaseActor extends Actor {
   }
 
   getHrChangeFromStrain(strain) {
-    const zone = this.getHRZone();
+    const zone = this.system.getHRZone();
     if (strain < zone) return 2 * (strain - zone);
     return 4 * (strain - zone + 1);
   }

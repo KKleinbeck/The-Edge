@@ -70,7 +70,6 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
 
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
-    console.log(this.actor.system)
 
     const equippedArmour = this.actor.itemTypes["Armour"]?.filter(
       a => a.system.equipped && a.system.layer == "Inner");
@@ -179,18 +178,19 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   }
   
   static async rollAttack(_event, target) {
-    const targetIds = Array.from(game.user.targets.map(x => x.id));  //targets is set
-    const sceneId = game.user.viewedScene; // TODO: Needed?
     const actor = this.actor;
-    const weaponID = target.closest(".weapon-id")?.dataset.weaponId ||
-      target.dataset.weaponId;
-    const weapon = this.actor.items.get(weaponID);
-    const token = this.token || Aux.getToken(this.actor.id);
+    const token = this.token || Aux.getToken(actor.id);
     if (token === null) {
         const msg = LocalisationServer.localise("No Token", "Notifications")
         ui.notifications.notify(msg)
       return undefined;
     }
+    const targetIds = Array.from(game.user.targets.map(x => x.id));  //targets is set
+    const sceneId = game.user.viewedScene; // TODO: Needed?
+    const weaponID = target.closest(".weapon-id")?.dataset.weaponId ||
+      target.dataset.weaponId;
+    const weapon = this.actor.items.get(weaponID);
+    const threshold = weaponID ? actor.system.getWeaponPL(weaponID) : actor.system.combaticsPL;
 
     if (!weaponID || weapon.system.type === "Hand-to-Hand combat") {
       if (targetIds.length > 1) {
@@ -200,8 +200,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
         ui.notifications.notify(msg)
         return undefined;
       }
-      const threshold = weaponID ? actor._getWeaponPL(weaponID) : actor._getCombaticsPL();
-      const damage = weaponID ? weapon.system.fireModes[0].damage : actor._getCombaticsDamage();
+      const damage = weaponID ? weapon.system.fireModes[0].damage : actor.system.combaticsDamage;
       const name = weaponID ? weapon.name : LocalisationServer.localise("Hand to Hand combat", "combat");
       DialogCombatics.start({
         actor: actor, token: token, sceneId: sceneId, targetId: targetIds[0] || undefined,
@@ -231,7 +230,6 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       damageType = "energy"
     } else damageType = "kinetic";
     
-    const threshold = actor._getWeaponPL(weapon._id);
     const effectItems = actor.items.filter(x => x.system.effects !== undefined)
     const effectModifier = [];
     for (const effectItem of effectItems) {

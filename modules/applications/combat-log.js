@@ -77,8 +77,8 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
       context.dying = true;
     }
     context.hrChanged = (context.skills.length >= 0) || (context.movements.length >= 0);
-    context.zoneNow = combatant.getHRZone();
-    context.zoneThen = combatant.getHRZone(context.hrThen);
+    context.zoneNow = combatant.system.getHRZone();
+    context.zoneThen = combatant.system.getHRZone(context.hrThen);
 
     return context;
   }
@@ -165,7 +165,7 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
 
   static getMovements(distance, actor) {
     const speeds = [
-      0, actor.getStrideSpeed(), actor.getRunSpeed(), actor.getSprintSpeed()
+      0, actor.system.strideSpeed, actor.system.runSpeed, actor.system.sprintSpeed
     ];
     if (speeds[3] == 0) return []; // We cannot possibly do anything here
     const hrCost = [

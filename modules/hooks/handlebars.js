@@ -94,7 +94,7 @@ export default function() {
     getProficiency: (a, b, c, d) => { return a.system.proficiencies[b][c][d]; },
     getProficiencyDice: (a, b, c, d) => { return a.system.proficiencies[b][c].dices[d]; },
     getWeaponProficiency: (a, b, c, d) => { return a.system.weapons[b][c][d]; },
-    getWeaponLevel: (actor, weaponType) => { return actor.getWeaponLevel(weaponType); },
+    getWeaponLevel: (actor, weaponType) => { return actor.system.getWeaponLevel(weaponType); },
     getLoadedAmmunition: (actor, weapon) => {
       if (weapon.system.type == "Hand-to-Hand combat") return "";
       for (const ammu of actor.itemTypes["Ammunition"]) {
@@ -106,7 +106,7 @@ export default function() {
       return "(empty)";
     },
     calcWeaponPL: (actor, weaponID) => { return actor._getWeaponPL(weaponID) },
-    calcCombaticsPL: (actor) => { return actor._getCombaticsPL(); },
+    calcCombaticsPL: (actor) => { return actor.system.combaticsPL; },
     checkRenderItem: (item, type) => {
       if (type !== "any" && item.type !== type) {
         return false;

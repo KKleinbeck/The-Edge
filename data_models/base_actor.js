@@ -39,7 +39,6 @@ export default class CharacterBaseData extends DataModelComponent {
 
   static migrateData(source) {
     // source.health.statusMax = source.health.max.status;
-    console.log(source)
     if (source.health?.max?.value) source.health.max = source.health.max.value;
   }
 }
