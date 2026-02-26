@@ -30,7 +30,7 @@ export default class DialogWeapon extends Dialog{
 
           // Subtract ammunition and determine effective dices
           const ammuCapa = checkData.ammunition.system.capacity;
-          if (ammuCapa.max <= ammuCapa.used) {
+          if (ammuCapa.value <= 0) {
             ChatServer.transmitEvent("Firing empty weapon", {name: checkData.actor.name});
             return;
           }

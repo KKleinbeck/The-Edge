@@ -24,17 +24,7 @@ export class TheEdgeBaseActor extends Actor {
     if (this.type !== "character") return;
 
     const sys = this.system;
-    // for (const coreValPath of Object.values(foundry.utils.flattenObject(THE_EDGE.core_value_map))) {
-    //   const coreVal = Aux.objectAt(this.system, coreValPath);
-    //   coreVal.value = coreVal.advances + coreVal.status;
-    // }
-    // sys.health.max.value = sys.health.max.baseline + sys.health.max.status +
-    //   sys.attributes.str.advances + Math.floor((sys.attributes.end.advances + sys.attributes.res.advances) / 2);
     
-    // sys.heartRate.max.value = sys.heartRate.max.baseline + sys.heartRate.max.status +
-    //   sys.attributes.end.value - 2 * Math.floor((sys.age - 21) / 3) - sys.bloodLoss.value;
-    // sys.heartRate.min.value = Math.max(20, sys.heartRate.min.baseline + sys.heartRate.min.status - sys.attributes.end.value);
-
     sys.wounds = {}
   }
 
@@ -101,7 +91,7 @@ export class TheEdgeBaseActor extends Actor {
   async rollAttributeCheck(checkData, roll = "roll", transmit = true) {
     checkData.threshold = this.system.attributes[checkData.attribute]["value"] +
       checkData.temporaryMod;
-    const result = await this.diceServer.attributeCheck(checkData.threshold, checkData.vantage);
+    const result = await game.the_edge.diceServer.attributeCheck(checkData.threshold, checkData.vantage);
 
     if (transmit) {
       foundry.utils.mergeObject(checkData, result);
@@ -117,7 +107,7 @@ export class TheEdgeBaseActor extends Actor {
     checkData.permanentMod = proficiencyData.value;
     checkData.thresholds = checkData.dices.map(dice => this.system.attributes[dice]["value"]);
 
-    const results = await this.diceServer.proficiencyCheck(
+    const results = await game.the_edge.diceServer.proficiencyCheck(
       checkData.thresholds, checkData.permanentMod + (checkData.temporaryMod || 0), checkData.vantage
     );
 
@@ -160,7 +150,6 @@ export class TheEdgeBaseActor extends Actor {
   }
 
   changeCoreValue(coreName, newVal) {
-    // TODO: this should just get the core values plain text name in the data model refactor
     newVal = newVal ? +newVal : 0; // If empty / undefined
     if (!Number.isInteger(+newVal)) {return;}
 
@@ -563,11 +552,6 @@ export class TheEdgeBaseActor extends Actor {
     else vantage.delete();
   }
 
-  deleteWound(wound) {
-    this.update({"system.health.value": this.system.health.value + wound.system.damage});
-    wound.delete();
-  }
-
   deleteVantage(vantage) {
     const AP = this.system.AdvantagePoints;
     const itemAP = (vantage.system.hasLevels ? vantage.system.level : 1) * vantage.system.AP;
@@ -591,7 +575,7 @@ export class TheEdgeBaseActor extends Actor {
         if (_item.type == "Ammunition") {
           let _cap = _item.system.capacity
           let cap = item.system.capacity
-          if (_cap.max == cap.max && _cap.used == cap.used) {
+          if (_cap.max == cap.max && _cap.value == cap.value) {
             _existingCopy = _item
           }
         } else {
@@ -600,18 +584,6 @@ export class TheEdgeBaseActor extends Actor {
       }
     }
     return _existingCopy;
-  }
-
-  pay(price) {
-    this.update({"system.credits.digital": this.system.credits.digital - price});
-    return [0, price];
-  }
-
-  getCredits(chids, digital) {
-    this.update({
-      "system.credits.chids": this.system.credits.chids + chids,
-      "system.credits.digital": this.system.credits.digital + digital
-    });
   }
 
   async generateNewWound(name, location, locationCoord, damage, bleeding, damageType) {
@@ -643,15 +615,6 @@ export class TheEdgeBaseActor extends Actor {
       "system.attachments": attachments,
       "system.attachmentPoints.used": armour.system.attachmentPoints.used + shell.system.attachmentPoints.max
     });
-  }
-
-  async applyBloodLoss() {
-    const wounds = this.itemTypes["Wounds"];
-    const bleeding = wounds.map(x => x.system.bleeding).sum();
-    const sys = this.system;
-    const lossRate = sys.heartRate.value / sys.heartRate.max.value;
-    const bloodLoss = Math.floor(lossRate * bleeding);
-    this.update({"system.bloodLoss.value": sys.bloodLoss.value + bloodLoss});
   }
 
   getHrChangeFromStrain(strain) {
@@ -703,51 +666,4 @@ export class TheEdgeBaseActor extends Actor {
     const effect = this._getEffect(name)
     if (effect) { await effect.delete() }
   }
-
-  shortRest() {this._rest("1d3 % 2", "1d3-1", "0", "short rest")}
-  longRest() {this._rest("2d3kh", "2d6 / 2", "1d3-1", "long rest")}
-
-  async _rest(coagulationDice, healingDice, bloodRegenDice, type) {
-    const wounds = this.itemTypes["Wounds"];
-    let accHealing = 0;
-    let accCoagulation = 0;
-    let remainingBleeding = 0;
-    for (const wound of wounds) {
-      if (wound.system.bleeding > 0) {
-        const coagulationRoll = await new Roll(coagulationDice).evaluate()
-        const coagulation = Math.floor(coagulationRoll.total);
-        if (wound.system.damage == 0 && wound.system.bleeding <= coagulation) {
-          accCoagulation += wound.system.bleeding;
-          wound.delete();
-        } else if (coagulation > 0) {
-          accCoagulation += Math.min(coagulation, wound.system.bleeding);
-          const newBleeding = Math.max(wound.system.bleeding - coagulation, 0);
-          wound.update({"system.bleeding": newBleeding});
-          remainingBleeding += newBleeding;
-        }
-      } else {
-        const healingRoll = await new Roll(healingDice).evaluate();
-        const healing = Math.floor(healingRoll.total);
-        if (wound.system.damage <= healing) { // shortcut: wound healed afterwards
-          accHealing += wound.system.damage;
-          wound.delete();
-        } else if (healing > 0) {
-          accHealing += Math.min(healing, wound.system.damage)
-          wound.update({"system.damage": Math.max(wound.system.damage - healing, 0)});
-        }
-      }
-    }
-
-    const bloodRegenRoll = await new Roll(bloodRegenDice).evaluate();
-    const bloodRegen = Math.min(this.system.bloodLoss.value, bloodRegenRoll.total - remainingBleeding);
-    this.update({
-      "system.health.value": Math.min(this.system.health.max.value, this.system.health.value + accHealing),
-      "system.heartRate.value": this.system.heartRate.min.value,
-      "system.bloodLoss.value": this.system.bloodLoss.value - bloodRegen
-    });
-    ChatServer.transmitEvent(
-      type, {healing: accHealing, coagulation: accCoagulation, bloodRegen: bloodRegen}
-    )
-  }
 }
-

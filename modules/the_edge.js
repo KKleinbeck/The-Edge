@@ -1,9 +1,10 @@
 import initHooks from "./hooks/init.js";
 import THE_EDGE from "./system/config-the-edge.js"
-import CombatLog from "./applications/combat-log.js";
-import TheEdgeHotbar from "./applications/hotbar.js";
-import GrenadePicker from "./applications/grenades-picker.js";
 import CharacterData from "../data_models/actors/character.js";
+import CombatLog from "./applications/combat-log.js";
+import DiceServer from "./system/dice_server.js";
+import GrenadePicker from "./applications/grenades-picker.js";
+import TheEdgeHotbar from "./applications/hotbar.js";
 import { TheEdgeBiologicalActor } from "./actors/biological.js";
 import { TheEdgeItem } from "./items/item.js";
 import { SocketHandler } from "./system/socket_handler.js";
@@ -88,6 +89,7 @@ Hooks.once("init", async function() {
   game.the_edge = {
     config: THE_EDGE,
     combatLog: new CombatLog(),
+    diceServer: new DiceServer(),
     socketHandler: new SocketHandler()
   };
 

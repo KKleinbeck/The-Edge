@@ -231,8 +231,8 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
 
     if (credits >= price || store.system.isStorage) {
       if (!store.system.isStorage) {
-        const [chids, digital] = actor.pay(price);
-        store.getCredits(chids, digital);
+        const [chids, digital] = actor.system.payCredits(price);
+        store.system.addCredits(chids, digital);
       }
 
       const existingCopy = actor.findItem(item);
@@ -291,8 +291,8 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
 
     if (credits >= price) {
       if (!store.system.isStorage) {
-        const [chids, digital] = store.pay(price);
-        actor.getCredits(chids, digital);
+        const [chids, digital] = store.system.payCredits(price);
+        actor.system.addCredits(chids, digital);
       }
 
       const existingCopy = store.findItem(item);

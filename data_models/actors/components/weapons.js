@@ -38,7 +38,7 @@ export default class WeaponData extends DataModelComponent {
 
   getWeaponLevel(weaponType) {
     const type = THE_EDGE.weapon_damage_types[weaponType];
-    const level = Math.floor((
+    let level = Math.floor((
       this.weapons[type][weaponType].value +
       this.weapons.general["General weapon proficiency"].value
     ) / 2);
@@ -47,7 +47,7 @@ export default class WeaponData extends DataModelComponent {
     const partner = THE_EDGE.weapon_partners[weaponType];
     if (partner) {
       const partnerType = THE_EDGE.weapon_damage_types[partner];
-      level += Math.floor(this.system.weapons[partnerType][partner].value / 4);
+      level += Math.floor(this.weapons[partnerType][partner].value / 4);
     }
     return level;
   }

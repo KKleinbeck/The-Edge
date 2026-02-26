@@ -71,7 +71,7 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
         break;
       case "delete":
         if (item.type.includes("vantage")) this.actor.deleteVantage(item);
-        else if (item.type == "Wounds") this.actor.deleteWound(item);
+        else if (item.type == "Wounds") this.actor.system.deleteWound(item);
         else DialogItemDeletion.start({item: item, actor: this.actor});
         break;
       case "toggle-active":

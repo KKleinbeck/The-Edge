@@ -205,7 +205,7 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
     const controlled = canvas.tokens?.controlled
       .filter(x => x.actor?.type == "character");
     if (controlled?.length) {
-      this.token = controlled
+      this.token = controlled[0];
       return controlled[0].actor;
     }
 
@@ -339,6 +339,7 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
   }
 
   static async _onRollAttr(event, target) {
+    console.log(this.token)
     TheEdgePlayableSheet.rollAttribute.call(this.token.sheet, event, target);
   }
 

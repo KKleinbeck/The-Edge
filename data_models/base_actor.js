@@ -6,8 +6,11 @@ export default class CharacterBaseData extends DataModelComponent {
   static SCHEMA = {
     health: new SchemaField({
       value: new NumberField({ required: true, integer: true, min: 0, initial: 100 }),
-      max: new NumberField({ required: true, integer: true, min: 0, initial: 100 }),
-      statusMax: new NumberField({ required: true, integer: true, initial: 0 }),
+      max: new SchemaField({
+        value: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+        baseline: new NumberField({ required: true, integer: true, min: 0, initial: 100 }),
+        status: new NumberField({ required: true, integer: true, initial: 0 }),
+      })
     }),
     biography: new HTMLField(),
     heroToken: new SchemaField({
@@ -37,8 +40,27 @@ export default class CharacterBaseData extends DataModelComponent {
     ),
   };
 
-  static migrateData(source) {
-    // source.health.statusMax = source.health.max.status;
-    if (source.health?.max?.value) source.health.max = source.health.max.value;
+  // Health related
+  deleteWound(wound) {
+    this.parent.update({"system.health.value": this.health.value + wound.system.damage});
+    wound.delete();
   }
+
+  // Credits related
+  addCredits(chids, digital) {
+    this.parent.update({
+      "system.credits.chids": this.credits.chids + chids,
+      "system.credits.digital": this.credits.digital + digital
+    });
+  }
+
+  payCredits(price) {
+    this.parent.update({"system.credits.digital": this.credits.digital - price});
+    return [0, price];
+  }
+
+  // static migrateData(source) {
+  //   // source.health.statusMax = source.health.max.status;
+  //   if (source.health?.max?.value) source.health.max = source.health.max.value;
+  // }
 }

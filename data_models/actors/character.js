@@ -21,6 +21,20 @@ export default class CharacterData extends CharacterDataParent {
     const schema = super.defineSchema()
     return schema;
   }
+
+  // Fixing relations
+  _initialize(options={}) {
+    super._initialize(options);
+
+    this.health.max.value = this.health.max.baseline + this.health.max.status +
+      this.attributes.str.advances +
+      Math.floor((this.attributes.end.advances + this.attributes.res.advances) / 2);
+
+    this.heartRate.max.value = this.heartRate.max.baseline + this.heartRate.max.status +
+      this.attributes.end.value - 2 * Math.floor((this.age - 21) / 3) - this.bloodLoss.value;
+    this.heartRate.min.value = Math.max(
+      20, this.heartRate.min.baseline + this.heartRate.min.status - this.attributes.end.value);
+  }
   
   // Damage Related
   async applyDamage(damage, crit, penetration, damageType, name, givenLocation = undefined) {

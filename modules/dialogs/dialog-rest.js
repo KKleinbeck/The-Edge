@@ -18,10 +18,10 @@ export default class DialogRest extends Dialog{
         callback: async (html) => {
           switch (checkData.type) {
             case "short rest":
-              checkData.actor.shortRest();
+              checkData.actor.system.shortRest();
               break;
             case "long rest":
-              checkData.actor.longRest()
+              checkData.actor.system.longRest()
               break;
           }
         }
