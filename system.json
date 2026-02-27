@@ -31,7 +31,7 @@
   "documentTypes": {
     "Actor": {
       "character": {
-        "htmlFields": ["biography"]
+        "htmlFields": ["biography", "notes"]
       }
     }
   },

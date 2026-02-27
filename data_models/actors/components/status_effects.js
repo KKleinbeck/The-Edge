@@ -5,7 +5,7 @@ const { NumberField, SchemaField } = foundry.data.fields;
 export default class StatusEffectData extends DataModelComponent {
   static SCHEMA = {
     statusEffects: new SchemaField({
-      "injuries arms": new SchemaField({"status": new NumberField({ initial: 0, integer: true, required: true }) }),
+      "injuries arms": new SchemaField({status: new NumberField({ initial: 0, integer: true, required: true }) }),
       "injuries head": new SchemaField({status: new NumberField({ initial: 0, integer: true, required: true }) }),
       "injuries legs": new SchemaField({status: new NumberField({ initial: 0, integer: true, required: true }) }),
       "injuries torso": new SchemaField({status: new NumberField({ initial: 0, integer: true, required: true }) }),

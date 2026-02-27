@@ -36,15 +36,17 @@ Hooks.once("init", async function() {
   }
 
   // Generating maps for the fundamental data model
-  THE_EDGE.attrs = Object.keys(game.model.Actor.character.attributes)
-  const coreValues = Object.keys(foundry.utils.flattenObject(game.model.Actor.character))
+  const characterDataInstance = new CharacterData();
+  THE_EDGE.characterSchema = characterDataInstance.toObject();
+  THE_EDGE.attrs = Object.keys(THE_EDGE.characterSchema.attributes)
+  const coreValues = Object.keys(foundry.utils.flattenObject(THE_EDGE.characterSchema))
     .filter(x => x.split(".").last() == "advances");
   for (const coreValue of coreValues) {
     const parts = coreValue.split(".");
     THE_EDGE.core_value_map[parts[0]][parts[parts.length-2]] = coreValue.replace(".advances", "");
   }
 
-  const basicEffects = Object.keys(foundry.utils.flattenObject(game.model.Actor.character))
+  const basicEffects = Object.keys(foundry.utils.flattenObject(THE_EDGE.characterSchema))
     .filter(x => x.split(".").last() == "status");
   for (let effect of basicEffects) {
     const parts = effect.split(".");
@@ -75,9 +77,9 @@ Hooks.once("init", async function() {
     THE_EDGE.effect_map["attributes"]["int"]
   ]
 
-  const generalWeapons = Object.keys(game.model.Actor.character.weapons.general);
-  const energyWeapons = Object.keys(game.model.Actor.character.weapons.energy);
-  const kineticWeapons = Object.keys(game.model.Actor.character.weapons.kinetic);
+  const generalWeapons = Object.keys(THE_EDGE.characterSchema.weapons.general);
+  const energyWeapons = Object.keys(THE_EDGE.characterSchema.weapons.energy);
+  const kineticWeapons = Object.keys(THE_EDGE.characterSchema.weapons.kinetic);
   for (let i = 0; i < energyWeapons.length; ++i) {
     THE_EDGE.weapon_damage_types[generalWeapons[i]] = "general";
     THE_EDGE.weapon_damage_types[energyWeapons[i]] = "energy";

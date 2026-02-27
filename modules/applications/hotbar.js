@@ -1,5 +1,6 @@
 import Aux from "../system/auxilliaries.js";
 import LocalisationServer from "../system/localisation_server.js";
+import THE_EDGE from "../system/config-the-edge.js";
 import { TheEdgeActorSheet } from "../actors/actor-sheet.js";
 import { TheEdgePlayableSheet } from "../actors/playable-sheet.js";
 
@@ -20,7 +21,7 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
     this.selectedActor = undefined;
 
     this.proficiencies = {};
-    for (const group of Object.values(game.model.Actor.character.proficiencies)) {
+    for (const group of Object.values(THE_EDGE.characterSchema.proficiencies)) {
       this.proficiencies = Object.assign(this.proficiencies, group);
     }
     this.proficiencySearchHistory = [];

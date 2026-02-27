@@ -226,7 +226,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     let damageType = ""
     if (weapon.system.isElemental) {
       damageType = "Elemental"
-    } else if (Object.keys(game.model.Actor.character.weapons.energy).includes(weapon.system.type)) {
+    } else if (Object.keys(THE_EDGE.characterSchema.weapons.energy).includes(weapon.system.type)) {
       damageType = "energy"
     } else damageType = "kinetic";
     

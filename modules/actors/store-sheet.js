@@ -1,5 +1,5 @@
-import IconSelectorMixin from "../mixins/icon-selector-mixin.js";
 import Aux from "../system/auxilliaries.js";
+import IconSelectorMixin from "../mixins/icon-selector-mixin.js";
 import NotificationServer from "../system/notifications.js";
 import { TheEdgeActorSheet } from "./actor-sheet.js";
 
