@@ -1,4 +1,3 @@
-import { ArmourItemTheEdge } from "../items/item.js";
 import THE_EDGE from "../system/config-the-edge.js";
 import Aux from "../system/auxilliaries.js";
 import LocalisationServer from "../system/localisation_server.js";
@@ -9,23 +8,12 @@ import DiceServer from "../system/dice_server.js";
  * Extend the base Actor document to support attributes and groups with a custom template creation dialog.
  * @extends {Actor}
  */
-export class TheEdgeBaseActor extends Actor {
+export class TheEdgeActor extends Actor {
   constructor(...args) {
     super(...args);
     this.diceServer = new DiceServer();
     this.overloadLevel = 0;
     this.weightTillNextOverload = 0;
-    console.log(this.system)
-  }
-
-  /** @inheritdoc */
-  prepareDerivedData() {
-    super.prepareDerivedData();
-    if (this.type !== "character") return;
-
-    const sys = this.system;
-    
-    sys.wounds = {}
   }
 
   /**
@@ -47,41 +35,6 @@ export class TheEdgeBaseActor extends Actor {
     const updates = {[`system.${attribute}.value`]: Math.clamped(current.value + value, current.min, current.max)};
     const allowed = Hooks.call("modifyTokenAttribute", {attribute, value, isDelta, isBar}, updates);
     return allowed !== false ? this.update(updates) : this;
-  }
-
-  async useHeroToken(reason = "generic") {
-    await this.update({"system.heroToken.available": this.system.heroToken.available - 1});
-    ChatServer.transmitEvent("Hero Token", {name: this.name, reason: reason});
-  }
-
-  async regenerateHeroToken() {
-    await this.update({"system.heroToken.available": this.system.heroToken.available + 1});
-  }
-
-  // Generates dict for the charactersheet to parse
-  prepareSheet() {
-    const preparedData = { system: { attr: {}, profGroups: [], weapons: {} } };
-    for (const key of Object.keys(this.system.attributes)) {
-      let n = this.system.attributes[key].advances;
-      preparedData.system.attr[key] = {
-        cost: this._attrCost(n),
-        refund: n == 0 ? 0 : this._attrCost(n-1)
-      }
-    }
-
-    foundry.utils.mergeObject(preparedData, {proficienciesLeft: {}, proficienciesRight: {}})
-    preparedData.system.profGroups.push({
-      physical: Object.keys(this.system.proficiencies["physical"]),
-      social: Object.keys(this.system.proficiencies["social"]),
-      technical: Object.keys(this.system.proficiencies["technical"]),
-    })
-    preparedData.system.profGroups.push({
-      environmental: Object.keys(this.system.proficiencies["environmental"]),
-      knowledge: Object.keys(this.system.proficiencies["knowledge"]),
-      mental: Object.keys(this.system.proficiencies["mental"]),
-    })
-
-    return preparedData;
   }
 
   interpretCheck(type, roll) {
@@ -139,7 +92,7 @@ export class TheEdgeBaseActor extends Actor {
 
     const oldVal = Aux.objectAt(this, coreName);
 
-    let costFun = coreName.includes("proficiencies") ? this._profCost : this._attrCost;
+    let costFun = coreName.includes("proficiencies") ? THE_EDGE.profCost : THE_EDGE.attrCost;
     let cost = 0;
     if (newVal > oldVal) {
       for (let n = oldVal; n < newVal; n++) cost += costFun(n);
@@ -223,6 +176,13 @@ export class TheEdgeBaseActor extends Actor {
     }
     return true
   };
+
+  async updateHr(newHr) {
+    const zone = this.system.getHRZone();
+    await this.update({"system.heartRate.value": newHr});
+    const newZone = this.system.getHRZone();
+    if (newZone != zone) {this.updateStrain()}
+  }
 
   async updateStrain() {
     let zone = this.system.getHRZone();
@@ -460,9 +420,6 @@ export class TheEdgeBaseActor extends Actor {
     }
     return true;
   }
-
-  _attrCost(n) { return 10 * Math.floor(12 + 8 * Math.pow(1.2, n)); }
-  _profCost(n) { return  5 * Math.floor(10 + 4 * Math.pow(1.2, n)); }
 
   skillLevelIncrease(skillID) {
     let skill = this.items.get(skillID)

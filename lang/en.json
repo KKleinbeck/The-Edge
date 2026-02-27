@@ -25,7 +25,11 @@
     "SOCIAL": "Social",
 
     "CRIT": "Critical roll dice",
-    "CRITFAIL": "Critical fail dice"
+    "CRITFAIL": "Critical fail dice",
+
+    "RUN SPEED": "Run Speed",
+    "SPRINT SPEED": "Sprint Speed",
+    "STRIDE SPEED": "Stride Speed"
   },
   "ATTR_ABBR": {
     "END": "END",
@@ -512,7 +516,11 @@
 
     "EMP": "Applies effects on mechs and robots",
     "SMOKE": "Creates a smoke screen at the detonation location",
-    "SHELLSHOCK": "Applies effect on biological creatures"
+    "SHELLSHOCK": "Applies effect on biological creatures",
+
+    "STRIDE SPEED": "Min(5 + Spd/6, 75% foc)",
+    "RUN SPEED": "Min(7 + Spd/3, 125% Foc)",
+    "SPRINT SPEED": "Min(8 + Spd/1.5, 175% Foc)"
   },
   "ACTION COST": "Action cost",
   "ACTION": "Action",

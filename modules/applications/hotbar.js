@@ -110,7 +110,6 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
     })
 
     const dynamicFields = ["item", "health"];
-    console.log(context.actor?.system)
     if (context.actor?.system.counters.length) { dynamicFields.push("counter"); }
     context.dynamicField = dynamicFields[this.dynamicFieldIndex.mod(dynamicFields.length)];
 

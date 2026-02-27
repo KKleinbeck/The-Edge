@@ -1,9 +1,10 @@
+import ValueSchemaField from "../../Fields/value_schema.js";
 import { DataModelComponent } from "../../abstracts.js";
 
 const { ArrayField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
 function PROF_FIELD(diceStrings) {
-  return new SchemaField({
+  return new ValueSchemaField({
     dices: new ArrayField(
       new StringField(),
       {initial: diceStrings, min: 3, max: 3}

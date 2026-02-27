@@ -5,7 +5,7 @@ import CombatLog from "./applications/combat-log.js";
 import DiceServer from "./system/dice_server.js";
 import GrenadePicker from "./applications/grenades-picker.js";
 import TheEdgeHotbar from "./applications/hotbar.js";
-import { TheEdgeBiologicalActor } from "./actors/biological.js";
+import { TheEdgeActor } from "./actors/actor.js";
 import { TheEdgeItem } from "./items/item.js";
 import { SocketHandler } from "./system/socket_handler.js";
 import { TheEdgeItemSheet } from "./items/item-sheet.js";
@@ -106,7 +106,7 @@ Hooks.once("init", async function() {
 
   // Define custom Document classes
   CONFIG.Actor.dataModels.character = CharacterData;
-  CONFIG.Actor.documentClass = TheEdgeBiologicalActor;
+  CONFIG.Actor.documentClass = TheEdgeActor;
   CONFIG.Item.documentClass = TheEdgeItem;
   CONFIG.Token.documentClass = TheEdgeTokenDocument;
   CONFIG.Token.objectClass = TheEdgeToken;

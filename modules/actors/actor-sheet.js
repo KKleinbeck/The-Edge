@@ -1,9 +1,10 @@
 import Aux from "../system/auxilliaries.js";
+import ChatServer from "../system/chat_server.js";
 import DialogMedicine from "../dialogs/dialog-medicine.js";
 import DialogItemDeletion from "../dialogs/dialog-item-deletion.js";
 import DialogArmourAttachment from "../dialogs/dialog-attachOuterArmour.js";
 import LocalisationServer from "../system/localisation_server.js";
-import ChatServer from "../system/chat_server.js";
+import THE_EDGE from "../system/config-the-edge.js";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ActorSheetV2 } = foundry.applications.sheets;
@@ -33,7 +34,23 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
     context.userIsGM = game.user.isGM;
     context.actor = this.actor;
     context.system = context.document.system;
-    context.prepare = this.actor.prepareSheet()
+    for (const key of Object.keys(context.system.attributes)) {
+      let n = context.system.attributes[key].advances;
+      context.system.attributes[key].cost = THE_EDGE.attrCost(n),
+      context.system.attributes[key].refund = n == 0 ? 0 : THE_EDGE.attrCost(n-1)
+    }
+
+    context.profGroups = []
+    context.profGroups.push({
+      physical: Object.keys(context.system.proficiencies["physical"]),
+      social: Object.keys(context.system.proficiencies["social"]),
+      technical: Object.keys(context.system.proficiencies["technical"]),
+    })
+    context.profGroups.push({
+      environmental: Object.keys(context.system.proficiencies["environmental"]),
+      knowledge: Object.keys(context.system.proficiencies["knowledge"]),
+      mental: Object.keys(context.system.proficiencies["mental"]),
+    })
 
     Object.entries(this.actor.itemTypes).forEach(([type, entries]) => {
       context[type] = entries;

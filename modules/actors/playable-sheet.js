@@ -1,5 +1,4 @@
 import Aux from "../system/auxilliaries.js";
-import LocalisationServer from "../system/localisation_server.js";
 import DialogRest from "../dialogs/dialog-rest.js";
 import DialogDamage from "../dialogs/dialog-damage.js";
 import DialogReload from "../dialogs/dialog-reload.js";
@@ -7,6 +6,7 @@ import DialogWeapon from "../dialogs/dialog-weapon.js";
 import DialogAttribute from "../dialogs/dialog-attribute.js";
 import DialogCombatics from "../dialogs/dialog-combatics.js";
 import DialogProficiency from "../dialogs/dialog-proficiency.js";
+import LocalisationServer from "../system/localisation_server.js";
 import THE_EDGE from "../system/config-the-edge.js";
 import { TheEdgeActorSheet } from "./actor-sheet.js";
 
@@ -148,11 +148,11 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   }
 
   // actions
-  static async useHeroToken(_event, _target) { await this.actor.useHeroToken(); }
+  static async useHeroToken(_event, _target) { await this.actor.system.useHeroToken(); }
 
   static async regenerateHeroToken(_event, _target) {
     if (game.user.isGM) {
-      await this.actor.regenerateHeroToken();
+      await this.actor.system.regenerateHeroToken();
     } else {
       // TODO: notify
     }

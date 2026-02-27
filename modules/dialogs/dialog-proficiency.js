@@ -20,7 +20,7 @@ export default class DialogProficiency extends Dialog{
           checkData.temporaryMod = parseInt(html.find('[name="Modifier"]').val());
           checkData.vantage = html.find('[name="AdvantageSelector"]').val();
           const rollType = Aux.parseRollType(html);
-          checkData.actor.rollProficiencyCheck(checkData, rollType)
+          checkData.actor.rollProficiencyCheck(checkData, rollType);
         }
       }
     }

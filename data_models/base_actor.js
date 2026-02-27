@@ -1,3 +1,4 @@
+import ChatServer from "../modules/system/chat_server.js";
 import { DataModelComponent } from "./abstracts.js";
 
 const { ArrayField, HTMLField, NumberField, SchemaField, StringField } = foundry.data.fields;
@@ -40,12 +41,6 @@ export default class CharacterBaseData extends DataModelComponent {
     ),
   };
 
-  // Health related
-  deleteWound(wound) {
-    this.parent.update({"system.health.value": this.health.value + wound.system.damage});
-    wound.delete();
-  }
-
   // Credits related
   addCredits(chids, digital) {
     this.parent.update({
@@ -57,6 +52,22 @@ export default class CharacterBaseData extends DataModelComponent {
   payCredits(price) {
     this.parent.update({"system.credits.digital": this.credits.digital - price});
     return [0, price];
+  }
+
+  // Health related
+  deleteWound(wound) {
+    this.parent.update({"system.health.value": this.health.value + wound.system.damage});
+    wound.delete();
+  }
+
+  // Hero Token related
+  async useHeroToken(reason = "generic") {
+    await this.parent.update({"system.heroToken.available": this.heroToken.available - 1});
+    ChatServer.transmitEvent("Hero Token", {name: this.parent.name, reason: reason});
+  }
+
+  async regenerateHeroToken() {
+    await this.parent.update({"system.heroToken.available": this.heroToken.available + 1});
   }
 
   // static migrateData(source) {

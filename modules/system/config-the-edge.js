@@ -3,6 +3,9 @@ const THE_EDGE = {}
 // IMPORTANT: Multiple config entries are dynamically generated from the template.json.
 //   This happens in the Hooks.on("init").
 
+
+THE_EDGE.attrCost = (n) => { return 10 * Math.floor(12 + 8 * Math.pow(1.2, n)); }
+THE_EDGE.profCost = (n) => { return  5 * Math.floor(10 + 4 * Math.pow(1.2, n)); }
 THE_EDGE.sizes = {tiny: 30, small: 130, normal: 250, large: 500, giant: Infinity}
 THE_EDGE.sizeModifiers = {"normal": [0, 0], "tiny": [-8, -4], "small": [-4, -2],  "large": [2, 4], "giant": [4, 8]}
 THE_EDGE.ammunitionSubtypes = ["small", "large"]
