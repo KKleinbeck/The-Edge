@@ -124,20 +124,20 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
     const effects = {};
     for (const [_key, items] of Object.entries(effectDict)) {
       for (const item of items) {
-        for (const effect of item.system.effects ?? []) {
-          const hash = effect.name + effect.group;
-          if (hash in effects) {
-            effects[hash].value += effect.value;
-            effects[hash].sources.push(item.name);
-          } else {
-            effects[hash] = {
-              value: effect.value,
-              name: effect.name,
-              group: effect.group,
-              sources: [item.name]
-            }
-          }
-        }
+        // for (const effect of item.system.effects ?? []) {
+        //   const hash = effect.name + effect.group;
+        //   if (hash in effects) {
+        //     effects[hash].value += effect.value;
+        //     effects[hash].sources.push(item.name);
+        //   } else {
+        //     effects[hash] = {
+        //       value: effect.value,
+        //       name: effect.name,
+        //       group: effect.group,
+        //       sources: [item.name]
+        //     }
+        //   }
+        // }
       }
     }
     const nEffects = Object.keys(effects).length;

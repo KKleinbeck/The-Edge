@@ -28,6 +28,7 @@ export default class HumanoidData extends DataModelComponent {
     nativeLanguage: new StringField({ initial: "Standard"}),
   }
 
+  // Heartrate  related
   get hrZone1() {return 5 * Math.floor(this.heartRate.max.value * 75 / 500)}
   get hrZone2() {return 5 * Math.floor(this.heartRate.max.value * 90 / 500)}
 
@@ -38,6 +39,14 @@ export default class HumanoidData extends DataModelComponent {
     return 3;
   }
 
+  async updateHr(newHr) {
+    const zone = this.getHRZone();
+    const newZone = this.getHRZone(newHr);
+    this.parent.update({"system.heartRate.value": newHr});
+    if (newZone != zone) {this.parent.updateStrain()}
+  }
+
+  // Rest related
   shortRest() {this._rest("1d3 % 2", "1d3-1", "0", "short rest")}
   longRest() {this._rest("2d3kh", "2d6 / 2", "1d3-1", "long rest")}
 
@@ -84,6 +93,7 @@ export default class HumanoidData extends DataModelComponent {
     )
   }
 
+  // Bloodloss related
   async applyBloodLoss() {
     const wounds = this.parent.itemTypes["Wounds"];
     const bleeding = wounds.map(x => x.system.bleeding).sum();

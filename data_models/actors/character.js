@@ -6,6 +6,7 @@ import DiceServer from "../../modules/system/dice_server.js";
 import LocalisationServer from "../../modules/system/localisation_server.js";
 import THE_EDGE from "../../modules/system/config-the-edge.js";
 
+import ActorEffectData from "./components/effects.js";
 import AttributeData from "./components/attributes.js";
 import CharacterBaseData from "../base_actor.js";
 import HumanoidData from "./components/humanoid.js";
@@ -14,7 +15,8 @@ import StatusEffectData from "./components/status_effects.js";
 import WeaponData from "./components/weapons.js";
 
 const CharacterDataParent = generateDataModelWithComponents(
-  AttributeData, CharacterBaseData, HumanoidData, ProficiencyData, StatusEffectData, WeaponData
+  ActorEffectData, AttributeData, CharacterBaseData, HumanoidData,
+  ProficiencyData, StatusEffectData, WeaponData
 )
 export default class CharacterData extends CharacterDataParent {
   static defineSchema() {

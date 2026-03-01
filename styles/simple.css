@@ -1036,15 +1036,31 @@ textarea {
   align-items: center;
 }
 .the_edge .effect-list {
-  columns: 4;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   margin: 7px 0px 15px 0px;
-  gap: 5px;
+  gap: 7px;
   padding: 0;
   overflow-y: auto;
 }
 .the_edge .effect-list .effect-box {
-  display: flex;
-  gap: 5px;
+  padding: 4px 6px 4px 6px;
+  background: rgba(0,0,0,0.15);
+  border: solid 2px black;
+  border-radius: 8px;
+  box-shadow:
+    3px 3px rgba(255,255,255,0.1) inset,
+    1px 1px 2px rgba(128,128,255,0.2);
+  transition: all 300ms ease;
+}
+.the_edge .effect-list .expanded {
+  grid-column: span 2;
+}
+.the_edge .effect-list .effect-box .content {
+  overflow: hidden;
+  height: 0;
+  opacity: 0;
+  transition: height 300ms ease, opacity 200ms ease;
 }
 
 .main-row {

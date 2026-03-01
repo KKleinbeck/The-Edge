@@ -24,19 +24,6 @@ export class TheEdgeActor extends Actor {
     return !!this.getFlag("the_edge", "isTemplate");
   }
 
-  /* -------------------------------------------- */
-
-  /** @inheritdoc */
-  async modifyTokenAttribute(attribute, value, isDelta = false, isBar = true) {
-    const current = foundry.utils.getProperty(this.system, attribute);
-    if ( !isBar || !isDelta || (current?.dtype !== "Resource") ) {
-      return super.modifyTokenAttribute(attribute, value, isDelta, isBar);
-    }
-    const updates = {[`system.${attribute}.value`]: Math.clamped(current.value + value, current.min, current.max)};
-    const allowed = Hooks.call("modifyTokenAttribute", {attribute, value, isDelta, isBar}, updates);
-    return allowed !== false ? this.update(updates) : this;
-  }
-
   interpretCheck(type, roll) {
     return this.diceServer._interpretCheck(type, roll);
   }
@@ -153,7 +140,7 @@ export class TheEdgeActor extends Actor {
   }
   
   async determineOverload() {
-    const weight = this.determineWeight() - this.system.statusEffects.overloadThreshold.status;
+    const weight = this.determineWeight() - this.system.generalModifiers.overloadThreshold.status;
     let str = this.system.attributes.str.value;
 
     // Correct for the current overload level
@@ -176,13 +163,6 @@ export class TheEdgeActor extends Actor {
     }
     return true
   };
-
-  async updateHr(newHr) {
-    const zone = this.system.getHRZone();
-    await this.update({"system.heartRate.value": newHr});
-    const newZone = this.system.getHRZone();
-    if (newZone != zone) {this.updateStrain()}
-  }
 
   async updateStrain() {
     let zone = this.system.getHRZone();
@@ -408,7 +388,7 @@ export class TheEdgeActor extends Actor {
           return false;
         }
       } else {
-        const target = THE_EDGE.core_value_map[group][requirement.name] + ".advances";
+        const target = THE_EDGE.coreValueMap[group][requirement.name] + ".advances";
         const sysMod = Aux.objectAt(this.system, target);
         if (sysMod < requirement.value) {
           foundry.utils.mergeObject(details, {valueIs: sysMod});
@@ -582,7 +562,7 @@ export class TheEdgeActor extends Actor {
 
   async applyCombatStrain() {
     if (this.system.health.value <= 0) {
-      await this.updateHr(Math.max(this.system.heartRate.value - 10, 0));
+      await this.system.updateHr(Math.max(this.system.heartRate.value - 10, 0));
     } else {
       this.applyStrains(game.the_edge.combatLog.strainLog.map(x => x.hrChange));
     }
@@ -597,7 +577,7 @@ export class TheEdgeActor extends Actor {
     let hrChange = isRest ? strains.sum() : strains.filter(x => x >= 0).sum();
     const hrNew = clamper(hr.value + hrChange, threshold);
     hrChange = hrNew - hr.value;
-    await this.updateHr(hrNew);
+    await this.system.updateHr(hrNew);
 
     return hrChange;
   }

@@ -34,16 +34,19 @@ Hooks.once("init", async function() {
     // Javascripts % returns remainder, not module (-1 % n == -1 != n - 1)
     return ((this % n) + n) % n;
   }
+  String.prototype.rsplit = function(sep, maxsplit = 1) {
+      var split = this.split(sep || /\s+/);
+      return maxsplit ? [ split.slice(0, -maxsplit).join(sep) ].concat(split.slice(-maxsplit)) : split;
+  }
 
   // Generating maps for the fundamental data model
   const characterDataInstance = new CharacterData();
   THE_EDGE.characterSchema = characterDataInstance.toObject();
-  THE_EDGE.attrs = Object.keys(THE_EDGE.characterSchema.attributes)
   const coreValues = Object.keys(foundry.utils.flattenObject(THE_EDGE.characterSchema))
     .filter(x => x.split(".").last() == "advances");
   for (const coreValue of coreValues) {
     const parts = coreValue.split(".");
-    THE_EDGE.core_value_map[parts[0]][parts[parts.length-2]] = coreValue.replace(".advances", "");
+    THE_EDGE.coreValueMap[parts[0]][parts[parts.length-2]] = coreValue.replace(".advances", "");
   }
 
   const basicEffects = Object.keys(foundry.utils.flattenObject(THE_EDGE.characterSchema))
@@ -62,7 +65,7 @@ Hooks.once("init", async function() {
       }
       THE_EDGE.effect_map[parts[0]].all?.push(effect);
     } else {
-      THE_EDGE.effect_map["others"][parts[0] + " - " + parts[1]] = [effect];
+      THE_EDGE.effect_map["generalModifiers"][parts[0] + " - " + parts[1]] = [effect];
     }
   }
   THE_EDGE.effect_map["attributes"]["physical"] = [

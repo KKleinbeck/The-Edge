@@ -144,6 +144,12 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
         effectDict.itemEffects.push(item);
       }
     }
+    for (const [id, details] of Object.entries(this.actor.system.effects)) {
+      effectDict.effects.push({ // TODO Once status and item effects follow the same layout this should become a straight effect copy paste
+        name: id.rsplit("_")[0], id: id, active: details.active,
+        modifiers: details.modifiers
+      });
+    }
     return effectDict;
   }
 

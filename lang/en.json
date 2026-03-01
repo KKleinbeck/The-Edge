@@ -245,6 +245,9 @@
     "BARREL DAMAGED": "Barrel tip fractures. All shots now deal 1 less damage untill barrel is changed (this can stack).",
     "CATASTROPHIC FAILURE": "The weapon suffers a critical failure, becoming unusable until repaired (taking an hour)."
   },
+  "DATAMODELS": {
+    "NEW EFFECT": "New Effect"
+  },
   "DIALOG": {
     "CANCEL": "Cancel",
     "CHANGE DICE": "Change dice",
@@ -594,6 +597,7 @@
   "FALL DAMAGE TITLE": "Falling",
   "FEMALE": "Female",
   "GENERAL": "General",
+  "GENERALMODIFIERS": "General mods",
   "GENERAL WOUND": "General wound",
   "GM NOTES": "GM Notes",
   "HANDEDNESS": "Handedness",

@@ -22,6 +22,7 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
     classes: ["the_edge", "actor"],
     actions: {
       itemControl: TheEdgeActorSheet._onItemControl,
+      effectControl: TheEdgeActorSheet._onEffectControl,
       skillControl: TheEdgeActorSheet._onSkillControl,
       counterControl: TheEdgeActorSheet.onCounterControl,
     },
@@ -52,6 +53,12 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
       mental: Object.keys(context.system.proficiencies["mental"]),
     })
 
+    context.definedEffects = structuredClone(THE_EDGE.effect_map);
+    for (const group of ["attributes", "proficiencies", "weapons"]) {
+      context.definedEffects[group].crit = undefined;
+      context.definedEffects[group].critFail = undefined;
+    }
+
     Object.entries(this.actor.itemTypes).forEach(([type, entries]) => {
       context[type] = entries;
     })
@@ -72,9 +79,6 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
         const itemType = target.dataset.type;
         const cls = getDocumentClass("Item");
         return cls.create({name: LocalisationServer.localise("New", "item"), type: itemType}, {parent: this.actor});
-      case "create-effect":
-        const clsEffect = getDocumentClass("Item");
-        return clsEffect.create({name: LocalisationServer.localise("New effect", "item"), type: "Effect"}, {parent: this.actor});
       case "edit":
         return item?.sheet.render(true);
       case "post":
@@ -169,6 +173,129 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
         }
         break;
     }
+  }
+
+  static async _onEffectControl(event, target) {
+    event.preventDefault();
+
+    // Obtain event data
+    const effectElement = target.closest(".effect-hook");
+    const id = effectElement?.dataset.id || ""; 
+
+    // Handle different actions
+    switch ( target.dataset.subaction ) {
+      case "create":
+        this.actor.system.createNewEffect();
+        break
+      case "delete":
+        this.actor.system.deleteEffect(id);
+        break
+      case "edit":
+        const container = effectElement.parentElement;
+        const content = effectElement.querySelector(".content");
+        if (!effectElement.classList.contains('expanded')) {
+          this.expandItem(effectElement, content, container);
+        } else {
+          this.collapseItem(effectElement, content, container);
+        }
+        break
+      case "toggle-active":
+        this.actor.system.toggleEffect(id);
+        break
+    }
+  }
+  
+  // TODO: Refactor into an animator class
+  expandItem(item, content, container) {
+    const DURATION = 300;
+    // First: do FLIP measurement
+    const items = [...container.children];
+    const firstRects = items.map(el => el.getBoundingClientRect());
+
+    item.classList.add('expanded');
+
+    // move item to beginning
+    container.prepend(item);
+
+    requestAnimationFrame(() => {
+      const lastRects = items.map(el => el.getBoundingClientRect());
+
+      items.forEach((el, i) => {
+        const dx = firstRects[i].left - lastRects[i].left;
+        const dy = firstRects[i].top - lastRects[i].top;
+
+        el.animate([
+          { transform: `translate(${dx}px, ${dy}px)` },
+          { transform: `translate(0,0)` }
+        ], {
+          duration: DURATION,
+          easing: 'ease'
+        });
+      });
+
+      // AFTER layout animation finishes → expand content
+      setTimeout(() => {
+        this.revealContent(content);
+      }, DURATION);
+    });
+  }
+
+  collapseItem(item, content, container) {
+    const DURATION = 300;
+    this.hideContent(content);
+
+    setTimeout(() => {
+      const items = [...container.children];
+      const firstRects = items.map(el => el.getBoundingClientRect());
+
+      item.classList.remove('expanded');
+
+      // Move item to end
+      container.append(item);
+
+      requestAnimationFrame(() => {
+        const lastRects = items.map(el => el.getBoundingClientRect());
+
+        items.forEach((el, i) => {
+          const dx = firstRects[i].left - lastRects[i].left;
+          const dy = firstRects[i].top - lastRects[i].top;
+
+          el.animate([
+            { transform: `translate(${dx}px, ${dy}px)` },
+            { transform: `translate(0,0)` }
+          ], {
+            duration: DURATION,
+            easing: 'ease'
+          });
+        });
+      });
+
+    }, DURATION);
+  }
+
+  revealContent(content) {
+    content.style.height = "0px";
+    content.style.opacity = "0";
+
+    const fullHeight = content.scrollHeight;
+
+    requestAnimationFrame(() => {
+      content.style.height = fullHeight + "px";
+      content.style.opacity = "1";
+    });
+
+    content.addEventListener('transitionend', () => {
+      content.style.height = "auto";
+    }, { once: true });
+  }
+
+  hideContent(content) {
+    content.style.height = content.scrollHeight + "px";
+
+    requestAnimationFrame(() => {
+      content.style.height = "0px";
+      content.style.opacity = "0";
+    });
   }
   
   static async _onSkillControl(event, target) {

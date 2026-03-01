@@ -479,7 +479,7 @@ class ItemSheetSkill extends TheEdgeItemSheet {
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
     // context.helpers = {displayHint: this.options.displayHint};
-    context.coreRequirements = structuredClone(THE_EDGE.core_value_map);
+    context.coreRequirements = structuredClone(THE_EDGE.coreValueMap);
     context.coreRequirements.skills = {};
     const skills = game.items.filter(x => x.type.toLowerCase().includes("skill"));
     for (const skill of skills) {
@@ -890,8 +890,8 @@ class ItemSheetWeapon extends RangeChartSelectorMixin(TheEdgeItemSheet) {
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
     context.helpers = {
-      attrs: THE_EDGE.attrs,
-      weapon_types: Object.keys(THE_EDGE.core_value_map.weapons).filter(x => !x.includes("General"))
+      attributes: THE_EDGE.characterSchema.attributes,
+      weapon_types: Object.keys(THE_EDGE.coreValueMap.weapons).filter(x => !x.includes("General"))
     };
     context.ammunitionTypes = this._setAmmunitionTypesDict();
     context.ammunitionTypeIsArbitrary = !THE_EDGE.ammunitionSubtypes.includes(
