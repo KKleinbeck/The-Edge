@@ -37,7 +37,70 @@ export default class CharacterData extends CharacterDataParent {
     this.heartRate.min.value = Math.max(
       20, this.heartRate.min.baseline + this.heartRate.min.status - this.attributes.end.value);
   }
+
+  // General Hooks
+  onUpdate(data) {
+    this.addStatusEffectsToData(data);
+    this._applyEffectsToData(data)
+  }
   
+  _applyEffectsToData(data) {
+    const systemModification = foundry.utils.expandObject(data)?.system ?? {};
+    // Operate on a copy of this datamodel to simulate data model after the update
+    const tempDataModel = new this.constructor(this, {parent: this.parent});
+    tempDataModel.updateSource(systemModification);
+    return
+
+    // Reset to a blank state
+    const update = {}
+    for (const group of ["attributes", "proficiencies", "weapons"]) {
+      for (const elem of THE_EDGE.effectMap[group].all) {
+        update[elem] = 0;
+      }
+    }
+    for (const elems of Object.values(THE_EDGE.effectMap.generalModifiers)) {
+      for (const elem of Object.values(elems)) update[elem] = 0;
+    }
+    for (const elems of Object.values(THE_EDGE.effectMap.others)) {
+      for (const elem of Object.values(elems)) update[elem] = 0;
+    }
+    const critDice = {
+      attributes: {crit: [1], critFail: [20]},
+      proficiencies: {crit: [1], critFail: [20]},
+      weapons: {crit: [1], critFail: [20]}
+    }
+
+    // Iterate through items and apply their effects
+    for (const item of this.items) {
+      if (!item.system.active && !item.system.equipped) continue;
+
+      if (item.type == "Skill" || item.type == "Combatskill" || item.type == "Medicalskill") {
+        for (let i = 0; i < item.system.level; ++i) {
+          for (const effect of item.system.levelEffects[i]) {
+            if (this._updateCritDice(effect, critDice)) continue;
+            for (const effectPath of THE_EDGE.effectMap[effect.group][effect.name]) {
+              update[effectPath] += effect.value;
+            }
+          }
+          if (!item.system.levelEffects[i]) continue;
+        }
+      } else if (item.system.effects) {
+        for (const effect of item.system.effects) {
+          if (this._updateCritDice(effect, critDice)) continue;
+          for (const effectPath of THE_EDGE.effectMap[effect.group][effect.name]) {
+            update[effectPath] += effect.value;
+          }
+        }
+      }
+    }
+    
+    for (const [group, dice] of Object.entries(critDice)) {
+      this.diceServer.interpretationParams[group].crit = dice.crit;
+      this.diceServer.interpretationParams[group].critFail = dice.critFail;
+    }
+    // await this.update(update);
+  }
+
   // Damage Related
   async applyDamage(damage, crit, penetration, damageType, name, givenLocation = undefined) {
     const [location, locationCoord] = Aux.generateWoundLocation(crit, this.sex, givenLocation)

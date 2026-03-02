@@ -12,8 +12,13 @@ export class TheEdgeActor extends Actor {
   constructor(...args) {
     super(...args);
     this.diceServer = new DiceServer();
-    this.overloadLevel = 0;
-    this.weightTillNextOverload = 0;
+  }
+
+  async update(data={}, operation={}) {
+    console.log("I want to change: ", structuredClone(data))
+    this.system.onUpdate(data);
+    console.log(structuredClone(data))
+    super.update(data, operation)
   }
 
   /**
@@ -133,110 +138,10 @@ export class TheEdgeActor extends Actor {
     })
   }
 
-  determineWeight() {
+  get itemWeight() {
     return this.items.reduce(
       (a, b) => a + ((b.system?.quantity || 1) * b.system?.weight || 0), 0
     );
-  }
-  
-  async determineOverload() {
-    const weight = this.determineWeight() - this.system.generalModifiers.overloadThreshold.status;
-    let str = this.system.attributes.str.value;
-
-    // Correct for the current overload level
-    let currentOverload = this._getEffect("Overload");
-    str += currentOverload?.system?.effects?.reduce(
-      (a,b) => a - b.value, -1
-    ) || 0 // -1 for the phyiscal proficiencies
-    if (str <= 0) return false; // We can't possibly do sensible things yet
-    
-    this.overloadLevel = Math.max(Math.ceil((weight - 1.5 * str) / (str / 2)), 0) +
-      this.system.statusEffects.overload.status;
-    this.weightTillNextOverload = str * (1.5 + 0.5 * this.overloadLevel) - weight;
-    if (this.overloadLevel <= 0) this._deleteEffect("Overload");
-    else {
-      if (!currentOverload) currentOverload = await this._getEffectOrCreate("Overload")
-      await currentOverload.update({"system.effects": [
-        {group: "proficiencies", name: "physical", value: -1},
-        {group: "attributes", name: "physical", value: -this.overloadLevel + 1},
-      ], "system.statusEffect": true, "system.gm_description": `${this.overloadLevel}`})
-    }
-    return true
-  };
-
-  async updateStrain() {
-    let zone = this.system.getHRZone();
-    if (zone == 1) {
-      this._deleteEffect("Strain");
-      return;
-    }
-
-    let currentStrain = await this._getEffectOrCreate("Strain")
-    if (zone == 2) {
-      await currentStrain.update({"system.effects": [
-        {group: "attributes", name: "crd", value: -1},
-        {group: "attributes", name: "foc", value: -1}
-      ], "system.statusEffect": true, "system.gm_description": zone - 1})
-    } else {
-      await currentStrain.update({"system.effects": [
-        {group: "weapons", name: "all", value: -1},
-        {group: "attributes", name: "crd", value: -2},
-        {group: "attributes", name: "foc", value: -2},
-        {group: "attributes", name: "social", value: -1},
-        {group: "attributes", name: "mental", value: -1}
-      ], "system.statusEffect": true, "system.gm_description": zone - 1})
-    }
-  }
-
-  async updatePain() {
-    const res = 2 * this.system.attributes.res.value;
-    if (res <= 0) return; // We can't possibly do something sensible at the moment
-    const damageTotal = this.system.health.max.value - this.system.health.value -
-      this.system.statusEffects.painThreshold.status;
-    const levelPain = Math.floor(damageTotal / res) + this.system.statusEffects.pain.status;
-    if (levelPain <= 0) { await this._deleteEffect("Pain") }
-    else {
-      const currentPain = await this._getEffectOrCreate("Pain");
-      await currentPain.update({"system.effects": [
-        {group: "weapons", name: "General weapon proficiency", value: -levelPain},
-        {group: "proficiencies", name: "all", value: -levelPain},
-        ], "system.statusEffect": true, "system.gm_description": `${levelPain}`
-      })
-    }
-
-    // Injuries
-    const damageBodyParts = {arms: 0, legs: 0, torso: 0, head: 0};
-    const wounds = this.itemTypes["Wounds"];
-    for (const wound of wounds) {
-      if (!wound.system.active) continue;
-      switch (wound.system.bodyPart) {
-        case "Torso":
-          damageBodyParts.torso += wound.system.damage;
-          break;
-        case "Head":
-          damageBodyParts.head += wound.system.damage;
-          break;
-        case "LegsLeft":
-        case "LegsRight":
-          damageBodyParts.legs += wound.system.damage;
-          break;
-        case "ArmsLeft":
-        case "ArmsRight":
-          damageBodyParts.arms += wound.system.damage;
-      }
-    }
-
-    for (const [bodyPart, damage] of Object.entries(damageBodyParts)) {
-      const n = Math.floor(damage / res) + this.system.statusEffects[`injuries ${bodyPart.toLowerCase()}`].status;
-      if (n <= 0) { await this._deleteEffect(`Injuries ${bodyPart}`) }
-      else {
-        const injury = await this._getEffectOrCreate(`Injuries ${bodyPart}`);
-        await injury.update({"system.effects": [
-            {group: "attributes", name: THE_EDGE.injury_map[bodyPart], value: -n}
-          ], "system.statusEffect": true, "system.gm_description": `${n}`,
-        })
-      }
-    }
   }
 
   async updateBloodloss() {
@@ -261,57 +166,6 @@ export class TheEdgeActor extends Actor {
         {group: "attributes", name: "mental", value: -level},
       ], "system.statusEffect": true, "system.gm_description": `${level}`})
     }
-  }
-
-  async updateStatus() {
-    // Reset to a blank state
-    const update = {}
-    for (const group of ["attributes", "proficiencies", "weapons"]) {
-      for (const elem of THE_EDGE.effectMap[group].all) {
-        update[elem] = 0;
-      }
-    }
-    for (const elems of Object.values(THE_EDGE.effectMap.statusEffects)) {
-      for (const elem of Object.values(elems)) update[elem] = 0;
-    }
-    for (const elems of Object.values(THE_EDGE.effectMap.others)) {
-      for (const elem of Object.values(elems)) update[elem] = 0;
-    }
-    const critDice = {
-      attributes: {crit: [1], critFail: [20]},
-      proficiencies: {crit: [1], critFail: [20]},
-      weapons: {crit: [1], critFail: [20]}
-    }
-
-    // Iterate through items and apply their effects
-    for (const item of this.items) {
-      if (!item.system.active && !item.system.equipped) continue;
-
-      if (item.type == "Skill" || item.type == "Combatskill" || item.type == "Medicalskill") {
-        for (let i = 0; i < item.system.level; ++i) {
-          for (const effect of item.system.levelEffects[i]) {
-            if (this._updateCritDice(effect, critDice)) continue;
-            for (const effectPath of THE_EDGE.effectMap[effect.group][effect.name]) {
-              update[effectPath] += effect.value;
-            }
-          }
-          if (!item.system.levelEffects[i]) continue;
-        }
-      } else if (item.system.effects) {
-        for (const effect of item.system.effects) {
-          if (this._updateCritDice(effect, critDice)) continue;
-          for (const effectPath of THE_EDGE.effectMap[effect.group][effect.name]) {
-            update[effectPath] += effect.value;
-          }
-        }
-      }
-    }
-    
-    for (const [group, dice] of Object.entries(critDice)) {
-      this.diceServer.interpretationParams[group].crit = dice.crit;
-      this.diceServer.interpretationParams[group].critFail = dice.critFail;
-    }
-    await this.update(update);
   }
 
   _updateCritDice(effect, critDice) {

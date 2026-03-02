@@ -1045,7 +1045,7 @@ textarea {
 }
 .the_edge .effect-list .effect-box {
   padding: 4px 6px 4px 6px;
-  background: rgba(0,0,0,0.15);
+  background: rgba(0,0,0,0.5);
   border: solid 2px black;
   border-radius: 8px;
   box-shadow:

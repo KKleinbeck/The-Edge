@@ -3,7 +3,7 @@
     <div class="table-row">
       <div class="table-header"></div> <!-- Empty first cell-->
       {{#each system.attributes as |details attribute|}}
-      <div data-tooltip="{{attrName attribute}}" class="table-header">
+      <div class="table-header">
         <a data-action="advanceAttr" data-name="{{attribute}}" data-type="refund" data-cost="{{details.refund}}">
           <i class="fas fa-minus advance-fa" style="font-size: 10px;"></i>
         </a>

@@ -12,6 +12,7 @@ export default function() {
     itemName: (a) => LocalisationServer.localise(a, "Item"),
     skillName: (a) => LocalisationServer.localise(a, "Skill"),
     combatName: (a) => LocalisationServer.localise(a, "combat"),
+    effectName: (a) => LocalisationServer.localise(a, "effect_group"),
     tooltipText: (a) => LocalisationServer.localise(a, "tooltip"),
     proficiencyName: (a) => LocalisationServer.localise(a, "proficiency"),
     textLocalisation: (a) => LocalisationServer.localise(a, "text"),

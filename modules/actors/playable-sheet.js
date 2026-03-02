@@ -89,11 +89,9 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     const credits = this.actor.itemTypes["Credits"]
     const creditsOffline = credits.find(c => c.system?.isSchid)?.system?.value || 0;
     const creditsDigital = credits.find(c => !c.system?.isSchid)?.system?.value || 0;
-    const weight = this.actor.determineWeight();
+    const weight = this.actor.itemWeight;
     const wounds = this.actor.itemTypes["Wounds"];
 
-    // await this.actor.updateStatus();
-    await this.actor.determineOverload();
     context.helpers = {
       armourProtection: armourProtection,
       equippedWeapons: equippedWeapons,
@@ -104,8 +102,8 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       languages: THE_EDGE.languages,
       itemTypes: ["Weapon", "Armour", "Ammunition", "Gear", "Consumables"],
       weight: weight,
-      overloadLevel: this.actor.overloadLevel,
-      weightTillNextOverload: this.actor.weightTillNextOverload,
+      overloadLevel: this.actor.system.overloadLevel,
+      weightTillNextOverload: this.actor.system.weightTillNextOverload,
       hrProgressBarData: [
         {value: context.system.heartRate.min.value, label: "Z1"},
         {value: context.system.hrZone1, label: "Z2"},
@@ -130,10 +128,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   getEffectDict() {
     const effectDict = {statusEffects: [], effects: [], itemEffects: [], skillEffects: []};
     for (const item of this.actor.items) {
-      if (item.type ==  "Effect") {
-        if (item.system.statusEffect) effectDict.statusEffects.push(item);
-        else effectDict.effects.push(item);
-      } else if (item.type == "Skill" || item.type == "Combatskill" || item.type == "Medicalskill") {
+      if (item.type == "Skill" || item.type == "Combatskill" || item.type == "Medicalskill") {
         for (const effect of item.system.levelEffects) {
           if (effect.length != 0) {
             effectDict.skillEffects.push(item);
@@ -147,6 +142,9 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     for (const [id, details] of Object.entries(this.actor.system.effects)) {
       // TODO Once status and item effects follow the same layout this should become a straight effect copy paste
       effectDict.effects.push({ id: id, ...details });
+    }
+    for (const [id, details] of Object.entries(this.actor.system.statusEffects)) {
+      if (details.modifiers.length) effectDict.statusEffects.push({ id: id, ...details });
     }
     return effectDict;
   }

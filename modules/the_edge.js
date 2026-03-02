@@ -50,12 +50,12 @@ Hooks.once("init", async function() {
   }
 
   const basicEffects = Object.keys(foundry.utils.flattenObject(THE_EDGE.characterSchema))
-    .filter(x => x.split(".").last() == "status");
+    .filter(x => x.split(".").last() == "status" || x.split(".")[0] == "generalModifiers");
   for (let effect of basicEffects) {
     const parts = effect.split(".");
     effect = "system." + effect;
     if (THE_EDGE.effectMap[parts[0]]) {
-      if (parts.length == 3) {
+      if (parts.length == 2 || parts.length == 3) {
         THE_EDGE.effectMap[parts[0]][parts[1]] = [effect];
       } else {
         THE_EDGE.effectMap[parts[0]][parts[2]] = [effect];

@@ -62,7 +62,6 @@ THE_EDGE.wound_odds = (damage, damageType) => {
 }
 THE_EDGE.medicine_effects = ["heals", "treats"]
 THE_EDGE.wound_status = ["treatable", "treated"]
-THE_EDGE.injury_map = {"torso": "end", "head": "foc", "arms": "crd", "legs": "spd"}
 
 // Entries below are primarily implemented in the_edge.js
 THE_EDGE.coreValueMap = {attributes: {}, proficiencies: {}, weapons: {}}
@@ -74,5 +73,46 @@ THE_EDGE.effectMap = {
 }
 THE_EDGE.weapon_damage_types = {"Recoilless Rifles": "general"}
 THE_EDGE.weapon_partners = {}
+
+// Status Effects
+THE_EDGE.overloadModifiers = (level) => {
+  const modifiers = []
+  if (level > 0) {
+    modifiers.push({group: "proficiencies", field: "physical", value: -1})
+  }
+  if (level > 1) {
+    modifiers.push({group: "attributes", field: "physical", value: -level + 1})
+  }
+  return modifiers;
+}
+THE_EDGE.strainModifiers = (level) => {
+  if (level == 0) return [];
+  if (level == 1) {
+    return [
+      {group: "attributes", field: "crd", value: -1},
+      {group: "attributes", field: "foc", value: -1}
+    ];
+  } 
+  return [
+    {group: "weapons", field: "all", value: -1},
+    {group: "attributes", field: "crd", value: -2},
+    {group: "attributes", field: "foc", value: -2},
+    {group: "attributes", field: "social", value: -1},
+    {group: "attributes", field: "mental", value: -1}
+  ];
+}
+THE_EDGE.painModifiers = (level) => {
+  if (level == 0) return [];
+  if (level == 1) return [{group: "proficiencies", field: "all", value: -1}]
+  return [
+    {group: "proficiencies", field: "all", value: -Math.ceil(level / 2)},
+    {group: "weapons", field: "General weapon proficiency", value: -Math.floor(level / 2)}
+  ];
+}
+THE_EDGE.injuryMap = {"torso": "end", "head": "foc", "arms": "crd", "legs": "spd"}
+THE_EDGE.damageBodyPartModifiers = (bodyPart, level) => {
+  if (level == 0) return [];
+  return [{group: "attributes", field: THE_EDGE.injuryMap[bodyPart], value: -level}];
+}
 
 export default THE_EDGE

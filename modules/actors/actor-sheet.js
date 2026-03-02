@@ -124,8 +124,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
           }
         }
         await item.toggleEquipped();
-        await this.actor.updateStatus();
-        this.render();
+        await this.actor.update({});
         break;
       case "consume":
         switch (item.system.current_type) {
@@ -223,7 +222,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
     item.classList.add('expanded');
 
     // move item to beginning
-    container.prepend(item);
+    // container.prepend(item);
 
     requestAnimationFrame(() => {
       const lastRects = items.map(el => el.getBoundingClientRect());
@@ -261,7 +260,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
       item.classList.remove('expanded');
 
       // Move item to end
-      container.append(item);
+      // container.append(item);
 
       requestAnimationFrame(() => {
         const lastRects = items.map(el => el.getBoundingClientRect());
