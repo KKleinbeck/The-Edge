@@ -1,7 +1,7 @@
 import LocalisationServer from "../../../modules/system/localisation_server.js";
 import { DataModelComponent } from "../../abstracts.js";
 
-const { ArrayField, ObjectField, TypedObjectField } = foundry.data.fields;
+const { ObjectField, TypedObjectField } = foundry.data.fields;
 
 export default class ActorEffectData extends DataModelComponent {
   // TODO: Validator for inner object field?
@@ -13,10 +13,10 @@ export default class ActorEffectData extends DataModelComponent {
 
   async createNewEffect(name) {
     name = name || LocalisationServer.localise("New effect", "Datamodels");
-    const existing = this._findEffects(name);
     const update = {};
-    update["system.effects." + name + `_${existing.length}`] = {
+    update[`system.effects.${foundry.utils.randomID()}`] = {
       active: true,
+      name: name,
       modifiers: [this._newModifier()]
     };
     await this.parent.update(update);
@@ -30,7 +30,6 @@ export default class ActorEffectData extends DataModelComponent {
   }
 
   async toggleEffect(id) {
-    console.log(id)
     if (id in this.effects) {
       const update = {};
       update[`system.effects.${id}.active`] = !this.effects[id].active;
@@ -38,12 +37,11 @@ export default class ActorEffectData extends DataModelComponent {
     }
   }
 
-  _findEffects(name) {
-    // Returns all effects under the given name.
-    // Internally effects are represented as NAME_ID
+  _findEffectsByName(name) {
+    // Returns all effect IDs by their Name.
     const result = [];
-    for (const candidate of Object.keys(this.effects)) {
-      if (name === candidate.rsplit("_")[0]) result.push(candidate);
+    for (const [candidate, details] of Object.entries(this.effects)) {
+      if (name === details.name) result.push(candidate);
     }
     return result;
   }

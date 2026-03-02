@@ -14,17 +14,17 @@
           </div>
           {{#each effects as |effect|}}
             <div class="item-columned-page" style="align-items: center; padding-left: 10px;">
-              <select class="selection-box grenade-effect-modify" data-index="{{@index}}" data-field="group">
+              <select class="selection-box grenade-modifier-hook" data-index="{{@index}}" data-field="group">
                 {{#each ../../../definedEffects as |name group|}}
                   <option value="{{group}}" {{#if (checkEqual effect.group group)}}selected{{/if}}>{{genName group}}</option>
                 {{/each}}
               </select>
-              <select class="selection-box grenade-effect-modify" data-index="{{@index}}" data-field="name" style="min-width: 50%;">
+              <select class="selection-box grenade-modifier-hook" data-index="{{@index}}" data-field="name" style="min-width: 50%;">
                 {{#each (getEntry ../../../definedEffects effect.group) as |target name|}}
                   <option value="{{name}}" {{#if (checkEqual effect.name name)}}selected{{/if}}>{{effectRequirementName name effect.group}}</option>
                 {{/each}}
               </select>
-              <input class="grenade-effect-modify" data-index="{{@index}}" type="number" data-field="value" value="{{effect.value}}" style="width: 45px; text-align: right;"/>
+              <input class="grenade-modifier-hook" data-index="{{@index}}" type="number" data-field="value" value="{{effect.value}}" style="width: 45px; text-align: right;"/>
               <a data-action="deleteGrenadeEffect" data-index="{{@index}}" title="{{ itemName 'delete' }}"><i class="fas fa-trash"></i></a>
             </div>
           {{/each}}

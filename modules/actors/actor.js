@@ -267,14 +267,14 @@ export class TheEdgeActor extends Actor {
     // Reset to a blank state
     const update = {}
     for (const group of ["attributes", "proficiencies", "weapons"]) {
-      for (const elem of THE_EDGE.effect_map[group].all) {
+      for (const elem of THE_EDGE.effectMap[group].all) {
         update[elem] = 0;
       }
     }
-    for (const elems of Object.values(THE_EDGE.effect_map.statusEffects)) {
+    for (const elems of Object.values(THE_EDGE.effectMap.statusEffects)) {
       for (const elem of Object.values(elems)) update[elem] = 0;
     }
-    for (const elems of Object.values(THE_EDGE.effect_map.others)) {
+    for (const elems of Object.values(THE_EDGE.effectMap.others)) {
       for (const elem of Object.values(elems)) update[elem] = 0;
     }
     const critDice = {
@@ -291,7 +291,7 @@ export class TheEdgeActor extends Actor {
         for (let i = 0; i < item.system.level; ++i) {
           for (const effect of item.system.levelEffects[i]) {
             if (this._updateCritDice(effect, critDice)) continue;
-            for (const effectPath of THE_EDGE.effect_map[effect.group][effect.name]) {
+            for (const effectPath of THE_EDGE.effectMap[effect.group][effect.name]) {
               update[effectPath] += effect.value;
             }
           }
@@ -300,7 +300,7 @@ export class TheEdgeActor extends Actor {
       } else if (item.system.effects) {
         for (const effect of item.system.effects) {
           if (this._updateCritDice(effect, critDice)) continue;
-          for (const effectPath of THE_EDGE.effect_map[effect.group][effect.name]) {
+          for (const effectPath of THE_EDGE.effectMap[effect.group][effect.name]) {
             update[effectPath] += effect.value;
           }
         }

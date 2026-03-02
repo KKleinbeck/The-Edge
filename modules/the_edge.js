@@ -54,31 +54,36 @@ Hooks.once("init", async function() {
   for (let effect of basicEffects) {
     const parts = effect.split(".");
     effect = "system." + effect;
-    if (THE_EDGE.effect_map[parts[0]]) {
+    if (THE_EDGE.effectMap[parts[0]]) {
       if (parts.length == 3) {
-        THE_EDGE.effect_map[parts[0]][parts[1]] = [effect];
+        THE_EDGE.effectMap[parts[0]][parts[1]] = [effect];
       } else {
-        THE_EDGE.effect_map[parts[0]][parts[2]] = [effect];
-        if (THE_EDGE.effect_map[parts[0]][parts[1]]) {
-          THE_EDGE.effect_map[parts[0]][parts[1]].push(effect);
-        } else THE_EDGE.effect_map[parts[0]][parts[1]] = [effect];
+        THE_EDGE.effectMap[parts[0]][parts[2]] = [effect];
+        if (THE_EDGE.effectMap[parts[0]][parts[1]]) {
+          THE_EDGE.effectMap[parts[0]][parts[1]].push(effect);
+        } else THE_EDGE.effectMap[parts[0]][parts[1]] = [effect];
       }
-      THE_EDGE.effect_map[parts[0]].all?.push(effect);
+      THE_EDGE.effectMap[parts[0]].all?.push(effect);
     } else {
-      THE_EDGE.effect_map["generalModifiers"][parts[0] + " - " + parts[1]] = [effect];
+      THE_EDGE.effectMap["generalModifiers"][parts[0] + " - " + parts[1]] = [effect];
     }
   }
-  THE_EDGE.effect_map["attributes"]["physical"] = [
-    THE_EDGE.effect_map["attributes"]["end"], THE_EDGE.effect_map["attributes"]["str"], 
-    THE_EDGE.effect_map["attributes"]["spd"], THE_EDGE.effect_map["attributes"]["crd"], 
+  THE_EDGE.effectMap["attributes"]["physical"] = [
+    THE_EDGE.effectMap["attributes"]["end"], THE_EDGE.effectMap["attributes"]["str"], 
+    THE_EDGE.effectMap["attributes"]["spd"], THE_EDGE.effectMap["attributes"]["crd"], 
   ]
-  THE_EDGE.effect_map["attributes"]["social"] = [
-    THE_EDGE.effect_map["attributes"]["cha"], THE_EDGE.effect_map["attributes"]["emp"], 
+  THE_EDGE.effectMap["attributes"]["social"] = [
+    THE_EDGE.effectMap["attributes"]["cha"], THE_EDGE.effectMap["attributes"]["emp"], 
   ]
-  THE_EDGE.effect_map["attributes"]["mental"] = [
-    THE_EDGE.effect_map["attributes"]["foc"], THE_EDGE.effect_map["attributes"]["res"], 
-    THE_EDGE.effect_map["attributes"]["int"]
+  THE_EDGE.effectMap["attributes"]["mental"] = [
+    THE_EDGE.effectMap["attributes"]["foc"], THE_EDGE.effectMap["attributes"]["res"], 
+    THE_EDGE.effectMap["attributes"]["int"]
   ]
+  THE_EDGE.definedEffects = structuredClone(THE_EDGE.effectMap);
+  for (const group of ["attributes", "proficiencies", "weapons"]) {
+    THE_EDGE.definedEffects[group].crit = undefined;
+    THE_EDGE.definedEffects[group].critFail = undefined;
+  }
 
   const generalWeapons = Object.keys(THE_EDGE.characterSchema.weapons.general);
   const energyWeapons = Object.keys(THE_EDGE.characterSchema.weapons.energy);

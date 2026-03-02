@@ -1,0 +1,53 @@
+{{#each effectDict as |effects sourceName|}}
+  {{#if (checkDisplayEffects sourceName effects)}}
+    <div class="title" style="padding-right: 10px;">
+      <div class="section-title">{{genName sourceName}}</div>
+      {{#if (checkEqual sourceName "effects")}}
+        <div title="{{ itemName 'Create' }}" data-action="effectControl" data-subaction="create" style="gap: 5px; cursor: pointer;">
+          {{itemName "New Effect"}}
+          <a><i class="fas fa-plus"></i></a>
+        </div>
+      {{/if}}
+    </div>
+    <div class="effect-list" style="padding: 0px 5px 0px 5px; overflow: hidden;">
+      {{#each effects as |effect|}}
+        <div class="effect-box effect-hook" data-id="{{effect.id}}" data-source="{{sourceName}}" style="cursor: pointer;" data-action="effectControl" data-subaction="edit">
+          <div style="display: flex; justify-content: space-between">
+            <div style="display: flex; gap: 5px; align-items: end; width: 75%;">
+              {{#if (checkEqual sourceName "effects")}}
+                <a data-action="effectControl" data-subaction="toggleShowContent"><i class="chevron-hook fa-light fa-circle-chevron-down"></i></a>
+                <input class="effect-name-hook" style="width: 90%; max-width: 220px; overflow: hidden; white-space: no-wrap; text-overflow: ellipsis;" value="{{effect.name}}" />
+              {{else}}
+                {{effect.name}}
+              {{/if}}
+              {{#if (checkEqual sourceName "statusEffects")}}
+                - {{genName "Level"}} {{effect.system.gm_description}}
+              {{/if}}
+            </div>
+            <div style="display: flex; gap: 5px; align-items: end;">
+              {{#if (getEntry ../../effectToggle sourceName)}}
+                {{#if effect.active}}
+                  <a title="{{ itemName 'Deactivate' }}" data-action="effectControl" data-subaction="toggle-active"><i class="far fa-check-circle"></i></a>
+                {{else}}
+                  <a title="{{ itemName 'Activate' }}" data-action="effectControl" data-subaction="toggle-active"><i class="far fa-circle"></i></a>
+                {{/if}}
+              {{/if}}
+              {{#if (checkEqual sourceName "effects")}}
+                <a title="{{ itemName 'Delete' }}" data-action="effectControl" data-subaction="delete"><i class="fas fa-trash"></i></a>
+              {{/if}}
+            </div>
+          </div>
+          <div class="content">
+            <div style="height: 5px;"></div>
+            {{#if (checkEqual sourceName "effects")}}
+              {{> systems/the_edge/templates/generic/effect-modifiers.hbs
+                modifiers=effect.modifiers
+                definedEffects=../../definedEffects
+              }}
+            {{/if}}
+          </div>
+        </div>
+      {{/each}}
+    </div>
+  {{/if}}
+{{/each}}

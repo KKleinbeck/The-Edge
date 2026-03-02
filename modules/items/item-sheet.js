@@ -25,8 +25,8 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
     },
     classes: ["the_edge", "item-sheet"],
     actions: {
-      createEffect: TheEdgeItemSheet._createEffect,
-      deleteEffect: TheEdgeItemSheet._deleteEffect,
+      createModifier: TheEdgeItemSheet._createModifier,
+      deleteModifier: TheEdgeItemSheet._deleteModifier,
     },
   }
 
@@ -204,7 +204,7 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
       }
     );
     context.userIsGM = game.user.isGM;
-    context.definedEffects = structuredClone(THE_EDGE.effect_map);
+    context.definedEffects = structuredClone(THE_EDGE.effectMap);
     for (const group of ["attributes", "proficiencies", "weapons"]) {
       context.definedEffects[group].crit = undefined;
       context.definedEffects[group].critFail = undefined;
@@ -217,7 +217,7 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
     this._attachEffectListeners();
   }
 
-  static _createEffect(_event, _target) {
+  static _createModifier(_event, _target) {
     const effects = this.item.system.effects;
     effects.push({group: "attributes", name: "end", value: 0});
     this.item.update({"system.effects": effects}, {render: false});
@@ -247,7 +247,7 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
     return result;
   }
 
-  static _deleteEffect(_event, target) {
+  static _deleteModifier(_event, target) {
     const index = target.dataset.index;
     const effects = this.item.system.effects;
     effects.splice(index, 1);
@@ -268,7 +268,7 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
   }
 
   _attachEffectListeners() {
-    this.element.querySelectorAll(".effect-modify")?.forEach(
+    this.element.querySelectorAll(".modifier-hook")?.forEach(
       x => x.addEventListener("change", ev => this._modifyEffect(ev))
     );
   }
@@ -732,7 +732,7 @@ class ItemSheetConsumables extends TheEdgeItemSheet {
   }
 
   _attachGrenadeListener() {
-    this.element.querySelectorAll(".grenade-effect-modify")?.forEach(
+    this.element.querySelectorAll(".grenade-modifier-hook")?.forEach(
       x => x.addEventListener("change", ev => this._modifyGrenadeEffect(ev.target))
     );
   }

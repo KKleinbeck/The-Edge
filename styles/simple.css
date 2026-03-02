@@ -1062,6 +1062,12 @@ textarea {
   opacity: 0;
   transition: height 300ms ease, opacity 200ms ease;
 }
+.the_edge .chevron-hook {
+  transition: rotate 300ms ease;
+}
+.the_edge .rotate180 {
+  rotate: 180deg;
+}
 
 .main-row {
   display: flex;

@@ -22,9 +22,11 @@ export const preloadHandlebarsTemplates = async function() {
     "systems/the_edge/templates/actors/character/combat/layout.hbs",
     "systems/the_edge/templates/actors/character/combat/proficiencies.hbs",
     "systems/the_edge/templates/actors/character/combat/weapon_overview.hbs",
+    // Health
+    "systems/the_edge/templates/actors/character/health.hbs",
+    "systems/the_edge/templates/actors/character/health/effects.hbs",
     // Others
     "systems/the_edge/templates/actors/character/items.hbs",
-    "systems/the_edge/templates/actors/character/health.hbs",
     "systems/the_edge/templates/actors/character/biography.hbs",
 
     // Store templates
@@ -59,6 +61,7 @@ export const preloadHandlebarsTemplates = async function() {
 
     // Generic templates
     "systems/the_edge/templates/generic/counter-token.hbs",
+    "systems/the_edge/templates/generic/effect-modifiers.hbs",
     "systems/the_edge/templates/generic/icon-selector.hbs",
     "systems/the_edge/templates/generic/progress-bar-modern.hbs",
     "systems/the_edge/templates/generic/range-chart.hbs",

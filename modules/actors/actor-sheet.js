@@ -3,13 +3,14 @@ import ChatServer from "../system/chat_server.js";
 import DialogMedicine from "../dialogs/dialog-medicine.js";
 import DialogItemDeletion from "../dialogs/dialog-item-deletion.js";
 import DialogArmourAttachment from "../dialogs/dialog-attachOuterArmour.js";
+import EffectModifierMixin from "../mixins/effect-modifier-mixin.js";
 import LocalisationServer from "../system/localisation_server.js";
 import THE_EDGE from "../system/config-the-edge.js";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ActorSheetV2 } = foundry.applications.sheets;
 
-export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
+export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplicationMixin(ActorSheetV2)) {
   static DEFAULT_OPTIONS = {
     tag: "form",
     position: {
@@ -53,12 +54,7 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
       mental: Object.keys(context.system.proficiencies["mental"]),
     })
 
-    context.definedEffects = structuredClone(THE_EDGE.effect_map);
-    for (const group of ["attributes", "proficiencies", "weapons"]) {
-      context.definedEffects[group].crit = undefined;
-      context.definedEffects[group].critFail = undefined;
-    }
-
+    context.definedEffects = THE_EDGE.definedEffects;
     Object.entries(this.actor.itemTypes).forEach(([type, entries]) => {
       context[type] = entries;
     })
@@ -191,6 +187,12 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
         this.actor.system.deleteEffect(id);
         break
       case "edit":
+        if (["itemEffects", "skillEffects"].includes(effectElement.dataset.source)) {
+          const item = this.actor.items.get(id);
+          return item?.sheet.render(true);
+        }
+        break
+      case "toggleShowContent":
         const container = effectElement.parentElement;
         const content = effectElement.querySelector(".content");
         if (!effectElement.classList.contains('expanded')) {
@@ -203,6 +205,12 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
         this.actor.system.toggleEffect(id);
         break
     }
+  }
+
+  getModifiers(target) {
+    const effectId = target.closest(".effect-hook").dataset.id;
+    const modifiers = this.actor.system.effects[effectId].modifiers;
+    return [`system.effects.${effectId}.modifiers`, modifiers]
   }
   
   // TODO: Refactor into an animator class
@@ -236,12 +244,14 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
       // AFTER layout animation finishes → expand content
       setTimeout(() => {
         this.revealContent(content);
+        item.querySelector(".chevron-hook").classList.add("rotate180");
       }, DURATION);
     });
   }
 
   collapseItem(item, content, container) {
     const DURATION = 300;
+    item.querySelector(".chevron-hook").classList.remove("rotate180");
     this.hideContent(content);
 
     setTimeout(() => {
@@ -427,6 +437,16 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
     for (const input of progressBarInputs) {
       input.addEventListener("change", (ev) => {
         this._onCounterChange(ev, ev.target.dataset.subtype)
+      })
+    }
+
+    const effectNames = this.element.querySelectorAll(".effect-name-hook");
+    for (const effectName of effectNames) {
+      effectName.addEventListener("change", (ev) => {
+        const effectElement = ev.target.closest(".effect-hook");
+        const update = {};
+        update[`system.effects.${effectElement.dataset.id}.name`] = ev.target.value;
+        this.actor.update(update, {render: false});
       })
     }
 
