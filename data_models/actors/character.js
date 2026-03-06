@@ -14,6 +14,8 @@ import ProficiencyData from "./components/proficiencies.js";
 import StatusEffectData from "./components/status_effects.js";
 import WeaponData from "./components/weapons.js";
 
+const { expandObject, flattenObject, mergeObject } = foundry.utils;
+
 const CharacterDataParent = generateDataModelWithComponents(
   ActorEffectData, AttributeData, CharacterBaseData, HumanoidData,
   ProficiencyData, StatusEffectData, WeaponData
@@ -40,65 +42,68 @@ export default class CharacterData extends CharacterDataParent {
 
   // General Hooks
   onUpdate(data) {
-    this.addStatusEffectsToData(data);
-    this._applyEffectsToData(data)
-  }
-  
-  _applyEffectsToData(data) {
-    const systemModification = foundry.utils.expandObject(data)?.system ?? {};
+    // Get a the current set of modifiers, so that status effects have up to date attributes
+    const preliminaryModifiers = this._modifiers;
+
     // Operate on a copy of this datamodel to simulate data model after the update
+    foundry.utils.mergeObject(preliminaryModifiers, data);
+    const systemModification = expandObject(preliminaryModifiers)?.system ?? {};
     const tempDataModel = new this.constructor(this, {parent: this.parent});
     tempDataModel.updateSource(systemModification);
-    return
 
-    // Reset to a blank state
-    const update = {}
-    for (const group of ["attributes", "proficiencies", "weapons"]) {
-      for (const elem of THE_EDGE.effectMap[group].all) {
-        update[elem] = 0;
+    // Based on the simulated update, get the proper update
+    const activeModifiers = tempDataModel._modifiers;
+    mergeObject(data, activeModifiers);
+  }
+  
+  get _modifiers() {
+    const activeModifiers = {};
+    for (const modifierList of Object.values(flattenObject(THE_EDGE.effectMap))) {
+      for (const modifier of modifierList) {
+        activeModifiers[modifier] = 0; // Resets all modifiers
       }
     }
-    for (const elems of Object.values(THE_EDGE.effectMap.generalModifiers)) {
-      for (const elem of Object.values(elems)) update[elem] = 0;
-    }
-    for (const elems of Object.values(THE_EDGE.effectMap.others)) {
-      for (const elem of Object.values(elems)) update[elem] = 0;
-    }
-    const critDice = {
-      attributes: {crit: [1], critFail: [20]},
-      proficiencies: {crit: [1], critFail: [20]},
-      weapons: {crit: [1], critFail: [20]}
-    }
 
-    // Iterate through items and apply their effects
-    for (const item of this.items) {
-      if (!item.system.active && !item.system.equipped) continue;
-
-      if (item.type == "Skill" || item.type == "Combatskill" || item.type == "Medicalskill") {
-        for (let i = 0; i < item.system.level; ++i) {
-          for (const effect of item.system.levelEffects[i]) {
-            if (this._updateCritDice(effect, critDice)) continue;
-            for (const effectPath of THE_EDGE.effectMap[effect.group][effect.name]) {
-              update[effectPath] += effect.value;
-            }
-          }
-          if (!item.system.levelEffects[i]) continue;
-        }
-      } else if (item.system.effects) {
-        for (const effect of item.system.effects) {
-          if (this._updateCritDice(effect, critDice)) continue;
-          for (const effectPath of THE_EDGE.effectMap[effect.group][effect.name]) {
-            update[effectPath] += effect.value;
-          }
-        }
+    function addToResult(keys, value) { // Helper Function
+      for (const key of keys) {
+        if (!(key in activeModifiers)) activeModifiers[key] = 0;
+        activeModifiers[key] += value;
       }
     }
-    
-    for (const [group, dice] of Object.entries(critDice)) {
-      this.diceServer.interpretationParams[group].crit = dice.crit;
-      this.diceServer.interpretationParams[group].critFail = dice.critFail;
+
+    for (const [_, details] of Object.entries(this.effects)) {
+      if (!details.active) continue;
+      for (const modifier of details.modifiers) {
+        addToResult(THE_EDGE.effectMap[modifier.group][modifier.field], modifier.value);
+      }
     }
-    // await this.update(update);
+    for (const [_, details] of Object.entries(this.statusEffects)) {
+      for (const modifier of details.modifiers) {
+        addToResult(THE_EDGE.effectMap[modifier.group][modifier.field], modifier.value);
+      }
+    }
+    return activeModifiers;
+  }
+
+  _updateCritDice(effect, critDice) {
+    if (effect.name == "crit") {
+      const index = critDice[effect.group].critFail.indexOf(effect.value);
+      if (index > -1) {
+        critDice[effect.group].critFail.splice(index, 1);
+        return true;
+      }
+      critDice[effect.group].crit.push(effect.value)
+      return true;
+    } else if (effect.name == "critFail") {
+      const index = critDice[effect.group].crit.indexOf(effect.value);
+      if (index > -1) {
+        critDice[effect.group].crit.splice(index, 1);
+        return true;
+      }
+      critDice[effect.group].critFail.push(effect.value)
+      return true;
+    }
+    return false;
   }
 
   // Damage Related

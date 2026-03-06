@@ -13,6 +13,7 @@ export default function EffectModifierMixin(BaseApplication) {
 
     // Interface functions - need to be overwritten
     getModifiers(_target) {} // Shall return system path and respective list of modifiers
+    async updateModifiers(_modifiers, _context) {};
 
     // Private interface
     _onRender(context, options) {
@@ -21,28 +22,25 @@ export default function EffectModifierMixin(BaseApplication) {
     }
 
     static _createModifier(_event, target) {
-      const [systemPath, modifiers] = this.getModifiers(target);
-      modifiers.push({group: "attributes", name: "end", value: 0});
-      const update = {};
-      update[systemPath] = modifiers;
-      this.document.update(update, {render: false});
+      const {modifiers, context} = this.getModifiers(target);
+      modifiers.push({group: "attributes", field: "end", value: 0});
+      this.updateModifiers(modifiers, context);
       this.redrawModifiers(target, modifiers);
     }
 
-    async _modifyEffect(event) {
-      const change = await this._getModifierData(event.currentTarget);
-      const [systemPath, modifiers] = this.getModifiers(event.currentTarget);
+    _modifyEffect(event) {
+      event.stopPropagation();
+      const change = this._getModifierData(event.currentTarget);
+      const {modifiers, context} = this.getModifiers(event.currentTarget);
       const index = event.currentTarget.dataset.index;
       for (const [key, value] of Object.entries(change)) {
         modifiers[index][key] = value;
       }
-      const update = {};
-      update[systemPath] = modifiers;
-      this.document.update(update, {render: false});
+      this.updateModifiers(modifiers, context);
       this.redrawModifiers(event.currentTarget, modifiers);
     }
 
-    async _getModifierData(target) {
+    _getModifierData(target) {
       const entry = target.dataset.entry;
       const result = {};
       result[entry] = entry == "value" ? parseInt(target.value) : target.value;
@@ -54,19 +52,21 @@ export default function EffectModifierMixin(BaseApplication) {
     }
 
     static _deleteModifier(_event, target) {
-      const [systemPath, modifiers] = this.getModifiers(target);
+      const {modifiers, context} = this.getModifiers(target);
       const index = target.dataset.index;
       modifiers.splice(index, 1);
-      const update = {};
-      update[systemPath] = modifiers;
-      this.document.update(update, {render: false});
+      this.updateModifiers(modifiers, context);
       this.redrawModifiers(target, modifiers);
     }
 
     async redrawModifiers(target, modifiers) {
       const template = "systems/the_edge/templates/generic/effect-modifiers.hbs";
       const html = await renderTemplate(
-        template, {modifiers: modifiers, definedEffects: THE_EDGE.definedEffects}
+        template, {
+          modifiers: modifiers,
+          definedEffects: THE_EDGE.definedEffects,
+          interactive: true
+        }
       );
       const newContent = document.createElement("div"); // Trick to strip outer class of html-string
       newContent.innerHTML = html;

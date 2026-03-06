@@ -25,6 +25,7 @@ export const preloadHandlebarsTemplates = async function() {
     // Health
     "systems/the_edge/templates/actors/character/health.hbs",
     "systems/the_edge/templates/actors/character/health/effects.hbs",
+    "systems/the_edge/templates/actors/character/health/effect-list.hbs",
     // Others
     "systems/the_edge/templates/actors/character/items.hbs",
     "systems/the_edge/templates/actors/character/biography.hbs",

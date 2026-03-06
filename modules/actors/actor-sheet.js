@@ -11,6 +11,14 @@ const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ActorSheetV2 } = foundry.applications.sheets;
 
 export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplicationMixin(ActorSheetV2)) {
+  constructor(...args) {
+    super(...args);
+    this.effectIsExpanded = {
+      statusEffects: Array(this.actor.system.statusEffects.lastRects).fill(false),
+      effects: Array(this.actor.system.effects.length).fill(false),
+    };
+  }
+
   static DEFAULT_OPTIONS = {
     tag: "form",
     position: {
@@ -58,6 +66,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
     Object.entries(this.actor.itemTypes).forEach(([type, entries]) => {
       context[type] = entries;
     })
+    context.effectIsExpanded = this.effectIsExpanded;
     return context;
   }
   
@@ -175,23 +184,29 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
 
     // Obtain event data
     const effectElement = target.closest(".effect-hook");
-    const id = effectElement?.dataset.id || ""; 
+    const index = effectElement?.dataset.index || ""; 
+    const source = effectElement?.dataset.source || ""; 
 
     // Handle different actions
     switch ( target.dataset.subaction ) {
       case "create":
         this.actor.system.createNewEffect();
+        this.effectIsExpanded[target.dataset.source].push(false);
         break
       case "delete":
-        this.actor.system.deleteEffect(id);
+        // TODO: proper movement animations
+        this.actor.system.deleteEffect(index);
+        this.effectIsExpanded[source].splice(index, 1);
         break
       case "edit":
         if (["itemEffects", "skillEffects"].includes(effectElement.dataset.source)) {
+          const id = effectElement?.dataset.id || ""; 
           const item = this.actor.items.get(id);
           return item?.sheet.render(true);
         }
         break
       case "toggleShowContent":
+        this.effectIsExpanded[source][index] = !this.effectIsExpanded[source][index];
         const container = effectElement.parentElement;
         const content = effectElement.querySelector(".content");
         if (!effectElement.classList.contains('expanded')) {
@@ -201,16 +216,24 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
         }
         break
       case "toggle-active":
-        this.actor.system.toggleEffect(id);
+        if (effectElement.dataset.source == "effects") {
+          this.actor.system.toggleEffect(index);
+        }
         break
     }
   }
 
   getModifiers(target) {
-    const effectId = target.closest(".effect-hook").dataset.id;
-    const modifiers = this.actor.system.effects[effectId].modifiers;
-    return [`system.effects.${effectId}.modifiers`, modifiers]
+    const effectIndex = target.closest(".effect-hook").dataset.index;
+    const modifiers = this.actor.system.effects[effectIndex].modifiers;
+    return {modifiers: modifiers, context: {effectIndex: effectIndex}};
   }
+
+  async updateModifiers(modifiers, context) {
+    const effects = this.actor.system.effects;
+    effects[context.effectIndex].modifiers = modifiers;
+    this.actor.update({"system.effects": effects});
+  };
   
   // TODO: Refactor into an animator class
   expandItem(item, content, container) {
@@ -220,9 +243,6 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
     const firstRects = items.map(el => el.getBoundingClientRect());
 
     item.classList.add('expanded');
-
-    // move item to beginning
-    // container.prepend(item);
 
     requestAnimationFrame(() => {
       const lastRects = items.map(el => el.getBoundingClientRect());
@@ -258,9 +278,6 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
       const firstRects = items.map(el => el.getBoundingClientRect());
 
       item.classList.remove('expanded');
-
-      // Move item to end
-      // container.append(item);
 
       requestAnimationFrame(() => {
         const lastRects = items.map(el => el.getBoundingClientRect());

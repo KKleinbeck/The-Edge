@@ -1,0 +1,52 @@
+<div class="effect-list" style="padding: 0px 5px 0px 5px; overflow: hidden;">
+  {{#each effects as |effect|}}
+    <div class="effect-box effect-hook {{#if (getEntries ../effectIsExpandedList @index)}}expanded{{/if}}"
+      style="cursor: pointer;" data-index="{{@index}}" data-id="{{effect.id}}"
+      data-source="{{../source}}" data-action="effectControl" data-subaction="edit">
+      <div style="display: flex; justify-content: space-between">
+        <div style="display: flex; gap: 5px; align-items: end; width: 75%; white-space: nowrap;">
+          {{#if ../expandable}}
+            <a data-action="effectControl" data-subaction="toggleShowContent">
+              <i class="chevron-hook fa-regular fa-chevron-down {{#if (getEntries ../effectIsExpandedList @index)}}rotate180{{/if}}"></i>
+            </a>
+          {{/if}}
+          {{#if ../isUserEffect}}
+            <input class="effect-name-hook"
+              style="width: 90%; max-width: 220px; overflow: hidden; white-space: no-wrap; text-overflow: ellipsis;"
+              value="{{effect.name}}" />
+          {{else}}
+            {{effect.name}}
+            {{#if (checkIn "level" effect)}}
+              - {{genName "Level"}} {{effect.level}}
+            {{/if}}
+          {{/if}}
+        </div>
+        <div style="display: flex; gap: 5px; align-items: end;">
+          {{#if ../activatable}}
+            {{#if effect.active}}
+              <a title="{{ itemName 'Deactivate' }}" data-action="effectControl" data-subaction="toggle-active">
+                <i class="far fa-check-circle"></i>
+              </a>
+            {{else}}
+              <a title="{{ itemName 'Activate' }}" data-action="effectControl" data-subaction="toggle-active">
+                <i class="far fa-circle"></i>
+              </a>
+            {{/if}}
+          {{/if}}
+          {{#if ../isUserEffect}}
+            <a title="{{ itemName 'Delete' }}" data-action="effectControl" data-subaction="delete"><i class="fas fa-trash"></i></a>
+          {{/if}}
+        </div>
+      </div>
+      <div class="content" style="{{#if (getEntries ../effectIsExpandedList @index)}}height: auto; opacity: 1;{{/if}}">
+        <div class="effect-modifiers-hook" style="padding-top: 10px;">
+          {{> systems/the_edge/templates/generic/effect-modifiers.hbs
+            modifiers=effect.modifiers
+            definedEffects=../definedEffects
+            interactive=../isUserEffect
+          }}
+        </div>
+      </div>
+    </div>
+  {{/each}}
+</div>

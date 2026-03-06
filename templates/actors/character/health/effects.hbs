@@ -3,60 +3,21 @@
     <div class="title" style="padding-right: 10px;">
       <div class="section-title">{{genName sourceName}}</div>
       {{#if (checkEqual sourceName "effects")}}
-        <div title="{{ itemName 'Create' }}" data-action="effectControl" data-subaction="create" style="gap: 5px; cursor: pointer;">
+        <div title="{{ itemName 'Create' }}" data-action="effectControl" data-source="{{sourceName}}"
+          data-subaction="create" style="gap: 5px; cursor: pointer;">
           {{itemName "New Effect"}}
           <a><i class="fas fa-plus"></i></a>
         </div>
       {{/if}}
     </div>
-    <div class="effect-list" style="padding: 0px 5px 0px 5px; overflow: hidden;">
-      {{#each effects as |effect|}}
-        <div class="effect-box effect-hook" style="cursor: pointer;" data-id="{{effect.id}}"
-          data-source="{{sourceName}}" data-action="effectControl" data-subaction="edit">
-          <div style="display: flex; justify-content: space-between">
-            <div style="display: flex; gap: 5px; align-items: end; width: 75%; white-space: nowrap;">
-              {{#if (or (checkEqual sourceName "effects") (checkEqual sourceName "statusEffects"))}}
-                <a data-action="effectControl" data-subaction="toggleShowContent">
-                  <i class="chevron-hook fa-regular fa-chevron-down"></i>
-                </a>
-              {{/if}}
-              {{#if (checkEqual sourceName "effects")}}
-                <input class="effect-name-hook"
-                  style="width: 90%; max-width: 220px; overflow: hidden; white-space: no-wrap; text-overflow: ellipsis;"
-                  value="{{effect.name}}" />
-              {{else}}
-                {{effect.name}}
-              {{/if}}
-              {{#if (checkEqual sourceName "statusEffects")}}
-                - {{genName "Level"}} {{effect.level}}
-              {{/if}}
-            </div>
-            <div style="display: flex; gap: 5px; align-items: end;">
-              {{#if (getEntry ../../effectToggle sourceName)}}
-                {{#if effect.active}}
-                  <a title="{{ itemName 'Deactivate' }}" data-action="effectControl" data-subaction="toggle-active">
-                    <i class="far fa-check-circle"></i>
-                  </a>
-                {{else}}
-                  <a title="{{ itemName 'Activate' }}" data-action="effectControl" data-subaction="toggle-active">
-                    <i class="far fa-circle"></i>
-                  </a>
-                {{/if}}
-              {{/if}}
-              {{#if (checkEqual sourceName "effects")}}
-                <a title="{{ itemName 'Delete' }}" data-action="effectControl" data-subaction="delete"><i class="fas fa-trash"></i></a>
-              {{/if}}
-            </div>
-          </div>
-          <div class="content">
-            {{> systems/the_edge/templates/generic/effect-modifiers.hbs
-              modifiers=effect.modifiers
-              definedEffects=../../definedEffects
-              interactive=(checkEqual sourceName "effects")
-            }}
-          </div>
-        </div>
-      {{/each}}
-    </div>
+    {{> systems/the_edge/templates/actors/character/health/effect-list.hbs
+      effects=effects
+      source=sourceName
+      activatable=(getEntry ../effectToggle sourceName)
+      isUserEffect=(checkEqual sourceName "effects")
+      definedEffects=../definedEffects
+      expandable=(or (checkEqual sourceName "effects") (checkEqual sourceName "statusEffects"))
+      effectIsExpandedList=(getEntries ../effectIsExpanded sourceName)
+    }}
   {{/if}}
 {{/each}}

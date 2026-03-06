@@ -1,33 +1,31 @@
-<div class="effect-modifiers-hook" style="padding-top: 10px;">
-  {{#if interactive}}
-    {{#each modifiers as |modifier|}}
-      <div style="display: flex; gap: 5px; align-items: end;">
-        <select class="selection-box modifier-hook" data-index="{{@index}}" data-entry="group" style="padding: 0 2px 0 2px; min-width: 33%;">
-          {{#each ../definedEffects as |name group|}}
-            <option value="{{group}}" {{#if (checkEqual modifier.group group)}}selected{{/if}}>{{genName group}}</option>
-          {{/each}}
-        </select>
-        <select class="selection-box modifier-hook" data-index="{{@index}}" data-entry="field"
-          style="padding: 0 2px 0 px; min-width: 50%; text-overflow: ellipsis;">
-          {{#each (getEntry ../definedEffects modifier.group) as |target field|}}
-            <option value="{{field}}" {{#if (checkEqual modifier.field field)}}selected{{/if}}>{{effectRequirementName field modifier.group}}</option>
-          {{/each}}
-        </select>
-        <input class="modifier-hook" data-index="{{@index}}" type="number" data-entry="value" value="{{modifier.value}}" style="text-align: right;"/>
-        <a data-action="deleteModifier" data-index="{{@index}}" title="{{ itemName 'delete' }}"><i class="fas fa-trash"></i></a>
-      </div>
-    {{/each}}
-    <a title="{{ itemName 'Create' }}" data-action="createModifier"
-      style="display: flex; width: 100%; justify-content: end; align-items: end; gap: 10px; padding-top: 10px;">
-      {{ itemName "Add" }}<i class="fas fa-plus"></i>
-    </a>
-  {{else}}
-    <div style="display: grid; grid-template-columns: auto auto auto;">
-      {{#each modifiers as |modifier|}}
-        <div>{{genName group}}</div>
-        <div>{{effectRequirementName field modifier.group}}:</div>
-        <div>{{modifier.value}}</div>
-      {{/each}}
+{{#if interactive}}
+  {{#each modifiers as |modifier|}}
+    <div style="display: flex; gap: 5px; align-items: end;">
+      <select class="selection-box modifier-hook" data-index="{{@index}}" data-entry="group" style="padding: 0 2px 0 2px; min-width: 33%;">
+        {{#each ../definedEffects as |name group|}}
+          <option value="{{group}}" {{#if (checkEqual modifier.group group)}}selected{{/if}}>{{genName group}}</option>
+        {{/each}}
+      </select>
+      <select class="selection-box modifier-hook" data-index="{{@index}}" data-entry="field"
+        style="padding: 0 2px 0 px; min-width: 50%; text-overflow: ellipsis;">
+        {{#each (getEntry ../definedEffects modifier.group) as |target field|}}
+          <option value="{{field}}" {{#if (checkEqual modifier.field field)}}selected{{/if}}>{{effectRequirementName field modifier.group}}</option>
+        {{/each}}
+      </select>
+      <input class="modifier-hook" data-index="{{@index}}" type="number" data-entry="value" value="{{modifier.value}}" style="text-align: right;"/>
+      <a data-action="deleteModifier" data-index="{{@index}}" title="{{ itemName 'delete' }}"><i class="fas fa-trash"></i></a>
     </div>
-  {{/if}}
-</div>
+  {{/each}}
+  <a title="{{ itemName 'Create' }}" data-action="createModifier"
+    style="display: flex; width: 100%; justify-content: end; align-items: end; gap: 10px; padding-top: 10px;">
+    {{ itemName "Add" }}<i class="fas fa-plus"></i>
+  </a>
+{{else}}
+  <div style="display: grid; grid-template-columns: auto auto auto;">
+    {{#each modifiers as |modifier|}}
+      <div>{{genName group}}</div>
+      <div>{{effectRequirementName field modifier.group}}:</div>
+      <div>{{modifier.value}}</div>
+    {{/each}}
+  </div>
+{{/if}}

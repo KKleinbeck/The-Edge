@@ -2,13 +2,13 @@ import THE_EDGE from "../../../modules/system/config-the-edge.js";
 import LocalisationServer from "../../../modules/system/localisation_server.js";
 import { DataModelComponent } from "../../abstracts.js";
 
-const { NumberField, ObjectField, SchemaField, TypedObjectField } = foundry.data.fields;
+const { ArrayField, NumberField, ObjectField, SchemaField } = foundry.data.fields;
 
 export default class StatusEffectData extends DataModelComponent {
   static SCHEMA = {
-    statusEffects: new TypedObjectField(
-      new ObjectField(), { initial: {} }
-    ),
+    // statusEffects: new ArrayField(
+      // new ObjectField(), { initial: [] }
+    // ),
     generalModifiers: new SchemaField({
       // "injuries arms": new SchemaField({status: new NumberField({ initial: 0, integer: true, required: true }) }),
       // "injuries head": new SchemaField({status: new NumberField({ initial: 0, integer: true, required: true }) }),
@@ -48,8 +48,10 @@ export default class StatusEffectData extends DataModelComponent {
   get painLevel() {
     const res = 2 * this.attributes.res.value;
     if (res <= 0) return 0; // We can't possibly do something sensible at the moment
-    const damageTotal = this.health.max.value - this.health.value -
-      this.generalModifiers.painThreshold;
+    const damageTotal = Math.max(
+      this.health.max.value - this.health.value - this.generalModifiers.painThreshold,
+      0
+    );
     return Math.floor(damageTotal / res);
   }
 
@@ -81,38 +83,38 @@ export default class StatusEffectData extends DataModelComponent {
     return damageBodyParts;
   }
   
-  addStatusEffectsToData(data) {
-    const systemModification = foundry.utils.expandObject(data)?.system ?? {};
-    // Operate on a copy of this datamodel to simulate data model after the update
-    const tempDataModel = new this.constructor(this, {parent: this.parent});
-    tempDataModel.updateSource(systemModification);
-
-    const statusEffects = {};
-    statusEffects.overload = {
-      name: LocalisationServer.localise("Overload", "Effect_Group"),
-      level: tempDataModel.overloadLevel,
-      modifiers: THE_EDGE.overloadModifiers(tempDataModel.overloadLevel)
-    };
-    statusEffects.strain = {
-      name: LocalisationServer.localise("Strain", "Effect_Group"),
-      level: tempDataModel.strainLevel,
-      modifiers: THE_EDGE.strainModifiers(tempDataModel.strainLevel)
-    };
-    statusEffects.pain = {
-      name: LocalisationServer.localise("Pain", "Effect_Group"),
-      level: tempDataModel.painLevel,
-      modifiers: THE_EDGE.painModifiers(tempDataModel.painLevel)
-    };
-    for (const [bodyPart, level] of Object.entries(tempDataModel.damageBodyPartLevels)) {
-      statusEffects[`injuries ${bodyPart}`] = {
-        name: LocalisationServer.localise(`Injuries ${bodyPart}`, "Effect_Group"),
-        level: level,
-        modifiers: THE_EDGE.damageBodyPartModifiers(bodyPart, level)
-      };
+  get statusEffects() {
+    const statusEffectTemplate = [
+      {
+        nameID: "Overload", level: this.overloadLevel,
+        modFunction: THE_EDGE.overloadModifiers
+      },
+      {
+        nameID: "Strain", level: this.strainLevel,
+        modFunction: THE_EDGE.strainModifiers
+      },
+      {
+        nameID: "Pain", level: this.painLevel,
+        modFunction: THE_EDGE.painModifiers
+      },
+    ]
+    for (const [bodyPart, level] of Object.entries(this.damageBodyPartLevels)) {
+      statusEffectTemplate.push({
+        nameID: `Injuries ${bodyPart}`, level: level,
+        modFunction: (x) => THE_EDGE.damageBodyPartModifiers(bodyPart, x)
+      })
     }
 
-    for (const [k, v] of Object.entries(foundry.utils.flattenObject(statusEffects))) {
-      data[`system.statusEffects.${k}`] = v;
+    const statusEffects = [];
+    for (const {nameID, level, modFunction} of statusEffectTemplate) {
+      if (level) {
+        statusEffects.push({
+          name: LocalisationServer.localise(nameID, "Effect_Group"),
+          level: level, modifiers: modFunction(level)
+        });
+      }
     }
+
+    return statusEffects;
   }
 }

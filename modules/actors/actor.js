@@ -15,10 +15,8 @@ export class TheEdgeActor extends Actor {
   }
 
   async update(data={}, operation={}) {
-    console.log("I want to change: ", structuredClone(data))
     this.system.onUpdate(data);
-    console.log(structuredClone(data))
-    super.update(data, operation)
+    await super.update(data, operation)
   }
 
   /**
@@ -123,7 +121,7 @@ export class TheEdgeActor extends Actor {
           return;
         } 
       } else if (coreName.includes("General weapon proficiency")) { // Do nothing
-      } else if (newVal > this.system.weapons.general["General weapon proficiency"].value) {
+      } else if (newVal > this.system.weapons.general["General weapon proficiency"].advances) {
         const msg = LocalisationServer.parsedLocalisation(
           "Core Value too small", "Notifications",
           {name: parts[parts.length - 2], level: newVal, basic: this.system.weapons.general["General weapon proficiency"].value}
@@ -166,27 +164,6 @@ export class TheEdgeActor extends Actor {
         {group: "attributes", name: "mental", value: -level},
       ], "system.statusEffect": true, "system.gm_description": `${level}`})
     }
-  }
-
-  _updateCritDice(effect, critDice) {
-    if (effect.name == "crit") {
-      const index = critDice[effect.group].critFail.indexOf(effect.value);
-      if (index > -1) {
-        critDice[effect.group].critFail.splice(index, 1);
-        return true;
-      }
-      critDice[effect.group].crit.push(effect.value)
-      return true;
-    } else if (effect.name == "critFail") {
-      const index = critDice[effect.group].crit.indexOf(effect.value);
-      if (index > -1) {
-        critDice[effect.group].crit.splice(index, 1);
-        return true;
-      }
-      critDice[effect.group].critFail.push(effect.value)
-      return true;
-    }
-    return false;
   }
 
   learnSkill(newSkill) {
