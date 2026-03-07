@@ -168,7 +168,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
 
   static async advanceAttr(_event, target) {
     const dataset = target.dataset;
-    this.actor._advanceAttr(dataset.name, dataset.type);
+    this.actor.system.advanceAttr(dataset.name, dataset.type);
   }
 
   static async rollAttribute(_event, target) {
@@ -320,7 +320,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     const name = event.currentTarget.dataset.target;
 
     const newVal = field.val() >= 0 ? field.val() : 0;
-    const cost = actor.coreValueChangeCost(name, newVal);
+    const cost = actor.system.coreValueChangeCost(name, newVal);
 
     if (cost == 0) return;
     else if (cost > 0) {
@@ -336,7 +336,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   _onChangeCoreValues(event, actor) {
     const target = event.target;
     const name = target.dataset.target;
-    actor.changeCoreValue(name, Math.max(target.value, 0));
+    actor.system.changeCoreValue(name, Math.max(target.value, 0));
     if (target.value < 0) this.render(true); // As this might not trigger an update
   }
 }

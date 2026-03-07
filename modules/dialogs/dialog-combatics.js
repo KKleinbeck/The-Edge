@@ -25,7 +25,7 @@ export default class DialogCombatics extends Dialog{
             threshold: Math.max(1, tempModificator + checkData.threshold),
             vantage: vantage, fireModeModifier: {damage: checkData.damage}
           }
-          let [crits, damage, diceRes, hits] = await checkData.actor.rollAttackCheck(
+          let [crits, damage, diceRes, hits] = await checkData.actor.system.rollAttackCheck(
             1, modificators.threshold, vantage, checkData.damage
           );
 

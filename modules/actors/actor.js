@@ -1,7 +1,6 @@
 import THE_EDGE from "../system/config-the-edge.js";
 import Aux from "../system/auxilliaries.js";
 import LocalisationServer from "../system/localisation_server.js";
-import ChatServer from "../system/chat_server.js";
 import DiceServer from "../system/dice_server.js";
 
 /**
@@ -11,6 +10,7 @@ import DiceServer from "../system/dice_server.js";
 export class TheEdgeActor extends Actor {
   constructor(...args) {
     super(...args);
+    // DiceServer stores actors crit dice
     this.diceServer = new DiceServer();
   }
 
@@ -28,112 +28,7 @@ export class TheEdgeActor extends Actor {
   }
 
   interpretCheck(type, roll) {
-    return this.diceServer._interpretCheck(type, roll);
-  }
-
-  async rollAttributeCheck(checkData, roll = "roll", transmit = true) {
-    checkData.threshold = this.system.attributes[checkData.attribute]["value"] +
-      checkData.temporaryMod;
-    const result = await game.the_edge.diceServer.attributeCheck(checkData.threshold, checkData.vantage);
-
-    if (transmit) {
-      foundry.utils.mergeObject(checkData, result);
-      ChatServer.transmitEvent("AbilityCheck", checkData, roll);
-    }
-  }
-
-  async rollProficiencyCheck(checkData, roll = "roll", transmit = true) {
-    checkData.proficiency = checkData.proficiency.toLowerCase();
-    const proficiencyData = Object.values(this.system.proficiencies)
-      .find(profClass => checkData.proficiency in profClass)[checkData.proficiency]
-    checkData.dices = proficiencyData.dices;
-    checkData.permanentMod = proficiencyData.value;
-    checkData.thresholds = checkData.dices.map(dice => this.system.attributes[dice]["value"]);
-
-    const results = await game.the_edge.diceServer.proficiencyCheck(
-      checkData.thresholds, checkData.permanentMod + (checkData.temporaryMod || 0), checkData.vantage
-    );
-
-    if (transmit) {
-      foundry.utils.mergeObject(checkData, results)
-      ChatServer.transmitEvent("ProficiencyCheck", checkData, roll);
-    }
-    return results;
-  }
-
-  async rollAttackCheck(dices, threshold, vantage, damageDice, _damageType) {
-    const results = await this.diceServer.attackCheck(
-      dices, threshold, vantage, damageDice,
-      Math.floor((this.system.weapons.general["General weapon proficiency"].value || 0) / 2)
-    );
-    return results;
-  }
-
-  async _advanceAttr(attrName, type) {
-    const attrValue = this.system.attributes[attrName].advances;
-    const newVal = attrValue + (type == "advance" ? 1 : -1);
-
-    this.changeCoreValue(`system.attributes.${attrName}.advances`, Math.max(newVal, 0));
-  }
-
-  coreValueChangeCost(coreName, newVal) {
-    newVal = newVal ? +newVal : 0; // If empty / undefined
-    if (!Number.isInteger(+newVal)) {return;}
-
-    const oldVal = Aux.objectAt(this, coreName);
-
-    let costFun = coreName.includes("proficiencies") ? THE_EDGE.profCost : THE_EDGE.attrCost;
-    let cost = 0;
-    if (newVal > oldVal) {
-      for (let n = oldVal; n < newVal; n++) cost += costFun(n);
-    } else {
-      for (let n = newVal; n < oldVal; n++) cost -= costFun(n);
-    }
-    return cost;
-  }
-
-  changeCoreValue(coreName, newVal) {
-    newVal = newVal ? +newVal : 0; // If empty / undefined
-    if (!Number.isInteger(+newVal)) {return;}
-
-    const cost = this.coreValueChangeCost(coreName, newVal);
-    const availablePH = this.system.PracticeHours.max - this.system.PracticeHours.used;
-    const parts = coreName.split(".");
-    if (cost > availablePH) {
-      const msg = LocalisationServer.parsedLocalisation(
-        "PH missing", "Notifications",
-        {name: parts[parts.length - 2], level: newVal, need: cost, available: availablePH}
-      )
-      ui.notifications.notify(msg)
-      return;
-    }
-    if (coreName.split(".")[1] === "weapons") {
-      if (coreName.includes("Hand-to-Hand combat")) {
-        const combaticsBasic = Math.floor(
-          (this.system.attributes.str.value + this.system.attributes.crd.value) / 2
-        );
-        if (newVal > combaticsBasic) {
-          const msg = LocalisationServer.parsedLocalisation(
-            "Core Value combatics too small", "Notifications",
-            {level: newVal, basic: combaticsBasic}
-          )
-          ui.notifications.notify(msg)
-          return;
-        } 
-      } else if (coreName.includes("General weapon proficiency")) { // Do nothing
-      } else if (newVal > this.system.weapons.general["General weapon proficiency"].advances) {
-        const msg = LocalisationServer.parsedLocalisation(
-          "Core Value too small", "Notifications",
-          {name: parts[parts.length - 2], level: newVal, basic: this.system.weapons.general["General weapon proficiency"].value}
-        )
-        ui.notifications.notify(msg)
-        return;
-      }
-    }
-
-    this.update({
-      [coreName]: newVal, "system.PracticeHours.used": this.system.PracticeHours.used + cost
-    })
+    return this.diceServer.interpretCheck(type, roll);
   }
 
   get itemWeight() {

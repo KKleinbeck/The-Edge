@@ -1,3 +1,4 @@
+import ChatServer from "../../../modules/system/chat_server.js";
 import ValueSchemaField from "../../Fields/value_schema.js";
 import { DataModelComponent } from "../../abstracts.js";
 
@@ -74,5 +75,24 @@ export default class ProficiencyData extends DataModelComponent {
         "medicine": PROF_FIELD(["crd", "end", "foc"]),
       })
     })
+  }
+
+  async rollProficiencyCheck(checkData, roll = "roll", transmit = true) {
+    checkData.proficiency = checkData.proficiency.toLowerCase();
+    const proficiencyData = Object.values(this.proficiencies)
+      .find(profClass => checkData.proficiency in profClass)[checkData.proficiency]
+    checkData.dices = proficiencyData.dices;
+    checkData.permanentMod = proficiencyData.value;
+    checkData.thresholds = checkData.dices.map(dice => this.attributes[dice]["value"]);
+
+    const results = await this.parent.diceServer.proficiencyCheck(
+      checkData.thresholds, checkData.permanentMod + (checkData.temporaryMod || 0), checkData.vantage
+    );
+
+    if (transmit) {
+      foundry.utils.mergeObject(checkData, results)
+      ChatServer.transmitEvent("ProficiencyCheck", checkData, roll);
+    }
+    return results;
   }
 }

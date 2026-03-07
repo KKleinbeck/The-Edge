@@ -1,5 +1,6 @@
-import { DataModelComponent } from "../../abstracts.js";
+import ChatServer from "../../../modules/system/chat_server.js";
 import ValueSchemaField from "../../Fields/value_schema.js";
+import { DataModelComponent } from "../../abstracts.js";
 
 const { NumberField, SchemaField } = foundry.data.fields;
 function ATTR_FIELD() {
@@ -42,5 +43,17 @@ export default class AttributeData extends DataModelComponent {
   get combaticsDamage() {
     const {crd, str} = this.attributes;
     return `1d${str.value+crd.value}+${str.value}`;
+  }
+
+  async rollAttributeCheck(checkData, roll = "roll", transmit = true) {
+    checkData.threshold = this.attributes[checkData.attribute]["value"] +
+      checkData.temporaryMod;
+    const result = await this.parent.diceServer.attributeCheck(
+      checkData.threshold, checkData.vantage);
+
+    if (transmit) {
+      foundry.utils.mergeObject(checkData, result);
+      ChatServer.transmitEvent("AbilityCheck", checkData, roll);
+    }
   }
 }

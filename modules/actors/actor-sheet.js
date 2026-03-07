@@ -158,15 +158,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
             } else {
               const hasEffects = item.system.effects.length > 0;
               if (hasEffects) {
-                const clsEffect = getDocumentClass("Item");
-                const newEffect = await clsEffect.create(
-                  {name: item.name, type: "Effect"}, 
-                  {parent: this.actor, "system.effects": item.system.effects}
-                );
-                newEffect.update({
-                  "system.effects": item.system.effects, "system.description": item.system.description,
-                  "system.gm_description": item.system.gm_description
-                })
+                // TODO new Effect interface
                 this.render();
               }
               ChatServer.transmitEvent("General Consume", {

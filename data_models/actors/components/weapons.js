@@ -1,6 +1,6 @@
-import { DataModelComponent } from "../../abstracts.js";
 import THE_EDGE from "../../../modules/system/config-the-edge.js";
 import ValueSchemaField from "../../Fields/value_schema.js";
+import { DataModelComponent } from "../../abstracts.js";
 
 const { NumberField, SchemaField } = foundry.data.fields;
 
@@ -50,5 +50,13 @@ export default class WeaponData extends DataModelComponent {
       level += Math.floor(this.weapons[partnerType][partner].value / 4);
     }
     return level;
+  }
+
+  async rollAttackCheck(dices, threshold, vantage, damageDice, _damageType) {
+    const results = await this.parent.diceServer.attackCheck(
+      dices, threshold, vantage, damageDice,
+      Math.floor((this.weapons.general["General weapon proficiency"].value || 0) / 2)
+    );
+    return results;
   }
 }

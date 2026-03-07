@@ -1,5 +1,7 @@
-import { generateDataModelWithComponents } from "../abstracts.js";
+import Aux from "../../modules/system/auxilliaries.js";
+import LocalisationServer from "../../modules/system/localisation_server.js";
 import THE_EDGE from "../../modules/system/config-the-edge.js";
+import { generateDataModelWithComponents } from "../abstracts.js";
 
 import ActorEffectData from "./components/effects.js";
 import AttributeData from "./components/attributes.js";
@@ -102,7 +104,77 @@ export default class CharacterData extends CharacterDataParent {
   //   return false;
   // }
 
+  // Core Methods
+  async advanceAttr(attrName, type) {
+    const attrValue = this.attributes[attrName].advances;
+    const newVal = attrValue + (type == "advance" ? 1 : -1);
+
+    await this.changeCoreValue(`system.attributes.${attrName}.advances`, Math.max(newVal, 0));
+  }
+
+  coreValueChangeCost(coreName, newVal) {
+    newVal = newVal ? +newVal : 0; // If empty / undefined
+    if (!Number.isInteger(+newVal)) {return;}
+
+    const oldVal = Aux.objectAt(this.parent, coreName);
+
+    const costFun = coreName.includes("proficiencies") ? THE_EDGE.profCost : THE_EDGE.attrCost;
+    let cost = 0;
+    if (newVal > oldVal) {
+      for (let n = oldVal; n < newVal; n++) cost += costFun(n);
+    } else {
+      for (let n = newVal; n < oldVal; n++) cost -= costFun(n);
+    }
+    return cost;
+  }
+
+  async changeCoreValue(coreName, newVal) {
+    newVal = newVal ? +newVal : 0; // If empty / undefined
+    if (!Number.isInteger(+newVal)) {return;}
+
+    const cost = this.coreValueChangeCost(coreName, newVal);
+    const availablePH = this.PracticeHours.max - this.PracticeHours.used;
+    const parts = coreName.split(".");
+    if (cost > availablePH) {
+      const msg = LocalisationServer.parsedLocalisation(
+        "PH missing", "Notifications",
+        {name: parts[parts.length - 2], level: newVal, need: cost, available: availablePH}
+      )
+      ui.notifications.notify(msg)
+      return;
+    }
+    if (coreName.split(".")[1] === "weapons") {
+      if (coreName.includes("Hand-to-Hand combat")) {
+        if (newVal > this.combaticsGeneralPl) {
+          const msg = LocalisationServer.parsedLocalisation(
+            "Core Value combatics too small", "Notifications",
+            {level: newVal, basic: this.combaticsGeneralPl}
+          );
+          ui.notifications.notify(msg);
+          return;
+        } 
+      } else if (coreName.includes("General weapon proficiency")) { // Do nothing
+      } else if (newVal > this.system.weapons.general["General weapon proficiency"].advances) {
+        const msg = LocalisationServer.parsedLocalisation(
+          "Core Value too small", "Notifications",
+          {name: parts[parts.length - 2], level: newVal,
+            basic: this.weapons.general["General weapon proficiency"].value}
+        )
+        ui.notifications.notify(msg)
+        return;
+      }
+    }
+
+    await this.parent.update({
+      [coreName]: newVal, "system.PracticeHours.used": this.PracticeHours.used + cost
+    })
+  }
+
   // Combat related
+  get combaticsGeneralPl() {
+    return Math.floor((this.attributes.str.value + this.attributes.crd.value) / 2);
+  }
+
   get combaticsPL() {
     const {crd, str} = this.attributes;
     const attr_mod = Math.floor((str.value + crd.value) / 4);

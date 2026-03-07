@@ -45,7 +45,7 @@ export default class DialogWeapon extends Dialog{
 
           // Roll the attack
           foundry.utils.mergeObject(modificators, {dicesEff: dices})
-          const [crits, damage, diceRes, hits, failEvents] = await checkData.actor.rollAttackCheck(
+          const [crits, damage, diceRes, hits, failEvents] = await checkData.actor.system.rollAttackCheck(
             dices, modificators.threshold, modificators.vantage, modificators.fireModeModifier.damage,
             checkData.damageType
           );
