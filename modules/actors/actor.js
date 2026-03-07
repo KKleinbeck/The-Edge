@@ -61,7 +61,7 @@ export class TheEdgeActor extends Actor {
     return results;
   }
 
-  async rollAttackCheck(dices, threshold, vantage, damageDice, damageType) {
+  async rollAttackCheck(dices, threshold, vantage, damageDice, _damageType) {
     const results = await this.diceServer.attackCheck(
       dices, threshold, vantage, damageDice,
       Math.floor((this.system.weapons.general["General weapon proficiency"].value || 0) / 2)
@@ -354,16 +354,6 @@ export class TheEdgeActor extends Actor {
     return _existingCopy;
   }
 
-  async generateNewWound(name, location, locationCoord, damage, bleeding, damageType) {
-    const cls = getDocumentClass("Item");
-    const wound = await cls.create({name: name, type: "Wounds"}, {parent: this});
-    const type = Aux.pickFromOdds(THE_EDGE.wound_odds(damage, damageType));
-    await wound.update({
-      "system.bodyPart": location, "system.coordinates": locationCoord,
-      "system.damage": damage, "system.bleeding": bleeding, "system.type": type
-    });
-  }
-
   attachOuterArmour(armourId, shellId, tokenId) {
     const armour = this.items.get(armourId);
     const shell = this.items.get(shellId);
@@ -411,27 +401,5 @@ export class TheEdgeActor extends Actor {
     await this.system.updateHr(hrNew);
 
     return hrChange;
-  }
-
-  _getEffect(name) {
-    const effects = this.itemTypes["Effect"];
-    return effects?.find(obj => obj.name == LocalisationServer.localise(name));
-  }
-
-  async _getEffectOrCreate(name) {
-    let effect = this._getEffect(name);
-
-    if (!effect) {
-      const cls = getDocumentClass("Item");
-      effect = await cls.create(
-        {name: LocalisationServer.localise(name), type: "Effect"}, {parent: this}
-      );
-    }
-    return effect;
-  }
-
-  async _deleteEffect(name) {
-    const effect = this._getEffect(name)
-    if (effect) { await effect.delete() }
   }
 }

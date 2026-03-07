@@ -57,22 +57,21 @@ export default class StatusEffectData extends DataModelComponent {
 
   get damageBodyPartLevels() {
     const damageBodyParts = {arms: 0, legs: 0, torso: 0, head: 0};
-    for (const wound of this.parent.itemTypes["Wounds"]) {
-      if (!wound.system.active) continue;
-      switch (wound.system.bodyPart) {
+    for (const wound of this.wounds) {
+      switch (wound.bodyPart) {
         case "Torso":
-          damageBodyParts.torso += wound.system.damage;
+          damageBodyParts.torso += wound.damage;
           break;
         case "Head":
-          damageBodyParts.head += wound.system.damage;
+          damageBodyParts.head += wound.damage;
           break;
         case "LegsLeft":
         case "LegsRight":
-          damageBodyParts.legs += wound.system.damage;
+          damageBodyParts.legs += wound.damage;
           break;
         case "ArmsLeft":
         case "ArmsRight":
-          damageBodyParts.arms += wound.system.damage;
+          damageBodyParts.arms += wound.damage;
       }
     }
 

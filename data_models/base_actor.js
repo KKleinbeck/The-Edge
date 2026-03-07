@@ -5,14 +5,6 @@ const { ArrayField, HTMLField, NumberField, SchemaField, StringField } = foundry
 
 export default class CharacterBaseData extends DataModelComponent {
   static SCHEMA = {
-    health: new SchemaField({
-      value: new NumberField({ required: true, integer: true, min: 0, initial: 100 }),
-      max: new SchemaField({
-        value: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
-        baseline: new NumberField({ required: true, integer: true, min: 0, initial: 100 }),
-        status: new NumberField({ required: true, integer: true, initial: 0 }),
-      })
-    }),
     biography: new HTMLField(),
     heroToken: new SchemaField({
       max: new NumberField({ initial: 2, min: 0, required: true }),
@@ -52,12 +44,6 @@ export default class CharacterBaseData extends DataModelComponent {
   payCredits(price) {
     this.parent.update({"system.credits.digital": this.credits.digital - price});
     return [0, price];
-  }
-
-  // Health related
-  deleteWound(wound) {
-    this.parent.update({"system.health.value": this.health.value + wound.system.damage});
-    wound.delete();
   }
 
   // Hero Token related

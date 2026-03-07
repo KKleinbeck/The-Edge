@@ -15,9 +15,8 @@
         <img src="systems/the_edge/icons/body_male.png" alt="Background" class="background-image">
       {{/if}}
       <div class="wound-overlay">
-        {{#each Wounds as |wound|}}
-          <div class="item-control item" data-action="itemControl" data-subaction="edit"
-            data-item-id="{{wound.id}}" style="cursor: pointer;">
+        {{#each system.wounds as |wound|}}
+          <div>
             {{{getWoundHTML wound false}}}
           </div>
         {{/each}}
@@ -52,37 +51,35 @@
         </div>
       </div>
       <div style="columns: 2;">
-        {{#each helpers.bodyParts as |bPart|}}
+        {{#each helpers.bodyParts as |boryPart|}}
           <div style="padding-bottom: 10px; break-inside: avoid-column; min-width: 200px;">
             <div style="display: flex;">
-              <b>{{genName bPart}}</b>
+              <b>{{genName boryPart}}</b>
               &emsp;
-              <div style="display: flex; white-space: nowrap; gap: 5px; cursor: pointer;" data-action="applyDamage" data-location={{bPart}}>
+              <div style="display: flex; white-space: nowrap; gap: 5px; cursor: pointer;"
+                data-action="applyDamage" data-location={{boryPart}}>
                 <a><i class="fas fa-heart-circle-minus"></i></a>
               </div>
             </div>
             <hr />
-            {{#each ../Wounds as |wound|}}
-              {{#if (checkInstance bPart wound.system.bodyPart)}}
-                <div class="item" data-item-id="{{wound.id}}" style="cursor: pointer; min-width: 200px;">
-                  <div data-action="itemControl" data-subaction="edit">
-                    <div class="item-name" style="font-size: 20; font-weight: 500; margin: 0px;">{{wound.name}}</div>
+            {{#each ../system/wounds as |wound|}}
+              {{#if (checkInstance boryPart wound.bodyPart)}}
+                <div class="wound-hook" data-index="{{@index}}" style="cursor: pointer; min-width: 200px;">
+                  <div data-action="woundControl" data-subaction="edit">
+                    <div class="item-name" style="font-size: 20; font-weight: 500; margin: 0px;">{{wound.source}}</div>
                   </div>
                   <div class="item-controls" style="white-space: no-wrap; padding: 0 0 5px 10px;">
-                    <div data-action="edit" style="display: flex; gap: 5px;">
-                      {{combatName wound.system.type}} - {{itemName wound.system.status}}
-                      <i class="fa-regular {{getWoundIcon wound.system.status}}" style="font-size: 12px; transform: translateY(2px);"></i>
+                    <div style="display: flex; gap: 5px;">
+                      {{combatName wound.damageType}} - {{itemName wound.status}}
+                      <i class="fa-regular {{getWoundIcon wound.status}}" style="font-size: 12px; transform: translateY(2px);"></i>
                     </div>
                     <div style="display: flex; justify-content: space-between;">
-                      <div>{{genName "Damage"}} {{wound.system.damage}}</div>
-                      <div>{{genName "Bleeding"}} {{wound.system.bleeding}}</div>
+                      <div>{{genName "Damage"}} {{wound.damage}}</div>
+                      <div>{{genName "Bleeding"}} {{wound.bleeding}}</div>
                       <div style="gap: 5px;">
-                        {{#if wound.system.active}}
-                          <a title="{{ itemName 'Deactivate' }}" data-action="itemControl" data-subaction="toggle-active"><i class="far fa-check-circle"></i></a>
-                        {{else}}
-                          <a title="{{ itemName 'Activate' }}" data-action="itemControl" data-subaction="toggle-active"><i class="far fa-circle"></i></a>
-                        {{/if}}
-                        <a title="{{ itemName 'Delete' }}" data-action="itemControl" data-subaction="delete"><i class="fas fa-trash"></i></a>
+                        <a title="{{ itemName 'Delete' }}" data-action="woundControl" data-subaction="delete">
+                          <i class="fas fa-trash"></i>
+                        </a>
                       </div>
                     </div>
                   </div>

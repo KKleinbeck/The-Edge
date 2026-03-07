@@ -58,19 +58,16 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetAmmunition, { makeDefault: true, types: ["Ammunition"] });
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetArmour, { makeDefault: true, types: ["Armour"] });
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetConsumables, { makeDefault: true, types: ["Consumables"] });
-    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetCredits, { makeDefault: true, types: ["Credits"] });
-    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetEffect, { makeDefault: true, types: ["Effect"] });
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetGear, { makeDefault: true, types: ["Gear"] });
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetLanguage, { makeDefault: true, types: ["Languageskill"] });
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetSkill, { makeDefault: true, types: ["Skill", "Combatskill", "Medicalskill"] });
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetVantage, { makeDefault: true, types: ["Advantage", "Disadvantage"] });
     foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetWeapon, { makeDefault: true, types: ["Weapon"] });
-    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetWounds, { makeDefault: true, types: ["Wounds"] });
 
     foundry.documents.collections.Items.unregisterSheet("the_edge", TheEdgeItemSheet, {
       types: [
-        "Weapon", "Armour", "Ammunition", "Advantage", "Disadvantage", "Skill", "Combatskill",
-        "Medicalskill", "Languageskill", "Gear", "Consumables", "Credits", "Wounds", "Effect"
+        "Advantage", "Ammunition", "Armour", "Combatskill", "Consumables",
+        "Disadvantage", "Gear", "Languageskill", "Medicalskill", "Skill", "Weapon"
       ]
     });
   }
@@ -738,61 +735,6 @@ class ItemSheetConsumables extends TheEdgeItemSheet {
   }
 }
 
-class ItemSheetCredits extends TheEdgeItemSheet {
-  static DEFAULT_OPTIONS = {...TheEdgeItemSheet.DEFAULT_OPTIONS,
-    position: { height: 170, },
-  }
-
-  static PARTS = {
-    form: {
-      template: `systems/the_edge/templates/items/meta-description.hbs`
-    },
-  }
-
-  _footerContent() {
-    let content = `
-      <div style="display: flex; gap: 5px; align-items: center; white-space: nowrap">
-        <label for="isSchid">
-          ${LocalisationServer.localise("offline currency", "item")}
-        </label>
-        <input type="checkbox" id="isChid" name="system.isChid"
-          ${this.item.system.isChid ? "checked" : ""} />
-      </div>`;
-    content += super._footerContent();
-    return content;
-  }
-
-  async _prepareContext(options) {
-    const context = await super._prepareContext(options);
-    context.userIsGM = false; // Prevent GM notes on credits
-    return context;
-  }
-}
-
-class ItemSheetEffect extends TheEdgeItemSheet {
-  static PARTS = {...TheEdgeItemSheet.PARTS,
-    form: {
-      template: `systems/the_edge/templates/items/meta-no-header.hbs`
-    },
-    effects: {
-      template: "systems/the_edge/templates/items/meta-effects.hbs"
-    }, 
-    details: {
-      template: "systems/the_edge/templates/items/Ammunition-details.hbs"
-    },
-  }
-
-  static TABS = {
-    primary: {
-      tabs: [
-        {id: "effects"}, {id: "description"},
-      ],
-      labelPrefix: "TABS",
-      initial: "effects",
-    }
-  }
-}
-
 class ItemSheetGear extends TheEdgeItemSheet {
   static DEFAULT_OPTIONS = {...TheEdgeItemSheet.DEFAULT_OPTIONS,
     position: { height: 170, },
@@ -964,48 +906,5 @@ class ItemSheetWeapon extends RangeChartSelectorMixin(TheEdgeItemSheet) {
       fireModes[+index][field] = +target.value;
     }
     this.item.update({"system.fireModes": fireModes})
-  }
-}
-
-class ItemSheetWounds extends TheEdgeItemSheet {
-  static DEFAULT_OPTIONS = {...TheEdgeItemSheet.DEFAULT_OPTIONS,
-    position: { height: 270, },
-  }
-
-  static PARTS = {...TheEdgeItemSheet.PARTS,
-    form: {
-      template: `systems/the_edge/templates/items/Wounds-header.hbs`
-    },
-  }
-
-  async _prepareContext(options) {
-    const context = await super._prepareContext(options);
-    context.helpers = {bodyParts: Object.keys(THE_EDGE.wounds_pixel_coords.female)};
-    return context;
-  }
-
-  _onRender(context, options) {
-    super._onRender(context, options);
-    this.element.querySelector(".wound-location").addEventListener(
-      "change", ev => this._onLocationChange(ev)
-    );
-    this.element.querySelector(".damage-input").addEventListener(
-      "change", ev => this._onDamageChange(ev)
-    );
-  }
-
-  async _onLocationChange(event) {
-    const newLocation = event.target.value;
-    await this.item.update({"system.coordinates": Aux.generateWoundLocation(
-      false, this.item.parent?.system.sex || "female", newLocation
-    )[1]}, {render: false});
-  }
-
-  async _onDamageChange(event) {
-    const parent = this.item.parent;
-    if (parent) {
-      const damageChange = event.target.value - this.item.system.damage;
-      parent.update({"system.health.value": parent.system.health.value - damageChange});
-    }
   }
 }

@@ -118,7 +118,6 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
     const img = await fetch(`systems/the_edge/icons/body_${sex}.svg`)
       .then(res => res.text())
     context.bodyImg = img;
-    context.wounds = context.actor?.itemTypes["Wounds"];
 
     const effectDict = context.actor?.sheet.getEffectDict() ?? {};
     const effects = {};

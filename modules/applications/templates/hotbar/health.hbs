@@ -31,7 +31,7 @@
   <div style="height: 100%; transform: translateY(-30px);">
     {{{bodyImg}}}
     <div class="wound-overlay">
-      {{#each wounds as |wound|}}
+      {{#each actor.system.wounds as |wound|}}
         <div style="pointer-events: auto;">
           {{{getWoundHTML wound true}}}
         </div>

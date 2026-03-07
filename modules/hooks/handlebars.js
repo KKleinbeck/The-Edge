@@ -106,7 +106,7 @@ export default function() {
       }
       return "(empty)";
     },
-    calcWeaponPL: (actor, weaponID) => { return actor.system.getWeaponPL(weaponID) },
+    calcWeaponPL: (actor, weaponID) => { return actor.system.getWeaponPlOfWeapon(weaponID) },
     calcCombaticsPL: (actor) => { return actor.system.combaticsPL; },
     checkRenderItem: (item, type) => {
       if (type !== "any" && item.type !== type) {

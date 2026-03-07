@@ -14,24 +14,17 @@
 },
 "Item": {
   "types": [
-    "Weapon",
-    "Armour",
-    "Ammunition",
-
     "Advantage",
-    "Disadvantage",
-
-    "Skill",
+    "Ammunition",
+    "Armour",
     "Combatskill",
-    "Medicalskill",
-    "Languageskill",
-
-    "Gear",
     "Consumables",
-    "Credits",
-
-    "Wounds",
-    "Effect"
+    "Disadvantage",
+    "Gear",
+    "Languageskill",
+    "Medicalskill",
+    "Skill",
+    "Weapon"
   ],
   "templates": {
     "description": {
@@ -127,16 +120,6 @@
       "food": {}, "drugs": {}, "generic": {}
     },
     "effects": []
-  },
-  "Credits": {"isChid": true, "value": 0},
-  "Wounds": {
-    "damage": 0, "bleeding": 0, "active": true,
-    "bodyPart": "", "coordinates": [0, 0], "status": "treatable", "type": "abrasion"
-  },
-  "Effect": {
-    "templates": ["description"],
-    "effects": [{"group": "attributes", "name": "end", "value": 0}],
-    "active": true, "statusEffect": false
   }
 }
 }

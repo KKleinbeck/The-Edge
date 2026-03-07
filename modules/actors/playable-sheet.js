@@ -28,6 +28,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       applyDamage: TheEdgePlayableSheet.applyDamage,
       // Other
       reload: TheEdgePlayableSheet.reload,
+      woundControl: TheEdgePlayableSheet._onWoundControl,
     }
   }
 
@@ -86,19 +87,14 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       a => a.system.equipped
     );
 
-    const credits = this.actor.itemTypes["Credits"]
-    const creditsOffline = credits.find(c => c.system?.isSchid)?.system?.value || 0;
-    const creditsDigital = credits.find(c => !c.system?.isSchid)?.system?.value || 0;
     const weight = this.actor.itemWeight;
-    const wounds = this.actor.itemTypes["Wounds"];
 
     context.helpers = {
       armourProtection: armourProtection,
       equippedWeapons: equippedWeapons,
       bodyParts: ["Torso", "Head", "Arms", "Legs"],
-      bleeding: wounds.map(x => x.system.bleeding).sum(),
-      credits: {"Schids": creditsOffline, "digital": creditsDigital},
-      damage: wounds.map(x => x.system.damage).sum(),
+      bleeding: this.actor.system.wounds.map(x => x.bleeding).sum(),
+      damage: this.actor.system.wounds.map(x => x.damage).sum(),
       languages: THE_EDGE.languages,
       itemTypes: ["Weapon", "Armour", "Ammunition", "Gear", "Consumables"],
       weight: weight,
@@ -145,6 +141,21 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   }
 
   // actions
+  static async _onWoundControl(event, target) {
+    event.preventDefault();
+
+    // Obtain event data
+    const woundElement = target.closest(".wound-hook");
+    const index = +woundElement?.dataset.index || 0; 
+
+    // Handle different actions
+    switch ( target.dataset.subaction ) {
+      case "delete":
+        this.actor.system.deleteWound(index);
+        break
+    }
+  }
+
   static async useHeroToken(_event, _target) { await this.actor.system.useHeroToken(); }
 
   static async regenerateHeroToken(_event, _target) {
@@ -187,7 +198,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     const weaponID = target.closest(".weapon-id")?.dataset.weaponId ||
       target.dataset.weaponId;
     const weapon = this.actor.items.get(weaponID);
-    const threshold = weaponID ? actor.system.getWeaponPL(weaponID) : actor.system.combaticsPL;
+    const threshold = weaponID ? actor.system.getWeaponPlOfWeapon(weaponID) : actor.system.combaticsPL;
 
     if (!weaponID || weapon.system.type === "Hand-to-Hand combat") {
       if (targetIds.length > 1) {

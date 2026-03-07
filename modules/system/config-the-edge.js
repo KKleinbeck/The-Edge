@@ -45,7 +45,7 @@ THE_EDGE.combat_damage_types = [
 THE_EDGE.bleeding_threshold = {
   "energy": 25, "kinetic": 10, "elemental": 50, "fall": 15, "impact": 15, "HandToHand": 25
 }
-THE_EDGE.wound_odds = (damage, damageType) => {
+THE_EDGE.wound_odds = ({damage, damageType} = {}) => {
   switch (damageType) {
     case "energy":
       return {"abrasion": 10, "light burn": damage, "strong burn": Math.max(0, Math.ceil(damage*(damage - 10)/10))};
@@ -60,6 +60,10 @@ THE_EDGE.wound_odds = (damage, damageType) => {
   }
   return {};
 }
+THE_EDGE.fallDamageRoll = (height) => { return `${height}d12 + ${4*height-22}` }
+THE_EDGE.fallDamageWoundCount = (height) => { return Math.floor(height / 2) }
+THE_EDGE.impactDamageRoll = (speed) => { return `${speed}d${speed}+${speed-30}` }
+THE_EDGE.impactDamageWoundCount = (speed) => { return Math.floor(speed / 3) }
 THE_EDGE.medicine_effects = ["heals", "treats"]
 THE_EDGE.wound_status = ["treatable", "treated"]
 

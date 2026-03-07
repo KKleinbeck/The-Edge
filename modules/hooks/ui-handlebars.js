@@ -17,9 +17,9 @@ export default function() {
       return definitions.progressBar.default[i]
     },
     getWoundHTML: (wound, longTooltip = false) => {
-      const colour = wound.system.bleeding > 0 ? "red" : "orange";
+      const colour = wound.bleeding > 0 ? "red" : "orange";
       let icon = undefined;
-      switch (wound.system.status) {
+      switch (wound.status) {
         case "treatable":
           icon = "fa-regular fa-droplet";
           break;
@@ -32,14 +32,14 @@ export default function() {
       }
       let tooltip = "";
       if (longTooltip) {
-        tooltip = wound.name + " - " +
-          LocalisationServer.localise(wound.system.status, "item") + " - " +
-          `${wound.system.damage} ` + LocalisationServer.localise("Damage") +
-          ` - ${wound.system.bleeding}` + LocalisationServer.localise("Bleeding")
+        tooltip = wound.source + " - " +
+          LocalisationServer.localise(wound.status, "item") + " - " +
+          `${wound.damage} ` + LocalisationServer.localise("Damage") +
+          ` - ${wound.bleeding}` + LocalisationServer.localise("Bleeding")
       } else {
-        tooltip = LocalisationServer.localise(wound.system.status, "item");
+        tooltip = LocalisationServer.localise(wound.status, "item");
       }
-      const coords = wound.system.coordinates;
+      const coords = wound.coordinates;
       return `
         <div class="${colour}-dot" style="left: ${coords[0]}%; top: ${coords[1]}%;"></div>
         <div class="dot-label" data-tooltip aria-label="${tooltip}"
