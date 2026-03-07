@@ -352,7 +352,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
             game.the_edge.combatLog.addAction(skill.name, hrChange);
           } else {
             const hrThen = this.actor.system.heartRate.value;
-            await this.actor.applyStrains([hrChange]);
+            await this.actor.system.applyStrains([hrChange]);
             const hrNow = this.actor.system.heartRate.value;
             ChatServer.transmitEvent("Combat Action",
               {actor: this.actor.name, skill: skill.name, hrThen: hrThen, hrNow: hrNow}

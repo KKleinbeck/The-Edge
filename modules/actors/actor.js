@@ -37,30 +37,6 @@ export class TheEdgeActor extends Actor {
     );
   }
 
-  async updateBloodloss() {
-    let res = this.system.attributes.res.advances + this.system.attributes.res.status;
-    let currentBloodLoss = this._getEffect("Vertigo");
-    if (currentBloodLoss) res -= currentBloodLoss?.system?.effects[0].value || 0;
-    if (res <= 1) return; // Cannot possibly do sensible things right now
-
-    const bloodloss = this.system.bloodLoss.value;
-    const statusThreshold = this.system.statusEffects.bloodlossThreshold.status;
-    const bloodlossEff = Math.max(bloodloss - statusThreshold - res + 1, 0);
-    const stepSize = this.system.statusEffects.bloodlossStepSize.status + Math.floor(res / 2);
-    const level = Math.ceil(bloodlossEff / stepSize) + this.system.statusEffects.vertigo.status;
-    if (level == 0) {
-      await this._deleteEffect("Vertigo");
-      return;
-    }
-
-    if (!currentBloodLoss) currentBloodLoss = await this._getEffectOrCreate("Vertigo");
-    if (currentBloodLoss.system.effects[0].value != -level) {
-      await currentBloodLoss.update({"system.effects": [
-        {group: "attributes", name: "mental", value: -level},
-      ], "system.statusEffect": true, "system.gm_description": `${level}`})
-    }
-  }
-
   learnSkill(newSkill) {
     for (const skill of this.items) {
       if (skill.name == newSkill.name && skill.type == newSkill.type && skill.system.level) {
@@ -268,33 +244,5 @@ export class TheEdgeActor extends Actor {
       "system.attachments": attachments,
       "system.attachmentPoints.used": armour.system.attachmentPoints.used + shell.system.attachmentPoints.max
     });
-  }
-
-  getHrChangeFromStrain(strain) {
-    const zone = this.system.getHRZone();
-    if (strain < zone) return 2 * (strain - zone);
-    return 4 * (strain - zone + 1);
-  }
-
-  async applyCombatStrain() {
-    if (this.system.health.value <= 0) {
-      await this.system.updateHr(Math.max(this.system.heartRate.value - 10, 0));
-    } else {
-      this.applyStrains(game.the_edge.combatLog.strainLog.map(x => x.hrChange));
-    }
-  }
-
-  async applyStrains(strains) {
-    const hr = this.system.heartRate;
-    const isRest = Math.max(...strains) <= 0;
-    const threshold = isRest ? hr.min.value : hr.max.value;
-    const clamper = isRest ? Math.max : Math.min;
-
-    let hrChange = isRest ? strains.sum() : strains.filter(x => x >= 0).sum();
-    const hrNew = clamper(hr.value + hrChange, threshold);
-    hrChange = hrNew - hr.value;
-    await this.system.updateHr(hrNew);
-
-    return hrChange;
   }
 }

@@ -81,6 +81,30 @@ export default class StatusEffectData extends DataModelComponent {
     }
     return damageBodyParts;
   }
+
+  // async updateBloodloss() {
+  //   let res = this.system.attributes.res.advances + this.system.attributes.res.status;
+  //   let currentBloodLoss = this._getEffect("Vertigo");
+  //   if (currentBloodLoss) res -= currentBloodLoss?.system?.effects[0].value || 0;
+  //   if (res <= 1) return; // Cannot possibly do sensible things right now
+
+  //   const bloodloss = this.system.bloodLoss.value;
+  //   const statusThreshold = this.system.statusEffects.bloodlossThreshold.status;
+  //   const bloodlossEff = Math.max(bloodloss - statusThreshold - res + 1, 0);
+  //   const stepSize = this.system.statusEffects.bloodlossStepSize.status + Math.floor(res / 2);
+  //   const level = Math.ceil(bloodlossEff / stepSize) + this.system.statusEffects.vertigo.status;
+  //   if (level == 0) {
+  //     await this._deleteEffect("Vertigo");
+  //     return;
+  //   }
+
+  //   if (!currentBloodLoss) currentBloodLoss = await this._getEffectOrCreate("Vertigo");
+  //   if (currentBloodLoss.system.effects[0].value != -level) {
+  //     await currentBloodLoss.update({"system.effects": [
+  //       {group: "attributes", name: "mental", value: -level},
+  //     ], "system.statusEffect": true, "system.gm_description": `${level}`})
+  //   }
+  // }
   
   get statusEffects() {
     const statusEffectTemplate = [

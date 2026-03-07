@@ -60,7 +60,7 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
             name: LocalisationServer.localise(
               ["Idle", "Stride", "Run", "Sprint"][movement], "Combat"
             ),
-            hrChange: combatant.getHrChangeFromStrain(movement)
+            hrChange: combatant.system.getHrChangeFromStrain(movement)
           });
         }
       }
@@ -99,7 +99,7 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
       case "strain":
         const strainLevel = target.dataset.level;
         const combatant = Aux.getCombatant();
-        const hrChange = combatant ? combatant.getHrChangeFromStrain(+strainLevel) : 0;
+        const hrChange = combatant ? combatant.system.getHrChangeFromStrain(+strainLevel) : 0;
 
         const payload = {
           name: LocalisationServer.localise("Strain level", "Combat") + " " + target.dataset.level,
@@ -169,8 +169,8 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
     ];
     if (speeds[3] == 0) return []; // We cannot possibly do anything here
     const hrCost = [
-      actor.getHrChangeFromStrain(0), actor.getHrChangeFromStrain(1),
-      actor.getHrChangeFromStrain(2), actor.getHrChangeFromStrain(3)
+      actor.system.getHrChangeFromStrain(0), actor.system.getHrChangeFromStrain(1),
+      actor.system.getHrChangeFromStrain(2), actor.system.getHrChangeFromStrain(3)
     ];
     const minActions = Math.ceil(distance / speeds[3]);
     const maxActions = Math.ceil(distance / speeds[1]);

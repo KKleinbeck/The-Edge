@@ -39,11 +39,34 @@ export default class HumanoidData extends DataModelComponent {
     return 3;
   }
 
-  async updateHr(newHr) {
+  getHrChangeFromStrain(strain) {
     const zone = this.getHRZone();
-    const newZone = this.getHRZone(newHr);
-    this.parent.update({"system.heartRate.value": newHr});
-    if (newZone != zone) {this.parent.updateStrain()}
+    if (strain < zone) return 2 * (strain - zone);
+    return 4 * (strain - zone + 1);
+  }
+
+  async applyCombatStrain() {
+    if (this.health.value <= 0) {
+      await this.parent.update(
+        {"system.heartRate.value": Math.max(this.heartRate.value - 10, 0)}
+      );
+    } else {
+      this.applyStrains(game.the_edge.combatLog.strainLog.map(x => x.hrChange));
+    }
+  }
+
+  async applyStrains(strains) {
+    const hr = this.heartRate;
+    const isRest = Math.max(...strains) <= 0;
+    const threshold = isRest ? hr.min.value : hr.max.value;
+    const clamper = isRest ? Math.max : Math.min;
+
+    let hrChange = isRest ? strains.sum() : strains.filter(x => x >= 0).sum();
+    const hrNew = clamper(hr.value + hrChange, threshold);
+    hrChange = hrNew - hr.value;
+    await this.parent.update({"system.heartRate.value": hrNew});
+
+    return hrChange;
   }
 
   // Rest related
@@ -95,8 +118,7 @@ export default class HumanoidData extends DataModelComponent {
 
   // Bloodloss related
   async applyBloodLoss() {
-    const wounds = this.parent.itemTypes["Wounds"];
-    const bleeding = wounds.map(x => x.system.bleeding).sum();
+    const bleeding = this.wounds.map(x => x.bleeding).sum();
     const lossRate = this.heartRate.value / this.heartRate.max.value;
     const bloodLoss = Math.floor(lossRate * bleeding);
     this.parent.update({"system.bloodLoss.value": this.bloodLoss.value + bloodLoss});
