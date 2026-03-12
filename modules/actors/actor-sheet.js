@@ -5,6 +5,7 @@ import DialogItemDeletion from "../dialogs/dialog-item-deletion.js";
 import DialogArmourAttachment from "../dialogs/dialog-attachOuterArmour.js";
 import EffectModifierMixin from "../mixins/effect-modifier-mixin.js";
 import LocalisationServer from "../system/localisation_server.js";
+import NotificationServer from "../system/notifications.js";
 import THE_EDGE from "../system/config-the-edge.js";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
@@ -144,28 +145,29 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
 
           case "grenade":
             ChatServer.transmitEvent("grenade sheet based", {
-              actorId: this.actor?.id, tokenId: this.token?.id, grenade: item, details: item.system.subtypes.grenade
+              actorId: this.actor?.id, tokenId: this.token?.id, grenade: item,
+              details: item.system.subtypes.grenade
             })
             item.useOne();
             break;
           
           default:
-            const effectNames = this.actor.itemTypes["Effect"].map(x => x.name)
-            if (effectNames.includes(item.name)) {
-              // TODO Notification server
-              const msg = LocalisationServer.localise("Effect already exists", "Notifications")
-              ui.notifications.notify(msg)
-            } else {
-              const hasEffects = item.system.effects.length > 0;
-              if (hasEffects) {
-                // TODO new Effect interface
-                this.render();
-              }
-              ChatServer.transmitEvent("General Consume", {
-                details: {actorName: this.actor.name, item: item.name}, hasEffects: hasEffects
-              })
-              item.useOne();
+            const existingCopies = this.actor.system.findEffectsByName(item.name);
+            if (existingCopies.length) {
+              NotificationServer.notify("Effect already exists");
+              return
             }
+
+            const hasEffect = item.system.effect.length > 0;
+            if (hasEffect) {
+              this.actor.system.createNewEffect(item.name, item.system.effect);
+            }
+            ChatServer.transmitEvent("General Consume", {
+              details: {actorName: this.actor.name, item: item.name},
+              hasEffects: hasEffect
+            });
+            item.useOne();
+            break;
         }
         break;
     }
@@ -184,19 +186,19 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
       case "create":
         this.actor.system.createNewEffect();
         this.effectIsExpanded[target.dataset.source].push(false);
-        break
+        break;
       case "delete":
         // TODO: proper movement animations
         this.actor.system.deleteEffect(index);
         this.effectIsExpanded[source].splice(index, 1);
-        break
+        break;
       case "edit":
         if (["itemEffects", "skillEffects"].includes(effectElement.dataset.source)) {
           const id = effectElement?.dataset.id || ""; 
           const item = this.actor.items.get(id);
           return item?.sheet.render(true);
         }
-        break
+        break;
       case "toggleShowContent":
         this.effectIsExpanded[source][index] = !this.effectIsExpanded[source][index];
         const container = effectElement.parentElement;
@@ -206,12 +208,18 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
         } else {
           this.collapseItem(effectElement, content, container);
         }
-        break
+        break;
       case "toggle-active":
         if (effectElement.dataset.source == "effects") {
           this.actor.system.toggleEffect(index);
+        } else { // Skill or item effect
+          const item = this.actor.items.get(effectElement.dataset.id);
+          console.log(item.system)
+          await item.update({"system.active": !item.system.active}, {render: false});
+          await this.actor.update({}, {render: false}); // Force effect recalculation
+          this.render({force: true}); // Force redraw for icon update
         }
-        break
+        break;
     }
   }
 

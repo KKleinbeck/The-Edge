@@ -1,4 +1,5 @@
 import THE_EDGE from "../system/config-the-edge.js";
+import EffectModifierMixin from "../mixins/effect-modifier-mixin.js";
 import IconSelectorMixin from "../mixins/icon-selector-mixin.js";
 import RangeChartSelectorMixin from "../mixins/range-chart-selector-mixin.js";
 import Aux from "../system/auxilliaries.js";
@@ -8,7 +9,7 @@ const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ItemSheetV2 } = foundry.applications.sheets;
 const { renderTemplate } = foundry.applications.handlebars;
 
-export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMixin(ItemSheetV2)) {
+export class TheEdgeItemSheet extends EffectModifierMixin(IconSelectorMixin(HandlebarsApplicationMixin(ItemSheetV2))) {
   constructor (options) {
     super(options);
     this.headerWidth = 0;
@@ -209,66 +210,13 @@ export class TheEdgeItemSheet extends IconSelectorMixin(HandlebarsApplicationMix
     return context;
   }
 
-  _onRender(context, options) {
-    super._onRender(context, options)
-    this._attachEffectListeners();
+  getModifiers(_target) {
+    return {modifiers: this.item.system.effect, context: {}};
   }
 
-  static _createModifier(_event, _target) {
-    const effects = this.item.system.effects;
-    effects.push({group: "attributes", name: "end", value: 0});
-    this.item.update({"system.effects": effects}, {render: false});
-    this.redrawEffects();
-  }
-
-  async _modifyEffect(event, _target) {
-    const change = await this._getEffectData(event.currentTarget);
-    const effects = this.item.system.effects;
-    const index = event.currentTarget.dataset.index;
-    for (const [key, value] of Object.entries(change)) {
-      effects[index][key] = value;
-    }
-    this.item.update({"system.effects": effects}, {render: false});
-    this.redrawEffects();
-  }
-
-  async _getEffectData(target) {
-    const field = target.dataset.field;
-    const result = {};
-    result[field] = field == "value" ? parseInt(target.value) : target.value;
-    // The next line also sets the name to something sensible if the group changes
-    const context = await this._prepareContext();
-    if (field == "group") {
-      result.name = Object.keys(context.definedEffects[target.value])[0];
-    }
-    return result;
-  }
-
-  static _deleteModifier(_event, target) {
-    const index = target.dataset.index;
-    const effects = this.item.system.effects;
-    effects.splice(index, 1);
-    this.item.update({"system.effects": effects}, {render: false});
-    this.redrawEffects();
-  }
-
-  async redrawEffects() {
-    const template = "systems/the_edge/templates/items/meta-effects.hbs";
-    const html = await renderTemplate(
-      template, await this._prepareContext()
-    );
-    const newContent = document.createElement("div"); // Trick to strip outer class of html-string
-    newContent.innerHTML = html;
-    const effects = this.element.querySelector(".meta-effects");
-    effects.innerHTML = newContent.querySelector(".meta-effects").innerHTML;
-    this._attachEffectListeners();
-  }
-
-  _attachEffectListeners() {
-    this.element.querySelectorAll(".modifier-hook")?.forEach(
-      x => x.addEventListener("change", ev => this._modifyEffect(ev))
-    );
-  }
+  async updateModifiers(modifiers, _context) {
+    await this.item.update({"system.effect": modifiers}, {render: false});
+  };
 }
 
 class ItemSheetAmmunition extends RangeChartSelectorMixin(TheEdgeItemSheet) {
@@ -339,7 +287,7 @@ class ItemSheetAmmunition extends RangeChartSelectorMixin(TheEdgeItemSheet) {
         );
         break;
     }
-    this.item.update({"system": this.item.system}, {render: false});
+    this.item.update({[`system.${iconType}`]: value}, {render: false});
   }
 
   async _renderDetails() {
@@ -485,6 +433,30 @@ class ItemSheetSkill extends TheEdgeItemSheet {
     return context;
   }
 
+  getModifiers(target) {
+    const data = target.closest(".effect-modifiers-hook").dataset;
+    switch (data.type) {
+      case "effects":
+        return {
+          modifiers:this.item.system.effects[data.index],
+          context: data
+        }
+      case "requirements":
+        return {
+          modifiers:this.item.system.requirements[data.index],
+          context: data
+        }
+    }
+  }
+
+  async updateModifiers(modifiers, context) {
+    const target = this.item.system[context.type];
+    target[context.index] = modifiers;
+    await this.item.update(
+      {[`system.${context.type}`]: target}, {render: false}
+    );
+  };
+
   _onRender(context, options) {
     super._onRender(context, options)
     // this.element.find(".effect-hint").click(ev => {
@@ -501,65 +473,23 @@ class ItemSheetSkill extends TheEdgeItemSheet {
 
   _onMaxLevelChange(ev) {
     const maxLevel = ev.target.value;
-    const le = this.item.system.levelEffects;
-    const re = this.item.system.requirements;
-    if (le.length >= maxLevel) {
+    const eff = this.item.system.effects;
+    const req = this.item.system.requirements;
+    if (eff.length >= maxLevel) {
       this.item.update({
-        "system.maxLevel": maxLevel, "system.levelEffects": le.slice(0, maxLevel),
-        "system.requirements": re.slice(0, maxLevel)
+        "system.maxLevel": maxLevel, "system.effects": eff.slice(0, maxLevel),
+        "system.requirements": req.slice(0, maxLevel)
       })
     } else {
-      for (let i = le.length; i < maxLevel ; ++i) {
-        le.push([])
-        re.push([])
+      for (let i = eff.length; i < maxLevel ; ++i) {
+        eff.push([])
+        req.push([])
       }
       this.item.update({
-        "system.maxLevel": maxLevel, "system.levelEffects": le,
-        "system.requirements": re
+        "system.maxLevel": maxLevel, "system.effects": eff,
+        "system.requirements": req
       });
     }
-  }
-
-  static _addEffectLevel(_event, target) {
-    const dataHtml = target.closest(".effect-level");
-    const level = dataHtml.dataset.index;
-    const type = dataHtml.dataset.type;
-    const targetList = this.item.system[type];
-    targetList[level].push({group: "attributes", name: "end", value: 0});
-    if (type == "levelEffects") this.item.update({"system.levelEffects": targetList});
-    if (type == "requirements") this.item.update({"system.requirements": targetList});
-  }
-
-  async _onLevelModify(ev) {
-    const button = ev.target;
-    const dataHtml = ev.target.closest(".effect-level");
-    const type = dataHtml.dataset.type;
-
-    const targetList = this.item.system[type];
-    const level = dataHtml.dataset.index;
-    const index = button.dataset.index;
-    const target = button.dataset.target;
-    targetList[level][index][target] = target == "value" ? parseInt(button.value) : button.value;
-    // The next line also sets the name to something sensible if the group changes
-    const context = await this._prepareContext();
-    if (target == "group") {
-      if (button.value == "others" || button.value == "statusEffects"){
-        targetList[level][index].name = Object.keys(context.definedEffects["others"])[0];
-      } else targetList[level][index].name = Object.keys(context.coreRequirements[button.value])[0];
-    }
-    if (type == "levelEffects") this.item.update({"system.levelEffects": targetList});
-    if (type == "requirements") this.item.update({"system.requirements": targetList});
-  }
-
-  static _deleteEffectLevel(_event, target) {
-    const dataHtml = target.closest(".effect-level");
-    const level = dataHtml.dataset.index;
-    const type = dataHtml.dataset.type;
-    const index = target.dataset.index;
-    const targetList = this.item.system[type];
-    targetList[level].splice(index, 1);
-    if (type == "levelEffects") this.item.update({"system.levelEffects": targetList});
-    if (type == "requirements") this.item.update({"system.requirements": targetList});
   }
 }
 
@@ -649,10 +579,28 @@ class ItemSheetConsumables extends TheEdgeItemSheet {
     return context;
   }
 
-  _onRender(context, options) {
-    super._onRender(context, options)
-    this._attachGrenadeListener();
+  getModifiers(target) {
+    const effectData = target.closest(".effect-modifiers-hook")?.dataset;
+    if (!(effectData?.type == "grenade-effect")) return super.getModifiers(target);
+
+    const {category, distance} = effectData;
+    const modifiers = this.item.system.subtypes.grenade.effects[category][distance];
+    return {
+      modifiers: modifiers,
+      context: {
+        ...effectData,
+        title: LocalisationServer.localise(effectData.distance, "Combat")
+      }
+    };
   }
+
+  async updateModifiers(modifiers, context) {
+    if (!(context?.type == "grenade-effect")) return super.updateModifiers(modifiers, context);
+    await this.item.update(
+      {[`system.subtypes.grenade.effects.${context.category}.${context.distance}`]: modifiers},
+      {render: false}
+    );
+  };
 
   _grenadeEffects() {
     const grenadeEffects = {
@@ -681,57 +629,13 @@ class ItemSheetConsumables extends TheEdgeItemSheet {
     }
   }
 
-  static async _createGrenadeEffect(_event, target) {
-    const data = target.closest(".effect-data").dataset;
-    const effects = structuredClone(this.item.system.subtypes.grenade.effects);
-    effects[data.category][data.distance].push({group: "attributes", name: "end", value: 0});
-    const update = {};
-    update["system.subtypes.grenade.effects"] = effects;
-    await this.item.update(update, {render: false});
-    this._drawGrenadeEffects()
-  }
-
-  static async _deleteGrenadeEffect(_event, target) {
-    const data = target.closest(".effect-data").dataset;
-    const index = target.dataset.index;
-    const effects = structuredClone(this.item.system.subtypes.grenade.effects);
-    effects[data.category][data.distance].splice(index, 1);
-    const update = {};
-    update["system.subtypes.grenade.effects"] = effects;
-    await this.item.update(update, {render: false});
-    this._drawGrenadeEffects()
-  }
-
-  async _modifyGrenadeEffect(target) {
-    const index = target.dataset.index;
-    const data = target.closest(".effect-data").dataset;
-    const effects = this.item.system.subtypes.grenade.effects[data.category][data.distance];
-
-    const effectData = await this._getEffectData(target);
-    for (const [key, value] of Object.entries(effectData)) {
-      effects[index][key] = value;
-    }
-
-    const field = `system.subtypes.grenade.effects.${data.category}.${data.distance}`;
-    const update = {};
-    update[field] = effects;
-    await this.item.update(effects, {render: false});
-    this._drawGrenadeEffects();
-  }
-
   async _drawGrenadeEffects() {
     const template = "systems/the_edge/templates/items/Grenade-effects-content.hbs";
     const html = await renderTemplate(template, await this._prepareContext());
 
     const grenadeEffectsHTML = this.element.querySelector(".grenade-effects");
     grenadeEffectsHTML.innerHTML = html;
-    this._attachGrenadeListener();
-  }
-
-  _attachGrenadeListener() {
-    this.element.querySelectorAll(".grenade-modifier-hook")?.forEach(
-      x => x.addEventListener("change", ev => this._modifyGrenadeEffect(ev.target))
-    );
+    this.attachEffectListeners();
   }
 }
 

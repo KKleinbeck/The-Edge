@@ -12,28 +12,30 @@ function WEAPON_FIELD() {
 }
 
 export default class WeaponData extends DataModelComponent {
-  static SCHEMA = {
-    weapons: new SchemaField({
-      "general": new SchemaField({
-        "General weapon proficiency": WEAPON_FIELD(),
-        "Hand-to-Hand combat": WEAPON_FIELD(),
-        "Recoilless Rifles": WEAPON_FIELD(),
-      }),
-      "energy": new SchemaField({
-        "Blaster Pistols": WEAPON_FIELD(),
-        "Pulse Rifle": WEAPON_FIELD(),
-        "SABs": WEAPON_FIELD(),
-        "Blaster Shockguns": WEAPON_FIELD(),
-        "Blaster Snipers": WEAPON_FIELD(),
-      }),
-      "kinetic": new SchemaField({
-        "Kinetic Pistols": WEAPON_FIELD(),
-        "Slug Throwers": WEAPON_FIELD(),
-        "LMGs": WEAPON_FIELD(),
-        "Shotguns": WEAPON_FIELD(),
-        "Projectile Snipers": WEAPON_FIELD(),
+  static defineSchema() {
+    return {
+      weapons: new SchemaField({
+        "general": new SchemaField({
+          "General weapon proficiency": WEAPON_FIELD(),
+          "Hand-to-Hand combat": WEAPON_FIELD(),
+          "Recoilless Rifles": WEAPON_FIELD(),
+        }),
+        "energy": new SchemaField({
+          "Blaster Pistols": WEAPON_FIELD(),
+          "Pulse Rifle": WEAPON_FIELD(),
+          "SABs": WEAPON_FIELD(),
+          "Blaster Shockguns": WEAPON_FIELD(),
+          "Blaster Snipers": WEAPON_FIELD(),
+        }),
+        "kinetic": new SchemaField({
+          "Kinetic Pistols": WEAPON_FIELD(),
+          "Slug Throwers": WEAPON_FIELD(),
+          "LMGs": WEAPON_FIELD(),
+          "Shotguns": WEAPON_FIELD(),
+          "Projectile Snipers": WEAPON_FIELD(),
+        })
       })
-    })
+    };
   }
 
   getWeaponLevel(weaponType) {

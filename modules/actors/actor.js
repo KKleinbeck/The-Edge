@@ -1,7 +1,8 @@
-import THE_EDGE from "../system/config-the-edge.js";
 import Aux from "../system/auxilliaries.js";
-import LocalisationServer from "../system/localisation_server.js";
 import DiceServer from "../system/dice_server.js";
+import LocalisationServer from "../system/localisation_server.js";
+import NotificationServer from "../system/notifications.js";
+import THE_EDGE from "../system/config-the-edge.js";
 
 /**
  * Extend the base Actor document to support attributes and groups with a custom template creation dialog.
@@ -74,28 +75,22 @@ export class TheEdgeActor extends Actor {
       const group = requirement.group;
       const details = structuredClone(requirement);
       if (group == "skills") {
-        const skillRef = this.items.filter(x => x.name.toLowerCase() == requirement.name.toLowerCase());
+        const skillRef = this.items.filter(x => 
+          x.name.toLowerCase() == requirement.field.toLowerCase());
         if (skillRef.length == 0) {
-          const msg = LocalisationServer.parsedLocalisation(
-            "Missing requirements", "Notifications", details
-          )
-          ui.notifications.notify(msg);
+          NotificationServer.notify("Missing requirements", details)
           return false;
         } else if (skillRef[0].system.level < requirement.value) {
           foundry.utils.mergeObject(details, {valueIs: skillRef[0].system.level})
-          const msg = LocalisationServer.parsedLocalisation(
-            "Unmet requirements", "Notifications", details
-          )
-          ui.notifications.notify(msg);
+          NotificationServer.notify("Unmet requirements", details);
           return false;
         }
       } else {
-        const target = THE_EDGE.coreValueMap[group][requirement.name] + ".advances";
+        const target = THE_EDGE.coreValueMap[group][requirement.field] + ".advances";
         const sysMod = Aux.objectAt(this.system, target);
         if (sysMod < requirement.value) {
           foundry.utils.mergeObject(details, {valueIs: sysMod});
-          const msg = LocalisationServer.parsedLocalisation("Unmet requirements", "Notifications", details);
-          ui.notifications.notify(msg);
+          NotificationServer.notify("Unmet requirements", details);
           return false;
         }
       }

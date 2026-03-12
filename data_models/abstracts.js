@@ -33,7 +33,7 @@ function mergeProperties(targetClass, referenceClass) {
   }
 
   const filterProperties = new Set([
-    "name", "length", "prototype", "SCHEMA"
+    "name", "length", "prototype", "defineSchema"
   ]);
 
   // Transfer all static methods and properties from components to the new class
@@ -66,7 +66,11 @@ function combineDataModelComponents(...components) {
 export function generateDataModelWithComponents(...components) {
   const combinedComponent = combineDataModelComponents(...components);
   class TempDataModel extends foundry.abstract.TypeDataModel {
-    static defineSchema() {return combinedComponent.SCHEMA;}
+    static defineSchema() {
+      const schema = {};
+      components.forEach(x => foundry.utils.mergeObject(schema, x.defineSchema()));
+      return schema;
+    }
   };
 
   mergeProperties(TempDataModel, combinedComponent);

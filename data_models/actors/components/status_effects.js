@@ -5,23 +5,15 @@ import { DataModelComponent } from "../../abstracts.js";
 const { ArrayField, NumberField, ObjectField, SchemaField } = foundry.data.fields;
 
 export default class StatusEffectData extends DataModelComponent {
-  static SCHEMA = {
-    // statusEffects: new ArrayField(
-      // new ObjectField(), { initial: [] }
-    // ),
-    generalModifiers: new SchemaField({
-      // "injuries arms": new SchemaField({status: new NumberField({ initial: 0, integer: true, required: true }) }),
-      // "injuries head": new SchemaField({status: new NumberField({ initial: 0, integer: true, required: true }) }),
-      // "injuries legs": new SchemaField({status: new NumberField({ initial: 0, integer: true, required: true }) }),
-      // "injuries torso": new SchemaField({status: new NumberField({ initial: 0, integer: true, required: true }) }),
-      // "pain": new SchemaField({status: new NumberField({ initial: 0, integer: true, required: true }) }),
-      // "overload": new SchemaField({status: new NumberField({ initial: 0, integer: true, required: true }) }),
-      // "vertigo": new SchemaField({status: new NumberField({ initial: 0, integer: true, required: true }) }),
-      "painThreshold": new NumberField({ initial: 0, integer: true, required: true }),
-      "overloadThreshold": new NumberField({ initial: 0, integer: true, required: true }),
-      "bloodlossThreshold": new NumberField({ initial: 0, integer: true, required: true }),
-      "bloodlossStepSize": new NumberField({ initial: 0, integer: true, required: true })
-    })
+  static defineSchema() {
+    return {
+      generalModifiers: new SchemaField({
+        "painThreshold": new NumberField({ initial: 0, integer: true, required: true }),
+        "overloadThreshold": new NumberField({ initial: 0, integer: true, required: true }),
+        "bloodlossThreshold": new NumberField({ initial: 0, integer: true, required: true }),
+        "bloodlossStepSize": new NumberField({ initial: 0, integer: true, required: true })
+      })
+    };
   }
 
   get overloadLevel() {

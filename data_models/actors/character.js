@@ -5,7 +5,7 @@ import { generateDataModelWithComponents } from "../abstracts.js";
 
 import ActorEffectData from "./components/effects.js";
 import AttributeData from "./components/attributes.js";
-import CharacterBaseData from "../base_actor.js";
+import CharacterBaseData from "./base_actor.js";
 import CombatantData from "./components/combatant.js";
 import HumanoidData from "./components/humanoid.js";
 import ProficiencyData from "./components/proficiencies.js";
@@ -77,6 +77,20 @@ export default class CharacterData extends CharacterDataParent {
     }
     for (const [_, details] of Object.entries(this.statusEffects)) {
       for (const modifier of details.modifiers) {
+        addToResult(THE_EDGE.effectMap[modifier.group][modifier.field], modifier.value);
+      }
+    }
+
+    const effectItems = [
+      ...(this.parent.itemTypes["Combatskill"]?.filter(x => x.system.active) ?? []),
+      ...(this.parent.itemTypes["Skill"]?.filter(x => x.system.active) ?? []),
+      ...(this.parent.itemTypes["Medicalskill"]?.filter(x => x.system.active) ?? []),
+    ];
+    for (const item of effectItems) {
+      const modifiers = item.system.effects
+        .slice(0, item.system.level)
+        .reduce((a, b) => [...a, ...b], []);
+      for (const modifier of modifiers) {
         addToResult(THE_EDGE.effectMap[modifier.group][modifier.field], modifier.value);
       }
     }

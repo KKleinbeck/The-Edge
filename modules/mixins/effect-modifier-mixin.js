@@ -12,20 +12,20 @@ export default function EffectModifierMixin(BaseApplication) {
     }
 
     // Interface functions - need to be overwritten
-    getModifiers(_target) {} // Shall return system path and respective list of modifiers
+    getModifiers(_target) {} // Shall return list of modifiers and a context that is passed to updateModifiers
     async updateModifiers(_modifiers, _context) {};
 
     // Private interface
     _onRender(context, options) {
       super._onRender(context, options)
-      this._attachEffectListeners();
+      this.attachEffectListeners();
     }
 
     static _createModifier(_event, target) {
       const {modifiers, context} = this.getModifiers(target);
       modifiers.push({group: "attributes", field: "end", value: 0});
       this.updateModifiers(modifiers, context);
-      this.redrawModifiers(target, modifiers);
+      this.redrawModifiers(target, modifiers, context);
     }
 
     _modifyEffect(event) {
@@ -37,7 +37,7 @@ export default function EffectModifierMixin(BaseApplication) {
         modifiers[index][key] = value;
       }
       this.updateModifiers(modifiers, context);
-      this.redrawModifiers(event.currentTarget, modifiers);
+      this.redrawModifiers(event.currentTarget, modifiers, context);
     }
 
     _getModifierData(target) {
@@ -56,16 +56,17 @@ export default function EffectModifierMixin(BaseApplication) {
       const index = target.dataset.index;
       modifiers.splice(index, 1);
       this.updateModifiers(modifiers, context);
-      this.redrawModifiers(target, modifiers);
+      this.redrawModifiers(target, modifiers, context);
     }
 
-    async redrawModifiers(target, modifiers) {
+    async redrawModifiers(target, modifiers, context) {
       const template = "systems/the_edge/templates/generic/effect-modifiers.hbs";
       const html = await renderTemplate(
         template, {
           modifiers: modifiers,
           definedEffects: THE_EDGE.definedEffects,
-          interactive: true
+          interactive: true,
+          ...context
         }
       );
       const newContent = document.createElement("div"); // Trick to strip outer class of html-string
@@ -77,7 +78,7 @@ export default function EffectModifierMixin(BaseApplication) {
       );
     }
 
-    _attachEffectListeners() {
+    attachEffectListeners() {
       this.element.querySelectorAll(".modifier-hook")?.forEach(
         x => x.addEventListener("change", ev => this._modifyEffect(ev))
       );

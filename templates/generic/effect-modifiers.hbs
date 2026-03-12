@@ -1,4 +1,11 @@
 {{#if interactive}}
+  <div style="display: flex; justify-content: space-between; padding-bottom: 2px;">
+    <div style="white-space: nowrap;">{{title}}</div>
+    <a title="{{ itemName 'Create' }}" data-action="createModifier"
+      style="display: flex; width: 100%; justify-content: end; align-items: end; gap: 10px; padding-bottom: 7px;">
+      {{ itemName "Add" }}<i class="fas fa-plus"></i>
+    </a>
+  </div>
   {{#each modifiers as |modifier|}}
     <div style="display: flex; gap: 5px; align-items: end;">
       <select class="selection-box modifier-hook" data-index="{{@index}}" data-entry="group" style="padding: 0 2px 0 2px; min-width: 33%;">
@@ -16,10 +23,6 @@
       <a data-action="deleteModifier" data-index="{{@index}}" title="{{ itemName 'delete' }}"><i class="fas fa-trash"></i></a>
     </div>
   {{/each}}
-  <a title="{{ itemName 'Create' }}" data-action="createModifier"
-    style="display: flex; width: 100%; justify-content: end; align-items: end; gap: 10px; padding-top: 10px;">
-    {{ itemName "Add" }}<i class="fas fa-plus"></i>
-  </a>
 {{else}}
   <div style="display: grid; grid-template-columns: auto auto auto;">
     {{#each modifiers as |modifier|}}

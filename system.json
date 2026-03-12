@@ -33,6 +33,14 @@
       "character": {
         "htmlFields": ["biography", "notes"]
       }
+    },
+    "Item": {
+      "Advantage": {"htmlFields": ["description"]},
+      "Combatskill": {"htmlFields": ["description"]},
+      "Disadvantage": {"htmlFields": ["description"]},
+      "Gear": {"htmlFields": ["description"]},
+      "Medicalskill": {"htmlFields": ["description"]},
+      "Skill": {"htmlFields": ["description"]}
     }
   },
   "grid": {

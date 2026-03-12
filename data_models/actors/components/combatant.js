@@ -8,19 +8,21 @@ import { DataModelComponent } from "../../abstracts.js";
 const { ArrayField, NumberField, ObjectField, SchemaField } = foundry.data.fields;
 
 export default class CombatantData extends DataModelComponent {
-  static SCHEMA = {
-    health: new SchemaField({
-      value: new NumberField({ required: true, integer: true, min: 0, initial: 100 }),
-      max: new SchemaField({
-        value: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
-        baseline: new NumberField({ required: true, integer: true, min: 0, initial: 100 }),
-        status: new NumberField({ required: true, integer: true, initial: 0 }),
-      })
-    }),
-    wounds: new ArrayField(
-      new ObjectField(),
-      { initial: [] }
-    )
+  static defineSchema() {
+    return {
+      health: new SchemaField({
+        value: new NumberField({ required: true, integer: true, min: 0, initial: 100 }),
+        max: new SchemaField({
+          value: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+          baseline: new NumberField({ required: true, integer: true, min: 0, initial: 100 }),
+          status: new NumberField({ required: true, integer: true, initial: 0 }),
+        })
+      }),
+      wounds: new ArrayField(
+        new ObjectField(),
+        { initial: [] }
+      )
+    };
   }
 
   deleteWound(index) {

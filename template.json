@@ -1,7 +1,6 @@
 {
 "Actor": {
   "types": ["character", "Store"],
-  "htmlFields": ["biography"],
   "Store": {
     "credits": {
       "chids": 0,
@@ -43,14 +42,6 @@
     "equipable": {
       "equipped": false,
       "effects": []
-    },
-    "skill": {
-      "levelEffects": [[]],
-      "requirements": [[]],
-      "level": 1,
-      "maxLevel": 1,
-      "active": true,
-      "cost": "0"
     }
   },
   "htmlFields": ["description"],
@@ -83,27 +74,6 @@
       "elemental": {"absorption": 0, "threshold": 0}
     }
   },
-  "Ammunition": {
-    "templates": ["stackable", "description"],
-    "capacity": {"max": 30, "value": 30},
-    "reloadDuration": 0,
-    "type": "energy",
-    "subtype": "small",
-    "whitelist": {
-      "energy": {"Blaster Pistols": true, "Pulse Rifle": true, "SABs": true, "Blaster Shockguns": true, "Blaster Snipers": true},
-      "kinetic": {"Kinetic Pistols": true, "Slug Throwers": true, "LMGs": true, "Shotguns": true, "Projectile Snipers": true},
-      "others": {"Recoilless Rifles": true}
-    },
-    "damage": {"bonus": 0, "penetration": 0},
-    "rangeChart": {"less_2m": [0, 0], "less_20m": [0, 0], "less_200m": [0, 0], "less_1km": [0, 0], "more_1km": [0, 0]}
-  },
-  "Advantage": {"templates": ["description"], "AP": 0, "level": 1, "maxLevel": 1},
-  "Disadvantage": {"templates": ["description"], "AP": 0, "level": 1, "maxLevel": 1},
-  "Skill": {"templates": ["description", "skill"]},
-  "Combatskill": {"templates": ["description", "skill"], "hrCost": "0"},
-  "Medicalskill": {"templates": ["description", "skill"], "basis": "Medicine"},
-  "Languageskill": {"templates": ["description"], "level": 1, "humanSpoken": true},
-  "Gear": {"templates": ["description", "stackable"]},
   "Consumables": {
     "templates": ["description", "stackable"],
     "current_type": "food",

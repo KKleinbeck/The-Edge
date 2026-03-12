@@ -11,18 +11,20 @@ function ATTR_FIELD() {
 }
 
 export default class AttributeData extends DataModelComponent {
-  static SCHEMA = {
-    attributes: new SchemaField({
-      end: ATTR_FIELD(),
-      str: ATTR_FIELD(),
-      spd: ATTR_FIELD(),
-      crd: ATTR_FIELD(),
-      cha: ATTR_FIELD(),
-      emp: ATTR_FIELD(),
-      foc: ATTR_FIELD(),
-      res: ATTR_FIELD(),
-      int: ATTR_FIELD(),
-    }),
+  static defineSchema() {
+    return {
+      attributes: new SchemaField({
+        end: ATTR_FIELD(),
+        str: ATTR_FIELD(),
+        spd: ATTR_FIELD(),
+        crd: ATTR_FIELD(),
+        cha: ATTR_FIELD(),
+        emp: ATTR_FIELD(),
+        foc: ATTR_FIELD(),
+        res: ATTR_FIELD(),
+        int: ATTR_FIELD(),
+      }),
+    };
   }
 
   get strideSpeed() {

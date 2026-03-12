@@ -1,10 +1,18 @@
 import initHooks from "./hooks/init.js";
 import THE_EDGE from "./system/config-the-edge.js"
-import CharacterData from "../data_models/actors/character.js";
 import CombatLog from "./applications/combat-log.js";
 import DiceServer from "./system/dice_server.js";
 import GrenadePicker from "./applications/grenades-picker.js";
 import TheEdgeHotbar from "./applications/hotbar.js";
+
+import CharacterData from "../data_models/actors/character.js";
+
+import AmmunitionData from "../data_models/items/ammunition.js";
+import ConsumablesData from "../data_models/items/consumables.js";
+import GearData from "../data_models/items/gear.js";
+import { CombatSkillData, LanguageSkillData, MedicalSkillData, SkillData } from "../data_models/items/skills.js";
+import VantageData from "../data_models/items/vantage.js";
+
 import { TheEdgeActor } from "./actors/actor.js";
 import { TheEdgeItem } from "./items/item.js";
 import { SocketHandler } from "./system/socket_handler.js";
@@ -117,7 +125,18 @@ Hooks.once("init", async function() {
   // Define custom Document classes
   CONFIG.Actor.dataModels.character = CharacterData;
   CONFIG.Actor.documentClass = TheEdgeActor;
+
+  CONFIG.Item.dataModels.Advantage = VantageData;
+  CONFIG.Item.dataModels.Ammunition = AmmunitionData;
+  CONFIG.Item.dataModels.Consumables = ConsumablesData;
+  CONFIG.Item.dataModels.Combatskill = CombatSkillData;
+  CONFIG.Item.dataModels.Disadvantage = VantageData;
+  CONFIG.Item.dataModels.Gear = GearData;
+  CONFIG.Item.dataModels.Languageskill = LanguageSkillData;
+  CONFIG.Item.dataModels.Medicalskill = MedicalSkillData;
+  CONFIG.Item.dataModels.Skill = SkillData;
   CONFIG.Item.documentClass = TheEdgeItem;
+
   CONFIG.Token.documentClass = TheEdgeTokenDocument;
   CONFIG.Token.objectClass = TheEdgeToken;
 

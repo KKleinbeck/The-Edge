@@ -4,18 +4,20 @@ import { DataModelComponent } from "../../abstracts.js";
 const { ArrayField, ObjectField } = foundry.data.fields;
 
 export default class ActorEffectData extends DataModelComponent {
-  static SCHEMA = {
-    effects: new ArrayField(
-      new ObjectField(), { initial: [] }
-    )
+  static defineSchema() {
+    return {
+      effects: new ArrayField(
+        new ObjectField(), { initial: [] }
+      )
+    };
   }
 
-  async createNewEffect(name) {
+  async createNewEffect(name, modifiers = undefined) {
     name = name || LocalisationServer.localise("New effect", "Datamodels");
     this.effects.push({
       active: true,
       name: name,
-      modifiers: [this._newModifier()]
+      modifiers: modifiers || [this._newModifier()]
     });
     await this.parent.update({"system.effects": this.effects});
   }
@@ -30,6 +32,14 @@ export default class ActorEffectData extends DataModelComponent {
     if (index >= -1 && index >= this.effects.length) return
     this.effects[index].active = !this.effects[index].active
     await this.parent.update({"system.effects": this.effects});
+  }
+  
+  findEffectsByName(name) {
+    const result = [];
+    for (const [candidate, details] of Object.entries(this.effects)) {
+      if (name === details.name) result.push(candidate);
+    }
+    return result;
   }
 
   _newModifier(group = "attributes", field = "end", value = 0) {

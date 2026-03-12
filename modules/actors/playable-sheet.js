@@ -125,9 +125,11 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     const effectDict = {statusEffects: [], effects: [], itemEffects: [], skillEffects: []};
     for (const item of this.actor.items) {
       if (item.type == "Skill" || item.type == "Combatskill" || item.type == "Medicalskill") {
-        for (const effect of item.system.levelEffects) {
+        for (const effect of item.system.effects) {
           if (effect.length != 0) {
-            effectDict.skillEffects.push(item);
+            effectDict.skillEffects.push({
+              name: item.name, id: item.id, active: item.system.active
+            });
             break;
           }
         }
