@@ -81,16 +81,26 @@ export default class CharacterData extends CharacterDataParent {
       }
     }
 
-    const effectItems = [
+    const skillItems = [
       ...(this.parent.itemTypes["Combatskill"]?.filter(x => x.system.active) ?? []),
       ...(this.parent.itemTypes["Skill"]?.filter(x => x.system.active) ?? []),
       ...(this.parent.itemTypes["Medicalskill"]?.filter(x => x.system.active) ?? []),
     ];
-    for (const item of effectItems) {
+    for (const item of skillItems) {
       const modifiers = item.system.effects
         .slice(0, item.system.level)
         .reduce((a, b) => [...a, ...b], []);
       for (const modifier of modifiers) {
+        addToResult(THE_EDGE.effectMap[modifier.group][modifier.field], modifier.value);
+      }
+    }
+
+    const effectItems = [
+      ...(this.parent.itemTypes["Armour"]?.filter(x => x.system.equipped) ?? []),
+      ...(this.parent.itemTypes["Weapon"]?.filter(x => x.system.equipped) ?? []),
+    ];
+    for (const item of effectItems) {
+      for (const modifier of item.system.effect) {
         addToResult(THE_EDGE.effectMap[modifier.group][modifier.field], modifier.value);
       }
     }

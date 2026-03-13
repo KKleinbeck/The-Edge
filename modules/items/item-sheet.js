@@ -366,7 +366,7 @@ class ItemSheetArmour extends TheEdgeItemSheet {
         this.updateIcons(iconType, this._setTypesDict());
         break;
     }
-    this.item.update({"system": this.item.system}, {render: false});
+    this.item.update({"system": structuredClone(this.item.system)}, {render: false});
   }
 
   _fetchAttachment(target) {
@@ -438,12 +438,12 @@ class ItemSheetSkill extends TheEdgeItemSheet {
     switch (data.type) {
       case "effects":
         return {
-          modifiers:this.item.system.effects[data.index],
+          modifiers: this.item.system.effects[data.index],
           context: data
         }
       case "requirements":
         return {
-          modifiers:this.item.system.requirements[data.index],
+          modifiers: this.item.system.requirements[data.index],
           context: data
         }
     }

@@ -123,6 +123,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
 
   getEffectDict() {
     const effectDict = {statusEffects: [], effects: [], itemEffects: [], skillEffects: []};
+    // TODO: refactor with code from _character.js
     for (const item of this.actor.items) {
       if (item.type == "Skill" || item.type == "Combatskill" || item.type == "Medicalskill") {
         for (const effect of item.system.effects) {
@@ -133,7 +134,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
             break;
           }
         }
-      } else if (item.system.equipped && item.system.effects.length !== 0) {
+      } else if (item.system.equipped && item.system.effect?.length !== 0) {
         effectDict.itemEffects.push(item);
       }
     }
@@ -240,11 +241,12 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       damageType = "energy"
     } else damageType = "kinetic";
     
-    const effectItems = actor.items.filter(x => x.system.effects !== undefined)
+    // TODO: see character.js _getModifiers and yeet this
+    const effectItems = actor.items.filter(x => x.system.effect !== undefined)
     const effectModifier = [];
     for (const effectItem of effectItems) {
       if (!effectItem.system.active && !effectItem.system.equipped) continue;
-      for (const effect of effectItem.system.effects) {
+      for (const effect of effectItem.system.effect) {
         if (effect.group != "weapons") continue;
         if (effect.name == "all" || effect.name == damageType || effect.name == weapon.system.type) {
           effectModifier.push({name: effectItem.name, value: effect.value})

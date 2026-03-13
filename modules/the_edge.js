@@ -8,10 +8,12 @@ import TheEdgeHotbar from "./applications/hotbar.js";
 import CharacterData from "../data_models/actors/character.js";
 
 import AmmunitionData from "../data_models/items/ammunition.js";
+import ArmourData from "../data_models/items/armour.js";
 import ConsumablesData from "../data_models/items/consumables.js";
 import GearData from "../data_models/items/gear.js";
 import { CombatSkillData, LanguageSkillData, MedicalSkillData, SkillData } from "../data_models/items/skills.js";
 import VantageData from "../data_models/items/vantage.js";
+import WeaponData from "../data_models/items/weapon.js";
 
 import { TheEdgeActor } from "./actors/actor.js";
 import { TheEdgeItem } from "./items/item.js";
@@ -128,6 +130,7 @@ Hooks.once("init", async function() {
 
   CONFIG.Item.dataModels.Advantage = VantageData;
   CONFIG.Item.dataModels.Ammunition = AmmunitionData;
+  CONFIG.Item.dataModels.Armour = ArmourData;
   CONFIG.Item.dataModels.Consumables = ConsumablesData;
   CONFIG.Item.dataModels.Combatskill = CombatSkillData;
   CONFIG.Item.dataModels.Disadvantage = VantageData;
@@ -135,6 +138,7 @@ Hooks.once("init", async function() {
   CONFIG.Item.dataModels.Languageskill = LanguageSkillData;
   CONFIG.Item.dataModels.Medicalskill = MedicalSkillData;
   CONFIG.Item.dataModels.Skill = SkillData;
+  CONFIG.Item.dataModels.Weapon = WeaponData;
   CONFIG.Item.documentClass = TheEdgeItem;
 
   CONFIG.Token.documentClass = TheEdgeTokenDocument;

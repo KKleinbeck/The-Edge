@@ -36,11 +36,16 @@
     },
     "Item": {
       "Advantage": {"htmlFields": ["description"]},
+      "Ammunition": {"htmlFields": ["description"]},
+      "Armour": {"htmlFields": ["description"]},
+      "Consumables": {"htmlFields": ["description"]},
       "Combatskill": {"htmlFields": ["description"]},
       "Disadvantage": {"htmlFields": ["description"]},
       "Gear": {"htmlFields": ["description"]},
+      "Languageskill": {"htmlFields": ["description"]},
       "Medicalskill": {"htmlFields": ["description"]},
-      "Skill": {"htmlFields": ["description"]}
+      "Skill": {"htmlFields": ["description"]},
+      "Weapon": {"htmlFields": ["description"]}
     }
   },
   "grid": {
