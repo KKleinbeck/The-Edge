@@ -13,4 +13,6 @@ export default class EquipableData extends DataModelComponent {
   async toggleEquipped() {
     await this.parent.update({"system.equipped": !this.equipped});
   }
+
+  get modifiers() { return this.effect; }
 }

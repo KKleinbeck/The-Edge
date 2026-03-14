@@ -35,7 +35,7 @@ export default function() {
         tooltip = wound.source + " - " +
           LocalisationServer.localise(wound.status, "item") + " - " +
           `${wound.damage} ` + LocalisationServer.localise("Damage") +
-          ` - ${wound.bleeding}` + LocalisationServer.localise("Bleeding")
+          ` - ${wound.bleeding} ` + LocalisationServer.localise("Bleeding")
       } else {
         tooltip = LocalisationServer.localise(wound.status, "item");
       }

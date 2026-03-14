@@ -19,7 +19,7 @@ export default class DialogWeapon extends Dialog{
       {sizeModifiers: THE_EDGE.sizeModifiers, movements: THE_EDGE.movements, cover: THE_EDGE.cover},
       checkData
     );
-    const template = "systems/the_edge/templates/dialogs/weapon.html";
+    const template = "systems/the_edge/templates/dialogs/weapon.hbs";
     let html = await renderTemplate(template, templateParams);
     const buttons = {
       roll: {

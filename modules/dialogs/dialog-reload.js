@@ -12,16 +12,13 @@ export default class DialogReload extends Dialog{
   static async start(checkData) {
     const template = "systems/the_edge/templates/dialogs/reload.html";
     const weaponSys = checkData.weapon.system;
-    const filteredOptions = checkData.ammunitionOptions.filter(
-      x => x.id !== weaponSys.ammunitionID
-    );
-    let html = await renderTemplate(template, {
-      ammunition: filteredOptions,
+    const html = await renderTemplate(template, {
+      ammunition: checkData.ammunitionOptions,
       weaponReloadDuration: weaponSys.reloadDuration
     });
 
     const buttons = {}
-    if (filteredOptions.length > 0) {
+    if (checkData.ammunitionOptions.length > 0) {
       foundry.utils.mergeObject(buttons, {
         select: {
           label: game.i18n.localize("DIALOG.SELECT"),
@@ -44,10 +41,7 @@ export default class DialogReload extends Dialog{
 
                 reloadDuration += ammu.system.reloadDuration;
 
-                // Remove the copy from the existing item stack
-                if (ammu.system.quantity == 1) {
-                  await ammu.delete()
-                } else ammu.update({"system.quantity": ammu.system.quantity - 1});
+                ammu.useOne()
               }
             }
             
@@ -64,16 +58,15 @@ export default class DialogReload extends Dialog{
       foundry.utils.mergeObject(buttons, {
         empty: {
           label: game.i18n.localize("DIALOG.EMPTY"),
-          callback: async (html) => {
-            for (const ammu of checkData.ammunitionOptions) {
-              if (ammu.id == weaponSys.ammunitionID) {
-                // If we currently have a mag loaded, we unload it
-                ammu.update({"system.loaded": false});
-                checkData.weapon.update({"system.ammunitionID": ""})
-                return
-              }
+          callback: async (_html) => {
+            const ammu = checkData.actor.items.get(weaponSys.ammunitionID);
+            const unloadedCopy = checkData.actor.findItem(ammu);
+            if (unloadedCopy) {
+              ammu.delete();
+              unloadedCopy.update({"system.quantity": unloadedCopy.system.quantity + 1});
+            } else {
+              ammu.update({"system.loaded": false});
             }
-            // capture all in case of bug
             checkData.weapon.update({"system.ammunitionID": ""})
           }
         },

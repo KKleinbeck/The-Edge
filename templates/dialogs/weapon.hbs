@@ -121,8 +121,7 @@
       </tr>
     </table>
   </div>
-  {{#if (checkEqual effectModifier.length 0)}}
-  {{else}}
+  {{#if (checkNotEmpty effectModifier)}}
     <div class="title" style="width: 100%;"><div class="section-title">{{genName "Status effects"}}</div></div>
     <div style="columns: 2; padding: 0px 5px 10px 5px">
       {{#each effectModifier as |effect|}}

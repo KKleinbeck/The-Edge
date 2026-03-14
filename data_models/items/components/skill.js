@@ -23,4 +23,9 @@ export default class SkillTemplateData extends DataModelComponent {
   async toggleActive(options = {}) {
     await this.parent.update({"system.active": !this.active}, options);
   }
+
+  get modifiers() {
+    return this.effects.slice(0, this.level)
+      .reduce((a, b) => [...a, ...b], []);
+  }
 }

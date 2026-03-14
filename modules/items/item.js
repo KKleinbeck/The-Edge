@@ -1,11 +1,3 @@
-import LocalisationServer from "../system/localisation_server.js";
-import Aux from "../system/auxilliaries.js";
-import THE_EDGE from "../system/config-the-edge.js";
-
-/**
- * Extend the base Item document to support attributes and groups with a custom template creation dialog.
- * @extends {Item}
- */
 export class TheEdgeItem extends Item {
   static defaultImages = {
     Weapon: "systems/the_edge/icons/rifle.png",
@@ -19,8 +11,6 @@ export class TheEdgeItem extends Item {
     Languageskill: "systems/the_edge/icons/speech.png",
     Gear: "systems/the_edge/icons/gear.png",
     Consumables: "systems/the_edge/icons/consumables.png",
-    Credits: "systems/the_edge/icons/credits.png",
-    Effect: "systems/the_edge/icons/effect.png",
   }
 
   static defaultIcon(data) {

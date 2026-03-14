@@ -100,13 +100,13 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
       );
     }
     context.equippedWeapons.forEach(weapon => {
+      weapon.ammunitionStatus = `(${LocalisationServer.localise("Empty", "Dialog")})`;
       if (weapon.system.ammunitionID) {
         const ammunition = context.actor.items.get(weapon.system.ammunitionID);
+        if (!ammunition) return;
         const ammunitionMax = ammunition.system.capacity.max;
         const ammunitionValue = ammunition.system.capacity.value;
         weapon.ammunitionStatus = `(${ammunitionValue} / ${ammunitionMax})`;
-      } else {
-        weapon.ammunitionStatus = `(${LocalisationServer.localise("Empty", "Dialog")})`;
       }
     })
 
@@ -119,24 +119,28 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
       .then(res => res.text())
     context.bodyImg = img;
 
-    const effectDict = context.actor?.sheet.getEffectDict() ?? {};
     const effects = {};
-    for (const [_key, items] of Object.entries(effectDict)) {
-      for (const item of items) {
-        // for (const effect of item.system.effects ?? []) {
-        //   const hash = effect.name + effect.group;
-        //   if (hash in effects) {
-        //     effects[hash].value += effect.value;
-        //     effects[hash].sources.push(item.name);
-        //   } else {
-        //     effects[hash] = {
-        //       value: effect.value,
-        //       name: effect.name,
-        //       group: effect.group,
-        //       sources: [item.name]
-        //     }
-        //   }
-        // }
+    if (context.actor) {
+      const effectDict = {
+        effects: context.actor.system.effects,
+        itemEffects: context.actor.getItemEffects(true),
+        skillEffects: context.actor.getSkillEffects(true),
+        statusEffects: context.actor.system.statusEffects,
+      };
+      for (const [_key, effectGroups] of Object.entries(effectDict)) {
+        for (const effectGroup of effectGroups) {
+          for (const modifier of effectGroup.modifiers ?? []) {
+            const hash = modifier.field + modifier.group;
+            if (hash in effects) {
+              effects[hash].value += modifier.value;
+              effects[hash].sources.push(effectGroup.name);
+            } else {
+              effects[hash] = {
+                ...modifier, sources: [effectGroup.name]
+              }
+            }
+          }
+        }
       }
     }
     const nEffects = Object.keys(effects).length;

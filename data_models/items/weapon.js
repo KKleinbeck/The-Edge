@@ -36,6 +36,7 @@ export default class WeaponData extends generateDataModelWithComponents(
     });
     schema.attachments = new ArrayField(new ObjectField(), { initial: [] });
     schema.ammunitionType = new StringField({ initial: "small" });
+    schema.ammunitionID = new StringField({ initial: "" });
     return schema;
   }
 }

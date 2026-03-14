@@ -138,7 +138,12 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       ]
     }
 
-    context.effectDict = this.getEffectDict();
+    context.effectDict = {
+      effects: this.actor.system.effects,
+      itemEffects: this.actor.getItemEffects(true),
+      skillEffects: this.actor.getSkillEffects(),
+      statusEffects: this.actor.system.statusEffects,
+    };
     context.effectToggle = {statusEffects: false, effects: true, itemEffects: false, skillEffects: true};
     context.tabs = this._prepareTabs("primary");
     return context;
@@ -151,28 +156,6 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   //       break
   //   }
   // }
-
-  getEffectDict() {
-    const effectDict = {statusEffects: [], effects: [], itemEffects: [], skillEffects: []};
-    // TODO: refactor with code from _character.js
-    for (const item of this.actor.items) {
-      if (item.type == "Skill" || item.type == "Combatskill" || item.type == "Medicalskill") {
-        for (const effect of item.system.effects) {
-          if (effect.length != 0) {
-            effectDict.skillEffects.push({
-              name: item.name, id: item.id, active: item.system.active
-            });
-            break;
-          }
-        }
-      } else if (item.system.equipped && item.system.effect?.length !== 0) {
-        effectDict.itemEffects.push(item);
-      }
-    }
-    effectDict.effects = this.actor.system.effects;
-    effectDict.statusEffects = this.actor.system.statusEffects;
-    return effectDict;
-  }
 
   // actions
   static async _onWoundControl(event, target) {
@@ -272,15 +255,18 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       damageType = "energy"
     } else damageType = "kinetic";
     
-    // TODO: see character.js _getModifiers and yeet this
-    const effectItems = actor.items.filter(x => x.system.effect !== undefined)
+    const activeEffects = [
+      ...this.actor.system.effects,
+      ...this.actor.getItemEffects(true),
+      ...this.actor.getSkillEffects(true),
+      ...this.actor.system.statusEffects,
+    ];
     const effectModifier = [];
-    for (const effectItem of effectItems) {
-      if (!effectItem.system.active && !effectItem.system.equipped) continue;
-      for (const effect of effectItem.system.effect) {
-        if (effect.group != "weapons") continue;
-        if (effect.name == "all" || effect.name == damageType || effect.name == weapon.system.type) {
-          effectModifier.push({name: effectItem.name, value: effect.value})
+    for (const effect of activeEffects) {
+      for (const modifier of effect.modifiers) {
+        if (modifier.group != "weapons") continue;
+        if (modifier.field == "all" || modifier.field == damageType || modifier.field == weapon.system.type) {
+          effectModifier.push({name: effect.name, value: modifier.value})
         }
       }
     }
@@ -299,10 +285,15 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   static async reload(_event, target) {
     const weaponID = target.closest(".weapon-id").dataset.weaponId;
     const weapon = this.actor.items.get(weaponID);
-    const ammunitionOptions = this.actor.itemTypes["Ammunition"].filter(
-      x => (x.system.whitelist[x.system.type][weapon.system.type] || weapon.system.type === "Recoilless Rifles") && 
-        x.system.subtype == weapon.system.ammunitionType
-    );
+    const ammunitionOptions = this.actor.itemTypes["Ammunition"].filter(x => {
+      const isWhitelisted = (
+        x.system.whitelist[x.system.type][weapon.system.type] ||
+        weapon.system.type === "Recoilless Rifles"
+      ); 
+      const subtypeMatches = (x.system.subtype == weapon.system.ammunitionType);
+      const isNotLoaded = !x.system.loaded;
+      return isWhitelisted && subtypeMatches && isNotLoaded;
+    });
 
     await DialogReload.start({
       weaponID: weaponID,

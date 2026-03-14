@@ -82,26 +82,12 @@ export default class CharacterData extends CharacterDataParent {
       }
     }
 
-    const skillItems = [
-      ...(this.parent.itemTypes["Combatskill"]?.filter(x => x.system.active) ?? []),
-      ...(this.parent.itemTypes["Skill"]?.filter(x => x.system.active) ?? []),
-      ...(this.parent.itemTypes["Medicalskill"]?.filter(x => x.system.active) ?? []),
+    const itemAndSkillEffects = [
+      ...this.parent.getItemEffects(true).map(x => x.modifiers),
+      ...this.parent.getSkillEffects(true).map(x => x.modifiers)
     ];
-    for (const item of skillItems) {
-      const modifiers = item.system.effects
-        .slice(0, item.system.level)
-        .reduce((a, b) => [...a, ...b], []);
-      for (const modifier of modifiers) {
-        addToResult(THE_EDGE.effectMap[modifier.group][modifier.field], modifier.value);
-      }
-    }
-
-    const effectItems = [
-      ...(this.parent.itemTypes["Armour"]?.filter(x => x.system.equipped) ?? []),
-      ...(this.parent.itemTypes["Weapon"]?.filter(x => x.system.equipped) ?? []),
-    ];
-    for (const item of effectItems) {
-      for (const modifier of item.system.effect) {
+    for (const effect of itemAndSkillEffects) {
+      for (const modifier of effect) {
         addToResult(THE_EDGE.effectMap[modifier.group][modifier.field], modifier.value);
       }
     }
@@ -179,7 +165,7 @@ export default class CharacterData extends CharacterDataParent {
           return;
         } 
       } else if (coreName.includes("General weapon proficiency")) { // Do nothing
-      } else if (newVal > this.system.weapons.general["General weapon proficiency"].advances) {
+      } else if (newVal > this.weapons.general["General weapon proficiency"].advances) {
         const msg = LocalisationServer.parsedLocalisation(
           "Core Value too small", "Notifications",
           {name: parts[parts.length - 2], level: newVal,

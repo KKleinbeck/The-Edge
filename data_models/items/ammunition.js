@@ -10,6 +10,7 @@ export default class AmmunitionData extends generateDataModelWithComponents(
 ) {
   static defineSchema() {
     const schema = super.defineSchema();
+    schema.loaded = new BooleanField({ initial: false });
     schema.capacity = new SchemaField({
       max: new NumberField({ initial: 30, integer: true, positive: true }),
       value: new NumberField({ initial: 30, integer: true }),

@@ -204,12 +204,12 @@ export class TheEdgeActor extends Actor {
 
   findItem(item) {
     let _existingCopy = false
-    for (const _item of this.items) {
+    for (const _item of this.itemTypes[item.type]) {
       if (_item.name == item.name) {
         if (_item.type == "Ammunition") {
-          let _cap = _item.system.capacity
-          let cap = item.system.capacity
-          if (_cap.max == cap.max && _cap.value == cap.value) {
+          const _cap = _item.system.capacity;
+          const cap = item.system.capacity;
+          if (_cap.max == cap.max && _cap.value == cap.value && !_item.system.loaded) {
             _existingCopy = _item
           }
         } else {
@@ -218,6 +218,45 @@ export class TheEdgeActor extends Actor {
       }
     }
     return _existingCopy;
+  }
+
+  getSkillEffects(onlyActive = false) {
+    function skillFilter(skill) {
+      const hasEffect = skill.system.modifiers.length > 0;
+      const isActive = !onlyActive || skill.system.active;
+      return hasEffect && isActive;
+    }
+
+    const skillItems = [
+      ...(this.itemTypes["Combatskill"]?.filter(x => skillFilter(x)) ?? []),
+      ...(this.itemTypes["Skill"]?.filter(x => skillFilter(x)) ?? []),
+      ...(this.itemTypes["Medicalskill"]?.filter(x => skillFilter(x)) ?? []),
+    ];
+    return skillItems.map(item => {
+      return {
+        name: item.name, id: item.id, active: item.system.active,
+        modifiers: item.system.modifiers
+      };
+    });
+  }
+
+  getItemEffects(onlyEquipped = false) {
+    function itemFilter(item) {
+      const hasEffect = item.system.modifiers.length > 0;
+      const isEquipped = !onlyEquipped || item.system.equipped;
+      return hasEffect && isEquipped;
+    }
+
+    const effectItems = [
+      ...(this.itemTypes["Armour"]?.filter(x => itemFilter(x)) ?? []),
+      ...(this.itemTypes["Weapon"]?.filter(x => itemFilter(x)) ?? []),
+    ];
+    return effectItems.map(item => {
+      return {
+        name: item.name, id: item.id, equipped: item.system.equipped,
+        modifiers: item.system.modifiers
+      }
+    });
   }
 
   attachOuterArmour(armourId, shellId, tokenId) {
