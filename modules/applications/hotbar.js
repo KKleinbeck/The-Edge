@@ -338,7 +338,6 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
   }
 
   static async _onRollAttr(event, target) {
-    console.log(this.token)
     TheEdgePlayableSheet.rollAttribute.call(this.token.sheet, event, target);
   }
 

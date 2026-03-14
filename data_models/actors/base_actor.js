@@ -20,10 +20,6 @@ export default class CharacterBaseData extends DataModelComponent {
         used: new NumberField({ initial: 0, integer: true, required: true }),
         max: new NumberField({ initial: 0, integer: true, required: true })
       }),
-      credits: new SchemaField({
-        chids: new NumberField({ initial: 0, integer: true, required: true }),
-        digital: new NumberField({ initial: 0, integer: true, required: true })
-      }),
       counters: new ArrayField(
         new SchemaField({
           name: new StringField({ initial: "" }),
@@ -35,19 +31,6 @@ export default class CharacterBaseData extends DataModelComponent {
     };
   };
 
-  // Credits related
-  addCredits(chids, digital) {
-    this.parent.update({
-      "system.credits.chids": this.credits.chids + chids,
-      "system.credits.digital": this.credits.digital + digital
-    });
-  }
-
-  payCredits(price) {
-    this.parent.update({"system.credits.digital": this.credits.digital - price});
-    return [0, price];
-  }
-
   // Hero Token related
   async useHeroToken(reason = "generic") {
     await this.parent.update({"system.heroToken.available": this.heroToken.available - 1});
@@ -57,9 +40,4 @@ export default class CharacterBaseData extends DataModelComponent {
   async regenerateHeroToken() {
     await this.parent.update({"system.heroToken.available": this.heroToken.available + 1});
   }
-
-  // static migrateData(source) {
-  //   // source.health.statusMax = source.health.max.status;
-  //   if (source.health?.max?.value) source.health.max = source.health.max.value;
-  // }
 }

@@ -58,9 +58,8 @@ export default class Aux {
     const scene = game.canvas.scene;
 
     const tokens = [];
-    const userID = game.user.id;
     for (var token of scene.tokens) {
-      if (token.actor.type === "character" && token.actor.ownership[userID] === 3) {
+      if (token.actor.type === "character" && token.isOwner) {
         tokens.push(token);
       }
     }

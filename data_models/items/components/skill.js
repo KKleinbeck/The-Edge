@@ -19,4 +19,8 @@ export default class SkillTemplateData extends DataModelComponent {
       cost: new StringField({ initial: "0" })
     };
   }
+
+  async toggleActive(options = {}) {
+    await this.parent.update({"system.active": !this.active}, options);
+  }
 }

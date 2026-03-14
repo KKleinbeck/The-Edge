@@ -9,4 +9,8 @@ export default class EquipableData extends DataModelComponent {
       effect: new ArrayField(new ObjectField(), { initial: [] }),
     };
   }
+
+  async toggleEquipped() {
+    await this.parent.update({"system.equipped": !this.equipped});
+  }
 }

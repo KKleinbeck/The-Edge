@@ -48,75 +48,9 @@ export class TheEdgeItem extends Item {
     return !!this.getFlag("the_edge", "isTemplate");
   }
 
-  async toggleActive() {
-    if (this.system.active === undefined) return undefined;
-    await this.update({"system.active": !this.system.active})
-  }
-
-  async toggleEquipped() {
-    if (this.system.equipped === undefined) return undefined;
-    await this.update({"system.equipped": !this.system.equipped})
-  }
-
-  useOne() {
+  async useOne() {
     if (this.system.quantity > 1) {
-      this.update({"system.quantity": this.system.quantity - 1});
+      await this.update({"system.quantity": this.system.quantity - 1});
     } else this.delete();
-  }
-}
-
-export class ArmourItemTheEdge extends TheEdgeItem {
-  static async protect(damage, penetration, damageType, location, protectionLog) {
-    const protectedLoc = this.system.bodyPart;
-    const isProtective = THE_EDGE.cover_map[protectedLoc].includes(location);
-    if (!isProtective) return [damage, penetration];
-
-    // Process inner armour first
-    if (this.system.layer == "Inner") {
-      for (const attachment of this.system.attachments) {
-        const actor = Aux.getActor(attachment.actorId, attachment.tokenId);
-        const shell = actor.items.get(attachment.shellId);
-        [damage, penetration] = await ArmourItemTheEdge.protect.call(
-          shell, damage, penetration, damageType, location, protectionLog
-        );
-      }
-    }
-
-    if (damageType == "HandToHand" || damageType == "fall" || damageType == "impact") {
-      damageType = "kinetic";
-    }
-    const protection = this.system.protection[damageType];
-    protectionLog[this.name] = Math.min(damage, protection.absorption);
-    damage = Math.max(0, damage - protection.absorption);
-
-    const update = {}
-    if (damage <= protection.threshold) {
-      update["system.structurePoints"] = Math.max(0, this.system.structurePoints - damage)
-      protectionLog[this.name] += damage;
-      damage = Math.max(0, Math.min(penetration, protection.threshold));
-    } else {
-      update["system.structurePoints"] = Math.max(0, this.system.structurePoints - protection.threshold)
-      protectionLog[this.name] += protection.threshold;
-      damage -= Math.max(protection.threshold - penetration, 0);
-    }
-    penetration = Math.max(penetration - protection.threshold, 0);
-
-    if (update["system.structurePoints"] == 0) {
-      let msg = LocalisationServer.parsedLocalisation("Destroyed", "Notifications", {name: this.name})
-      ui.notifications.notify(msg)
-      update["name"] = this.name + " - " + LocalisationServer.localise("broken");
-      update["system.equipped"] = false;
-      update["system.attachments"] = [];
-      if (this.system.layer == "Outer") {
-        const parentInfo = this.system.attachments[0];
-        const actor = Aux.getActor(parentInfo.actorId, parentInfo.tokenId);
-        const parent = actor.items.get(parentInfo.armourId);
-        await Aux.detachFromParent(parent, this.id, this.system.attachmentPoints.max);
-      }
-    }
-    await this.update(update);
-    if(this.sheet.rendered) { this.sheet._render() }
-
-    return [damage, penetration];
   }
 }

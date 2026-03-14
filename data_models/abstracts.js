@@ -71,6 +71,8 @@ export function generateDataModelWithComponents(...components) {
       components.forEach(x => foundry.utils.mergeObject(schema, x.defineSchema()));
       return schema;
     }
+
+    onUpdate(_data) {} // To be overwritten by final data Models
   };
 
   mergeProperties(TempDataModel, combinedComponent);

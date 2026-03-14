@@ -12,14 +12,6 @@ const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ActorSheetV2 } = foundry.applications.sheets;
 
 export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplicationMixin(ActorSheetV2)) {
-  constructor(...args) {
-    super(...args);
-    this.effectIsExpanded = {
-      statusEffects: Array(this.actor.system.statusEffects.lastRects).fill(false),
-      effects: Array(this.actor.system.effects.length).fill(false),
-    };
-  }
-
   static DEFAULT_OPTIONS = {
     tag: "form",
     position: {
@@ -45,29 +37,6 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
     context.userIsGM = game.user.isGM;
     context.actor = this.actor;
     context.system = context.document.system;
-    for (const key of Object.keys(context.system.attributes)) {
-      let n = context.system.attributes[key].advances;
-      context.system.attributes[key].cost = THE_EDGE.attrCost(n),
-      context.system.attributes[key].refund = n == 0 ? 0 : THE_EDGE.attrCost(n-1)
-    }
-
-    context.profGroups = []
-    context.profGroups.push({
-      physical: Object.keys(context.system.proficiencies["physical"]),
-      social: Object.keys(context.system.proficiencies["social"]),
-      technical: Object.keys(context.system.proficiencies["technical"]),
-    })
-    context.profGroups.push({
-      environmental: Object.keys(context.system.proficiencies["environmental"]),
-      knowledge: Object.keys(context.system.proficiencies["knowledge"]),
-      mental: Object.keys(context.system.proficiencies["mental"]),
-    })
-
-    context.definedEffects = THE_EDGE.definedEffects;
-    Object.entries(this.actor.itemTypes).forEach(([type, entries]) => {
-      context[type] = entries;
-    })
-    context.effectIsExpanded = this.effectIsExpanded;
     return context;
   }
   
@@ -101,9 +70,6 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
         else if (item.type == "Wounds") this.actor.system.deleteWound(item);
         else DialogItemDeletion.start({item: item, actor: this.actor});
         break;
-      case "toggle-active":
-        item.toggleActive();
-        break;
       case "toggle-equip":
         if (item.type == "Armour") {
           if (item.system.structurePoints <= 0) {
@@ -117,7 +83,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
               const parent = this.actor.items.get(item.system.attachments[0].armourId);
               await Aux.detachFromParent(parent, item._id, item.system.attachmentPoints.max);
               await item.update({"system.attachments": []})
-              await item.toggleEquipped();
+              await item.system.toggleEquipped();
               break;
             } else {
               const attachableArmour = this._findAttachableArmour(item);
@@ -133,7 +99,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
             }
           }
         }
-        await item.toggleEquipped();
+        await item.system.toggleEquipped();
         await this.actor.update({});
         break;
       case "consume":
@@ -184,7 +150,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
     // Handle different actions
     switch ( target.dataset.subaction ) {
       case "create":
-        this.actor.system.createNewEffect();
+        await this.actor.system.createNewEffect();
         this.effectIsExpanded[target.dataset.source].push(false);
         break;
       case "delete":
@@ -212,10 +178,9 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
       case "toggle-active":
         if (effectElement.dataset.source == "effects") {
           this.actor.system.toggleEffect(index);
-        } else { // Skill or item effect
+        } else { // Skill effect
           const item = this.actor.items.get(effectElement.dataset.id);
-          console.log(item.system)
-          await item.update({"system.active": !item.system.active}, {render: false});
+          await item.system.toggleActive({render: false});
           await this.actor.update({}, {render: false}); // Force effect recalculation
           this.render({force: true}); // Force redraw for icon update
         }
@@ -340,9 +305,6 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
         return this.actor.skillLevelDecrease(skillID);
       case "delete":
         return this.actor.deleteSkill(skillID);
-      case "toggle-active":
-        skill.toggleActive();
-        break;
       case "post":
         ChatServer.transmitEvent("Post Skill",
           {name: skill.name, type: skill.type, description: skill.system.description}
@@ -460,9 +422,9 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
     for (const effectName of effectNames) {
       effectName.addEventListener("change", (ev) => {
         const effectElement = ev.target.closest(".effect-hook");
-        const update = {};
-        update[`system.effects.${effectElement.dataset.id}.name`] = ev.target.value;
-        this.actor.update(update, {render: false});
+        const effects = this.actor.system.effects;
+        effects[effectElement.dataset.index].name = ev.target.value;
+        this.actor.update({"system.effects": effects}, {render: false});
       })
     }
 

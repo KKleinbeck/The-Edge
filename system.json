@@ -32,7 +32,8 @@
     "Actor": {
       "character": {
         "htmlFields": ["biography", "notes"]
-      }
+      },
+      "Store": {}
     },
     "Item": {
       "Advantage": {"htmlFields": ["description"]},

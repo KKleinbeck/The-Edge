@@ -6,6 +6,7 @@ import GrenadePicker from "./applications/grenades-picker.js";
 import TheEdgeHotbar from "./applications/hotbar.js";
 
 import CharacterData from "../data_models/actors/character.js";
+import StoreData from "../data_models/actors/store.js";
 
 import AmmunitionData from "../data_models/items/ammunition.js";
 import ArmourData from "../data_models/items/armour.js";
@@ -126,6 +127,7 @@ Hooks.once("init", async function() {
 
   // Define custom Document classes
   CONFIG.Actor.dataModels.character = CharacterData;
+  CONFIG.Actor.dataModels.Store = StoreData;
   CONFIG.Actor.documentClass = TheEdgeActor;
 
   CONFIG.Item.dataModels.Advantage = VantageData;

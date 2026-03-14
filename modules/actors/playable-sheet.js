@@ -11,6 +11,14 @@ import THE_EDGE from "../system/config-the-edge.js";
 import { TheEdgeActorSheet } from "./actor-sheet.js";
 
 export class TheEdgePlayableSheet extends TheEdgeActorSheet {
+  constructor(...args) {
+    super(...args);
+    this.effectIsExpanded = {
+      statusEffects: Array(this.actor.system.statusEffects.length).fill(false),
+      effects: Array(this.actor.system.effects.length).fill(false),
+    };
+  }
+
   static DEFAULT_OPTIONS = {...TheEdgeActorSheet.DEFAULT_OPTIONS,
     actions: {
       // Hero Token
@@ -71,6 +79,29 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
 
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
+    for (const key of Object.keys(context.system.attributes)) {
+      const n = context.system.attributes[key].advances;
+      context.system.attributes[key].cost = THE_EDGE.attrCost(n),
+      context.system.attributes[key].refund = n == 0 ? 0 : THE_EDGE.attrCost(n-1)
+    }
+
+    context.profGroups = []
+    context.profGroups.push({
+      physical: Object.keys(context.system.proficiencies["physical"]),
+      social: Object.keys(context.system.proficiencies["social"]),
+      technical: Object.keys(context.system.proficiencies["technical"]),
+    })
+    context.profGroups.push({
+      environmental: Object.keys(context.system.proficiencies["environmental"]),
+      knowledge: Object.keys(context.system.proficiencies["knowledge"]),
+      mental: Object.keys(context.system.proficiencies["mental"]),
+    })
+
+    context.definedEffects = THE_EDGE.definedEffects;
+    Object.entries(this.actor.itemTypes).forEach(([type, entries]) => {
+      context[type] = entries;
+    })
+    context.effectIsExpanded = this.effectIsExpanded;
 
     const equippedArmour = this.actor.itemTypes["Armour"]?.filter(
       a => a.system.equipped && a.system.layer == "Inner");

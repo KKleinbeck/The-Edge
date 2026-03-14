@@ -7,6 +7,7 @@ import ActorEffectData from "./components/effects.js";
 import AttributeData from "./components/attributes.js";
 import CharacterBaseData from "./base_actor.js";
 import CombatantData from "./components/combatant.js";
+import CreditData from "./components/credits.js";
 import HumanoidData from "./components/humanoid.js";
 import ProficiencyData from "./components/proficiencies.js";
 import StatusEffectData from "./components/status_effects.js";
@@ -16,7 +17,7 @@ const { expandObject, flattenObject, mergeObject } = foundry.utils;
 
 const CharacterDataParent = generateDataModelWithComponents(
   ActorEffectData, AttributeData, CharacterBaseData, CombatantData,
-  HumanoidData, ProficiencyData, StatusEffectData, WeaponData
+  CreditData, HumanoidData, ProficiencyData, StatusEffectData, WeaponData
 )
 export default class CharacterData extends CharacterDataParent {
   static defineSchema() {

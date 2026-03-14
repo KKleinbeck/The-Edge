@@ -35,20 +35,21 @@ export default class CombatantData extends DataModelComponent {
   }
 
   async applyDamage(damage, crit, penetration, damageType, name, givenLocation = undefined) {
-    const woundDetails = {source: name, damage: damage, damageType: damageType};
+    const woundDetails = {source: name, damageType: damageType};
     [woundDetails.bodyPart, woundDetails.coordinates] = Aux.generateWoundLocation(
       crit, this.sex, givenLocation);
 
     let protectionLog = {};
     [protectionLog, damage] = await this._determineArmourProtection(
-      damage, penetration, damageType, location
+      damage, penetration, damageType, woundDetails.bodyPart
     );
+    woundDetails.damage = damage;
 
     if (damage > 0) {
       const health = this.health.value;
       const heartRate = this.heartRate;
       const update = {};
-      update["system.health.value"] = Math.max(health - damage, 0)
+      update["system.health.value"] = Math.max(health - damage, 0);
       const hrChange = Math.max(damage - this.heartRate.damageThreshold.status, 0);
       if (health > damage) { // increase heartrate upon damage
         update["system.heartRate.value"] = Math.min(heartRate.value + hrChange, heartRate.max.value)
@@ -74,8 +75,8 @@ export default class CombatantData extends DataModelComponent {
     for (const armour of this.parent.itemTypes["Armour"]) {
       if(!armour.system.equipped || armour.system.layer == "Outer") continue;
 
-      [damage, runningPenetration] = await ArmourItemTheEdge.protect.call(
-        armour, damage, runningPenetration, damageType, location, protectionLog
+      [damage, runningPenetration] = await armour.system.protect(
+        damage, runningPenetration, damageType, location, protectionLog
       );
     }
       
