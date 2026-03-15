@@ -28,6 +28,27 @@
     "minimum": "13",
     "verified": "13"
   },
+  "documentTypes": {
+    "Actor": {
+      "character": {
+        "htmlFields": ["biography", "notes"]
+      },
+      "Store": {}
+    },
+    "Item": {
+      "Advantage": {"htmlFields": ["description"]},
+      "Ammunition": {"htmlFields": ["description"]},
+      "Armour": {"htmlFields": ["description"]},
+      "Consumables": {"htmlFields": ["description"]},
+      "Combatskill": {"htmlFields": ["description"]},
+      "Disadvantage": {"htmlFields": ["description"]},
+      "Gear": {"htmlFields": ["description"]},
+      "Languageskill": {"htmlFields": ["description"]},
+      "Medicalskill": {"htmlFields": ["description"]},
+      "Skill": {"htmlFields": ["description"]},
+      "Weapon": {"htmlFields": ["description"]}
+    }
+  },
   "grid": {
     "distance": 1,
     "units": "m"
@@ -35,7 +56,7 @@
   "socket": true,
   "primaryTokenAttribute": "health.value",
   "secondaryTokenAttribute": "heartRate.value",
-  "version": "v0.13.3",
+  "version": "v0.14.0",
   "manifest": "https://raw.githubusercontent.com/KKleinbeck/The-Edge/master/system.json",
-  "download": "https://github.com/KKleinbeck/The-Edge/archive/refs/tags/v0.13.3.zip"
+  "download": "https://github.com/KKleinbeck/The-Edge/archive/refs/tags/v0.14.0.zip"
 }

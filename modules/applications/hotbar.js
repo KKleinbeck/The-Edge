@@ -1,5 +1,6 @@
 import Aux from "../system/auxilliaries.js";
 import LocalisationServer from "../system/localisation_server.js";
+import THE_EDGE from "../system/config-the-edge.js";
 import { TheEdgeActorSheet } from "../actors/actor-sheet.js";
 import { TheEdgePlayableSheet } from "../actors/playable-sheet.js";
 
@@ -20,7 +21,7 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
     this.selectedActor = undefined;
 
     this.proficiencies = {};
-    for (const group of Object.values(game.model.Actor.character.proficiencies)) {
+    for (const group of Object.values(THE_EDGE.characterSchema.proficiencies)) {
       this.proficiencies = Object.assign(this.proficiencies, group);
     }
     this.proficiencySearchHistory = [];
@@ -99,13 +100,13 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
       );
     }
     context.equippedWeapons.forEach(weapon => {
+      weapon.ammunitionStatus = `(${LocalisationServer.localise("Empty", "Dialog")})`;
       if (weapon.system.ammunitionID) {
         const ammunition = context.actor.items.get(weapon.system.ammunitionID);
+        if (!ammunition) return;
         const ammunitionMax = ammunition.system.capacity.max;
         const ammunitionValue = ammunition.system.capacity.value;
         weapon.ammunitionStatus = `(${ammunitionValue} / ${ammunitionMax})`;
-      } else {
-        weapon.ammunitionStatus = `(${LocalisationServer.localise("Empty", "Dialog")})`;
       }
     })
 
@@ -117,23 +118,26 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
     const img = await fetch(`systems/the_edge/icons/body_${sex}.svg`)
       .then(res => res.text())
     context.bodyImg = img;
-    context.wounds = context.actor?.itemTypes["Wounds"];
 
-    const effectDict = context.actor?.sheet.getEffectDict() ?? {};
     const effects = {};
-    for (const [_key, items] of Object.entries(effectDict)) {
-      for (const item of items) {
-        for (const effect of item.system.effects ?? []) {
-          const hash = effect.name + effect.group;
-          if (hash in effects) {
-            effects[hash].value += effect.value;
-            effects[hash].sources.push(item.name);
-          } else {
-            effects[hash] = {
-              value: effect.value,
-              name: effect.name,
-              group: effect.group,
-              sources: [item.name]
+    if (context.actor) {
+      const effectDict = {
+        effects: context.actor.system.effects,
+        itemEffects: context.actor.getItemEffects(true),
+        skillEffects: context.actor.getSkillEffects(true),
+        statusEffects: context.actor.system.statusEffects,
+      };
+      for (const [_key, effectGroups] of Object.entries(effectDict)) {
+        for (const effectGroup of effectGroups) {
+          for (const modifier of effectGroup.modifiers ?? []) {
+            const hash = modifier.field + modifier.group;
+            if (hash in effects) {
+              effects[hash].value += modifier.value;
+              effects[hash].sources.push(effectGroup.name);
+            } else {
+              effects[hash] = {
+                ...modifier, sources: [effectGroup.name]
+              }
             }
           }
         }
@@ -160,9 +164,9 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
         context.consumables.push(item);
       } else if (item.system.subtype = "drugs") {
         item.tooltip = item.name;
-        for (const effect of item.system.effects) {
+        for (const effect of item.system.effect) {
           item.tooltip += " \u2014 ";
-          item.tooltip += LocalisationServer.effectLocalisation(effect.name, effect.group);
+          item.tooltip += LocalisationServer.effectLocalisation(effect.field, effect.group);
           item.tooltip += (effect.value > 0) ? " +" + effect.value : " " + effect.value;
         }
         item.displayName = item.system.quantity + "x " + item.name;
@@ -204,7 +208,7 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
     const controlled = canvas.tokens?.controlled
       .filter(x => x.actor?.type == "character");
     if (controlled?.length) {
-      this.token = controlled
+      this.token = controlled[0];
       return controlled[0].actor;
     }
 

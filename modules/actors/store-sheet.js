@@ -1,5 +1,5 @@
-import IconSelectorMixin from "../mixins/icon-selector-mixin.js";
 import Aux from "../system/auxilliaries.js";
+import IconSelectorMixin from "../mixins/icon-selector-mixin.js";
 import NotificationServer from "../system/notifications.js";
 import { TheEdgeActorSheet } from "./actor-sheet.js";
 
@@ -103,11 +103,13 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
     context.playerItemTypes = {};
     const playerActor = this.playerTokens[this.selectedTokenIndex].actor;
     for (const [type, items] of Object.entries(playerActor.itemTypes)) {
-      if (items.length && "value" in game.model.Item[type]) {
-        context.playerItemTypes[type] = items.filter(
-          x => (!("equipped" in x.system) || !x.system.equipped) &&
-                (!("loaded" in x.system) || !x.system.loaded)
-        );
+      if (items.length && "value" in items[0].system) {
+        const tradables = items.filter(item => {
+          const notEquipped = !(item.system.equipped ?? false);
+          const notLoaded = !(item.system.loaded ?? false);
+          return notEquipped && notLoaded;
+        });
+        if (tradables.length) context.playerItemTypes[type] = tradables;
       }
     }
 
@@ -131,9 +133,9 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
         context.groups = {};
         for (const item of this.actor.itemTypes["Consumables"]) {
           if (!(item.system.subtype in context.groups)) {
-            context.groups[item.system.subtype] = [item];
+            context.groups[item.system.current_type] = [item];
           } else {
-            context.groups[item.system.subtype].push(item);
+            context.groups[item.system.current_type].push(item);
           }
         }
         break;
@@ -231,8 +233,8 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
 
     if (credits >= price || store.system.isStorage) {
       if (!store.system.isStorage) {
-        const [chids, digital] = actor.pay(price);
-        store.getCredits(chids, digital);
+        const [chids, digital] = actor.system.payCredits(price);
+        store.system.addCredits(chids, digital);
       }
 
       const existingCopy = actor.findItem(item);
@@ -279,7 +281,7 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
     }
   }
   
-  static handleSellOrStore(payload) {
+  static async handleSellOrStore(payload) {
     const {sceneId, tokenId, storeId, itemId} = payload;
     const scene = game.scenes.get(sceneId);
     const store = scene.tokens.get(storeId).actor;
@@ -289,10 +291,10 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
     const price = item.system.value / store.system.tradeFactor;
     const credits = store.system.credits.chids + store.system.credits.digital;
 
-    if (credits >= price) {
+    if (credits >= price || store.system.isStorage) {
       if (!store.system.isStorage) {
-        const [chids, digital] = store.pay(price);
-        actor.getCredits(chids, digital);
+        const [chids, digital] = store.system.payCredits(price);
+        actor.system.addCredits(chids, digital);
       }
 
       const existingCopy = store.findItem(item);
@@ -305,8 +307,9 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
         itemCls.create({name: item.name, type: item.type, system: newSystem}, {parent: store});
       }
       
-      if (item.system.quantity > 1) item.update({"system.quantity": item.system.quantity - 1});
-      else item.delete();
+      if (item.system.quantity > 1) await item.update({"system.quantity": item.system.quantity - 1});
+      else await item.delete();
+      // TODO: emit event so that user can potentially redraw
     }
   }
 }

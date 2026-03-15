@@ -1,5 +1,4 @@
 import Aux from "../system/auxilliaries.js";
-import LocalisationServer from "../system/localisation_server.js";
 import DialogRest from "../dialogs/dialog-rest.js";
 import DialogDamage from "../dialogs/dialog-damage.js";
 import DialogReload from "../dialogs/dialog-reload.js";
@@ -7,10 +6,19 @@ import DialogWeapon from "../dialogs/dialog-weapon.js";
 import DialogAttribute from "../dialogs/dialog-attribute.js";
 import DialogCombatics from "../dialogs/dialog-combatics.js";
 import DialogProficiency from "../dialogs/dialog-proficiency.js";
+import LocalisationServer from "../system/localisation_server.js";
 import THE_EDGE from "../system/config-the-edge.js";
 import { TheEdgeActorSheet } from "./actor-sheet.js";
 
 export class TheEdgePlayableSheet extends TheEdgeActorSheet {
+  constructor(...args) {
+    super(...args);
+    this.effectIsExpanded = {
+      statusEffects: Array(this.actor.system.statusEffects.length).fill(false),
+      effects: Array(this.actor.system.effects.length).fill(false),
+    };
+  }
+
   static DEFAULT_OPTIONS = {...TheEdgeActorSheet.DEFAULT_OPTIONS,
     actions: {
       // Hero Token
@@ -28,6 +36,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       applyDamage: TheEdgePlayableSheet.applyDamage,
       // Other
       reload: TheEdgePlayableSheet.reload,
+      woundControl: TheEdgePlayableSheet._onWoundControl,
     }
   }
 
@@ -70,6 +79,30 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
 
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
+    await this.actor.update(); // Forces status effects to be up to date
+    for (const key of Object.keys(context.system.attributes)) {
+      const n = context.system.attributes[key].advances;
+      context.system.attributes[key].cost = THE_EDGE.attrCost(n),
+      context.system.attributes[key].refund = n == 0 ? 0 : THE_EDGE.attrCost(n-1)
+    }
+
+    context.profGroups = []
+    context.profGroups.push({
+      physical: Object.keys(context.system.proficiencies["physical"]),
+      social: Object.keys(context.system.proficiencies["social"]),
+      technical: Object.keys(context.system.proficiencies["technical"]),
+    })
+    context.profGroups.push({
+      environmental: Object.keys(context.system.proficiencies["environmental"]),
+      knowledge: Object.keys(context.system.proficiencies["knowledge"]),
+      mental: Object.keys(context.system.proficiencies["mental"]),
+    })
+
+    context.definedEffects = THE_EDGE.definedEffects;
+    Object.entries(this.actor.itemTypes).forEach(([type, entries]) => {
+      context[type] = entries;
+    })
+    context.effectIsExpanded = this.effectIsExpanded;
 
     const equippedArmour = this.actor.itemTypes["Armour"]?.filter(
       a => a.system.equipped && a.system.layer == "Inner");
@@ -86,34 +119,31 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       a => a.system.equipped
     );
 
-    const credits = this.actor.itemTypes["Credits"]
-    const creditsOffline = credits.find(c => c.system?.isSchid)?.system?.value || 0;
-    const creditsDigital = credits.find(c => !c.system?.isSchid)?.system?.value || 0;
-    const weight = this.actor.determineWeight();
-    const wounds = this.actor.itemTypes["Wounds"];
+    const weight = this.actor.itemWeight;
 
-    await this.actor.updateStatus();
-    await this.actor.determineOverload();
     context.helpers = {
       armourProtection: armourProtection,
       equippedWeapons: equippedWeapons,
       bodyParts: ["Torso", "Head", "Arms", "Legs"],
-      bleeding: wounds.map(x => x.system.bleeding).sum(),
-      credits: {"Schids": creditsOffline, "digital": creditsDigital},
-      damage: wounds.map(x => x.system.damage).sum(),
-      languages: THE_EDGE.languages,
+      bleeding: this.actor.system.wounds.map(x => x.bleeding).sum(),
+      damage: this.actor.system.wounds.map(x => x.damage).sum(),
       itemTypes: ["Weapon", "Armour", "Ammunition", "Gear", "Consumables"],
       weight: weight,
-      overloadLevel: this.actor.overloadLevel,
-      weightTillNextOverload: this.actor.weightTillNextOverload,
+      overloadLevel: this.actor.system.overloadLevel,
+      weightTillNextOverload: this.actor.system.weightTillNextOverload,
       hrProgressBarData: [
         {value: context.system.heartRate.min.value, label: "Z1"},
-        {value: context.prepare.zones[1].value, label: "Z2"},
-        {value: context.prepare.zones[2].value, label: "Z3"},
+        {value: context.system.hrZone1, label: "Z2"},
+        {value: context.system.hrZone2, label: "Z3"},
       ]
     }
 
-    context.effectDict = this.getEffectDict();
+    context.effectDict = {
+      effects: this.actor.system.effects,
+      itemEffects: this.actor.getItemEffects(true),
+      skillEffects: this.actor.getSkillEffects(),
+      statusEffects: this.actor.system.statusEffects,
+    };
     context.effectToggle = {statusEffects: false, effects: true, itemEffects: false, skillEffects: true};
     context.tabs = this._prepareTabs("primary");
     return context;
@@ -127,32 +157,27 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   //   }
   // }
 
-  getEffectDict() {
-    const effectDict = {statusEffects: [], effects: [], itemEffects: [], skillEffects: []};
-    for (const item of this.actor.items) {
-      if (item.type ==  "Effect") {
-        if (item.system.statusEffect) effectDict.statusEffects.push(item);
-        else effectDict.effects.push(item);
-      } else if (item.type == "Skill" || item.type == "Combatskill" || item.type == "Medicalskill") {
-        for (const effect of item.system.levelEffects) {
-          if (effect.length != 0) {
-            effectDict.skillEffects.push(item);
-            break;
-          }
-        }
-      } else if (item.system.equipped && item.system.effects.length !== 0) {
-        effectDict.itemEffects.push(item);
-      }
+  // actions
+  static async _onWoundControl(event, target) {
+    event.preventDefault();
+
+    // Obtain event data
+    const woundElement = target.closest(".wound-hook");
+    const index = +woundElement?.dataset.index || 0; 
+
+    // Handle different actions
+    switch ( target.dataset.subaction ) {
+      case "delete":
+        this.actor.system.deleteWound(index);
+        break
     }
-    return effectDict;
   }
 
-  // actions
-  static async useHeroToken(_event, _target) { await this.actor.useHeroToken(); }
+  static async useHeroToken(_event, _target) { await this.actor.system.useHeroToken(); }
 
   static async regenerateHeroToken(_event, _target) {
     if (game.user.isGM) {
-      await this.actor.regenerateHeroToken();
+      await this.actor.system.regenerateHeroToken();
     } else {
       // TODO: notify
     }
@@ -160,7 +185,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
 
   static async advanceAttr(_event, target) {
     const dataset = target.dataset;
-    this.actor._advanceAttr(dataset.name, dataset.type);
+    this.actor.system.advanceAttr(dataset.name, dataset.type);
   }
 
   static async rollAttribute(_event, target) {
@@ -178,18 +203,19 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   }
   
   static async rollAttack(_event, target) {
-    const targetIds = Array.from(game.user.targets.map(x => x.id));  //targets is set
-    const sceneId = game.user.viewedScene; // TODO: Needed?
     const actor = this.actor;
-    const weaponID = target.closest(".weapon-id")?.dataset.weaponId ||
-      target.dataset.weaponId;
-    const weapon = this.actor.items.get(weaponID);
-    const token = this.token || Aux.getToken(this.actor.id);
+    const token = this.token || Aux.getToken(actor.id);
     if (token === null) {
         const msg = LocalisationServer.localise("No Token", "Notifications")
         ui.notifications.notify(msg)
       return undefined;
     }
+    const targetIds = Array.from(game.user.targets.map(x => x.id));  //targets is set
+    const sceneId = game.user.viewedScene; // TODO: Needed?
+    const weaponID = target.closest(".weapon-id")?.dataset.weaponId ||
+      target.dataset.weaponId;
+    const weapon = this.actor.items.get(weaponID);
+    const threshold = weaponID ? actor.system.getWeaponPlOfWeapon(weaponID) : actor.system.combaticsPL;
 
     if (!weaponID || weapon.system.type === "Hand-to-Hand combat") {
       if (targetIds.length > 1) {
@@ -199,8 +225,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
         ui.notifications.notify(msg)
         return undefined;
       }
-      const threshold = weaponID ? actor._getWeaponPL(weaponID) : actor._getCombaticsPL();
-      const damage = weaponID ? weapon.system.fireModes[0].damage : actor._getCombaticsDamage();
+      const damage = weaponID ? weapon.system.fireModes[0].damage : actor.system.combaticsDamage;
       const name = weaponID ? weapon.name : LocalisationServer.localise("Hand to Hand combat", "combat");
       DialogCombatics.start({
         actor: actor, token: token, sceneId: sceneId, targetId: targetIds[0] || undefined,
@@ -226,19 +251,22 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     let damageType = ""
     if (weapon.system.isElemental) {
       damageType = "Elemental"
-    } else if (Object.keys(game.model.Actor.character.weapons.energy).includes(weapon.system.type)) {
+    } else if (Object.keys(THE_EDGE.characterSchema.weapons.energy).includes(weapon.system.type)) {
       damageType = "energy"
     } else damageType = "kinetic";
     
-    const threshold = actor._getWeaponPL(weapon._id);
-    const effectItems = actor.items.filter(x => x.system.effects !== undefined)
+    const activeEffects = [
+      ...this.actor.system.effects,
+      ...this.actor.getItemEffects(true),
+      ...this.actor.getSkillEffects(true),
+      ...this.actor.system.statusEffects,
+    ];
     const effectModifier = [];
-    for (const effectItem of effectItems) {
-      if (!effectItem.system.active && !effectItem.system.equipped) continue;
-      for (const effect of effectItem.system.effects) {
-        if (effect.group != "weapons") continue;
-        if (effect.name == "all" || effect.name == damageType || effect.name == weapon.system.type) {
-          effectModifier.push({name: effectItem.name, value: effect.value})
+    for (const effect of activeEffects) {
+      for (const modifier of effect.modifiers) {
+        if (modifier.group != "weapons") continue;
+        if (modifier.field == "all" || modifier.field == damageType || modifier.field == weapon.system.type) {
+          effectModifier.push({name: effect.name, value: modifier.value})
         }
       }
     }
@@ -257,10 +285,15 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   static async reload(_event, target) {
     const weaponID = target.closest(".weapon-id").dataset.weaponId;
     const weapon = this.actor.items.get(weaponID);
-    const ammunitionOptions = this.actor.itemTypes["Ammunition"].filter(
-      x => (x.system.whitelist[x.system.type][weapon.system.type] || weapon.system.type === "Recoilless Rifles") && 
-        x.system.subtype == weapon.system.ammunitionType
-    );
+    const ammunitionOptions = this.actor.itemTypes["Ammunition"].filter(x => {
+      const isWhitelisted = (
+        x.system.whitelist[x.system.type][weapon.system.type] ||
+        weapon.system.type === "Recoilless Rifles"
+      ); 
+      const subtypeMatches = (x.system.subtype == weapon.system.ammunitionType);
+      const isNotLoaded = !x.system.loaded;
+      return isWhitelisted && subtypeMatches && isNotLoaded;
+    });
 
     await DialogReload.start({
       weaponID: weaponID,
@@ -313,7 +346,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     const name = event.currentTarget.dataset.target;
 
     const newVal = field.val() >= 0 ? field.val() : 0;
-    const cost = actor.coreValueChangeCost(name, newVal);
+    const cost = actor.system.coreValueChangeCost(name, newVal);
 
     if (cost == 0) return;
     else if (cost > 0) {
@@ -329,7 +362,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   _onChangeCoreValues(event, actor) {
     const target = event.target;
     const name = target.dataset.target;
-    actor.changeCoreValue(name, Math.max(target.value, 0));
+    actor.system.changeCoreValue(name, Math.max(target.value, 0));
     if (target.value < 0) this.render(true); // As this might not trigger an update
   }
 }

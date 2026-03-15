@@ -2,19 +2,15 @@
   <div class="attributes-table" cellpadding="0">
     <div class="table-row">
       <div class="table-header"></div> <!-- Empty first cell-->
-      {{#each prepare.attrs as |ch|}}
-      <div data-tooltip="{{attrName ch}}" class="table-header">
-        {{#if ../prepare.canAdvance}}
-          <a data-action="advanceAttr" data-name="{{ch}}" data-type="refund" data-cost="{{getSys ../prepare 'attr' ch 'refund'}}">
-            <i class="fas fa-minus advance-fa" style="font-size: 10px;"></i>
-          </a>
-          <b>{{attrAbbr ch}}</b>
-          <a data-action="advanceAttr" data-name="{{ch}}" data-type="advance" data-cost="{{getSys ../prepare 'attr' ch 'cost'}}">
-            <i class="fas fa-plus advance-fa" style="font-size: 10px;"></i>
-          </a>
-        {{else}}
-          <b>{{attrAbbr ch}}</b>
-        {{/if}}
+      {{#each system.attributes as |details attribute|}}
+      <div class="table-header">
+        <a data-action="advanceAttr" data-name="{{attribute}}" data-type="refund" data-cost="{{details.refund}}">
+          <i class="fas fa-minus advance-fa" style="font-size: 10px;"></i>
+        </a>
+        <b>{{attrAbbr attribute}}</b>
+        <a data-action="advanceAttr" data-name="{{attribute}}" data-type="advance" data-cost="{{details.cost}}">
+          <i class="fas fa-plus advance-fa" style="font-size: 10px;"></i>
+        </a>
       </div>
       {{/each}}
     </div>
@@ -24,13 +20,13 @@
           {{localize "Level"}}
         </div>
       </div>
-      {{#each prepare.attrs as |ch|}}
+      {{#each system.attributes as |details attribute|}}
       <div class="number-input table-data">
         <input
           class="core-value"
-          data-target="system.attributes.{{ch}}.advances"
+          data-target="system.attributes.{{attribute}}.advances"
           type="number"
-          value="{{getSys ../actor 'attributes' ch 'advances'}}"
+          value="{{details.advances}}"
           data-dtype="Number"
           style="text-align: center;"
         >
@@ -43,9 +39,9 @@
           {{localize "Status"}}
         </div>
       </div>
-      {{#each prepare.attrs as |ch|}}
+      {{#each system.attributes as |details attribute|}}
       <div class="table-data">
-        <span class="output" style="width: calc(100% - 2px);">{{getSys ../actor 'attributes' ch 'status'}}</span>
+        <span class="output" style="width: calc(100% - 2px);">{{details.status}}</span>
       </div>
       {{/each}}
     </div>

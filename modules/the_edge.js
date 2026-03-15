@@ -1,9 +1,22 @@
 import initHooks from "./hooks/init.js";
 import THE_EDGE from "./system/config-the-edge.js"
 import CombatLog from "./applications/combat-log.js";
-import TheEdgeHotbar from "./applications/hotbar.js";
+import DiceServer from "./system/dice_server.js";
 import GrenadePicker from "./applications/grenades-picker.js";
-import { TheEdgeBiologicalActor } from "./actors/biological.js";
+import TheEdgeHotbar from "./applications/hotbar.js";
+
+import CharacterData from "../data_models/actors/character.js";
+import StoreData from "../data_models/actors/store.js";
+
+import AmmunitionData from "../data_models/items/ammunition.js";
+import ArmourData from "../data_models/items/armour.js";
+import ConsumablesData from "../data_models/items/consumables.js";
+import GearData from "../data_models/items/gear.js";
+import { CombatSkillData, LanguageSkillData, MedicalSkillData, SkillData } from "../data_models/items/skills.js";
+import VantageData from "../data_models/items/vantage.js";
+import WeaponData from "../data_models/items/weapon.js";
+
+import { TheEdgeActor } from "./actors/actor.js";
 import { TheEdgeItem } from "./items/item.js";
 import { SocketHandler } from "./system/socket_handler.js";
 import { TheEdgeItemSheet } from "./items/item-sheet.js";
@@ -32,50 +45,60 @@ Hooks.once("init", async function() {
     // Javascripts % returns remainder, not module (-1 % n == -1 != n - 1)
     return ((this % n) + n) % n;
   }
+  String.prototype.rsplit = function(sep, maxsplit = 1) {
+      var split = this.split(sep || /\s+/);
+      return maxsplit ? [ split.slice(0, -maxsplit).join(sep) ].concat(split.slice(-maxsplit)) : split;
+  }
 
   // Generating maps for the fundamental data model
-  THE_EDGE.attrs = Object.keys(game.model.Actor.character.attributes)
-  const coreValues = Object.keys(foundry.utils.flattenObject(game.model.Actor.character))
+  const characterDataInstance = new CharacterData();
+  THE_EDGE.characterSchema = characterDataInstance.toObject();
+  const coreValues = Object.keys(foundry.utils.flattenObject(THE_EDGE.characterSchema))
     .filter(x => x.split(".").last() == "advances");
   for (const coreValue of coreValues) {
     const parts = coreValue.split(".");
-    THE_EDGE.core_value_map[parts[0]][parts[parts.length-2]] = coreValue.replace(".advances", "");
+    THE_EDGE.coreValueMap[parts[0]][parts[parts.length-2]] = coreValue.replace(".advances", "");
   }
 
-  const basicEffects = Object.keys(foundry.utils.flattenObject(game.model.Actor.character))
-    .filter(x => x.split(".").last() == "status");
+  const basicEffects = Object.keys(foundry.utils.flattenObject(THE_EDGE.characterSchema))
+    .filter(x => x.split(".").last() == "status" || x.split(".")[0] == "generalModifiers");
   for (let effect of basicEffects) {
     const parts = effect.split(".");
     effect = "system." + effect;
-    if (THE_EDGE.effect_map[parts[0]]) {
-      if (parts.length == 3) {
-        THE_EDGE.effect_map[parts[0]][parts[1]] = [effect];
+    if (THE_EDGE.effectMap[parts[0]]) {
+      if (parts.length == 2 || parts.length == 3) {
+        THE_EDGE.effectMap[parts[0]][parts[1]] = [effect];
       } else {
-        THE_EDGE.effect_map[parts[0]][parts[2]] = [effect];
-        if (THE_EDGE.effect_map[parts[0]][parts[1]]) {
-          THE_EDGE.effect_map[parts[0]][parts[1]].push(effect);
-        } else THE_EDGE.effect_map[parts[0]][parts[1]] = [effect];
+        THE_EDGE.effectMap[parts[0]][parts[2]] = [effect];
+        if (THE_EDGE.effectMap[parts[0]][parts[1]]) {
+          THE_EDGE.effectMap[parts[0]][parts[1]].push(effect);
+        } else THE_EDGE.effectMap[parts[0]][parts[1]] = [effect];
       }
-      THE_EDGE.effect_map[parts[0]].all?.push(effect);
+      THE_EDGE.effectMap[parts[0]].all?.push(effect);
     } else {
-      THE_EDGE.effect_map["others"][parts[0] + " - " + parts[1]] = [effect];
+      THE_EDGE.effectMap["generalModifiers"][parts[0] + " - " + parts[1]] = [effect];
     }
   }
-  THE_EDGE.effect_map["attributes"]["physical"] = [
-    THE_EDGE.effect_map["attributes"]["end"], THE_EDGE.effect_map["attributes"]["str"], 
-    THE_EDGE.effect_map["attributes"]["spd"], THE_EDGE.effect_map["attributes"]["crd"], 
+  THE_EDGE.effectMap["attributes"]["physical"] = [
+    THE_EDGE.effectMap["attributes"]["end"], THE_EDGE.effectMap["attributes"]["str"], 
+    THE_EDGE.effectMap["attributes"]["spd"], THE_EDGE.effectMap["attributes"]["crd"], 
   ]
-  THE_EDGE.effect_map["attributes"]["social"] = [
-    THE_EDGE.effect_map["attributes"]["cha"], THE_EDGE.effect_map["attributes"]["emp"], 
+  THE_EDGE.effectMap["attributes"]["social"] = [
+    THE_EDGE.effectMap["attributes"]["cha"], THE_EDGE.effectMap["attributes"]["emp"], 
   ]
-  THE_EDGE.effect_map["attributes"]["mental"] = [
-    THE_EDGE.effect_map["attributes"]["foc"], THE_EDGE.effect_map["attributes"]["res"], 
-    THE_EDGE.effect_map["attributes"]["int"]
+  THE_EDGE.effectMap["attributes"]["mental"] = [
+    THE_EDGE.effectMap["attributes"]["foc"], THE_EDGE.effectMap["attributes"]["res"], 
+    THE_EDGE.effectMap["attributes"]["int"]
   ]
+  THE_EDGE.definedEffects = structuredClone(THE_EDGE.effectMap);
+  for (const group of ["attributes", "proficiencies", "weapons"]) {
+    THE_EDGE.definedEffects[group].crit = undefined;
+    THE_EDGE.definedEffects[group].critFail = undefined;
+  }
 
-  const generalWeapons = Object.keys(game.model.Actor.character.weapons.general);
-  const energyWeapons = Object.keys(game.model.Actor.character.weapons.energy);
-  const kineticWeapons = Object.keys(game.model.Actor.character.weapons.kinetic);
+  const generalWeapons = Object.keys(THE_EDGE.characterSchema.weapons.general);
+  const energyWeapons = Object.keys(THE_EDGE.characterSchema.weapons.energy);
+  const kineticWeapons = Object.keys(THE_EDGE.characterSchema.weapons.kinetic);
   for (let i = 0; i < energyWeapons.length; ++i) {
     THE_EDGE.weapon_damage_types[generalWeapons[i]] = "general";
     THE_EDGE.weapon_damage_types[energyWeapons[i]] = "energy";
@@ -87,6 +110,7 @@ Hooks.once("init", async function() {
   game.the_edge = {
     config: THE_EDGE,
     combatLog: new CombatLog(),
+    diceServer: new DiceServer(),
     socketHandler: new SocketHandler()
   };
 
@@ -102,8 +126,23 @@ Hooks.once("init", async function() {
   });
 
   // Define custom Document classes
-  CONFIG.Actor.documentClass = TheEdgeBiologicalActor;
+  CONFIG.Actor.dataModels.character = CharacterData;
+  CONFIG.Actor.dataModels.Store = StoreData;
+  CONFIG.Actor.documentClass = TheEdgeActor;
+
+  CONFIG.Item.dataModels.Advantage = VantageData;
+  CONFIG.Item.dataModels.Ammunition = AmmunitionData;
+  CONFIG.Item.dataModels.Armour = ArmourData;
+  CONFIG.Item.dataModels.Consumables = ConsumablesData;
+  CONFIG.Item.dataModels.Combatskill = CombatSkillData;
+  CONFIG.Item.dataModels.Disadvantage = VantageData;
+  CONFIG.Item.dataModels.Gear = GearData;
+  CONFIG.Item.dataModels.Languageskill = LanguageSkillData;
+  CONFIG.Item.dataModels.Medicalskill = MedicalSkillData;
+  CONFIG.Item.dataModels.Skill = SkillData;
+  CONFIG.Item.dataModels.Weapon = WeaponData;
   CONFIG.Item.documentClass = TheEdgeItem;
+
   CONFIG.Token.documentClass = TheEdgeTokenDocument;
   CONFIG.Token.objectClass = TheEdgeToken;
 

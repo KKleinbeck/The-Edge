@@ -12,6 +12,7 @@ export default function() {
     itemName: (a) => LocalisationServer.localise(a, "Item"),
     skillName: (a) => LocalisationServer.localise(a, "Skill"),
     combatName: (a) => LocalisationServer.localise(a, "combat"),
+    effectName: (a) => LocalisationServer.localise(a, "effect_group"),
     tooltipText: (a) => LocalisationServer.localise(a, "tooltip"),
     proficiencyName: (a) => LocalisationServer.localise(a, "proficiency"),
     textLocalisation: (a) => LocalisationServer.localise(a, "text"),
@@ -94,7 +95,7 @@ export default function() {
     getProficiency: (a, b, c, d) => { return a.system.proficiencies[b][c][d]; },
     getProficiencyDice: (a, b, c, d) => { return a.system.proficiencies[b][c].dices[d]; },
     getWeaponProficiency: (a, b, c, d) => { return a.system.weapons[b][c][d]; },
-    getWeaponLevel: (actor, weaponType) => { return actor.getWeaponLevel(weaponType); },
+    getWeaponLevel: (actor, weaponType) => { return actor.system.getWeaponLevel(weaponType); },
     getLoadedAmmunition: (actor, weapon) => {
       if (weapon.system.type == "Hand-to-Hand combat") return "";
       for (const ammu of actor.itemTypes["Ammunition"]) {
@@ -105,8 +106,8 @@ export default function() {
       }
       return "(empty)";
     },
-    calcWeaponPL: (actor, weaponID) => { return actor._getWeaponPL(weaponID) },
-    calcCombaticsPL: (actor) => { return actor._getCombaticsPL(); },
+    calcWeaponPL: (actor, weaponID) => { return actor.system.getWeaponPlOfWeapon(weaponID) },
+    calcCombaticsPL: (actor) => { return actor.system.combaticsPL; },
     checkRenderItem: (item, type) => {
       if (type !== "any" && item.type !== type) {
         return false;

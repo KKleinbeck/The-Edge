@@ -37,7 +37,7 @@ export default class DiceServer {
     return roll2;
   }
 
-  async _interpretCheck(type, roll, details = undefined) {
+  async interpretCheck(type, roll, details = undefined) {
     const interpretationParams = this.interpretationParams[type];
     const qualityStep = interpretationParams.qualityStep;
 
@@ -114,7 +114,7 @@ export default class DiceServer {
       roll = this._selectVantageOutcome(vantage, roll, roll2);
     }
 
-    return this._interpretCheck("attributes", roll);
+    return this.interpretCheck("attributes", roll);
   }
 
   async _attributeRoll(threshold) {
@@ -130,7 +130,7 @@ export default class DiceServer {
       roll = this._selectVantageOutcome(vantage, roll, roll2)
     }
 
-    return this._interpretCheck("proficiencies", roll);
+    return this.interpretCheck("proficiencies", roll);
   }
 
   async _proficiencyRoll(thresholds, modificator) {
@@ -159,7 +159,7 @@ export default class DiceServer {
       roll = this._selectVantageOutcome(vantage, roll, roll2)
     }
 
-    return this._interpretCheck("weapons", roll,
+    return this.interpretCheck("weapons", roll,
       {damageDice: damageDice, dices: dices, critThreshold: critThreshold}
     );
   }

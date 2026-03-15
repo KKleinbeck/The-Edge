@@ -1,14 +1,17 @@
 import Aux from "../system/auxilliaries.js";
+import ChatServer from "../system/chat_server.js";
 import DialogMedicine from "../dialogs/dialog-medicine.js";
 import DialogItemDeletion from "../dialogs/dialog-item-deletion.js";
 import DialogArmourAttachment from "../dialogs/dialog-attachOuterArmour.js";
+import EffectModifierMixin from "../mixins/effect-modifier-mixin.js";
 import LocalisationServer from "../system/localisation_server.js";
-import ChatServer from "../system/chat_server.js";
+import NotificationServer from "../system/notifications.js";
+import THE_EDGE from "../system/config-the-edge.js";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ActorSheetV2 } = foundry.applications.sheets;
 
-export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
+export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplicationMixin(ActorSheetV2)) {
   static DEFAULT_OPTIONS = {
     tag: "form",
     position: {
@@ -21,6 +24,7 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
     classes: ["the_edge", "actor"],
     actions: {
       itemControl: TheEdgeActorSheet._onItemControl,
+      effectControl: TheEdgeActorSheet._onEffectControl,
       skillControl: TheEdgeActorSheet._onSkillControl,
       counterControl: TheEdgeActorSheet.onCounterControl,
     },
@@ -33,11 +37,6 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
     context.userIsGM = game.user.isGM;
     context.actor = this.actor;
     context.system = context.document.system;
-    context.prepare = this.actor.prepareSheet()
-
-    Object.entries(this.actor.itemTypes).forEach(([type, entries]) => {
-      context[type] = entries;
-    })
     return context;
   }
   
@@ -54,10 +53,10 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
       case "create":
         const itemType = target.dataset.type;
         const cls = getDocumentClass("Item");
-        return cls.create({name: LocalisationServer.localise("New", "item"), type: itemType}, {parent: this.actor});
-      case "create-effect":
-        const clsEffect = getDocumentClass("Item");
-        return clsEffect.create({name: LocalisationServer.localise("New effect", "item"), type: "Effect"}, {parent: this.actor});
+        return cls.create(
+          {name: LocalisationServer.localise("New", "item"), type: itemType},
+          {parent: this.actor}
+        );
       case "edit":
         return item?.sheet.render(true);
       case "post":
@@ -71,11 +70,8 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
         break;
       case "delete":
         if (item.type.includes("vantage")) this.actor.deleteVantage(item);
-        else if (item.type == "Wounds") this.actor.deleteWound(item);
+        else if (item.type == "Wounds") this.actor.system.deleteWound(item);
         else DialogItemDeletion.start({item: item, actor: this.actor});
-        break;
-      case "toggle-active":
-        item.toggleActive();
         break;
       case "toggle-equip":
         if (item.type == "Armour") {
@@ -90,7 +86,7 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
               const parent = this.actor.items.get(item.system.attachments[0].armourId);
               await Aux.detachFromParent(parent, item._id, item.system.attachmentPoints.max);
               await item.update({"system.attachments": []})
-              await item.toggleEquipped();
+              await item.system.toggleEquipped();
               break;
             } else {
               const attachableArmour = this._findAttachableArmour(item);
@@ -106,52 +102,198 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
             }
           }
         }
-        await item.toggleEquipped();
-        await this.actor.updateStatus();
-        this.render();
+        await item.system.toggleEquipped();
+        await this.actor.update({});
         break;
       case "consume":
         switch (item.system.current_type) {
           case "medicine":
-            const wounds = this.actor.itemTypes["Wounds"];
-            DialogMedicine.start({medicineItem: item, wounds: wounds, actor: this.actor});
+            const wounds = this.actor.system.wounds;
+            if (wounds.length) {
+              DialogMedicine.start({medicineItem: item, wounds: wounds, actor: this.actor});
+            } else {
+              NotificationServer.notify("No wounds on Actor", {name: this.actor.name})
+            }
             break;
 
           case "grenade":
             ChatServer.transmitEvent("grenade sheet based", {
-              actorId: this.actor?.id, tokenId: this.token?.id, grenade: item, details: item.system.subtypes.grenade
+              actorId: this.actor?.id, tokenId: this.token?.id, grenade: item,
+              details: item.system.subtypes.grenade
             })
             item.useOne();
             break;
           
           default:
-            const effectNames = this.actor.itemTypes["Effect"].map(x => x.name)
-            if (effectNames.includes(item.name)) {
-              // TODO Notification server
-              const msg = LocalisationServer.localise("Effect already exists", "Notifications")
-              ui.notifications.notify(msg)
-            } else {
-              const hasEffects = item.system.effects.length > 0;
-              if (hasEffects) {
-                const clsEffect = getDocumentClass("Item");
-                const newEffect = await clsEffect.create(
-                  {name: item.name, type: "Effect"}, 
-                  {parent: this.actor, "system.effects": item.system.effects}
-                );
-                newEffect.update({
-                  "system.effects": item.system.effects, "system.description": item.system.description,
-                  "system.gm_description": item.system.gm_description
-                })
-                this.render();
-              }
-              ChatServer.transmitEvent("General Consume", {
-                details: {actorName: this.actor.name, item: item.name}, hasEffects: hasEffects
-              })
-              item.useOne();
+            const existingCopies = this.actor.system.findEffectsByName(item.name);
+            if (existingCopies.length) {
+              NotificationServer.notify("Effect already exists");
+              return
             }
+
+            const hasEffect = item.system.effect.length > 0;
+            if (hasEffect) {
+              this.actor.system.createNewEffect(item.name, item.system.effect);
+            }
+            ChatServer.transmitEvent("General Consume", {
+              details: {actorName: this.actor.name, item: item.name},
+              hasEffects: hasEffect
+            });
+            item.useOne();
+            break;
         }
         break;
     }
+  }
+
+  static async _onEffectControl(event, target) {
+    event.preventDefault();
+
+    // Obtain event data
+    const effectElement = target.closest(".effect-hook");
+    const index = effectElement?.dataset.index || ""; 
+    const source = effectElement?.dataset.source || ""; 
+
+    // Handle different actions
+    switch ( target.dataset.subaction ) {
+      case "create":
+        await this.actor.system.createNewEffect();
+        this.effectIsExpanded[target.dataset.source].push(false);
+        break;
+      case "delete":
+        // TODO: proper movement animations
+        this.actor.system.deleteEffect(index);
+        this.effectIsExpanded[source].splice(index, 1);
+        break;
+      case "edit":
+        if (["itemEffects", "skillEffects"].includes(effectElement.dataset.source)) {
+          const id = effectElement?.dataset.id || ""; 
+          const item = this.actor.items.get(id);
+          return item?.sheet.render(true);
+        }
+        break;
+      case "toggleShowContent":
+        this.effectIsExpanded[source][index] = !this.effectIsExpanded[source][index];
+        const container = effectElement.parentElement;
+        const content = effectElement.querySelector(".content");
+        if (!effectElement.classList.contains('expanded')) {
+          this.expandItem(effectElement, content, container);
+        } else {
+          this.collapseItem(effectElement, content, container);
+        }
+        break;
+      case "toggle-active":
+        if (effectElement.dataset.source == "effects") {
+          this.actor.system.toggleEffect(index);
+        } else { // Skill effect
+          const item = this.actor.items.get(effectElement.dataset.id);
+          await item.system.toggleActive({render: false});
+          await this.actor.update({}, {render: false}); // Force effect recalculation
+          this.render({force: true}); // Force redraw for icon update
+        }
+        break;
+    }
+  }
+
+  getModifiers(target) {
+    const effectIndex = target.closest(".effect-hook").dataset.index;
+    const modifiers = this.actor.system.effects[effectIndex].modifiers;
+    return {modifiers: modifiers, context: {effectIndex: effectIndex}};
+  }
+
+  async updateModifiers(modifiers, context) {
+    const effects = this.actor.system.effects;
+    effects[context.effectIndex].modifiers = modifiers;
+    this.actor.update({"system.effects": effects});
+  };
+  
+  // TODO: Refactor into an animator class
+  expandItem(item, content, container) {
+    const DURATION = 300;
+    // First: do FLIP measurement
+    const items = [...container.children];
+    const firstRects = items.map(el => el.getBoundingClientRect());
+
+    item.classList.add('expanded');
+
+    requestAnimationFrame(() => {
+      const lastRects = items.map(el => el.getBoundingClientRect());
+
+      items.forEach((el, i) => {
+        const dx = firstRects[i].left - lastRects[i].left;
+        const dy = firstRects[i].top - lastRects[i].top;
+
+        el.animate([
+          { transform: `translate(${dx}px, ${dy}px)` },
+          { transform: `translate(0,0)` }
+        ], {
+          duration: DURATION,
+          easing: 'ease'
+        });
+      });
+
+      // AFTER layout animation finishes → expand content
+      setTimeout(() => {
+        this.revealContent(content);
+        item.querySelector(".chevron-hook").classList.add("rotate180");
+      }, DURATION);
+    });
+  }
+
+  collapseItem(item, content, container) {
+    const DURATION = 300;
+    item.querySelector(".chevron-hook").classList.remove("rotate180");
+    this.hideContent(content);
+
+    setTimeout(() => {
+      const items = [...container.children];
+      const firstRects = items.map(el => el.getBoundingClientRect());
+
+      item.classList.remove('expanded');
+
+      requestAnimationFrame(() => {
+        const lastRects = items.map(el => el.getBoundingClientRect());
+
+        items.forEach((el, i) => {
+          const dx = firstRects[i].left - lastRects[i].left;
+          const dy = firstRects[i].top - lastRects[i].top;
+
+          el.animate([
+            { transform: `translate(${dx}px, ${dy}px)` },
+            { transform: `translate(0,0)` }
+          ], {
+            duration: DURATION,
+            easing: 'ease'
+          });
+        });
+      });
+
+    }, DURATION);
+  }
+
+  revealContent(content) {
+    content.style.height = "0px";
+    content.style.opacity = "0";
+
+    const fullHeight = content.scrollHeight;
+
+    requestAnimationFrame(() => {
+      content.style.height = fullHeight + "px";
+      content.style.opacity = "1";
+    });
+
+    content.addEventListener('transitionend', () => {
+      content.style.height = "auto";
+    }, { once: true });
+  }
+
+  hideContent(content) {
+    content.style.height = content.scrollHeight + "px";
+
+    requestAnimationFrame(() => {
+      content.style.height = "0px";
+      content.style.opacity = "0";
+    });
   }
   
   static async _onSkillControl(event, target) {
@@ -170,9 +312,6 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
         return this.actor.skillLevelDecrease(skillID);
       case "delete":
         return this.actor.deleteSkill(skillID);
-      case "toggle-active":
-        skill.toggleActive();
-        break;
       case "post":
         ChatServer.transmitEvent("Post Skill",
           {name: skill.name, type: skill.type, description: skill.system.description}
@@ -190,7 +329,7 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
             game.the_edge.combatLog.addAction(skill.name, hrChange);
           } else {
             const hrThen = this.actor.system.heartRate.value;
-            await this.actor.applyStrains([hrChange]);
+            await this.actor.system.applyStrains([hrChange]);
             const hrNow = this.actor.system.heartRate.value;
             ChatServer.transmitEvent("Combat Action",
               {actor: this.actor.name, skill: skill.name, hrThen: hrThen, hrNow: hrNow}
@@ -283,6 +422,16 @@ export class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
     for (const input of progressBarInputs) {
       input.addEventListener("change", (ev) => {
         this._onCounterChange(ev, ev.target.dataset.subtype)
+      })
+    }
+
+    const effectNames = this.element.querySelectorAll(".effect-name-hook");
+    for (const effectName of effectNames) {
+      effectName.addEventListener("change", (ev) => {
+        const effectElement = ev.target.closest(".effect-hook");
+        const effects = this.actor.system.effects;
+        effects[effectElement.dataset.index].name = ev.target.value;
+        this.actor.update({"system.effects": effects}, {render: false});
       })
     }
 

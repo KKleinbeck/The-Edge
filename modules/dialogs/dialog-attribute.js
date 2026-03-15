@@ -20,7 +20,7 @@ export default class DialogAttribute extends Dialog{
           checkData.temporaryMod = parseInt(html.find('[name="Modifier"]').val());
           checkData.vantage = html.find('[name="AdvantageSelector"]').val();
           const rollType = Aux.parseRollType(html);
-          checkData.actor.rollAttributeCheck(checkData, rollType);
+          checkData.actor.system.rollAttributeCheck(checkData, rollType);
         }
       }
     }

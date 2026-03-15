@@ -25,7 +25,11 @@
     "SOCIAL": "Social",
 
     "CRIT": "Critical roll dice",
-    "CRITFAIL": "Critical fail dice"
+    "CRITFAIL": "Critical fail dice",
+
+    "RUN SPEED": "Run Speed",
+    "SPRINT SPEED": "Sprint Speed",
+    "STRIDE SPEED": "Stride Speed"
   },
   "ATTR_ABBR": {
     "END": "END",
@@ -241,6 +245,9 @@
     "BARREL DAMAGED": "Barrel tip fractures. All shots now deal 1 less damage untill barrel is changed (this can stack).",
     "CATASTROPHIC FAILURE": "The weapon suffers a critical failure, becoming unusable until repaired (taking an hour)."
   },
+  "DATAMODELS": {
+    "NEW EFFECT": "New Effect"
+  },
   "DIALOG": {
     "CANCEL": "Cancel",
     "CHANGE DICE": "Change dice",
@@ -255,6 +262,23 @@
     "SELECT": "Select",
     "SUBMIT": "Submit",
     "YES": "Yes"
+  },
+  "EFFECT_GROUP": {
+    "BLOODLOSSTHRESHOLD": "Blood loss - threshold",
+    "BLOODLOSSSTEPSIZE": "Blood loss - step size",
+    "HEALTH - MAX": "Max health",
+    "HEARTRATE - DAMAGETHRESHOLD": "Damage buffer heart rate",
+    "HEARTRATE - MAX": "Max heart rate",
+    "HEARTRATE - MIN": "Min heart rate",
+    "INJURIES ARMS": "Injuries arms",
+    "INJURIES HEAD": "Injuries head",
+    "INJURIES LEGS": "Injuries legs",
+    "INJURIES TORSO": "Injuries torso",
+    "OVERLOAD": "Overload",
+    "OVERLOADTHRESHOLD": "Overload - threshold",
+    "PAIN": "Pain",
+    "PAINTHRESHOLD": "Pain - threshold",
+    "STRAIN": "Strain"
   },
   "HERO TOKEN": {
     "ATTRIBUTE": "{name} used a hero token to improve an ability check.",
@@ -379,8 +403,8 @@
     "MISSING ATTACHMENT POINTS": "Cannot attach to this armour. It has {available} attachment points left, but {needed} are needed.",
 
     "MISSING PH": "Not enough PH to learn {name}. {need} needed, {available} available.",
-    "MISSING REQUIREMENTS": "Skill has unmatched requirements. Skill {name} has to be at {value} first.",
-    "UNMET REQUIREMENTS": "Skill has unmatched requirements. {name} has to be {value}, but is {valueIs}.",
+    "MISSING REQUIREMENTS": "Skill has unmatched requirements. Skill {field} has to be at {value} first.",
+    "UNMET REQUIREMENTS": "Skill has unmatched requirements. {field} has to be {value}, but is {valueIs}.",
 
     "MAX LEVEL": "{name} is already at it's max level.",
 
@@ -391,6 +415,7 @@
     "CORE VALUE COMBATICS TOO SMALL": "Basic combat proficiency (average str and crd) for 'Hand-to-Hand combat' is too small. {level} needed but it is at {basic}.",
 
     "NO PLAYER ACTORS": "Could not find any suitable characters. Make sure they have a player owner.",
+    "NO WOUNDS ON ACTOR": "{name} is not wounded and will not use medicine",
 
     "TOO EXPENSIVE": "{name} cannot afford item. Price: {price} - Available credits: {credits}"
   },
@@ -498,6 +523,9 @@
   "TOOLTIP": {
     "DESIGNATED WEAPON": "Some types of ammunition are only useable with specific names. Specify these here by their names (comma separated).",
     "PENETRATION": "The penetration value reduces the armour's threshold.",
+    
+    "HEARTRATE ZONE 1": "75% Max Heart Rate",
+    "HEARTRATE ZONE 2": "90% Max Heart Rate",
 
     "STRAIN LEVEL 0": "Resting for an action",
     "STRAIN LEVEL 1": "Examples: Walking, striding, throwing, firing a weapon, normal swimming",
@@ -509,7 +537,11 @@
 
     "EMP": "Applies effects on mechs and robots",
     "SMOKE": "Creates a smoke screen at the detonation location",
-    "SHELLSHOCK": "Applies effect on biological creatures"
+    "SHELLSHOCK": "Applies effect on biological creatures",
+
+    "STRIDE SPEED": "Min(5 + Spd/6, 75% foc)",
+    "RUN SPEED": "Min(7 + Spd/3, 125% Foc)",
+    "SPRINT SPEED": "Min(8 + Spd/1.5, 175% Foc)"
   },
   "ACTION COST": "Action cost",
   "ACTION": "Action",
@@ -537,8 +569,6 @@
   "BIOLOGY": "Biology",
   "BLEEDING": "Bleeding",
   "BLOOD LOSS": "Blood loss",
-  "BLOODLOSSTHRESHOLD": "Blood loss - threshold",
-  "BLOODLOSSSTEPSIZE": "Blood loss - step size",
   "BLOOD TYPE": "Blood type",
   "BLOOD VOLUMN": "Blood Volumn",
   "BODY": "Body",
@@ -583,6 +613,7 @@
   "FALL DAMAGE TITLE": "Falling",
   "FEMALE": "Female",
   "GENERAL": "General",
+  "GENERALMODIFIERS": "General mods",
   "GENERAL WOUND": "General wound",
   "GM NOTES": "GM Notes",
   "HANDEDNESS": "Handedness",
@@ -590,12 +621,8 @@
   "HEALING": "Healing",
   "HEALS": "heals",
   "HEALTH": "Health",
-  "HEALTH - MAX": "Max health",
   "HEALTH STATUS TAB": "Health status",
   "HEARTRATE": "Heart rate",
-  "HEARTRATE - DAMAGETHRESHOLD": "Damage buffer heart rate",
-  "HEARTRATE - MAX": "Max heart rate",
-  "HEARTRATE - MIN": "Min heart rate",
   "HEIGHT": "Height",
   "HEROTOKEN": "Hero token",
   "HEROTOKENSPENT": "Hero token (spent)",
@@ -603,10 +630,6 @@
   "HR COST": "HR cost",
   "INITIATIVE": "Initiative",
   "INJURIES": "Injuries & Wounds",
-  "INJURIES ARMS": "Injuries arms",
-  "INJURIES HEAD": "Injuries head",
-  "INJURIES LEGS": "Injuries legs",
-  "INJURIES TORSO": "Injuries torso",
   "IMPACT DAMAGE": "Impact damage",
   "IMPACT DAMAGE TITLE": "Impacting at",
   "IMPACT SPEED": "Impact speed",
@@ -642,10 +665,6 @@
   "OTHER": "Other",
   "OTHERS": "Others",
   "OUTCOME": "Outcome",
-  "OVERLOAD": "Overload",
-  "OVERLOADTHRESHOLD": "Overload - threshold",
-  "PAIN": "Pain",
-  "PAINTHRESHOLD": "Pain - threshold",
   "PENETRATION": "Penetration",
   "PERMANENT": "Permanent",
   "PH COST": "PH cost",
@@ -692,7 +711,6 @@
   "STATUS EFFECTS": "Status effects",
   "STORAGE": "Storage",
   "STORE": "Store",
-  "STRAIN": "Strain",
   "SUCCESS": "Success",
   "TEMPORARY": "Temporary",
   "THRESHOLD": "threshold",

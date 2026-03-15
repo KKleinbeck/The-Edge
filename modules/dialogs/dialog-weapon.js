@@ -19,7 +19,7 @@ export default class DialogWeapon extends Dialog{
       {sizeModifiers: THE_EDGE.sizeModifiers, movements: THE_EDGE.movements, cover: THE_EDGE.cover},
       checkData
     );
-    const template = "systems/the_edge/templates/dialogs/weapon.html";
+    const template = "systems/the_edge/templates/dialogs/weapon.hbs";
     let html = await renderTemplate(template, templateParams);
     const buttons = {
       roll: {
@@ -30,7 +30,7 @@ export default class DialogWeapon extends Dialog{
 
           // Subtract ammunition and determine effective dices
           const ammuCapa = checkData.ammunition.system.capacity;
-          if (ammuCapa.max <= ammuCapa.used) {
+          if (ammuCapa.value <= 0) {
             ChatServer.transmitEvent("Firing empty weapon", {name: checkData.actor.name});
             return;
           }
@@ -45,7 +45,7 @@ export default class DialogWeapon extends Dialog{
 
           // Roll the attack
           foundry.utils.mergeObject(modificators, {dicesEff: dices})
-          const [crits, damage, diceRes, hits, failEvents] = await checkData.actor.rollAttackCheck(
+          const [crits, damage, diceRes, hits, failEvents] = await checkData.actor.system.rollAttackCheck(
             dices, modificators.threshold, modificators.vantage, modificators.fireModeModifier.damage,
             checkData.damageType
           );
@@ -72,13 +72,13 @@ export default class DialogWeapon extends Dialog{
           }
 
           // Append to strainLog
-          const hrChange = checkData.actor.getHrChangeFromStrain(1);
+          const hrChange = checkData.actor.system.getHrChangeFromStrain(1);
           if (game.combat) {
             game.the_edge.combatLog.addAction(
               LocalisationServer.localise("Weapon attack"), hrChange
             );
           } else {
-            checkData.actor.applyStrains([hrChange]);
+            checkData.actor.system.applyStrains([hrChange]);
           }
         }
       },

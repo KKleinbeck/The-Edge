@@ -33,7 +33,7 @@ export default function() {
     );
     html.querySelector(".message-content").innerHTML = newContent;
     const sys = message.message.system;
-    const actor = Aux.getActor(sys.actorId);
+    const actor = Aux.getActor(sys.actorId); // TODO: Struggles with hero tokens used from tokens. Provide token information
 
     // Adding context menus
     new foundry.applications.ux.ContextMenu(html, ".rerollable", [
@@ -50,16 +50,16 @@ export default function() {
           switch (contextHtml.dataset.type) {
             case "attribute":
               await heroTokenAttributeCheck(chatMsgCls, actor, sys)
-              actor.useHeroToken("attribute");
+              actor.system.useHeroToken("attribute");
               break;
             case "proficiency":
               await heroTokenProficiencyCheck(chatMsgCls, actor, sys)
-              actor.useHeroToken("proficiency");
+              actor.system.useHeroToken("proficiency");
               break;
             case "weapon":
               const index = +contextHtml.dataset.index;
               await heroTokenWeaponCheck(chatMsgCls, actor, sys, index)
-              actor.useHeroToken("weapon");
+              actor.system.useHeroToken("weapon");
               break;
           }
         }
@@ -503,7 +503,7 @@ async function applyDamage(target, damage, penetration, crits, damageType, name)
   const protectionLog = {};
   const partialLogs = [];
   for (let i = 0; i < damage.length; ++i){
-    const partialLog = await target.applyDamage(damage[i], crits[i], penetration, damageType, name);
+    const partialLog = await target.system.applyDamage(damage[i], crits[i], penetration, damageType, name);
     partialLogs.push(partialLog);
   }
 

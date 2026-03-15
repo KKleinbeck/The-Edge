@@ -1,40 +1,23 @@
-import { ArmourItemTheEdge } from "../items/item.js";
-import THE_EDGE from "../system/config-the-edge.js";
 import Aux from "../system/auxilliaries.js";
-import LocalisationServer from "../system/localisation_server.js";
-import ChatServer from "../system/chat_server.js";
 import DiceServer from "../system/dice_server.js";
+import LocalisationServer from "../system/localisation_server.js";
+import NotificationServer from "../system/notifications.js";
+import THE_EDGE from "../system/config-the-edge.js";
 
 /**
  * Extend the base Actor document to support attributes and groups with a custom template creation dialog.
  * @extends {Actor}
  */
-export class TheEdgeBaseActor extends Actor {
+export class TheEdgeActor extends Actor {
   constructor(...args) {
     super(...args);
+    // DiceServer stores actors crit dice
     this.diceServer = new DiceServer();
-    this.overloadLevel = 0;
-    this.weightTillNextOverload = 0;
   }
 
-  /** @inheritdoc */
-  prepareDerivedData() {
-    super.prepareDerivedData();
-    if (this.type !== "character") return;
-
-    const sys = this.system;
-    for (const coreValPath of Object.values(foundry.utils.flattenObject(THE_EDGE.core_value_map))) {
-      const coreVal = Aux.objectAt(this.system, coreValPath);
-      coreVal.value = coreVal.advances + coreVal.status;
-    }
-    sys.health.max.value = sys.health.max.baseline + sys.health.max.status +
-      sys.attributes.str.advances + Math.floor((sys.attributes.end.advances + sys.attributes.res.advances) / 2);
-    
-    sys.heartRate.max.value = sys.heartRate.max.baseline + sys.heartRate.max.status +
-      sys.attributes.end.value - 2 * Math.floor((sys.age - 21) / 3) - sys.bloodLoss.value;
-    sys.heartRate.min.value = Math.max(20, sys.heartRate.min.baseline + sys.heartRate.min.status - sys.attributes.end.value);
-
-    sys.wounds = {}
+  async update(data={}, operation={}) {
+    this.system.onUpdate(data);
+    await super.update(data, operation)
   }
 
   /**
@@ -45,379 +28,14 @@ export class TheEdgeBaseActor extends Actor {
     return !!this.getFlag("the_edge", "isTemplate");
   }
 
-  /* -------------------------------------------- */
-
-  /** @inheritdoc */
-  async modifyTokenAttribute(attribute, value, isDelta = false, isBar = true) {
-    const current = foundry.utils.getProperty(this.system, attribute);
-    if ( !isBar || !isDelta || (current?.dtype !== "Resource") ) {
-      return super.modifyTokenAttribute(attribute, value, isDelta, isBar);
-    }
-    const updates = {[`system.${attribute}.value`]: Math.clamped(current.value + value, current.min, current.max)};
-    const allowed = Hooks.call("modifyTokenAttribute", {attribute, value, isDelta, isBar}, updates);
-    return allowed !== false ? this.update(updates) : this;
-  }
-
-  async useHeroToken(reason = "generic") {
-    await this.update({"system.heroToken.available": this.system.heroToken.available - 1});
-    ChatServer.transmitEvent("Hero Token", {name: this.name, reason: reason});
-  }
-
-  async regenerateHeroToken() {
-    await this.update({"system.heroToken.available": this.system.heroToken.available + 1});
-  }
-
-  getStrideSpeed() {
-    const ch = this.system.attributes;
-    return Math.min(5 + Math.floor(ch.spd.value / 6  ), Math.floor(ch.foc.value * 0.75));
-  }
-
-  getRunSpeed() {
-    const ch = this.system.attributes;
-    return Math.min(7 + Math.floor(ch.spd.value / 3  ), Math.floor(ch.foc.value * 1.25));
-  }
-
-  getSprintSpeed() {
-    const ch = this.system.attributes;
-    return Math.min(8 + Math.floor(ch.spd.value / 1.5), Math.floor(ch.foc.value * 1.75));
-  }
-
-  // Generates dict for the charactersheet to parse
-  prepareSheet() {
-    const preparedData = { system: { attr: {}, profGroups: [], weapons: {} } };
-    for (const key of Object.keys(this.system.attributes)) {
-      let n = this.system.attributes[key].advances;
-      preparedData.system.attr[key] = {
-        cost: this._attrCost(n),
-        refund: n == 0 ? 0 : this._attrCost(n-1)
-      }
-    }
-
-    foundry.utils.mergeObject(preparedData, {proficienciesLeft: {}, proficienciesRight: {}})
-    preparedData.system.profGroups.push({
-      physical: Object.keys(this.system.proficiencies["physical"]),
-      social: Object.keys(this.system.proficiencies["social"]),
-      technical: Object.keys(this.system.proficiencies["technical"]),
-    })
-    preparedData.system.profGroups.push({
-      environmental: Object.keys(this.system.proficiencies["environmental"]),
-      knowledge: Object.keys(this.system.proficiencies["knowledge"]),
-      mental: Object.keys(this.system.proficiencies["mental"]),
-    })
-
-    return preparedData;
-  }
-
   interpretCheck(type, roll) {
-    return this.diceServer._interpretCheck(type, roll);
+    return this.diceServer.interpretCheck(type, roll);
   }
 
-  async rollAttributeCheck(checkData, roll = "roll", transmit = true) {
-    checkData.threshold = this.system.attributes[checkData.attribute]["value"] +
-      checkData.temporaryMod;
-    const result = await this.diceServer.attributeCheck(checkData.threshold, checkData.vantage);
-
-    if (transmit) {
-      foundry.utils.mergeObject(checkData, result);
-      ChatServer.transmitEvent("AbilityCheck", checkData, roll);
-    }
-  }
-
-  async rollProficiencyCheck(checkData, roll = "roll", transmit = true) {
-    checkData.proficiency = checkData.proficiency.toLowerCase();
-    const proficiencyData = Object.values(this.system.proficiencies)
-      .find(profClass => checkData.proficiency in profClass)[checkData.proficiency]
-    checkData.dices = proficiencyData.dices;
-    checkData.permanentMod = proficiencyData.value;
-    checkData.thresholds = checkData.dices.map(dice => this.system.attributes[dice]["value"]);
-
-    const results = await this.diceServer.proficiencyCheck(
-      checkData.thresholds, checkData.permanentMod + (checkData.temporaryMod || 0), checkData.vantage
-    );
-
-    if (transmit) {
-      foundry.utils.mergeObject(checkData, results)
-      ChatServer.transmitEvent("ProficiencyCheck", checkData, roll);
-    }
-    return results;
-  }
-
-  async rollAttackCheck(dices, threshold, vantage, damageDice, damageType) {
-    const results = await this.diceServer.attackCheck(
-      dices, threshold, vantage, damageDice,
-      Math.floor((this.system.weapons.general["General weapon proficiency"].value || 0) / 2)
-    );
-    return results;
-  }
-
-  async _advanceAttr(attrName, type) {
-    const attrValue = this.system.attributes[attrName].advances;
-    const newVal = attrValue + (type == "advance" ? 1 : -1);
-
-    this.changeCoreValue(`system.attributes.${attrName}.advances`, Math.max(newVal, 0));
-  }
-
-  coreValueChangeCost(coreName, newVal) {
-    newVal = newVal ? +newVal : 0; // If empty / undefined
-    if (!Number.isInteger(+newVal)) {return;}
-
-    const oldVal = Aux.objectAt(this, coreName);
-
-    let costFun = coreName.includes("proficiencies") ? this._profCost : this._attrCost;
-    let cost = 0;
-    if (newVal > oldVal) {
-      for (let n = oldVal; n < newVal; n++) cost += costFun(n);
-    } else {
-      for (let n = newVal; n < oldVal; n++) cost -= costFun(n);
-    }
-    return cost;
-  }
-
-  changeCoreValue(coreName, newVal) {
-    // TODO: this should just get the core values plain text name in the data model refactor
-    newVal = newVal ? +newVal : 0; // If empty / undefined
-    if (!Number.isInteger(+newVal)) {return;}
-
-    const cost = this.coreValueChangeCost(coreName, newVal);
-    const availablePH = this.system.PracticeHours.max - this.system.PracticeHours.used;
-    const parts = coreName.split(".");
-    if (cost > availablePH) {
-      const msg = LocalisationServer.parsedLocalisation(
-        "PH missing", "Notifications",
-        {name: parts[parts.length - 2], level: newVal, need: cost, available: availablePH}
-      )
-      ui.notifications.notify(msg)
-      return;
-    }
-    if (coreName.split(".")[1] === "weapons") {
-      if (coreName.includes("Hand-to-Hand combat")) {
-        const combaticsBasic = Math.floor(
-          (this.system.attributes.str.value + this.system.attributes.crd.value) / 2
-        );
-        if (newVal > combaticsBasic) {
-          const msg = LocalisationServer.parsedLocalisation(
-            "Core Value combatics too small", "Notifications",
-            {level: newVal, basic: combaticsBasic}
-          )
-          ui.notifications.notify(msg)
-          return;
-        } 
-      } else if (coreName.includes("General weapon proficiency")) { // Do nothing
-      } else if (newVal > this.system.weapons.general["General weapon proficiency"].value) {
-        const msg = LocalisationServer.parsedLocalisation(
-          "Core Value too small", "Notifications",
-          {name: parts[parts.length - 2], level: newVal, basic: this.system.weapons.general["General weapon proficiency"].value}
-        )
-        ui.notifications.notify(msg)
-        return;
-      }
-    }
-
-    this.update({
-      [coreName]: newVal, "system.PracticeHours.used": this.system.PracticeHours.used + cost
-    })
-  }
-
-  determineWeight() {
+  get itemWeight() {
     return this.items.reduce(
       (a, b) => a + ((b.system?.quantity || 1) * b.system?.weight || 0), 0
     );
-  }
-  
-  async determineOverload() {
-    const weight = this.determineWeight() - this.system.statusEffects.overloadThreshold.status;
-    let str = this.system.attributes.str.value;
-
-    // Correct for the current overload level
-    let currentOverload = this._getEffect("Overload");
-    str += currentOverload?.system?.effects?.reduce(
-      (a,b) => a - b.value, -1
-    ) || 0 // -1 for the phyiscal proficiencies
-    if (str <= 0) return false; // We can't possibly do sensible things yet
-    
-    this.overloadLevel = Math.max(Math.ceil((weight - 1.5 * str) / (str / 2)), 0) +
-      this.system.statusEffects.overload.status;
-    this.weightTillNextOverload = str * (1.5 + 0.5 * this.overloadLevel) - weight;
-    if (this.overloadLevel <= 0) this._deleteEffect("Overload");
-    else {
-      if (!currentOverload) currentOverload = await this._getEffectOrCreate("Overload")
-      await currentOverload.update({"system.effects": [
-        {group: "proficiencies", name: "physical", value: -1},
-        {group: "attributes", name: "physical", value: -this.overloadLevel + 1},
-      ], "system.statusEffect": true, "system.gm_description": `${this.overloadLevel}`})
-    }
-    return true
-  };
-
-  async updateStrain() {
-    let zone = this.getHRZone();
-    if (zone == 1) {
-      this._deleteEffect("Strain");
-      return;
-    }
-
-    let currentStrain = await this._getEffectOrCreate("Strain")
-    if (zone == 2) {
-      await currentStrain.update({"system.effects": [
-        {group: "attributes", name: "crd", value: -1},
-        {group: "attributes", name: "foc", value: -1}
-      ], "system.statusEffect": true, "system.gm_description": zone - 1})
-    } else {
-      await currentStrain.update({"system.effects": [
-        {group: "weapons", name: "all", value: -1},
-        {group: "attributes", name: "crd", value: -2},
-        {group: "attributes", name: "foc", value: -2},
-        {group: "attributes", name: "social", value: -1},
-        {group: "attributes", name: "mental", value: -1}
-      ], "system.statusEffect": true, "system.gm_description": zone - 1})
-    }
-  }
-
-  async updatePain() {
-    const res = 2 * this.system.attributes.res.value;
-    if (res <= 0) return; // We can't possibly do something sensible at the moment
-    const damageTotal = this.system.health.max.value - this.system.health.value -
-      this.system.statusEffects.painThreshold.status;
-    const levelPain = Math.floor(damageTotal / res) + this.system.statusEffects.pain.status;
-    if (levelPain <= 0) { await this._deleteEffect("Pain") }
-    else {
-      const currentPain = await this._getEffectOrCreate("Pain");
-      await currentPain.update({"system.effects": [
-        {group: "weapons", name: "General weapon proficiency", value: -levelPain},
-        {group: "proficiencies", name: "all", value: -levelPain},
-        ], "system.statusEffect": true, "system.gm_description": `${levelPain}`
-      })
-    }
-
-    // Injuries
-    const damageBodyParts = {arms: 0, legs: 0, torso: 0, head: 0};
-    const wounds = this.itemTypes["Wounds"];
-    for (const wound of wounds) {
-      if (!wound.system.active) continue;
-      switch (wound.system.bodyPart) {
-        case "Torso":
-          damageBodyParts.torso += wound.system.damage;
-          break;
-        case "Head":
-          damageBodyParts.head += wound.system.damage;
-          break;
-        case "LegsLeft":
-        case "LegsRight":
-          damageBodyParts.legs += wound.system.damage;
-          break;
-        case "ArmsLeft":
-        case "ArmsRight":
-          damageBodyParts.arms += wound.system.damage;
-      }
-    }
-
-    for (const [bodyPart, damage] of Object.entries(damageBodyParts)) {
-      const n = Math.floor(damage / res) + this.system.statusEffects[`injuries ${bodyPart.toLowerCase()}`].status;
-      if (n <= 0) { await this._deleteEffect(`Injuries ${bodyPart}`) }
-      else {
-        const injury = await this._getEffectOrCreate(`Injuries ${bodyPart}`);
-        await injury.update({"system.effects": [
-            {group: "attributes", name: THE_EDGE.injury_map[bodyPart], value: -n}
-          ], "system.statusEffect": true, "system.gm_description": `${n}`,
-        })
-      }
-    }
-  }
-
-  async updateBloodloss() {
-    let res = this.system.attributes.res.advances + this.system.attributes.res.status;
-    let currentBloodLoss = this._getEffect("Vertigo");
-    if (currentBloodLoss) res -= currentBloodLoss?.system?.effects[0].value || 0;
-    if (res <= 1) return; // Cannot possibly do sensible things right now
-
-    const bloodloss = this.system.bloodLoss.value;
-    const statusThreshold = this.system.statusEffects.bloodlossThreshold.status;
-    const bloodlossEff = Math.max(bloodloss - statusThreshold - res + 1, 0);
-    const stepSize = this.system.statusEffects.bloodlossStepSize.status + Math.floor(res / 2);
-    const level = Math.ceil(bloodlossEff / stepSize) + this.system.statusEffects.vertigo.status;
-    if (level == 0) {
-      await this._deleteEffect("Vertigo");
-      return;
-    }
-
-    if (!currentBloodLoss) currentBloodLoss = await this._getEffectOrCreate("Vertigo");
-    if (currentBloodLoss.system.effects[0].value != -level) {
-      await currentBloodLoss.update({"system.effects": [
-        {group: "attributes", name: "mental", value: -level},
-      ], "system.statusEffect": true, "system.gm_description": `${level}`})
-    }
-  }
-
-  async updateStatus() {
-    // Reset to a blank state
-    const update = {}
-    for (const group of ["attributes", "proficiencies", "weapons"]) {
-      for (const elem of THE_EDGE.effect_map[group].all) {
-        update[elem] = 0;
-      }
-    }
-    for (const elems of Object.values(THE_EDGE.effect_map.statusEffects)) {
-      for (const elem of Object.values(elems)) update[elem] = 0;
-    }
-    for (const elems of Object.values(THE_EDGE.effect_map.others)) {
-      for (const elem of Object.values(elems)) update[elem] = 0;
-    }
-    const critDice = {
-      attributes: {crit: [1], critFail: [20]},
-      proficiencies: {crit: [1], critFail: [20]},
-      weapons: {crit: [1], critFail: [20]}
-    }
-
-    // Iterate through items and apply their effects
-    for (const item of this.items) {
-      if (!item.system.active && !item.system.equipped) continue;
-
-      if (item.type == "Skill" || item.type == "Combatskill" || item.type == "Medicalskill") {
-        for (let i = 0; i < item.system.level; ++i) {
-          for (const effect of item.system.levelEffects[i]) {
-            if (this._updateCritDice(effect, critDice)) continue;
-            for (const effectPath of THE_EDGE.effect_map[effect.group][effect.name]) {
-              update[effectPath] += effect.value;
-            }
-          }
-          if (!item.system.levelEffects[i]) continue;
-        }
-      } else if (item.system.effects) {
-        for (const effect of item.system.effects) {
-          if (this._updateCritDice(effect, critDice)) continue;
-          for (const effectPath of THE_EDGE.effect_map[effect.group][effect.name]) {
-            update[effectPath] += effect.value;
-          }
-        }
-      }
-    }
-    
-    for (const [group, dice] of Object.entries(critDice)) {
-      this.diceServer.interpretationParams[group].crit = dice.crit;
-      this.diceServer.interpretationParams[group].critFail = dice.critFail;
-    }
-    await this.update(update);
-  }
-
-  _updateCritDice(effect, critDice) {
-    if (effect.name == "crit") {
-      const index = critDice[effect.group].critFail.indexOf(effect.value);
-      if (index > -1) {
-        critDice[effect.group].critFail.splice(index, 1);
-        return true;
-      }
-      critDice[effect.group].crit.push(effect.value)
-      return true;
-    } else if (effect.name == "critFail") {
-      const index = critDice[effect.group].crit.indexOf(effect.value);
-      if (index > -1) {
-        critDice[effect.group].crit.splice(index, 1);
-        return true;
-      }
-      critDice[effect.group].critFail.push(effect.value)
-      return true;
-    }
-    return false;
   }
 
   learnSkill(newSkill) {
@@ -457,37 +75,28 @@ export class TheEdgeBaseActor extends Actor {
       const group = requirement.group;
       const details = structuredClone(requirement);
       if (group == "skills") {
-        const skillRef = this.items.filter(x => x.name.toLowerCase() == requirement.name.toLowerCase());
+        const skillRef = this.items.filter(x => 
+          x.name.toLowerCase() == requirement.field.toLowerCase());
         if (skillRef.length == 0) {
-          const msg = LocalisationServer.parsedLocalisation(
-            "Missing requirements", "Notifications", details
-          )
-          ui.notifications.notify(msg);
+          NotificationServer.notify("Missing requirements", details)
           return false;
         } else if (skillRef[0].system.level < requirement.value) {
           foundry.utils.mergeObject(details, {valueIs: skillRef[0].system.level})
-          const msg = LocalisationServer.parsedLocalisation(
-            "Unmet requirements", "Notifications", details
-          )
-          ui.notifications.notify(msg);
+          NotificationServer.notify("Unmet requirements", details);
           return false;
         }
       } else {
-        const target = THE_EDGE.core_value_map[group][requirement.name] + ".advances";
+        const target = THE_EDGE.coreValueMap[group][requirement.field] + ".advances";
         const sysMod = Aux.objectAt(this.system, target);
         if (sysMod < requirement.value) {
           foundry.utils.mergeObject(details, {valueIs: sysMod});
-          const msg = LocalisationServer.parsedLocalisation("Unmet requirements", "Notifications", details);
-          ui.notifications.notify(msg);
+          NotificationServer.notify("Unmet requirements", details);
           return false;
         }
       }
     }
     return true;
   }
-
-  _attrCost(n) { return 10 * Math.floor(12 + 8 * Math.pow(1.2, n)); }
-  _profCost(n) { return  5 * Math.floor(10 + 4 * Math.pow(1.2, n)); }
 
   skillLevelIncrease(skillID) {
     let skill = this.items.get(skillID)
@@ -577,11 +186,6 @@ export class TheEdgeBaseActor extends Actor {
     else vantage.delete();
   }
 
-  deleteWound(wound) {
-    this.update({"system.health.value": this.system.health.value + wound.system.damage});
-    wound.delete();
-  }
-
   deleteVantage(vantage) {
     const AP = this.system.AdvantagePoints;
     const itemAP = (vantage.system.hasLevels ? vantage.system.level : 1) * vantage.system.AP;
@@ -600,12 +204,12 @@ export class TheEdgeBaseActor extends Actor {
 
   findItem(item) {
     let _existingCopy = false
-    for (const _item of this.items) {
+    for (const _item of this.itemTypes[item.type]) {
       if (_item.name == item.name) {
         if (_item.type == "Ammunition") {
-          let _cap = _item.system.capacity
-          let cap = item.system.capacity
-          if (_cap.max == cap.max && _cap.used == cap.used) {
+          const _cap = _item.system.capacity;
+          const cap = item.system.capacity;
+          if (_cap.max == cap.max && _cap.value == cap.value && !_item.system.loaded) {
             _existingCopy = _item
           }
         } else {
@@ -616,163 +220,43 @@ export class TheEdgeBaseActor extends Actor {
     return _existingCopy;
   }
 
-  pay(price) {
-    this.update({"system.credits.digital": this.system.credits.digital - price});
-    return [0, price];
-  }
+  getSkillEffects(onlyActive = false) {
+    function skillFilter(skill) {
+      const hasEffect = skill.system.modifiers.length > 0;
+      const isActive = !onlyActive || skill.system.active;
+      return hasEffect && isActive;
+    }
 
-  getCredits(chids, digital) {
-    this.update({
-      "system.credits.chids": this.system.credits.chids + chids,
-      "system.credits.digital": this.system.credits.digital + digital
+    const skillItems = [
+      ...(this.itemTypes["Combatskill"]?.filter(x => skillFilter(x)) ?? []),
+      ...(this.itemTypes["Skill"]?.filter(x => skillFilter(x)) ?? []),
+      ...(this.itemTypes["Medicalskill"]?.filter(x => skillFilter(x)) ?? []),
+    ];
+    return skillItems.map(item => {
+      return {
+        name: item.name, id: item.id, active: item.system.active,
+        modifiers: item.system.modifiers
+      };
     });
   }
 
-  getWeaponLevel(weaponType) {
-    const type = THE_EDGE.weapon_damage_types[weaponType];
-    let level = Math.floor((
-      this.system.weapons[type][weaponType].value +
-      this.system.weapons.general["General weapon proficiency"].value
-    ) / 2);
-    if (weaponType == "Hand-to-Hand combat") return level;
-
-    const partner = THE_EDGE.weapon_partners[weaponType];
-    if (partner) {
-      const partnerType = THE_EDGE.weapon_damage_types[partner];
-      level += Math.floor(this.system.weapons[partnerType][partner].value / 4);
-    }
-    return level;
-  }
-
-  _getWeaponPL(weaponID) {
-    const weapon = this.items.get(weaponID).system;
-
-    const level = this.getWeaponLevel(weapon.type);
-
-    let attr_mod = Math.floor( (
-      this.system.attributes[weapon.leadAttr1.name].value - weapon.leadAttr1.value +
-      this.system.attributes[weapon.leadAttr2.name].value - weapon.leadAttr2.value
-    ) / 4)
-
-    return Math.max(level + attr_mod, 0)
-  }
-
-  _getCombaticsPL() {
-    const sys = this.system;
-    const attr_mod = Math.floor((sys.attributes.str.value + sys.attributes.crd.value) / 4);
-    const level = Math.floor((sys.weapons.general["Hand-to-Hand combat"].value +
-      sys.weapons.general["General weapon proficiency"].value) / 2);
-
-    return Math.max(level + attr_mod, 0);
-  }
-
-  _getCombaticsDamage() {
-    const str = this.system.attributes.str.value;
-    const crd = this.system.attributes.crd.value;
-    return `1d${str+crd}+${str}`;
-  }
-  
-  async applyDamage(damage, crit, penetration, damageType, name, givenLocation = undefined) {
-    const [location, locationCoord] = Aux.generateWoundLocation(crit, this.system.sex, givenLocation)
-
-    const protectionLog = {};
-    let runningPenetration = penetration;
-    for (const armour of this.itemTypes["Armour"]) {
-      if(!armour.system.equipped || armour.system.layer == "Outer") continue;
-      [damage, runningPenetration] = await ArmourItemTheEdge.protect.call(
-        armour, damage, runningPenetration, damageType, location, protectionLog
-      );
-    }
-      
-    if (runningPenetration != penetration) {
-      protectionLog[LocalisationServer.localise("Armour penetration", "Combat")] =
-        penetration - runningPenetration;
+  getItemEffects(onlyEquipped = false) {
+    function itemFilter(item) {
+      const hasEffect = item.system.modifiers.length > 0;
+      const isEquipped = !onlyEquipped || item.system.equipped;
+      return hasEffect && isEquipped;
     }
 
-    if (damage > 0) {
-      const health = this.system.health.value;
-      const heartRate = this.system.heartRate;
-      const update = {};
-      update["system.health.value"] = Math.max(health - damage, 0)
-      const hrChange = Math.max(damage - this.system.heartRate.damageThreshold.status, 0);
-      if (health > damage) { // increase heartrate upon damage
-        update["system.heartRate.value"] = Math.min(heartRate.value + hrChange, heartRate.max.value)
-      } else if (health > 0) { // Dying damage
-        update["system.heartRate.value"] = Math.max(heartRate.max.value - (hrChange - health), 0)
-      } else { // bleeding out
-        update["system.heartRate.value"] = Math.max(heartRate.value - hrChange, 0)
+    const effectItems = [
+      ...(this.itemTypes["Armour"]?.filter(x => itemFilter(x)) ?? []),
+      ...(this.itemTypes["Weapon"]?.filter(x => itemFilter(x)) ?? []),
+    ];
+    return effectItems.map(item => {
+      return {
+        name: item.name, id: item.id, equipped: item.system.equipped,
+        modifiers: item.system.modifiers
       }
-      await this.update(update)
-
-      const bt = THE_EDGE.bleeding_threshold[damageType];
-      const bleeding = Math.floor(damage / bt) + ((damage % bt) / bt < Math.random());
-
-      this.generateNewWound(name, location, locationCoord, damage, bleeding, damageType);
-    }
-
-    return protectionLog;
-  }
-
-  async applyFallDamage(height, location) {
-    const damageRoll = `${height}d12 + ${4*height-22}`;
-    const damage = Math.max((await DiceServer.genericRoll(damageRoll)), 0);
-    const n = Math.floor(height / 2);
-    await this._applyImpactOrFallDamage(n, damage, "fall", `${height}m`, location)
-    ChatServer.transmitEvent("fall", {actor: this.name, height: height, damage: damage, damageRoll: damageRoll});
-  }
-
-  async applyImpactDamage(speed, location) {
-    const damageRoll = `${speed}d${speed}+${speed-30}`;
-    const damage = Math.max((await DiceServer.genericRoll(damageRoll)), 0);
-    const n = Math.floor(speed / 3);
-    await this._applyImpactOrFallDamage(n, damage, "impact", `${speed}m/s`, location)
-    ChatServer.transmitEvent("impact", {actor: this.name, speed: speed, damage: damage, damageRoll: damageRoll});
-  }
-
-  async _applyImpactOrFallDamage(n, damage, damageType, description, location = undefined) {
-    const nApproxWounds = Aux.randomInt(Math.ceil(n/3), n);
-    const approxIncr = Math.ceil(damage / nApproxWounds)
-    for (let i = 0; i < 2*nApproxWounds; i++) {
-      const nextDamage = Math.min(damage, Math.floor(approxIncr / 2) + Aux.randomInt(1, approxIncr));
-      await this.applyDamage(
-        nextDamage, false, 0, damageType,
-        LocalisationServer.localise(`${damageType} damage title`) + " " + description,
-        location
-      );
-      damage -= Math.ceil(nextDamage);
-      if (damage <= 0) break;
-    }
-  }
-
-  async generateNewWound(name, location, locationCoord, damage, bleeding, damageType) {
-    const cls = getDocumentClass("Item");
-    const wound = await cls.create({name: name, type: "Wounds"}, {parent: this});
-    const type = this._generateWoundType(damage, damageType);
-    await wound.update({
-      "system.bodyPart": location, "system.coordinates": locationCoord,
-      "system.damage": damage, "system.bleeding": bleeding, "system.type": type
     });
-  }
-
-  _generateWoundType(damage, damageType) {
-    let odds = undefined;
-    switch (damageType) {
-      case "energy":
-        odds = {"abrasion": 10, "light burn": damage, "strong burn": Math.max(0, Math.ceil(damage*(damage - 10)/10))};
-        break;
-      case "kinetic":
-        odds = {"abrasion": 10, "laceration": damage, "fracture":    Math.max(0, Math.ceil(damage*(damage - 10)/10))};
-        break;
-      case "elemental":
-        odds = {"light burn": damage, "strong burn": Math.max(0, damage*(damage - 10)/10)};
-        break;
-      case "fall": case "impact":
-        odds = {"abrasion": 20, "laceration": Math.ceil(damage/2), "fracture": Math.max(0, Math.ceil(damage*(damage - 10)/10))};
-        break;
-      case "HandToHand":
-        odds = {"abrasion": 20, "fracture": Math.max(0, Math.ceil(damage*(damage - 10)/10))};
-    }
-    return Aux.pickFromOdds(odds);
   }
 
   attachOuterArmour(armourId, shellId, tokenId) {
@@ -795,110 +279,4 @@ export class TheEdgeBaseActor extends Actor {
       "system.attachmentPoints.used": armour.system.attachmentPoints.used + shell.system.attachmentPoints.max
     });
   }
-
-  async applyBloodLoss() {
-    const wounds = this.itemTypes["Wounds"];
-    const bleeding = wounds.map(x => x.system.bleeding).sum();
-    const sys = this.system;
-    const lossRate = sys.heartRate.value / sys.heartRate.max.value;
-    const bloodLoss = Math.floor(lossRate * bleeding);
-    this.update({"system.bloodLoss.value": sys.bloodLoss.value + bloodLoss});
-  }
-
-  getHrChangeFromStrain(strain) {
-    const zone = this.getHRZone();
-    if (strain < zone) return 2 * (strain - zone);
-    return 4 * (strain - zone + 1);
-  }
-
-  async applyCombatStrain() {
-    if (this.system.health.value <= 0) {
-      await this.updateHr(Math.max(this.system.heartRate.value - 10, 0));
-    } else {
-      this.applyStrains(game.the_edge.combatLog.strainLog.map(x => x.hrChange));
-    }
-  }
-
-  async applyStrains(strains) {
-    const hr = this.system.heartRate;
-    const isRest = Math.max(...strains) <= 0;
-    const threshold = isRest ? hr.min.value : hr.max.value;
-    const clamper = isRest ? Math.max : Math.min;
-
-    let hrChange = isRest ? strains.sum() : strains.filter(x => x >= 0).sum();
-    const hrNew = clamper(hr.value + hrChange, threshold);
-    hrChange = hrNew - hr.value;
-    await this.updateHr(hrNew);
-
-    return hrChange;
-  }
-
-  _getEffect(name) {
-    const effects = this.itemTypes["Effect"];
-    return effects?.find(obj => obj.name == LocalisationServer.localise(name));
-  }
-
-  async _getEffectOrCreate(name) {
-    let effect = this._getEffect(name);
-
-    if (!effect) {
-      const cls = getDocumentClass("Item");
-      effect = await cls.create(
-        {name: LocalisationServer.localise(name), type: "Effect"}, {parent: this}
-      );
-    }
-    return effect;
-  }
-
-  async _deleteEffect(name) {
-    const effect = this._getEffect(name)
-    if (effect) { await effect.delete() }
-  }
-
-  shortRest() {this._rest("1d3 % 2", "1d3-1", "0", "short rest")}
-  longRest() {this._rest("2d3kh", "2d6 / 2", "1d3-1", "long rest")}
-
-  async _rest(coagulationDice, healingDice, bloodRegenDice, type) {
-    const wounds = this.itemTypes["Wounds"];
-    let accHealing = 0;
-    let accCoagulation = 0;
-    let remainingBleeding = 0;
-    for (const wound of wounds) {
-      if (wound.system.bleeding > 0) {
-        const coagulationRoll = await new Roll(coagulationDice).evaluate()
-        const coagulation = Math.floor(coagulationRoll.total);
-        if (wound.system.damage == 0 && wound.system.bleeding <= coagulation) {
-          accCoagulation += wound.system.bleeding;
-          wound.delete();
-        } else if (coagulation > 0) {
-          accCoagulation += Math.min(coagulation, wound.system.bleeding);
-          const newBleeding = Math.max(wound.system.bleeding - coagulation, 0);
-          wound.update({"system.bleeding": newBleeding});
-          remainingBleeding += newBleeding;
-        }
-      } else {
-        const healingRoll = await new Roll(healingDice).evaluate();
-        const healing = Math.floor(healingRoll.total);
-        if (wound.system.damage <= healing) { // shortcut: wound healed afterwards
-          accHealing += wound.system.damage;
-          wound.delete();
-        } else if (healing > 0) {
-          accHealing += Math.min(healing, wound.system.damage)
-          wound.update({"system.damage": Math.max(wound.system.damage - healing, 0)});
-        }
-      }
-    }
-
-    const bloodRegenRoll = await new Roll(bloodRegenDice).evaluate();
-    const bloodRegen = Math.min(this.system.bloodLoss.value, bloodRegenRoll.total - remainingBleeding);
-    this.update({
-      "system.health.value": Math.min(this.system.health.max.value, this.system.health.value + accHealing),
-      "system.heartRate.value": this.system.heartRate.min.value,
-      "system.bloodLoss.value": this.system.bloodLoss.value - bloodRegen
-    });
-    ChatServer.transmitEvent(
-      type, {healing: accHealing, coagulation: accCoagulation, bloodRegen: bloodRegen}
-    )
-  }
 }
-

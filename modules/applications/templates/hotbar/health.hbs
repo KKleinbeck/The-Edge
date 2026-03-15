@@ -16,10 +16,10 @@
     {{#if (checkNotEmpty effects)}}
       {{#each effects as |effect|}}
         <div class="output" data-tooltip aria-label="{{effect.sources}}"
-          style="text-align: left; margin-bottom: 3px; color: white; padding: 2px 0 2px 5px;
-            height: 28px; width: 100%; pointer-events: auto;">
+          style="text-align: left; margin-bottom: 3px; color: white; padding: 2px 5px 2px 5px;
+            height: 28px; width: 100%; pointer-events: auto; white-space: nowrap; text-overflow: ellipsis;">
           {{genName effect.group}}
-          {{effectRequirementName effect.name effect.group}}
+          {{effectRequirementName effect.field effect.group}}
           {{effect.value}}
         </div>
       {{/each}}
@@ -31,7 +31,7 @@
   <div style="height: 100%; transform: translateY(-30px);">
     {{{bodyImg}}}
     <div class="wound-overlay">
-      {{#each wounds as |wound|}}
+      {{#each actor.system.wounds as |wound|}}
         <div style="pointer-events: auto;">
           {{{getWoundHTML wound true}}}
         </div>

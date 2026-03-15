@@ -25,7 +25,7 @@ export default class DialogCombatics extends Dialog{
             threshold: Math.max(1, tempModificator + checkData.threshold),
             vantage: vantage, fireModeModifier: {damage: checkData.damage}
           }
-          let [crits, damage, diceRes, hits] = await checkData.actor.rollAttackCheck(
+          let [crits, damage, diceRes, hits] = await checkData.actor.system.rollAttackCheck(
             1, modificators.threshold, vantage, checkData.damage
           );
 
@@ -40,13 +40,13 @@ export default class DialogCombatics extends Dialog{
           ChatServer.transmitEvent("WeaponCheck", details);
 
           // Append to strainLog
-          const hrChange = checkData.actor.getHrChangeFromStrain(1);
+          const hrChange = checkData.actor.system.getHrChangeFromStrain(1);
           if (game.combat) {
             game.the_edge.combatLog.addAction(
               LocalisationServer.localise("Weapon attack"), hrChange
             );
           } else {
-            checkData.actor.applyStrains([hrChange]);
+            checkData.actor.system.applyStrains([hrChange]);
           }
         }
       },

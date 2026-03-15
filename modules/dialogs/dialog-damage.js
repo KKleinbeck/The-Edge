@@ -58,10 +58,10 @@ class DialogFallAndImpact extends Dialog{
           const value = parseInt(html.find('[name="value"]').val());
           switch (type) {
             case "fall":
-              checkData.actor.applyFallDamage(value, checkData.location);
+              checkData.actor.system.applyFallDamage(value, checkData.location);
               break;
             case "impact":
-              checkData.actor.applyImpactDamage(value, checkData.location);
+              checkData.actor.system.applyImpactDamage(value, checkData.location);
           }
         }
       },
@@ -97,7 +97,7 @@ class DialogGenericWound extends Dialog{
         callback: async (html) => {
           const damage = parseInt(html.find('[name="damage"]').val());
           const type = html.find('[name="type"]').val();
-          var partialLog = await checkData.actor.applyDamage(
+          var partialLog = await checkData.actor.system.applyDamage(
             damage, false, 0, type, LocalisationServer.localise("New wound"), checkData.location
           );
 

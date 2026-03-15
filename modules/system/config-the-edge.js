@@ -3,6 +3,9 @@ const THE_EDGE = {}
 // IMPORTANT: Multiple config entries are dynamically generated from the template.json.
 //   This happens in the Hooks.on("init").
 
+
+THE_EDGE.attrCost = (n) => { return 10 * Math.floor(12 + 8 * Math.pow(1.2, n)); }
+THE_EDGE.profCost = (n) => { return  5 * Math.floor(10 + 4 * Math.pow(1.2, n)); }
 THE_EDGE.sizes = {tiny: 30, small: 130, normal: 250, large: 500, giant: Infinity}
 THE_EDGE.sizeModifiers = {"normal": [0, 0], "tiny": [-8, -4], "small": [-4, -2],  "large": [2, 4], "giant": [4, 8]}
 THE_EDGE.ammunitionSubtypes = ["small", "large"]
@@ -42,16 +45,78 @@ THE_EDGE.combat_damage_types = [
 THE_EDGE.bleeding_threshold = {
   "energy": 25, "kinetic": 10, "elemental": 50, "fall": 15, "impact": 15, "HandToHand": 25
 }
+THE_EDGE.wound_odds = ({damage, damageType} = {}) => {
+  switch (damageType) {
+    case "energy":
+      return {"abrasion": 10, "light burn": damage, "strong burn": Math.max(0, Math.ceil(damage*(damage - 10)/10))};
+    case "kinetic":
+      return {"abrasion": 10, "laceration": damage, "fracture":    Math.max(0, Math.ceil(damage*(damage - 10)/10))};
+    case "elemental":
+      return {"light burn": damage, "strong burn": Math.max(0, damage*(damage - 10)/10)};
+    case "fall": case "impact":
+      return {"abrasion": 20, "laceration": Math.ceil(damage/2), "fracture": Math.max(0, Math.ceil(damage*(damage - 10)/10))};
+    case "HandToHand":
+      return {"abrasion": 20, "fracture": Math.max(0, Math.ceil(damage*(damage - 10)/10))};
+  }
+  return {};
+}
+THE_EDGE.fallDamageRoll = (height) => { return `${height}d12 + ${4*height-22}` }
+THE_EDGE.fallDamageWoundCount = (height) => { return Math.floor(height / 2) }
+THE_EDGE.impactDamageRoll = (speed) => { return `${speed}d${speed}+${speed-30}` }
+THE_EDGE.impactDamageWoundCount = (speed) => { return Math.floor(speed / 3) }
 THE_EDGE.medicine_effects = ["heals", "treats"]
 THE_EDGE.wound_status = ["treatable", "treated"]
-THE_EDGE.injury_map = {"torso": "end", "head": "foc", "arms": "crd", "legs": "spd"}
 
 // Entries below are primarily implemented in the_edge.js
-THE_EDGE.core_value_map = {attributes: {}, proficiencies: {}, weapons: {}}
-THE_EDGE.effect_map = {
-  attributes: {all: []}, proficiencies: {all: []}, weapons: {all: []}, statusEffects: {}, others: {}
+THE_EDGE.coreValueMap = {attributes: {}, proficiencies: {}, weapons: {}}
+THE_EDGE.effectMap = {
+  attributes: {all: []},
+  proficiencies: {all: []},
+  weapons: {all: []},
+  generalModifiers: {}
 }
 THE_EDGE.weapon_damage_types = {"Recoilless Rifles": "general"}
 THE_EDGE.weapon_partners = {}
+
+// Status Effects
+THE_EDGE.overloadModifiers = (level) => {
+  const modifiers = []
+  if (level > 0) {
+    modifiers.push({group: "proficiencies", field: "physical", value: -1})
+  }
+  if (level > 1) {
+    modifiers.push({group: "attributes", field: "physical", value: -level + 1})
+  }
+  return modifiers;
+}
+THE_EDGE.strainModifiers = (level) => {
+  if (level == 0) return [];
+  if (level == 1) {
+    return [
+      {group: "attributes", field: "crd", value: -1},
+      {group: "attributes", field: "foc", value: -1}
+    ];
+  } 
+  return [
+    {group: "weapons", field: "all", value: -1},
+    {group: "attributes", field: "crd", value: -2},
+    {group: "attributes", field: "foc", value: -2},
+    {group: "attributes", field: "social", value: -1},
+    {group: "attributes", field: "mental", value: -1}
+  ];
+}
+THE_EDGE.painModifiers = (level) => {
+  if (level == 0) return [];
+  if (level == 1) return [{group: "proficiencies", field: "all", value: -1}]
+  return [
+    {group: "proficiencies", field: "all", value: -Math.ceil(level / 2)},
+    {group: "weapons", field: "General weapon proficiency", value: -Math.floor(level / 2)}
+  ];
+}
+THE_EDGE.injuryMap = {"torso": "end", "head": "foc", "arms": "crd", "legs": "spd"}
+THE_EDGE.damageBodyPartModifiers = (bodyPart, level) => {
+  if (level == 0) return [];
+  return [{group: "attributes", field: THE_EDGE.injuryMap[bodyPart], value: -level}];
+}
 
 export default THE_EDGE

@@ -58,9 +58,8 @@ export default class Aux {
     const scene = game.canvas.scene;
 
     const tokens = [];
-    const userID = game.user.id;
     for (var token of scene.tokens) {
-      if (token.actor.type === "character" && token.actor.ownership[userID] === 3) {
+      if (token.actor.type === "character" && token.isOwner) {
         tokens.push(token);
       }
     }
@@ -90,7 +89,7 @@ export default class Aux {
       skill.system.hrCost, skill.name,
       actor.system.heartRate.value,
       actor.system.heartRate.max.value,
-      actor.getHRZone()
+      actor.system.getHRZone()
     );
   }
 
