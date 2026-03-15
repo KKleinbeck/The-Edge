@@ -415,6 +415,7 @@
     "CORE VALUE COMBATICS TOO SMALL": "Basic combat proficiency (average str and crd) for 'Hand-to-Hand combat' is too small. {level} needed but it is at {basic}.",
 
     "NO PLAYER ACTORS": "Could not find any suitable characters. Make sure they have a player owner.",
+    "NO WOUNDS ON ACTOR": "{name} is not wounded and will not use medicine",
 
     "TOO EXPENSIVE": "{name} cannot afford item. Price: {price} - Available credits: {credits}"
   },

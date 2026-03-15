@@ -53,7 +53,10 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
       case "create":
         const itemType = target.dataset.type;
         const cls = getDocumentClass("Item");
-        return cls.create({name: LocalisationServer.localise("New", "item"), type: itemType}, {parent: this.actor});
+        return cls.create(
+          {name: LocalisationServer.localise("New", "item"), type: itemType},
+          {parent: this.actor}
+        );
       case "edit":
         return item?.sheet.render(true);
       case "post":
@@ -105,8 +108,12 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
       case "consume":
         switch (item.system.current_type) {
           case "medicine":
-            const wounds = this.actor.itemTypes["Wounds"];
-            DialogMedicine.start({medicineItem: item, wounds: wounds, actor: this.actor});
+            const wounds = this.actor.system.wounds;
+            if (wounds.length) {
+              DialogMedicine.start({medicineItem: item, wounds: wounds, actor: this.actor});
+            } else {
+              NotificationServer.notify("No wounds on Actor", {name: this.actor.name})
+            }
             break;
 
           case "grenade":

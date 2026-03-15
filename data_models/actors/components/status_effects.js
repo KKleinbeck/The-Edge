@@ -17,7 +17,7 @@ export default class StatusEffectData extends DataModelComponent {
   }
 
   get overloadLevel() {
-    const weight = this.parent.itemWeight - this.generalModifiers.overloadThreshold.status;
+    const weight = this.parent.itemWeight - this.generalModifiers.overloadThreshold;
     const str = this.attributes.str.advances;
     if (str <= 0) return 0;
 

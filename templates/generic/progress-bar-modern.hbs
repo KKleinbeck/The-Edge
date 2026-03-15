@@ -65,7 +65,7 @@
     {{!-- Segements --}}
     {{#if (checkNotEmpty segments)}}
       {{#each segments as |segment|}}
-        <foreignObject x="calc({{mul (div segment.value ../max) 100}} - 6)" y="15" width="12" height="12" overflow="visible">
+        <foreignObject x="{{add (mul (div segment.value ../max) 100) -6}}" y="15" width="12" height="12" overflow="visible">
           <div class="svg-segment-label" data-tooltip aria-label="{{segment.value}}">
             <div class="svg-div-text">
               {{segment.label}}

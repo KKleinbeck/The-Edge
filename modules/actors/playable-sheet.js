@@ -79,6 +79,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
 
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
+    await this.actor.update(); // Forces status effects to be up to date
     for (const key of Object.keys(context.system.attributes)) {
       const n = context.system.attributes[key].advances;
       context.system.attributes[key].cost = THE_EDGE.attrCost(n),
@@ -126,7 +127,6 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       bodyParts: ["Torso", "Head", "Arms", "Legs"],
       bleeding: this.actor.system.wounds.map(x => x.bleeding).sum(),
       damage: this.actor.system.wounds.map(x => x.damage).sum(),
-      languages: THE_EDGE.languages,
       itemTypes: ["Weapon", "Armour", "Ammunition", "Gear", "Consumables"],
       weight: weight,
       overloadLevel: this.actor.system.overloadLevel,
