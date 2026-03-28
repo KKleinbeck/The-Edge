@@ -3,6 +3,7 @@ import THE_EDGE from "./system/config-the-edge.js"
 import CombatLog from "./applications/combat-log.js";
 import DiceServer from "./system/dice_server.js";
 import GrenadePicker from "./applications/grenades-picker.js";
+import setupGameSettings from "./system/settings.js";
 import TheEdgeHotbar from "./applications/hotbar.js";
 
 import CharacterData from "../data_models/actors/character.js";
@@ -151,6 +152,7 @@ Hooks.once("init", async function() {
   CONFIG.ui.chat.MESSAGE_PATTERNS = {
     givePH: /^\/givePH\s*(\d+)?\s*([a-zA-Z0-9 ]*)?$/,
     changeHR: /^\/changeHR\s*(\d+|[zZ][123])?\s*([a-zA-Z0-9 ]*)?$/,
+    language: /^\/language\s+([a-zA-Z]+)\s+(.*)$/,
     ...CONFIG.ui.chat.MESSAGE_PATTERNS,
   }
 
@@ -160,44 +162,7 @@ Hooks.once("init", async function() {
   // UI setup
   CONFIG.ui.hotbar = TheEdgeHotbar;
 
-  // Register system settings
-  game.settings.register("the_edge", "macroShorthand", {
-    name: "SETTINGS.SimpleMacroShorthandN",
-    hint: "SETTINGS.SimpleMacroShorthandL",
-    scope: "world",
-    type: Boolean,
-    default: true,
-    config: true
-  });
-
-  // Register initiative setting.
-  game.settings.register("the_edge", "initFormula", {
-    name: "SETTINGS.SimpleInitFormulaN",
-    hint: "SETTINGS.SimpleInitFormulaL",
-    scope: "world",
-    type: String,
-    default: "1d20 + 1d@attributes.spd.value + 1d@attributes.foc.value - 2",
-    config: true,
-    onChange: formula => _simpleUpdateInit(formula, true)
-  });
-
-  // Retrieve and assign the initiative formula setting.
-  const initFormula = game.settings.get("the_edge", "initFormula");
-  _simpleUpdateInit(initFormula);
-
-  /**
-   * Update the initiative formula.
-   * @param {string} formula - Dice formula to evaluate.
-   * @param {boolean} notify - Whether or not to post nofications.
-   */
-  function _simpleUpdateInit(formula, notify = false) {
-    const isValid = Roll.validate(formula);
-    if ( !isValid ) {
-      if ( notify ) ui.notifications.error(`${game.i18n.localize("SIMPLE.NotifyInitFormulaInvalid")}: ${formula}`);
-      return;
-    }
-    CONFIG.Combat.initiative.formula = formula;
-  }
+  setupGameSettings();
 
   /**
    * Slugify a string.

@@ -118,5 +118,15 @@ THE_EDGE.damageBodyPartModifiers = (bodyPart, level) => {
   if (level == 0) return [];
   return [{group: "attributes", field: THE_EDGE.injuryMap[bodyPart], value: -level}];
 }
+THE_EDGE.translationPercentage = {
+  // Maps language level to chance of getting a word
+  0:   0,
+  1:  15,
+  2:  30,
+  3:  50,
+  4:  70,
+  5:  90,
+  6: 100
+}
 
 export default THE_EDGE

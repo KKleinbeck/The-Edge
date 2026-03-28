@@ -34,6 +34,19 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: "LuciusCipher";
+  src: url("../fonts/LuciusCipher.ttf") format("truetype");
+
+  /* Modern Browsers */
+  font-weight: normal;
+  font-style: normal;
+}
+.ff-lucius-cipher {
+  font-family: "LuciusCipher";
+  font-size: 11px;
+}
+
 body {
   font-family: "Titillium-Regular";
   line-height: 1.35;
