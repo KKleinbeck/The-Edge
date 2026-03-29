@@ -1,0 +1,371 @@
+import Aux from "../system/auxilliaries.js";
+import LocalisationServer from "../system/localisation_server.js";
+import THE_EDGE from "../system/config-the-edge.js";
+import { TheEdgeActorSheet } from "../actors/actor-sheet.js";
+import { TheEdgePlayableSheet } from "../actors/playable-sheet.js";
+const { renderTemplate } = foundry.applications.handlebars;
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+export default class TheEdgeHotbar extends HandlebarsApplicationMixin(ApplicationV2) {
+    constructor(options) {
+        super(options);
+        this.nItemsShown = 1;
+        this.weaponSelectedIndex = 0;
+        this.itemSelectedIndex = 0;
+        this.effectSelectedIndex = 0;
+        this.counterSelectedIndex = 0;
+        this.dynamicFieldIndex = 0;
+        this.token = undefined;
+        this.selectedActor = undefined;
+        this.proficiencies = {};
+        for (const group of Object.values(THE_EDGE.characterSchema.proficiencies)) {
+            this.proficiencies = Object.assign(this.proficiencies, group);
+        }
+        this.proficiencySearchHistory = [];
+        for (const prof of Object.keys(this.proficiencies)) {
+            // Initialise search history with first proficiency
+            const obj = { name: prof, dices: this.proficiencies[prof].dices };
+            this.proficiencySearchHistory.push(obj);
+            break;
+        }
+        this.searchCandidate = undefined;
+        this.searchBuffer = "";
+    }
+    static DEFAULT_OPTIONS = {
+        // ...foundry.applications.ui.Hotbar.DEFAULT_OPTIONS,
+        id: "hotbar",
+        tag: "aside",
+        classes: [
+            ...foundry.applications.ui.Hotbar.DEFAULT_OPTIONS.classes,
+            "the_edge", "the_edge-hotbar"
+        ],
+        window: {
+            frame: false,
+            positioned: false
+        },
+        actions: {
+            changeDynamicField: TheEdgeHotbar._onChangeDynamicField,
+            heroTokenUsed: TheEdgeHotbar._onHeroTokenUsed,
+            heroTokenRegen: TheEdgeHotbar._onHeroTokenRegen,
+            reloadActor: TheEdgeHotbar._onReloadActor,
+            rollAttack: TheEdgeHotbar._onRollAttack,
+            rollAttr: TheEdgeHotbar._onRollAttr,
+            rollProficiency: TheEdgeHotbar._onRollProficiency,
+            rollSearchProficiency: TheEdgeHotbar._onRollSearchProficiency,
+            scroll: TheEdgeHotbar._onScroll,
+            searchProficiency: TheEdgeHotbar._onSearchProficiency,
+            useItem: TheEdgeHotbar._onUseItem,
+        }
+    };
+    /** @override */
+    static PARTS = {
+        hotbar: {
+            root: true,
+            template: "systems/the_edge/templates/applications/hotbar.hbs"
+        }
+    };
+    async _prepareContext(options) {
+        const context = await super._prepareContext(options);
+        context.actor = this.selectedActor;
+        context.attributes = context.actor?.system.attributes ?? {};
+        context.selectedActorId = context.actor?.id;
+        context.selectedActorName = context.actor?.name ?? "No Actor Selected";
+        context.counters = context.actor?.system.counters;
+        const equippedArmour = context.actor?.itemTypes["Armour"]?.filter(a => a.system.equipped && a.system.layer == "Inner") ?? [];
+        context.armourProtection = { "value": 0, "original": 0 };
+        for (const armour of equippedArmour) {
+            context.armourProtection.value += armour.system.structurePoints;
+            context.armourProtection.original += armour.system.structurePointsOriginal;
+            for (const attachment of armour.system.attachments) {
+                context.armourProtection.value += attachment.shell.system.structurePoints;
+                context.armourProtection.original += attachment.shell.system.structurePointsOriginal;
+            }
+        }
+        context.equippedWeapons = context.actor?.itemTypes["Weapon"]?.filter(w => w.system.equipped) ?? [];
+        context.weaponsScroll = context.equippedWeapons.length > this.nItemsShown;
+        if (context.weaponsScroll) {
+            context.equippedWeapons = this._getVisibleSubset(context.equippedWeapons, this.weaponSelectedIndex, this.nItemsShown);
+        }
+        context.equippedWeapons.forEach(weapon => {
+            weapon.ammunitionStatus = `(${LocalisationServer.localise("Empty", "Dialog")})`;
+            if (weapon.system.ammunitionID) {
+                const ammunition = context.actor.items.get(weapon.system.ammunitionID);
+                if (!ammunition)
+                    return;
+                const ammunitionMax = ammunition.system.capacity.max;
+                const ammunitionValue = ammunition.system.capacity.value;
+                weapon.ammunitionStatus = `(${ammunitionValue} / ${ammunitionMax})`;
+            }
+        });
+        const dynamicFields = ["item", "health"];
+        if (context.actor?.system.counters.length) {
+            dynamicFields.push("counter");
+        }
+        context.dynamicField = dynamicFields[this.dynamicFieldIndex.mod(dynamicFields.length)];
+        const sex = context.actor?.system.sex ?? "female";
+        const img = await fetch(`systems/the_edge/icons/body_${sex}.svg`)
+            .then(res => res.text());
+        context.bodyImg = img;
+        const effects = {};
+        if (context.actor) {
+            const effectDict = {
+                effects: context.actor.system.effects,
+                itemEffects: context.actor.getItemEffects(true),
+                skillEffects: context.actor.getSkillEffects(true),
+                statusEffects: context.actor.system.statusEffects,
+            };
+            for (const [_key, effectGroups] of Object.entries(effectDict)) {
+                for (const effectGroup of effectGroups) {
+                    for (const modifier of effectGroup.modifiers ?? []) {
+                        const hash = modifier.field + modifier.group;
+                        if (hash in effects) {
+                            effects[hash].value += modifier.value;
+                            effects[hash].sources.push(effectGroup.name);
+                        }
+                        else {
+                            effects[hash] = {
+                                ...modifier, sources: [effectGroup.name]
+                            };
+                        }
+                    }
+                }
+            }
+        }
+        const nEffects = Object.keys(effects).length;
+        context.effectsScroll = nEffects > this.nItemsShown;
+        context.effects = Object.keys(effects).map(key => ({ ...effects[key] }));
+        if (context.effectsScroll) {
+            context.effects = this._getVisibleSubset(context.effects, this.effectSelectedIndex, this.nItemsShown);
+        }
+        context.consumables = [];
+        for (const item of context.actor?.itemTypes["Consumables"] ?? []) {
+            if (item.system.subtype == "medicine") {
+                item.tooltip = item.name + " \u2014 " +
+                    LocalisationServer.localise("heals") + ": " +
+                    item.system.subtypes.medicine.healing + " \u2013 " +
+                    LocalisationServer.localise("coagulates") + ": " +
+                    item.system.subtypes.medicine.coagulation;
+                item.displayName = item.system.quantity + "x " + item.name;
+                context.consumables.push(item);
+            }
+            else if (item.system.subtype = "drugs") {
+                item.tooltip = item.name;
+                for (const effect of item.system.effect) {
+                    item.tooltip += " \u2014 ";
+                    item.tooltip += LocalisationServer.effectLocalisation(effect.field, effect.group);
+                    item.tooltip += (effect.value > 0) ? " +" + effect.value : " " + effect.value;
+                }
+                item.displayName = item.system.quantity + "x " + item.name;
+                context.consumables.push(item);
+            }
+        }
+        context.itemsScroll = context.consumables.length > this.nItemsShown * 2;
+        if (context.itemsScroll) {
+            context.consumables = this._getVisibleSubset(context.consumables, this.itemSelectedIndex, this.nItemsShown * 2);
+        }
+        context.counters = context.actor?.system.counters ?? [];
+        context.counterScroll = context.counters.length > 4;
+        if (context.counterScroll) {
+            context.counters = this._getVisibleSubset(context.counters, this.counterSelectedIndex, 4);
+        }
+        context.equippedWeapons.forEach(weapon => {
+            if (weapon.system.ammunitionID) {
+                const ammunition = context.actor.items.get(weapon.system.ammunitionID);
+                const ammunitionMax = ammunition.system.capacity.max;
+                const ammunitionValue = ammunition.system.capacity.value;
+                weapon.ammunitionStatus = `(${ammunitionValue} / ${ammunitionMax})`;
+            }
+            else {
+                weapon.ammunitionStatus = `(${LocalisationServer.localise("Empty", "Dialog")})`;
+            }
+        });
+        context.proficiencySearchHistory = this.proficiencySearchHistory;
+        context.searchCandidate = this.searchCandidate;
+        context.heroToken = context.actor?.system.heroToken;
+        return context;
+    }
+    getActor() {
+        const controlled = canvas.tokens?.controlled
+            .filter(x => x.actor?.type == "character");
+        if (controlled?.length) {
+            this.token = controlled[0];
+            return controlled[0].actor;
+        }
+        // permission == 2: Observer, permission == 3: Owner
+        const tokens = (canvas.scene?.tokens ?? [])
+            .filter(x => x.actor?.permission >= 2 && x.actor?.type == "character");
+        if (tokens.length) {
+            const actor = tokens[0].actor;
+            this.token = tokens[0];
+            return actor;
+        }
+        return undefined;
+    }
+    _getVisibleSubset(list, startIndex, max) {
+        const actualList = [];
+        for (let i = 0; i < max; i++) {
+            actualList.push(list[(i + startIndex).mod(list.length)]);
+        }
+        context.consumables = actualList;
+        return actualList;
+    }
+    render(options, _options) {
+        this.selectedActor = this.getActor();
+        super.render(options, _options);
+    }
+    async _onRender(_context, _options) {
+        const input = this.element.querySelector("input[name='proficiency']");
+        input?.addEventListener("keypress", async (ev) => {
+            if (ev.key === "Enter") {
+                ev.preventDefault();
+                this._saveSearchAndReset();
+            }
+            else if (ev.key.length === 1) {
+                // The combination of these three lines prevents the automatic
+                // input handling and we can manually handle it
+                ev.preventDefault();
+                ev.cancelBubble = true;
+                ev.stopPropagation();
+                this.searchBuffer += ev.key;
+                this._updateSearchCandidate();
+                this._redrawProficiencies();
+            }
+        });
+        input?.addEventListener("keydown", async (ev) => {
+            if (ev.key === "Backspace") {
+                ev.preventDefault();
+                ev.cancelBubble = true;
+                ev.stopPropagation();
+                this.searchBuffer = this.searchBuffer.slice(0, -1);
+                this._updateSearchCandidate();
+                this._redrawProficiencies();
+            }
+        });
+        this._attachCounterListeners();
+    }
+    _saveSearchAndReset() {
+        if (this.searchCandidate) {
+            this.proficiencySearchHistory.splice(0, 0, this.searchCandidate);
+        }
+        const hotbar = window.document.getElementById("hotbar-lowered-right");
+        const nProficienciesShown = Math.floor((hotbar.clientHeight - 40) / 31) - 1;
+        this.proficiencySearchHistory.splice(nProficienciesShown);
+        this.searchCandidate = undefined;
+        this.searchBuffer = "";
+        this._redrawProficiencies();
+    }
+    async _redrawProficiencies() {
+        this._redrawElement("proficiency");
+        const input = this.element.querySelector(".proficiency-input");
+        input.value = this.searchBuffer;
+        if (this.searchBuffer) {
+            input.focus();
+        }
+    }
+    _updateSearchCandidate() {
+        this.searchCandidate = undefined;
+        for (const prof of Object.keys(this.proficiencies)) {
+            if (prof.toLowerCase().includes(this.searchBuffer.toLowerCase())) {
+                this.searchCandidate = {
+                    name: prof, dices: this.proficiencies[prof].dices
+                };
+                break;
+            }
+        }
+    }
+    _onResize() {
+        const hotbar = window.document.getElementById("hotbar-lowered-right");
+        this.nItemsShown = Math.floor((hotbar.clientHeight - 40) / 31);
+        this.render(true);
+    }
+    static _onChangeDynamicField(_event, target) {
+        if (target.dataset.dir == "increment")
+            this.dynamicFieldIndex += 1;
+        else
+            this.dynamicFieldIndex -= 1;
+        this._redrawElement("dynamic-field");
+    }
+    static async _onHeroTokenUsed(event, target) {
+        await TheEdgePlayableSheet.useHeroToken.call(this.token.sheet, event, target);
+        this.render(true);
+    }
+    static async _onHeroTokenRegen(event, target) {
+        await TheEdgePlayableSheet.regenerateHeroToken.call(this.token.sheet, event, target);
+        this.render(true);
+    }
+    static async _onReloadActor(_event, _target) {
+        this.render(true);
+        this.weaponSelectedIndex = 0;
+        this.itemSelectedIndex = 0;
+        this.dynamicFieldIndex = 0;
+        this.counterSelectedIndex = 0;
+        this.effectSelectedIndex = 0;
+    }
+    static async _onRollAttack(event, target) {
+        TheEdgePlayableSheet.rollAttack.call(this.token.sheet, event, target);
+    }
+    static async _onRollAttr(event, target) {
+        TheEdgePlayableSheet.rollAttribute.call(this.token.sheet, event, target);
+    }
+    static async _onRollSearchProficiency(event, target) {
+        this._saveSearchAndReset();
+        TheEdgeHotbar._onRollProficiency.call(this, event, target);
+    }
+    static async _onRollProficiency(event, target) {
+        TheEdgePlayableSheet.rollProficiency.call(this.token.sheet, event, target);
+    }
+    static async _onScroll(_event, target) {
+        const change = target.dataset.dir == "up" ? 1 : -1;
+        switch (target.dataset.type) {
+            case "weapons":
+                this.weaponSelectedIndex += change;
+                this._redrawElement("weapon");
+                break;
+            case "items":
+                this.itemSelectedIndex += 2 * change;
+                this._redrawElement("item");
+                break;
+            case "effects":
+                this.effectSelectedIndex += change;
+                this._redrawElement("health");
+                break;
+            case "counters":
+                this.counterSelectedIndex += change;
+                this._redrawElement("counter");
+                break;
+        }
+    }
+    static async _onSearchProficiency(_event, target) {
+        var input = target.querySelector("input[name='proficiency']");
+        // Manually bring input into focus
+        input.focus();
+    }
+    static async _onUseItem(event, target) {
+        TheEdgeActorSheet._onItemControl.call(this.token.sheet, event, target);
+        await Aux.sleep(200); // Await short duration to get up to date item count
+        this._redrawElement("item");
+    }
+    async _redrawElement(element) {
+        const context = await this._prepareContext();
+        const template = `systems/the_edge/templates/applications/hotbar/${element}.hbs`;
+        const html = await renderTemplate(template, context);
+        const alteredElement = this.element.querySelector(`.${element}-element`);
+        alteredElement.outerHTML = html;
+        const currentField = element == "dynamic-field" ? context.dynamicField : element;
+        switch (currentField) {
+            case "counter":
+                this._attachCounterListeners();
+                break;
+        }
+    }
+    _attachCounterListeners() {
+        this.element.querySelectorAll(".svg-progress-input").forEach(x => {
+            x.addEventListener("change", ev => {
+                const counters = this.token.actor.system.counters;
+                const index = +ev.target.closest(".counter-index").dataset.index;
+                counters[index].value = Math.min(ev.target.valueAsNumber, counters[index].max);
+                this.token.actor.update({ "system.counters": counters });
+                this._redrawElement("counter");
+            });
+        });
+    }
+}

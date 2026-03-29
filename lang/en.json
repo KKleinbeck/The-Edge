@@ -278,7 +278,10 @@
     "OVERLOADTHRESHOLD": "Overload - threshold",
     "PAIN": "Pain",
     "PAINTHRESHOLD": "Pain - threshold",
-    "STRAIN": "Strain"
+    "STRAIN": "Strain",
+    "STRAIN - MAX": "Max Strain",
+    "STRAIN - STRAINTHRESHOLD": "Strain - Threshold",
+    "STRAIN - MAXUSEREDUCTION": "Reduce strain per roll"
   },
   "HERO TOKEN": {
     "ATTRIBUTE": "{name} used a hero token to improve an ability check.",
@@ -715,6 +718,7 @@
   "STATUS EFFECTS": "Status effects",
   "STORAGE": "Storage",
   "STORE": "Store",
+  "STRAIN": "Strain",
   "SUCCESS": "Success",
   "TEMPORARY": "Temporary",
   "THRESHOLD": "threshold",

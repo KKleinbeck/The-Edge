@@ -11,7 +11,7 @@
     }
   ],
   "esmodules": [
-    "modules/the_edge.js"
+    "built/the_edge.js"
   ],
   "styles": [
     "styles/simple.css"

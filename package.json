@@ -14,7 +14,11 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "gulp": "^5.0.1",
     "gulp-less": "^5.0.0"
+  },
+  "devDependencies": {
+    "gulp": "^4.0.0",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "typescript": "^6.0.2"
   }
 }

@@ -1,0 +1,27 @@
+.beveled-box {
+  width: 200px;
+  height: 100px;
+  position: relative;
+  background: #f0f0f0;
+  border: none;
+  background: linear-gradient(45deg, transparent 50%, #f0f0f0 50%) bottom left, linear-gradient(-45deg, transparent 50%, #f0f0f0 50%) bottom right;
+  background-repeat: no-repeat;
+  background-size: 20px 20px;
+}
+.beveled-box::before,
+.beveled-box::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, transparent 50%, #f0f0f0 50%);
+}
+.beveled-box::before {
+  top: 0;
+  left: 0;
+}
+.beveled-box::after {
+  top: 0;
+  right: 0;
+  background: linear-gradient(-135deg, transparent 50%, #f0f0f0 50%);
+}
