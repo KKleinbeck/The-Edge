@@ -2,8 +2,9 @@ import THE_EDGE from "../system/config-the-edge.js";
 
 const { renderTemplate } = foundry.applications.handlebars;
 
-export default function EffectModifierMixin(BaseApplication) {
-  class EffectModifier extends BaseApplication {
+type intype = Constructor<FoundryHandlebarsApplication>;
+export default function EffectModifierMixin<T extends intype>(BaseApplication: T): T {
+  return class EffectModifier extends BaseApplication {
     static DEFAULT_OPTIONS = {
       actions: {
         createModifier: EffectModifier._createModifier,
@@ -12,54 +13,77 @@ export default function EffectModifierMixin(BaseApplication) {
     }
 
     // Interface functions - need to be overwritten
-    getModifiers(_target) {} // Shall return list of modifiers and a context that is passed to updateModifiers
-    async updateModifiers(_modifiers, _context) {};
+    getModifiers(_target: Element): IModifiersAndContext {
+      return {modifiers: [], context: {}};
+    }
+    async updateModifiers(
+      _modifiers: IEffectModifier[], _context: EffectModifierMixinContext
+    ): Promise<void> {};
 
     // Private interface
-    _onRender(context, options) {
+    _onRender(context: foundryAny, options: foundryAny): void {
       super._onRender(context, options)
       this.attachEffectListeners();
     }
 
-    static _createModifier(_event, target) {
+    static _createModifier(_event: Event, target: Element): void {
+      // @ts-expect-error 2339 as the method is defined as static
       const {modifiers, context} = this.getModifiers(target);
       modifiers.push({group: "attributes", field: "end", value: 0});
+      // @ts-expect-error 2339
       this.updateModifiers(modifiers, context);
+      // @ts-expect-error 2339
       this.redrawModifiers(target, modifiers, context);
     }
 
-    _modifyEffect(event) {
+    _modifyEffect(event: Event): void {
+      if (!(event.currentTarget instanceof HTMLInputElement)) return;
+      if (event.currentTarget.dataset.index === undefined) return;
+
       event.stopPropagation();
       const change = this._getModifierData(event.currentTarget);
       const {modifiers, context} = this.getModifiers(event.currentTarget);
-      const index = event.currentTarget.dataset.index;
+      const index: string = event.currentTarget.dataset.index;
       for (const [key, value] of Object.entries(change)) {
+        if (key === undefined) continue;
         modifiers[index][key] = value;
       }
       this.updateModifiers(modifiers, context);
       this.redrawModifiers(event.currentTarget, modifiers, context);
     }
 
-    _getModifierData(target) {
-      const entry = target.dataset.entry;
-      const result = {};
+    _getModifierData(target: HTMLInputElement): IEffectModifier {
+      if (target.dataset.entry === undefined) {
+        throw new Error(
+          `Input element does not define dataset 'entry'.\nDataset: ${target.dataset}`
+        );
+      };
+
+      const entry: string = target.dataset.entry;
+      const result: IEffectModifier = {};
       result[entry] = entry == "value" ? parseInt(target.value) : target.value;
-      // The next line also sets the name to something sensible if the group changes
-      if (entry == "group") {
+      if (entry == "group") { // Also set a sensible name if the group changes
         result.field = Object.keys(THE_EDGE.effectMap[target.value])[0];
       }
       return result;
     }
 
-    static _deleteModifier(_event, target) {
+    static _deleteModifier(_event: Event, target: HTMLElement): void {
+      // @ts-expect-error 2339 as the method is defined as static
       const {modifiers, context} = this.getModifiers(target);
       const index = target.dataset.index;
       modifiers.splice(index, 1);
+      // @ts-expect-error 2339
       this.updateModifiers(modifiers, context);
+      // @ts-expect-error 2339
       this.redrawModifiers(target, modifiers, context);
     }
 
-    async redrawModifiers(target, modifiers, context) {
+    async redrawModifiers(
+      target: Element,
+      modifiers: IEffectModifier[],
+      context: EffectModifierMixinContext
+    ): Promise<void> {
       const template = "systems/the_edge/templates/generic/effect-modifiers.hbs";
       const html = await renderTemplate(
         template, {
@@ -72,18 +96,20 @@ export default function EffectModifierMixin(BaseApplication) {
       const newContent = document.createElement("div"); // Trick to strip outer class of html-string
       newContent.innerHTML = html;
       const modifiersElement = target.closest(".effect-modifiers-hook");
+      if (modifiersElement === null) return;
+
       modifiersElement.innerHTML = newContent.innerHTML;
       modifiersElement.querySelectorAll(".modifier-hook")?.forEach(
-        x => x.addEventListener("change", ev => this._modifyEffect(ev))
+        (x: Element, _key: number, _parent: NodeListOf<Element>) => {
+          x.addEventListener("change", ev => this._modifyEffect(ev));
+        }
       );
     }
 
-    attachEffectListeners() {
+    attachEffectListeners(): void {
       this.element.querySelectorAll(".modifier-hook")?.forEach(
-        x => x.addEventListener("change", ev => this._modifyEffect(ev))
+        (x: Element) => x.addEventListener("change", ev => this._modifyEffect(ev))
       );
     }
   }
-
-  return EffectModifier;
 }

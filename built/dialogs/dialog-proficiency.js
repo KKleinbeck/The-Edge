@@ -8,7 +8,7 @@ export default class DialogProficiency extends Dialog {
         });
     }
     static async start(checkData) {
-        const template = "systems/the_edge/templates/dialogs/proficienecy.html";
+        const template = "systems/the_edge/templates/dialogs/proficiency.html";
         let html = await renderTemplate(template, {});
         const buttons = {
             roll: {
@@ -30,7 +30,8 @@ export default class DialogProficiency extends Dialog {
             });
         }
         return new DialogProficiency({
-            title: LocalisationServer.localise(checkData.proficiency, "proficiency") + " " + game.i18n.localize("CHECK"),
+            title: LocalisationServer.localise(checkData.proficiency, "proficiency") +
+                " " + game.i18n.localize("CHECK"),
             content: html,
             buttons: buttons,
             default: "roll"

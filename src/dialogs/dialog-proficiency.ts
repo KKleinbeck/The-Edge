@@ -10,15 +10,15 @@ export default class DialogProficiency extends Dialog{
     })
   }
 
-  static async start(checkData) {
-    const template = "systems/the_edge/templates/dialogs/proficienecy.html";
+  static async start(checkData: IProficiencyRollQuery) {
+    const template = "systems/the_edge/templates/dialogs/proficiency.html";
     let html = await renderTemplate(template, {});
     const buttons = {
       roll: {
         label: game.i18n.localize("DIALOG.ROLL"),
         callback: (html) => {
-          checkData.temporaryMod = parseInt(html.find('[name="Modifier"]').val());
-          checkData.vantage = html.find('[name="AdvantageSelector"]').val();
+          (checkData as IProficiencyRollResult).temporaryMod = parseInt(html.find('[name="Modifier"]').val());
+          (checkData as IProficiencyRollResult).vantage = html.find('[name="AdvantageSelector"]').val();
           const rollType = Aux.parseRollType(html);
           checkData.actor.system.rollProficiencyCheck(checkData, rollType);
         }
@@ -33,7 +33,8 @@ export default class DialogProficiency extends Dialog{
       })
     }
     return new DialogProficiency({
-      title: LocalisationServer.localise(checkData.proficiency, "proficiency") + " " + game.i18n.localize("CHECK"),
+      title: LocalisationServer.localise(checkData.proficiency, "proficiency") +
+        " " + game.i18n.localize("CHECK"),
       content: html,
       buttons: buttons,
       default: "roll"

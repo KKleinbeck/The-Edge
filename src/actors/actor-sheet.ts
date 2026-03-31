@@ -1,12 +1,12 @@
 import Aux from "../system/auxilliaries.js";
 import ChatServer from "../system/chat_server.js";
-import DialogMedicine from "../dialogs/dialog-medicine.js";
-import DialogItemDeletion from "../dialogs/dialog-item-deletion.js";
 import DialogArmourAttachment from "../dialogs/dialog-attachOuterArmour.js";
+import DialogItemDeletion from "../dialogs/dialog-item-deletion.js";
+import DialogMedicine from "../dialogs/dialog-medicine.js";
+import DialogProficiency from "../dialogs/dialog-proficiency.js";
 import EffectModifierMixin from "../mixins/effect-modifier-mixin.js";
 import LocalisationServer from "../system/localisation_server.js";
 import NotificationServer from "../system/notifications.js";
-import THE_EDGE from "../system/config-the-edge.js";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ActorSheetV2 } = foundry.applications.sheets;
@@ -339,7 +339,8 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
         
         if (skill.type == "Medicalskill") {
           DialogProficiency.start({
-            proficiency: skill.system.basis, actor: this.actor, actorId: this.actor.id
+            actor: this.actor, actorId: this.actor.id, proficiency: skill.system.basis,
+            tokenId: this.token?.id, sceneId: game.user.viewedScene
           })
         }
         break;
