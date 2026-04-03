@@ -3,7 +3,8 @@ import THE_EDGE from "../system/config-the-edge.js";
 const { renderTemplate } = foundry.applications.handlebars;
 
 type intype = Constructor<FoundryHandlebarsApplication>;
-export default function EffectModifierMixin<T extends intype>(BaseApplication: T): T {
+type outtype<T> = T & Constructor<EffectModifier>;
+export default function EffectModifierMixin<T extends intype>(BaseApplication: T): outtype<T> {
   return class EffectModifier extends BaseApplication {
     static DEFAULT_OPTIONS = {
       actions: {

@@ -14,6 +14,7 @@
     "built/the_edge.js"
   ],
   "styles": [
+    "styles/root.css",
     "styles/simple.css"
   ],
   "languages": [

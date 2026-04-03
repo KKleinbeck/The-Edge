@@ -17,6 +17,10 @@ export default function () {
         textLocalisation: (a) => LocalisationServer.localise(a, "text"),
         detailedLocalisation: (a, b, c) => LocalisationServer.parsedLocalisation(b, a, c),
         effectRequirementName: (a, b) => LocalisationServer.effectLocalisation(a, b),
+        define: function (options) {
+            const context = Object.assign({}, this, options.hash);
+            return options.fn(context);
+        },
         genRange: (a) => {
             let preface = a.split("_")[0];
             let distance = a.split("_")[1];

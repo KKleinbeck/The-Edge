@@ -11,7 +11,15 @@ import NotificationServer from "../system/notifications.js";
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ActorSheetV2 } = foundry.applications.sheets;
 
-export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplicationMixin(ActorSheetV2)) {
+export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplicationMixin(ActorSheetV2)){
+  effectIsExpanded: any = {};
+
+  constructor(...args: ConstructorParameters<typeof ActorSheetV2>) {
+    super(...args);
+    this.effectIsExpanded = {};
+    this._prepareTabs("stest")
+  }
+
   static DEFAULT_OPTIONS = {
     tag: "form",
     position: {
@@ -42,11 +50,12 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
   
   // Actions
   static async _onItemControl(event, target) {
+    const self = this as unknown as TheEdgeActorSheet;
     event.preventDefault();
 
     // Obtain event data
     const itemElement = target.closest(".item");
-    const item = this.actor.items.get(itemElement?.dataset.itemId);
+    const item = self.actor.items.get(itemElement?.dataset.itemId);
 
     // Handle different actions
     switch ( target.dataset.subaction ) {
@@ -55,7 +64,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
         const cls = getDocumentClass("Item");
         return cls.create(
           {name: LocalisationServer.localise("New", "item"), type: itemType},
-          {parent: this.actor}
+          {parent: self.actor}
         );
       case "edit":
         return item?.sheet.render(true);
@@ -63,15 +72,15 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
         ChatServer.transmitEvent("Post Item", {item: item});
         break;
       case "increase":
-        this.actor.addOrCreateVantage(item);
+        self.actor.addOrCreateVantage(item);
         break;
       case "decrease":
-        this.actor.decrementVantage(item);
+        self.actor.decrementVantage(item);
         break;
       case "delete":
-        if (item.type.includes("vantage")) this.actor.deleteVantage(item);
-        else if (item.type == "Wounds") this.actor.system.deleteWound(item);
-        else DialogItemDeletion.start({item: item, actor: this.actor});
+        if (item.type.includes("vantage")) self.actor.deleteVantage(item);
+        else if (item.type == "Wounds") self.actor.system.deleteWound(item);
+        else DialogItemDeletion.start({item: item, actor: self.actor});
         break;
       case "toggle-equip":
         if (item.type == "Armour") {
@@ -83,49 +92,49 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
           
           if (item.system.layer == "Outer") {
             if (item.system.equipped) {
-              const parent = this.actor.items.get(item.system.attachments[0].armourId);
+              const parent = self.actor.items.get(item.system.attachments[0].armourId);
               await Aux.detachFromParent(parent, item._id, item.system.attachmentPoints.max);
               await item.update({"system.attachments": []})
               await item.system.toggleEquipped();
               break;
             } else {
-              const attachableArmour = this._findAttachableArmour(item);
+              const attachableArmour = self._findAttachableArmour(item);
               if (attachableArmour.length == 0) {
                 let msg = LocalisationServer.localise("No attachable armour", "Notifications")
                 ui.notifications.notify(msg)
                 break;
               }
               DialogArmourAttachment.start(
-                {actor: this.actor, tokenId: this.token?.id, shellId: item.id, attachable: attachableArmour}
+                {actor: self.actor, tokenId: self.token?.id, shellId: item.id, attachable: attachableArmour}
               )
               break;
             }
           }
         }
         await item.system.toggleEquipped();
-        await this.actor.update({});
+        await self.actor.update({});
         break;
       case "consume":
         switch (item.system.current_type) {
           case "medicine":
-            const wounds = this.actor.system.wounds;
+            const wounds = self.actor.system.wounds;
             if (wounds.length) {
-              DialogMedicine.start({medicineItem: item, wounds: wounds, actor: this.actor});
+              DialogMedicine.start({medicineItem: item, wounds: wounds, actor: self.actor});
             } else {
-              NotificationServer.notify("No wounds on Actor", {name: this.actor.name})
+              NotificationServer.notify("No wounds on Actor", {name: self.actor.name})
             }
             break;
 
           case "grenade":
             ChatServer.transmitEvent("grenade sheet based", {
-              actorId: this.actor?.id, tokenId: this.token?.id, grenade: item,
+              actorId: self.actor?.id, tokenId: self.token?.id, grenade: item,
               details: item.system.subtypes.grenade
             })
             item.useOne();
             break;
           
           default:
-            const existingCopies = this.actor.system.findEffectsByName(item.name);
+            const existingCopies = self.actor.system.findEffectsByName(item.name);
             if (existingCopies.length) {
               NotificationServer.notify("Effect already exists");
               return
@@ -133,10 +142,10 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
 
             const hasEffect = item.system.effect.length > 0;
             if (hasEffect) {
-              this.actor.system.createNewEffect(item.name, item.system.effect);
+              self.actor.system.createNewEffect(item.name, item.system.effect);
             }
             ChatServer.transmitEvent("General Consume", {
-              details: {actorName: this.actor.name, item: item.name},
+              details: {actorName: self.actor.name, item: item.name},
               hasEffects: hasEffect
             });
             item.useOne();
@@ -147,6 +156,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
   }
 
   static async _onEffectControl(event, target) {
+    const self = this as unknown as TheEdgeActorSheet;
     event.preventDefault();
 
     // Obtain event data
@@ -157,39 +167,39 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
     // Handle different actions
     switch ( target.dataset.subaction ) {
       case "create":
-        await this.actor.system.createNewEffect();
-        this.effectIsExpanded[target.dataset.source].push(false);
+        await self.actor.system.createNewEffect();
+        self.effectIsExpanded[target.dataset.source].push(false);
         break;
       case "delete":
         // TODO: proper movement animations
-        this.actor.system.deleteEffect(index);
-        this.effectIsExpanded[source].splice(index, 1);
+        self.actor.system.deleteEffect(index);
+        self.effectIsExpanded[source].splice(index, 1);
         break;
       case "edit":
         if (["itemEffects", "skillEffects"].includes(effectElement.dataset.source)) {
           const id = effectElement?.dataset.id || ""; 
-          const item = this.actor.items.get(id);
+          const item = self.actor.items.get(id);
           return item?.sheet.render(true);
         }
         break;
       case "toggleShowContent":
-        this.effectIsExpanded[source][index] = !this.effectIsExpanded[source][index];
+        self.effectIsExpanded[source][index] = !self.effectIsExpanded[source][index];
         const container = effectElement.parentElement;
         const content = effectElement.querySelector(".content");
         if (!effectElement.classList.contains('expanded')) {
-          this.expandItem(effectElement, content, container);
+          self.expandItem(effectElement, content, container);
         } else {
-          this.collapseItem(effectElement, content, container);
+          self.collapseItem(effectElement, content, container);
         }
         break;
       case "toggle-active":
         if (effectElement.dataset.source == "effects") {
-          this.actor.system.toggleEffect(index);
+          self.actor.system.toggleEffect(index);
         } else { // Skill effect
-          const item = this.actor.items.get(effectElement.dataset.id);
+          const item = self.actor.items.get(effectElement.dataset.id);
           await item.system.toggleActive({render: false});
-          await this.actor.update({}, {render: false}); // Force effect recalculation
-          this.render({force: true}); // Force redraw for icon update
+          await self.actor.update({}, {render: false}); // Force effect recalculation
+          self.render({force: true}); // Force redraw for icon update
         }
         break;
     }
@@ -297,21 +307,22 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
   }
   
   static async _onSkillControl(event, target) {
+    const self = this as unknown as TheEdgeActorSheet;
     event.preventDefault();
 
     // Obtain event data
     const skillElement = target.closest(".skill");
     const skillID = skillElement?.dataset.itemId;
-    const skill = this.actor.items.get(skillID);
+    const skill = self.actor.items.get(skillID);
 
     // Handle different actions
     switch ( target.dataset.subaction ) {
       case "increase":
-        return this.actor.skillLevelIncrease(skillID);
+        return self.actor.skillLevelIncrease(skillID);
       case "decrease":
-        return this.actor.skillLevelDecrease(skillID);
+        return self.actor.skillLevelDecrease(skillID);
       case "delete":
-        return this.actor.deleteSkill(skillID);
+        return self.actor.deleteSkill(skillID);
       case "post":
         ChatServer.transmitEvent("Post Skill",
           {name: skill.name, type: skill.type, description: skill.system.description}
@@ -320,27 +331,27 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
       case "roll":
         const hrChange = Aux.parseHrCostStr(
           skill.system.hrCost, skill.name,
-          this.actor.system.heartRate.value,
-          this.actor.system.heartRate.max.value,
-          this.actor.getHRZone()
+          self.actor.system.heartRate.value,
+          self.actor.system.heartRate.max.value,
+          self.actor.getHRZone()
         )
         if (hrChange) {
-          if (game.combat && this.actor._id == game.combat.combatant.actorId) {
+          if (game.combat && self.actor._id == game.combat.combatant.actorId) {
             game.the_edge.combatLog.addAction(skill.name, hrChange);
           } else {
-            const hrThen = this.actor.system.heartRate.value;
-            await this.actor.system.applyStrains([hrChange]);
-            const hrNow = this.actor.system.heartRate.value;
+            const hrThen = self.actor.system.heartRate.value;
+            await self.actor.system.applyStrains([hrChange]);
+            const hrNow = self.actor.system.heartRate.value;
             ChatServer.transmitEvent("Combat Action",
-              {actor: this.actor.name, skill: skill.name, hrThen: hrThen, hrNow: hrNow}
+              {actor: self.actor.name, skill: skill.name, hrThen: hrThen, hrNow: hrNow}
             );
           }
         }
         
         if (skill.type == "Medicalskill") {
           DialogProficiency.start({
-            actor: this.actor, actorId: this.actor.id, proficiency: skill.system.basis,
-            tokenId: this.token?.id, sceneId: game.user.viewedScene
+            actor: self.actor, actorId: self.actor.id, proficiency: skill.system.basis,
+            tokenId: self.token?.id, sceneId: game.user.viewedScene
           })
         }
         break;
@@ -362,6 +373,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
   }
 
   static onCounterControl(event, target) {
+    const self = this as unknown as TheEdgeActorSheet;
     event.preventDefault();
 
     // Obtain event data
@@ -369,7 +381,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
     const index = +counterElement?.dataset.index;
 
     // Handle different actions
-    const counters = this.actor.system.counters || [];
+    const counters = self.actor.system.counters || [];
     switch ( target.dataset.subaction ) {
       case "create-counter":
         counters.push({
@@ -403,7 +415,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
         counters[index].value = (counters[index].value < level) ? level : level - 1;
         break;
     }
-    this.actor.update({"system.counters": counters});
+    self.actor.update({"system.counters": counters});
   }
 
   // Specific listeners
@@ -422,6 +434,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
     const progressBarInputs = this.element.querySelectorAll(".counter-input");
     for (const input of progressBarInputs) {
       input.addEventListener("change", (ev) => {
+        if (!(ev.target instanceof HTMLElement)) return;
         this._onCounterChange(ev, ev.target.dataset.subtype)
       })
     }
@@ -429,7 +442,10 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
     const effectNames = this.element.querySelectorAll(".effect-name-hook");
     for (const effectName of effectNames) {
       effectName.addEventListener("change", (ev) => {
+        if (!(ev.target instanceof HTMLInputElement)) return;
         const effectElement = ev.target.closest(".effect-hook");
+        if (!(effectElement instanceof HTMLElement) || !effectElement.dataset.index) return;
+
         const effects = this.actor.system.effects;
         effects[effectElement.dataset.index].name = ev.target.value;
         this.actor.update({"system.effects": effects}, {render: false});

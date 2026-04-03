@@ -1,6 +1,8 @@
 import THE_EDGE from "./config-the-edge.js"
 import LocalisationServer from "./localisation_server.js"
 
+const { renderTemplate } = foundry.applications.handlebars;
+
 export default class Aux {
   static objectAt(obj, path) {
     return path.split(".").reduce((a,i) => a[i], obj);
@@ -219,4 +221,30 @@ export default class Aux {
   }
 
   static tokenDistance(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+
+  static async replacePlaceholderInContent(content, context) {
+    // TODO: phase out by directly acting on DOM, see hooks/applications.ts
+    const replacementPattern = /<div\s*class="replace-hook"\s*data-replace-by="([\w-]+)"\s*><\/div>/g;
+    const matches = content.matchAll(replacementPattern);
+    for (const match of matches) { // match = [fullMatch, replace-by]
+      let result = "";
+      let template = "";
+      let details = {};
+      switch (match[1]) {
+        case "range-chart":
+          template = "systems/the_edge/templates/generic/range-chart.hbs";
+          details = {rangeChart: context.rangeChart};
+          result = await renderTemplate(template, details);
+          break;
+        
+        case "slider":
+          template = "systems/the_edge/template/generic/slider.hbs";
+          details = {};
+          result = await renderTemplate(template, details);
+          break
+      }
+      content = content.replace(match[0], result);
+    }
+    return content;
+  }
 }

@@ -1,3 +1,7 @@
+export const REPLACEMENTS = {
+    "range-chart": "systems/the_edge/templates/generic/range-chart.hbs",
+    "slider": "systems/the_edge/templates/generic/slider.hbs",
+};
 /**
  * Define a set of template paths to pre-load
  * Pre-loaded templates are compiled and cached for fast access when rendering
@@ -60,6 +64,7 @@ export const preloadHandlebarsTemplates = async function () {
         "systems/the_edge/templates/generic/icon-selector.hbs",
         "systems/the_edge/templates/generic/progress-bar-modern.hbs",
         "systems/the_edge/templates/generic/range-chart.hbs",
+        "systems/the_edge/templates/generic/slider.hbs",
     ];
     // Load the template parts
     return foundry.applications.handlebars.loadTemplates(templatePaths);

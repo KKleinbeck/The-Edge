@@ -1,5 +1,6 @@
 declare class EffectModifier {
   getModifiers(_target: Element): IModifiersAndContext
+  updateModifiers(modifiers: IEffectModifier[], context: EffectModifierMixinContext): Promise<void>;
 }
 
 interface IEffectOverview {

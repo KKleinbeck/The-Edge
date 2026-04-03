@@ -11,10 +11,10 @@ export default function () {
         return executeChatCommands(message, chatData);
     });
     Hooks.on("createChatMessage", async (data, _options, _userId) => {
-        data.content = await replacePlaceholderInContent(data.content, data.system.item?.system ?? {});
+        data.content = await Aux.replacePlaceholderInContent(data.content, data.system.item?.system ?? {});
     });
     Hooks.on("renderChatMessageHTML", async (chatMsgCls, html, message) => {
-        const newContent = await replacePlaceholderInContent(chatMsgCls.content, chatMsgCls.system.item?.system ?? {});
+        const newContent = await Aux.replacePlaceholderInContent(chatMsgCls.content, chatMsgCls.system.item?.system ?? {});
         html.querySelector(".message-content").innerHTML = newContent;
         const sys = message.message.system;
         const actor = Aux.getActor(sys.actorId); // TODO: Struggles with hero tokens used from tokens. Provide token information
@@ -392,20 +392,4 @@ async function applyDamage(target, damage, penetration, crits, damageType, name)
         }
     }
     return protectionLog;
-}
-async function replacePlaceholderInContent(content, system) {
-    const replacementPattern = /<div\s*class="replace-hook"\s*data-replace-by="([\w-]+)"\s*><\/div>/g;
-    const matches = content.matchAll(replacementPattern);
-    for (const match of matches) { // match = [fullMatch, replace-by]
-        let result = "";
-        switch (match[1]) {
-            case "range-chart":
-                const template = "systems/the_edge/templates/generic/range-chart.hbs";
-                const details = { rangeChart: system.rangeChart };
-                result = await renderTemplate(template, details);
-                break;
-        }
-        content = content.replace(match[0], result);
-    }
-    return content;
 }
