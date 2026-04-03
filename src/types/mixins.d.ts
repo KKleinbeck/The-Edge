@@ -1,3 +1,5 @@
+// ----------------------------------------
+// Effect Modifier
 declare class EffectModifier {
   getModifiers(_target: Element): IModifiersAndContext
   updateModifiers(modifiers: IEffectModifier[], context: EffectModifierMixinContext): Promise<void>;
@@ -19,4 +21,10 @@ type EffectModifierMixinContext = any
 interface IModifiersAndContext {
   modifiers: IEffectModifier[]
   context: EffectModifierMixinContext
+}
+
+// ----------------------------------------
+// Slider Modifier
+declare class Slider {
+
 }

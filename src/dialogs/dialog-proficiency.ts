@@ -1,9 +1,10 @@
 import LocalisationServer from "../system/localisation_server.js";
+import SliderMixin from "../mixins/slider-mixin.js";
 
 const { renderTemplate } = foundry.applications.handlebars;
 const { DialogV2 } = foundry.applications.api;
 
-export default class DialogProficiency extends DialogV2 {
+export default class DialogProficiency extends SliderMixin(DialogV2) {
   static async start(checkData: IProficiencyRollQuery) {
     const template = "systems/the_edge/templates/dialogs/proficiency.hbs";
     const html = await renderTemplate(template, {});

@@ -40,7 +40,7 @@ declare class Dialog {
   render(arg: foundryAny): foundryAny
 }
 
-declare class DialogV2 {
+declare class DialogV2 extends FoundryHandlebarsApplication {
   constructor(options: foundryAny)
   render(options?: foundryAny): Promise<DialogV2>
 }
