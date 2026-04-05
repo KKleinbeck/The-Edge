@@ -21,6 +21,17 @@ export default function () {
             const context = Object.assign({}, this, options.hash);
             return options.fn(context);
         },
+        range: (from, to, step, options) => {
+            let out = '';
+            for (let i = from; i <= to; i += step) {
+                out += options.fn(i);
+            }
+            return out;
+        },
+        dumpContext: function (_options) {
+            const json = JSON.stringify(this);
+            return new Handlebars.SafeString(btoa(json));
+        },
         genRange: (a) => {
             let preface = a.split("_")[0];
             let distance = a.split("_")[1];
@@ -72,13 +83,6 @@ export default function () {
         mul: (a, b) => { return a * b; },
         and: (a, b) => { return a && b; },
         or: (a, b) => { return a || b; },
-        range: (from, to, step, options) => {
-            let out = '';
-            for (let i = from; i <= to; i += step) {
-                out += options.fn(i);
-            }
-            return out;
-        },
         capitalise: (a) => { return a.charAt(0).toUpperCase() + a.slice(1); },
         anyObjectValues: (a) => { return Object.values(a).some(x => x); },
         storePrice: (a, b) => { return Math.round(a * b / 10) * 10; },

@@ -25,6 +25,17 @@ interface IModifiersAndContext {
 
 // ----------------------------------------
 // Slider Modifier
-declare class Slider {
+interface SliderInstance {
+  getSliderValues(): Record<string, number | string>
+}
+interface SliderStatic {
+  getSliderValuesFromElement(element: Element): Record<string, number | string>
+}
 
+interface ISliderContext {
+  id: string,
+  max: number,
+  min: number,
+  title: string,
+  value: number
 }

@@ -1,21 +1,18 @@
-<div>
-  <select class="advantage-box" name="AdvantageSelector" id="AdvantageSelector">
-    <option value="Nothing">No Advantage</option>
-    <option value="Advantage">Advantage</option>
-    <option value="Disadvantage">Disadvantage</option>
-  </select>
-  {{>
-    systems/the_edge/templates/generic/slider.hbs
-    title=(genName "Modifier")
-    min=-10
-    max= 10
-    value=-3
-  }}
-  {{>
-    systems/the_edge/templates/generic/slider.hbs
-    title="Test"
-    max= 10
-    value=7
-  }}
-</div>
-{{> systems/the_edge/templates/dialogs/meta-chat-options.html}}
+<select class="advantage-box vantage-hook" name="AdvantageSelector" id="AdvantageSelector">
+  <option value="Nothing">No Advantage</option>
+  <option value="Advantage">Advantage</option>
+  <option value="Disadvantage">Disadvantage</option>
+</select>
+{{>
+  systems/the_edge/templates/generic/slider.hbs
+  title=(genName "Modifier")
+  id="modifier"
+  min=-10
+  max= 10
+}}
+{{>
+  systems/the_edge/templates/generic/slider.hbs
+  title=(genName "Strain")
+  id="strain"
+  max= 10
+}}

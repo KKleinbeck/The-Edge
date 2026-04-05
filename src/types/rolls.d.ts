@@ -1,3 +1,10 @@
+interface IRollPromptResult {
+  strain: number
+  modifier: number
+  vantage: "Advantage" | "Disadvantage" | "Nothing"
+  roll?: "public" | "blind" | "whisper"
+}
+
 interface IAttributeRollQuery {
   attribute: attribute
   actor: foundryAny
@@ -14,7 +21,4 @@ interface IProficiencyRollQuery {
   sceneId: string // TODO: Scene IDs needed?
 }
 
-interface IProficiencyRollResult extends IProficiencyRollQuery{
-  temporaryMod: number
-  vantage: "Advantage" | "Disadvantage" | "Nothing"
-}
+interface IProficiencyPromptResult extends IProficiencyRollQuery, IRollPromptResult {}

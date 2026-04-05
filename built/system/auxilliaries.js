@@ -5,6 +5,7 @@ export default class Aux {
     static objectAt(obj, path) {
         return path.split(".").reduce((a, i) => a[i], obj);
     }
+    // TODO yeet
     static parseRollType(html) { return html.find('[name="rolltype"]').val() || "roll"; }
     static sleep(duration) { return new Promise(r => setTimeout(r, duration)); }
     static hasRaceCondDanger(id) {

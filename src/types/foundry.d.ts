@@ -71,4 +71,7 @@ interface IFoundry {
       ActorSheetV2: typeof ActorSheetV2;
     }
   };
+  utils: {
+    mergeObject<T, U>(a: T, b: U): T & U;
+  }
 }

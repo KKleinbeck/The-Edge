@@ -1,17 +1,54 @@
 const { renderTemplate } = foundry.applications.handlebars;
 export default function SliderMixin(BaseApplication) {
-    return class Slider extends BaseApplication {
-        static DEFAULT_OPTIONS = {
-            actions: {}
-        };
+    class SliderMixinClass extends BaseApplication {
         // Interface functions - need to be overwritten
+        onValueChanged(id, value) { }
+        getSliderValues() {
+            return SliderMixinClass.getSliderValuesFromElement(this.element);
+        }
+        static getSliderValuesFromElement(element) {
+            const sliderValues = {};
+            element.querySelectorAll(".slider-hook")?.forEach((e) => {
+                if (!(e instanceof HTMLElement))
+                    return;
+                const context = JSON.parse(atob(e.dataset.binaryContext ?? ""));
+                sliderValues[context.id] = context.value;
+            });
+            return sliderValues;
+        }
         // Private interface
         _onRender(context, options) {
             super._onRender(context, options);
-            this.attachEffectListeners();
+            this._attachEffectListeners();
         }
-        attachEffectListeners() {
-            this.element.querySelectorAll(".slider-hook")?.forEach((x) => x.addEventListener("click", ev => console.log("Hello World")));
+        _attachEffectListeners() {
+            this.element.querySelectorAll(".slider-click-hook")?.forEach((x) => x.addEventListener("click", (ev) => this._sliderClickedEvent(ev)));
         }
-    };
+        _sliderClickedEvent(event) {
+            const target = event.currentTarget;
+            if (!(target instanceof SVGElement))
+                return;
+            if (!("value" in target.dataset) || !target.dataset.value)
+                return;
+            const value = +target.dataset.value;
+            const entryElement = target.closest(".slider-hook");
+            if (!(entryElement instanceof HTMLElement))
+                return;
+            this.onValueChanged(entryElement.dataset.id ?? "", value);
+            if (!(entryElement.dataset.binaryContext))
+                return;
+            const context = JSON.parse(atob(entryElement.dataset.binaryContext));
+            context.value = value;
+            this._redrawSlider(entryElement, context);
+        }
+        async _redrawSlider(element, context) {
+            const template = "systems/the_edge/templates/generic/slider.hbs";
+            const html = await renderTemplate(template, context);
+            const content = document.createElement("div");
+            content.innerHTML = html;
+            content.querySelectorAll(".slider-click-hook")?.forEach((x) => x.addEventListener("click", (ev) => this._sliderClickedEvent(ev)));
+            element.replaceWith(content);
+        }
+    }
+    return SliderMixinClass;
 }

@@ -1,13 +1,14 @@
 {{!-- 
 Interface:
 - title: Displayed over the slider
+- id (optional): used for slider identification, Default to `title`
 - min (optional): Smallest value the slider may take
 - max: Largest value the Slider may take
-- value: Current value the slider posses
+- value (optional): Current value the slider posses, Default: 0
  --}}
-<div class="slider-hook">
+{{#define min=(or min 0) id=(or id title) value=(or value 0)}}
+<div class="slider-hook" data-id="{{id}}" data-binary-context="{{dumpContext}}">
   {{title}}
-  {{#define min=(or min 0)}}
   {{#define
     x_center=(mul (div (sub 0 min) (sub max min)) 100)
     value_coord=(mul (div (sub value min) (sub max min)) 100)
@@ -17,11 +18,13 @@ Interface:
     xmlns="http://www.w3.org/2000/svg">
     <defs>
       <style>
+        .axis-dim { opacity: 0.2; }
         .n-axis { stroke: var(--color-ui-secondary-1); stroke-width: 2; }
         .n-axis-glow { filter: drop-shadow(0 0 1px var(--color-ui-secondary-1)); }
         .p-axis { stroke: var(--color-ui-main-1); stroke-width: 2; }
         .p-axis-glow { filter: drop-shadow(0 0 1px var(--color-ui-main-1)); }
-        .axis-dim { opacity: 0.2; }
+
+        .click-box { opacity: 0; }
 
         .slider-tick-label { fill: white; font-size: 5px; text-anchor: middle; }
       </style>
@@ -44,7 +47,20 @@ Interface:
     {{#unless (or (checkEqual value min) (checkEqual value max))}}
     <text x="{{value_coord}}" y="7" class="slider-tick-label">{{value}}</text>
     {{/unless}}
-</svg>
-  {{/define}}
+
+    {{!-- Click regions --}}
+    {{#define hit_region_width=(div 100 (sub max min))}}
+    {{#define hit_region_start=(div hit_region_width 2)}}
+    {{#range min max 1}}
+    {{#define index=(sub this ../min)}}
+    <rect x="{{add ../../hit_region_start (mul ../../hit_region_width (sub index 1))}}" y="-3"
+      width="{{../../hit_region_width}}" height="8"
+      class="click-box slider-click-hook" data-value="{{../this}}"/>
+    {{/define}}
+    {{/range}}
+    {{/define}}
+    {{/define}}
+  </svg>
   {{/define}}
 </div>
+{{/define}}

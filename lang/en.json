@@ -258,7 +258,11 @@
     "EMPTY": "Empty",
     "PROMPT NUMBER": "Insert number",
     "REST": "Rest",
+
+    "BLIND ROLL": "Blind roll",
     "ROLL": "Roll",
+    "GM-WHISPER": "Whisper to GM",
+
     "SELECT": "Select",
     "SUBMIT": "Submit",
     "YES": "Yes"
