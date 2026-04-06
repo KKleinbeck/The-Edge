@@ -2,7 +2,7 @@
   {{#if searchCandidate}}
     <div style="display: flex; align-items: center; gap: 5px; margin-top: 5px;">
       <div style="color: rgba(200, 200, 200, 1)">{{proficiencyName searchCandidate.name}}</div>
-      {{#each searchCandidate.dices as |dice|}}
+      {{#each searchCandidate.dice as |dice|}}
         <button type="button" class="hotbar-proficiency-d20" data-action="rollSearchProficiency" data-proficiency="{{../searchCandidate.name}}"
           style="height: fit-content; min-height: 10pt; background: none; border: none;"
           data-tooltip aria-label="{{proficiencyName ../searchCandidate.name}} {{genName 'Check'}} - {{attrName dice}}">
@@ -14,7 +14,7 @@
   {{#each proficiencySearchHistory as |prof|}}
     <div style="display: flex; align-items: center; gap: 5px; margin-top: 5px;">
       <div style="color: white">{{proficiencyName prof.name}}</div>
-      {{#each prof.dices as |dice|}}
+      {{#each prof.dice as |dice|}}
         <button type="button" class="hotbar-proficiency-d20" data-action="rollProficiency" data-proficiency="{{prof.name}}"
           style="height: fit-content; min-height: 10pt; background: none; border: none;"
           data-tooltip aria-label="{{proficiencyName prof.name}} {{genName 'Check'}} - {{attrName dice}}">

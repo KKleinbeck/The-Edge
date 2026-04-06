@@ -1,4 +1,6 @@
 export class DataModelComponent {
+  declare parent: foundryAny
+  
   constructor() {
     if (new.target === DataModelComponent) {
       throw new Error("Cannot instantiate abstract class.");
@@ -27,7 +29,8 @@ function mergeProperties(targetClass, referenceClass) {
     } else {
       // For properties, just copy the descriptor
       Object.defineProperty(
-        target, name, Object.getOwnPropertyDescriptor(reference, name)
+        target, name, 
+        Object.getOwnPropertyDescriptor(reference, name) as PropertyDescriptor
       );
     }
   }

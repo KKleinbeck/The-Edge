@@ -11,6 +11,18 @@ function ATTR_FIELD() {
 }
 
 export default class AttributeData extends DataModelComponent {
+  declare attributes: {
+    end: foundryAny,
+    str: foundryAny,
+    spd: foundryAny,
+    crd: foundryAny,
+    cha: foundryAny,
+    emp: foundryAny,
+    foc: foundryAny,
+    res: foundryAny,
+    int: foundryAny,
+  }
+  
   static defineSchema() {
     return {
       attributes: new SchemaField({

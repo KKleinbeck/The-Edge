@@ -52,6 +52,7 @@ export default class DialogProficiency extends SliderMixin(DialogV2) {
     static rollCallback(dialog, checkData, roll) {
         const promptResult = dialog.getSliderValues();
         promptResult.roll = roll;
+        checkData.proficiency = checkData.proficiency.toLowerCase();
         const vantageElement = dialog.element.querySelector(".vantage-hook");
         if (!(vantageElement instanceof HTMLSelectElement))
             return;

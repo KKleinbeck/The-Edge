@@ -23,7 +23,7 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
         this.proficiencySearchHistory = [];
         for (const prof of Object.keys(this.proficiencies)) {
             // Initialise search history with first proficiency
-            const obj = { name: prof, dices: this.proficiencies[prof].dices };
+            const obj = { name: prof, dice: this.proficiencies[prof].dice };
             this.proficiencySearchHistory.push(obj);
             break;
         }
@@ -266,7 +266,7 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
         for (const prof of Object.keys(this.proficiencies)) {
             if (prof.toLowerCase().includes(this.searchBuffer.toLowerCase())) {
                 this.searchCandidate = {
-                    name: prof, dices: this.proficiencies[prof].dices
+                    name: prof, dice: this.proficiencies[prof].dice
                 };
                 break;
             }

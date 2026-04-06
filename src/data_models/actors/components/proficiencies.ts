@@ -1,12 +1,13 @@
 import ChatServer from "../../../system/chat_server.js";
+import NewDiceServer from "../../../system/new_dice_server.js";
 import ValueSchemaField from "../../Fields/value_schema.js";
 import { DataModelComponent } from "../../abstracts.js";
 
 const { ArrayField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
-function PROF_FIELD(diceStrings) {
+function PROF_FIELD(diceStrings: string[]) {
   return new ValueSchemaField({
-    dices: new ArrayField(
+    dice: new ArrayField(
       new StringField(),
       {initial: diceStrings, min: 3, max: 3}
     ),
@@ -16,6 +17,27 @@ function PROF_FIELD(diceStrings) {
 }
 
 export default class ProficiencyData extends DataModelComponent {
+  declare attributes: {
+    end: foundryAny,
+    str: foundryAny,
+    spd: foundryAny,
+    crd: foundryAny,
+    cha: foundryAny,
+    emp: foundryAny,
+    foc: foundryAny,
+    res: foundryAny,
+    int: foundryAny,
+  }
+
+  declare proficiencies: {
+    environmental: foundryAny,
+    knowledge: foundryAny,
+    mental: foundryAny,
+    physical: foundryAny,
+    social: foundryAny,
+    technical: foundryAny,
+  }
+
   static defineSchema() {
     return {
       proficiencies: new SchemaField({
@@ -79,22 +101,52 @@ export default class ProficiencyData extends DataModelComponent {
     };
   }
 
-  async rollProficiencyCheck(checkData, roll = "roll", transmit = true) {
-    checkData.proficiency = checkData.proficiency.toLowerCase();
-    const proficiencyData = Object.values(this.proficiencies)
-      .find(profClass => checkData.proficiency in profClass)[checkData.proficiency]
-    checkData.dices = proficiencyData.dices;
-    checkData.permanentMod = proficiencyData.value;
-    checkData.thresholds = checkData.dices.map(dice => this.attributes[dice]["value"]);
+  get diceParameters(): IDiceParameters { // Placeholder
+    return {
+      critDice: [1],
+      critDieBonus: 2,
+      critBonus: 4,
 
-    const results = await this.parent.diceServer.proficiencyCheck(
-      checkData.thresholds, checkData.permanentMod + (checkData.temporaryMod || 0), checkData.vantage
+      critFailDice: [20],
+      critFailMalus: -2,
+      critFailDieMalus: -4,
+      critFailEvents: [],
+
+      qualityStep: 5
+    }
+  }
+
+  async rollProficiencyCheck(promptResult: IProficiencyPromptResult, transmit = true) {
+    const proficiency = promptResult.proficiency;
+    const proficiencyData = Object.values(this.proficiencies)
+      .find(profClass => proficiency in profClass)[proficiency]
+
+    var threshold = proficiencyData.value;
+    threshold += proficiencyData.dice.reduce(
+      (acc: number, x: string) => acc + this.attributes[x].value, 0
     );
 
-    if (transmit) {
-      foundry.utils.mergeObject(checkData, results)
-      ChatServer.transmitEvent("ProficiencyCheck", checkData, roll);
+    const diceConfig: IDiceServerConfig = {
+      ...this.diceParameters,
+      modifier: promptResult.strain + promptResult.modifier,
+      threshold: threshold,
+      vantage: promptResult.vantage
     }
-    return results;
+
+    console.log(await NewDiceServer.proficiencyCheck(diceConfig))
+
+    // rollResult.dices = proficiencyData.dices;
+    // rollResult.permanentMod = proficiencyData.value;
+    // rollResult.thresholds = rollResult.dices.map(dice => this.attributes[dice]["value"]);
+
+    // const results = await this.parent.diceServer.proficiencyCheck(
+    //   promptResult.thresholds, promptResult.permanentMod + (promptResult.temporaryMod || 0), promptResult.vantage
+    // );
+
+    // if (transmit) {
+    //   foundry.utils.mergeObject(promptResult, results)
+    //   ChatServer.transmitEvent("ProficiencyCheck", promptResult, roll);
+    // }
+    // return results;
   }
 }

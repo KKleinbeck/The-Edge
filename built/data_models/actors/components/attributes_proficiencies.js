@@ -1,4 +1,4 @@
-import NewDiceServer from "../../../system/new_dice_server.js";
+import ChatServer from "../../../system/chat_server.js";
 import ValueSchemaField from "../../Fields/value_schema.js";
 import { DataModelComponent } from "../../abstracts.js";
 const { ArrayField, NumberField, SchemaField, StringField } = foundry.data.fields;
@@ -72,31 +72,42 @@ export default class ProficiencyData extends DataModelComponent {
             })
         };
     }
-    get diceParameters() {
-        return {
-            critDice: [1],
-            critDieBonus: 2,
-            critBonus: 4,
-            critFailDice: [20],
-            critFailMalus: -2,
-            critFailDieMalus: -4,
-            critFailEvents: [],
-            qualityStep: 5
-        };
+    get strideSpeed() {
+        const { spd, foc } = this.attributes;
+        return Math.min(5 + Math.floor(spd.value / 6), Math.floor(foc.value * 0.75));
+    }
+    get runSpeed() {
+        const { spd, foc } = this.attributes;
+        return Math.min(7 + Math.floor(spd.value / 3), Math.floor(foc.value * 1.25));
+    }
+    get sprintSpeed() {
+        const { spd, foc } = this.attributes;
+        return Math.min(8 + Math.floor(spd.value / 1.5), Math.floor(foc.value * 1.75));
+    }
+    get combaticsDamage() {
+        const { crd, str } = this.attributes;
+        return `1d${str.value + crd.value}+${str.value}`;
+    }
+    async rollAttributeCheck(checkData, roll = "roll", transmit = true) {
+        checkData.threshold = this.attributes[checkData.attribute]["value"] +
+            checkData.temporaryMod;
+        const result = await this.parent.diceServer.attributeCheck(checkData.threshold, checkData.vantage);
+        if (transmit) {
+            foundry.utils.mergeObject(checkData, result);
+            ChatServer.transmitEvent("AbilityCheck", checkData, roll);
+        }
     }
     async rollProficiencyCheck(promptResult, transmit = true) {
         const proficiency = promptResult.proficiency;
         const proficiencyData = Object.values(this.proficiencies)
             .find(profClass => proficiency in profClass)[proficiency];
-        var threshold = proficiencyData.value;
-        threshold += proficiencyData.dice.reduce((acc, x) => acc + this.attributes[x].value, 0);
-        const diceConfig = {
+        var basicThreshold = proficiencyData.value;
+        basicThreshold += proficiencyData.dice.reduce((acc, x) => acc + this.attributes[x].value, 0);
+        const diceConfg = {
             ...this.diceParameters,
-            modifier: promptResult.strain + promptResult.modifier,
-            threshold: threshold,
-            vantage: promptResult.vantage
         };
-        console.log(await NewDiceServer.proficiencyCheck(diceConfig));
+        const rollResult = structuredClone(promptResult);
+        rollResult.threshold = promptResult.strain + promptResult.modifier + basicThreshold;
         // rollResult.dices = proficiencyData.dices;
         // rollResult.permanentMod = proficiencyData.value;
         // rollResult.thresholds = rollResult.dices.map(dice => this.attributes[dice]["value"]);

@@ -290,6 +290,9 @@ function heroTokenProficiencyCheck(chatMsgCls, actor, sys) {
 async function updateProficiencyCheck(chatMsgCls, actor, sys, newResults) {
     const modificator = sys.permanentMod + sys.temporaryMod;
     sys.diceResults = newResults;
+    // TODO: The `proficiencyNetOutcome` has changed!!
+    // It is now proficiencyOutcome and no longer returns the amount by which the check is
+    // failed or passed, but the total result
     sys.netOutcome = DiceServer.proficiencyNetOutcome(sys.diceResults, sys.thresholds, modificator);
     const newSys = await actor.interpretCheck("proficiencies", sys);
     if ("rollOutcome" in newSys) {

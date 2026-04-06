@@ -32,7 +32,7 @@ declare class ActorSheetV2 extends FoundryHandlebarsApplication {
   public _onDropItem(event: foundryAny, data: foundryAny): foundryAny;
 }
 
-// Classes{
+// Classes
 declare class Dialog {
   constructor(options: foundryAny)
   static defaultOptions: foundryAny
@@ -49,6 +49,11 @@ declare class Hooks {
   static on(id: string, callback: Function): boolean;
 }
 
+declare class Roll {
+  constructor(arg: foundryAny)
+  evaluate()
+}
+
 // Functions
 declare function getDocumentClass(x: string): foundryAny
 
@@ -61,6 +66,9 @@ declare function HandlebarsApplicationMixin<T extends Constructor>(x: T):
 
 // Foundry Interface
 interface IFoundry {
+  abstract: {
+    TypeDataModel: foundryAny
+  };
   applications: {
     api: {
       DialogV2: typeof DialogV2;
@@ -71,6 +79,14 @@ interface IFoundry {
       ActorSheetV2: typeof ActorSheetV2;
     }
   };
+  data: {
+    fields: {
+      ArrayField: foundryAny
+      NumberField: foundryAny
+      SchemaField: foundryAny
+      StringField: foundryAny 
+    }
+  }
   utils: {
     mergeObject<T, U>(a: T, b: U): T & U;
   }

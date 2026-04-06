@@ -21,6 +21,7 @@
     "@types/node": "^25.5.0",
     "gulp": "^4.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",
+    "source-map-support": "^0.5.21",
     "typescript": "^6.0.2"
   }
 }

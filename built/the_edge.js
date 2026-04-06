@@ -28,11 +28,11 @@ Hooks.once("init", async function () {
     Array.prototype.random = function () {
         return this[Math.floor((Math.random() * this.length))];
     };
-    Array.prototype.sum = function () {
-        return this.reduce((a, b) => a + b, 0);
-    };
     Array.prototype.last = function () {
         return this[this.length - 1];
+    };
+    Array.prototype.sum = function () {
+        return this.reduce((a, b) => a + b, 0);
     };
     Array.prototype.variance = function () {
         const sum = this.sum();
