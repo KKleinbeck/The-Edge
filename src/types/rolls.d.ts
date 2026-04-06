@@ -1,4 +1,6 @@
 // Generics
+type vantageType = "Advantage" | "Disadvantage" | "Nothing"
+
 interface IDiceParameters {
   critDice: number[]
   critBonus: number
@@ -14,7 +16,7 @@ interface IDiceParameters {
 interface IDiceServerConfig extends IDiceParameters {
   modifier: number
   threshold: number
-  vantage: "Advantage" | "Disadvantage" | "Nothing"
+  vantage: vantageType
 }
 
 interface ICritFailEvent {
@@ -27,15 +29,15 @@ interface IRollResult {
   outcome: "CritSuccess" | "CritFailure" | "Success" | "Failure"
   quality: number
   rolls: number[]
-  threshold: number
+  effectiveThreshold: number
   total?: number
 }
 
 interface IRollPromptResult {
   strain: number
   modifier: number
-  vantage: "Advantage" | "Disadvantage" | "Nothing"
-  roll?: "public" | "blind" | "whisper"
+  vantage: vantageType
+  roll?: rollType
 }
 
 // Attributes and Proficiencies
@@ -56,4 +58,3 @@ interface IProficiencyRollQuery {
 }
 
 interface IProficiencyPromptResult extends IProficiencyRollQuery, IRollPromptResult {}
-interface IProficiencyRollResult extends IProficiencyPromptResult, IRollResult {}

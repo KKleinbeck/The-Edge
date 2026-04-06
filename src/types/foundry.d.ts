@@ -33,6 +33,38 @@ declare class ActorSheetV2 extends FoundryHandlebarsApplication {
 }
 
 // Classes
+interface ChatSpeakerData {
+    actor?: string;
+    alias?: string;
+    scene?: string;
+    token?: string;
+}
+
+interface ChatMessageData {
+  _id: string | null;
+  _stats: foundryAny;
+  blind?: boolean;
+  content: string;
+  emote?: boolean;
+  flags: foundryAny;
+  flavor?: string;
+  rolls?: string[];
+  sound?: string;
+  speaker: ChatSpeakerData;
+  style?: foundryAny;
+  system: object;
+  timestamp: number | null;
+  title?: string;
+  type: string;
+  user: string;
+  whisper: string[];
+}
+
+declare class ChatMessage {
+  static getWhisperRecipients()
+  static create(data: Partial<ChatMessageData>, operation?: foundryAny): Promise<foundryAny>
+}
+
 declare class Dialog {
   constructor(options: foundryAny)
   static defaultOptions: foundryAny
@@ -51,7 +83,7 @@ declare class Hooks {
 
 declare class Roll {
   constructor(arg: foundryAny)
-  evaluate()
+  evaluate(): foundryAny
 }
 
 // Functions

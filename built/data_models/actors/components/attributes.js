@@ -40,7 +40,7 @@ export default class AttributeData extends DataModelComponent {
         const { crd, str } = this.attributes;
         return `1d${str.value + crd.value}+${str.value}`;
     }
-    async rollAttributeCheck(checkData, roll = "roll", transmit = true) {
+    async rollAttributeCheck(checkData, roll = "public", transmit = true) {
         checkData.threshold = this.attributes[checkData.attribute]["value"] +
             checkData.temporaryMod;
         const result = await this.parent.diceServer.attributeCheck(checkData.threshold, checkData.vantage);

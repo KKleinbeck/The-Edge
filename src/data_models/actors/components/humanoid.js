@@ -9,7 +9,6 @@ export default class HumanoidData extends DataModelComponent {
       age: new NumberField({ initial: 21, integer: true, min: 0, required: true }),
       sex: new StringField({ initial: "female" }),
       bloodType: new StringField({ initial: "AB" }),
-      bloodLoss: new SchemaField({ value: new NumberField({ initial: 0, integer: true, min: 0, required: true }) }),
       handedness: new StringField({ initial: "right" }),
       race: new StringField({ initial: "Human" }),
       heartRate: new SchemaField({

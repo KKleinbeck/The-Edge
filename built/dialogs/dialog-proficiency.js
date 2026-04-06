@@ -59,7 +59,6 @@ export default class DialogProficiency extends SliderMixin(DialogV2) {
         promptResult.vantage = vantageElement.value;
         const proficiencyPromptResult = foundry.utils.mergeObject(checkData, promptResult);
         checkData.actor.system.rollProficiencyCheck(proficiencyPromptResult);
-        console.log(promptResult);
     }
     static cheatCallback(dialog, checkData) {
         console.log("not implemented yet");

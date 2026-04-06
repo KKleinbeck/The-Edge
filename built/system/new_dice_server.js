@@ -99,7 +99,6 @@ export default class NewDiceServer {
             if (diceResults2.sum() > diceResults.sum())
                 diceResults = diceResults2;
         }
-        return this.proficiencyOutcome([20, 20, 10, 10], config);
         return this.proficiencyOutcome(diceResults, config);
     }
     static async _proficiencyRoll() {
@@ -108,7 +107,6 @@ export default class NewDiceServer {
         return diceResults;
     }
     static proficiencyOutcome(diceResults, config) {
-        let netOutcome = config.threshold + config.modifier - diceResults.sum();
         let nCrits = 0, nCritFails = 0;
         for (const dieResult of diceResults) {
             if (config.critDice.includes(dieResult))
@@ -116,23 +114,26 @@ export default class NewDiceServer {
             if (config.critFailDice.includes(dieResult))
                 nCritFails += 1;
         }
-        const preResult = {};
-        netOutcome += nCrits * config.critDieBonus;
-        netOutcome += nCritFails * config.critFailDieMalus;
+        const preResult = {
+            effectiveThreshold: config.threshold + (nCrits * config.critDieBonus) +
+                (nCritFails * config.critFailDieMalus)
+        };
         if (nCrits - nCritFails >= 2) {
-            netOutcome += config.critBonus;
+            preResult.effectiveThreshold += config.critBonus;
             preResult.outcome = "CritSuccess";
         }
         else if (nCritFails - nCrits >= 2) {
-            netOutcome += config.critFailMalus;
+            preResult.effectiveThreshold += config.critFailMalus;
             preResult.critFailEvent = this.selectFromCritFailEvents(config.critFailEvents);
             preResult.outcome = "CritFailure";
         }
+        const netOutcome = preResult.effectiveThreshold + config.modifier - diceResults.sum();
         return {
-            threshold: config.threshold,
-            rolls: diceResults,
+            outcome: netOutcome >= 0 ? "Success" : "Failure",
             quality: Math.floor(netOutcome / config.qualityStep),
-            outcome: netOutcome > 0 ? "Success" : "Failure",
+            rolls: diceResults,
+            total: diceResults.sum(),
+            effectiveThreshold: preResult.effectiveThreshold,
             ...preResult
         };
     }

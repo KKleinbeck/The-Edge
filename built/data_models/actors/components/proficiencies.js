@@ -1,3 +1,4 @@
+import NewChatServer from "../../../system/new_chat_server.js";
 import NewDiceServer from "../../../system/new_dice_server.js";
 import ValueSchemaField from "../../Fields/value_schema.js";
 import { DataModelComponent } from "../../abstracts.js";
@@ -9,7 +10,7 @@ function PROF_FIELD(diceStrings) {
         advances: new NumberField({ initial: 0 }),
     });
 }
-export default class ProficiencyData extends DataModelComponent {
+class ProficiencyData extends DataModelComponent {
     static defineSchema() {
         return {
             proficiencies: new SchemaField({
@@ -75,11 +76,11 @@ export default class ProficiencyData extends DataModelComponent {
     get diceParameters() {
         return {
             critDice: [1],
+            critBonus: 5,
             critDieBonus: 2,
-            critBonus: 4,
             critFailDice: [20],
-            critFailMalus: -2,
-            critFailDieMalus: -4,
+            critFailMalus: -5,
+            critFailDieMalus: -2,
             critFailEvents: [],
             qualityStep: 5
         };
@@ -96,17 +97,32 @@ export default class ProficiencyData extends DataModelComponent {
             threshold: threshold,
             vantage: promptResult.vantage
         };
-        console.log(await NewDiceServer.proficiencyCheck(diceConfig));
-        // rollResult.dices = proficiencyData.dices;
-        // rollResult.permanentMod = proficiencyData.value;
-        // rollResult.thresholds = rollResult.dices.map(dice => this.attributes[dice]["value"]);
-        // const results = await this.parent.diceServer.proficiencyCheck(
-        //   promptResult.thresholds, promptResult.permanentMod + (promptResult.temporaryMod || 0), promptResult.vantage
-        // );
-        // if (transmit) {
-        //   foundry.utils.mergeObject(promptResult, results)
-        //   ChatServer.transmitEvent("ProficiencyCheck", promptResult, roll);
-        // }
-        // return results;
+        const rollResult = await NewDiceServer.proficiencyCheck(diceConfig);
+        this.applyStrain(promptResult.strain);
+        if (transmit) {
+            const details = {
+                ...rollResult,
+                dice: [
+                    ...proficiencyData.dice.map((attr) => { return { name: attr, threshold: this.attributes[attr].value }; }),
+                    { name: "proficiency", threshold: proficiencyData.value }
+                ],
+                modifier: promptResult.modifier,
+                proficiency: promptResult.proficiency,
+                strain: promptResult.strain,
+                effectiveThreshold: rollResult.effectiveThreshold,
+                vantage: promptResult.vantage
+            };
+            const chatConfig = {
+                roll: promptResult.roll,
+                speaker: {
+                    actor: promptResult.actorId,
+                    scene: promptResult.sceneId,
+                    token: promptResult.tokenId
+                }
+            };
+            NewChatServer.transmitEvent("ProficiencyCheck", details, chatConfig);
+        }
+        return rollResult;
     }
 }
+export default ProficiencyData;

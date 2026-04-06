@@ -21,11 +21,12 @@ export default class CombatantData extends DataModelComponent {
       strain: new SchemaField({
         value: new NumberField({ initial: 0, integer: true, min: 0, required: true }),
         max: new SchemaField({
-          value: new NumberField({ initial: 100, integer: true, min: 0 }),
-          status: new NumberField({ initial: 0, integer: true, min: 0 }),
+          advances: new NumberField({ initial: 0, integer: true, min: 0, required: true }),
           baseline : new NumberField({ initial: 100, integer: true, min: 0 }),
+          status: new NumberField({ initial: 0, integer: true, min: 0 }),
+          value: new NumberField({ initial: 100, integer: true, min: 0 }),
         }),
-        strainThreshold: new SchemaField({ status: new NumberField({ initial: 0, integer: true }) }),
+        statusThreshold: new SchemaField({ status: new NumberField({ initial: 0, integer: true }) }),
         maxUseReduction: new SchemaField({ status: new NumberField({ initial: 0, integer: true }) }),
       }),
       wounds: new ArrayField(
@@ -152,5 +153,9 @@ export default class CombatantData extends DataModelComponent {
     wound.type = Aux.pickFromOdds(THE_EDGE.wound_odds(woundDetails));
     this.wounds.push(wound);
     await this.parent.update({"system.wounds": this.wounds});
+  }
+
+  async applyStrain(strain) {
+    await this.parent.update({"system.strain.value": this.strain.value + strain});
   }
 }

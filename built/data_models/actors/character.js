@@ -25,9 +25,9 @@ export default class CharacterData extends CharacterDataParent {
             this.attributes.str.advances +
             Math.floor((this.attributes.end.advances + this.attributes.res.advances) / 2);
         this.strain.max.value = this.strain.max.baseline + this.strain.max.status +
-            this.attributes.end.value - Math.floor((this.age - 21) / 3) - this.bloodLoss.value;
+            2 * this.strain.max.advances + this.attributes.end.value;
         this.heartRate.max.value = this.heartRate.max.baseline + this.heartRate.max.status +
-            this.attributes.end.value - 2 * Math.floor((this.age - 21) / 3) - this.bloodLoss.value;
+            this.attributes.end.value - 2 * Math.floor((this.age - 21) / 3);
         this.heartRate.min.value = Math.max(20, this.heartRate.min.baseline + this.heartRate.min.status - this.attributes.end.value);
     }
     // General Hooks

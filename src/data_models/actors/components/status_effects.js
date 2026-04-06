@@ -10,8 +10,6 @@ export default class StatusEffectData extends DataModelComponent {
       generalModifiers: new SchemaField({
         "painThreshold": new NumberField({ initial: 0, integer: true, required: true }),
         "overloadThreshold": new NumberField({ initial: 0, integer: true, required: true }),
-        "bloodlossThreshold": new NumberField({ initial: 0, integer: true, required: true }),
-        "bloodlossStepSize": new NumberField({ initial: 0, integer: true, required: true })
       })
     };
   }
@@ -35,7 +33,13 @@ export default class StatusEffectData extends DataModelComponent {
     return str * (1.5 + 0.5 * this.overloadLevel) - weight;
   }
 
-  get strainLevel() { return this.getHRZone() - 1; }
+  get strainLevel() {
+    const strainEffective = Math.max(this.strain.value - this.strain.statusThreshold.status, 0);
+    return Math.min(
+      Math.floor(3 * strainEffective / (this.strain.max.value + 1)),
+      2
+    );
+  }
 
   get painLevel() {
     const res = 2 * this.attributes.res.value;

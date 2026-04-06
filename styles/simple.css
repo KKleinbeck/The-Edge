@@ -593,6 +593,11 @@ textarea {
   font-weight: bold;
   font-size: 12px;
   color: #000;
+  text-shadow:
+    -1px -1px 2px white,
+    1px -1px 2px white,
+    -1px 1px 2px white,
+    1px 1px 2px white;  
 }
 .the_edge .d20-end {
   background-image: url('../icons/d20r1.png');
@@ -621,7 +626,7 @@ textarea {
 .the_edge .d20-int {
   background-image: url('../icons/d20b1.png');
 }
-.the_edge .d20-black {
+.the_edge .d20-black, .d20-proficiency {
   background-image: url('../icons/d20black.png');
 }
 /* Counters */

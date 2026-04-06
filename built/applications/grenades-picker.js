@@ -87,7 +87,7 @@ export default class GrenadePicker extends HandlebarsApplicationMixin(Applicatio
             actor: token.actor, actorId: token.actor.id, tokenId: token.id, sceneId: canvas.scene.id,
             titleDetails: chosenGrenade.name, grenade: chosenGrenade
         };
-        const proficiencyRoll = await token.actor.rollProficiencyCheck(checkData, "roll", false);
+        const proficiencyRoll = await token.actor.rollProficiencyCheck(checkData, false);
         foundry.utils.mergeObject(checkData, proficiencyRoll);
         const rollOutcome = ProficiencyConfig.rollOutcome("throwing", proficiencyRoll.quality);
         foundry.utils.mergeObject(checkData, { rollOutcome: rollOutcome.description });

@@ -127,7 +127,7 @@ export default function () {
                 if (!rollIsReady("proficiency-roll", target))
                     return undefined;
                 const actor = Aux.getActor(sys.actorId, sys.tokenId);
-                const proficiencyRoll = await actor.rollProficiencyCheck({ proficiency: sys.check }, "roll", false);
+                const proficiencyRoll = await actor.rollProficiencyCheck({ proficiency: sys.check }, false);
                 const elem = $(target);
                 elem.find(".roll").remove();
                 switch (proficiencyRoll.outcome) {

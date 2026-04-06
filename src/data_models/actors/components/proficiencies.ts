@@ -1,4 +1,4 @@
-import ChatServer from "../../../system/chat_server.js";
+import NewChatServer from "../../../system/new_chat_server.js";
 import NewDiceServer from "../../../system/new_dice_server.js";
 import ValueSchemaField from "../../Fields/value_schema.js";
 import { DataModelComponent } from "../../abstracts.js";
@@ -16,8 +16,8 @@ function PROF_FIELD(diceStrings: string[]) {
   });
 }
 
-export default class ProficiencyData extends DataModelComponent {
-  declare attributes: {
+interface ProficiencyData {
+  attributes: {
     end: foundryAny,
     str: foundryAny,
     spd: foundryAny,
@@ -29,7 +29,7 @@ export default class ProficiencyData extends DataModelComponent {
     int: foundryAny,
   }
 
-  declare proficiencies: {
+  proficiencies: {
     environmental: foundryAny,
     knowledge: foundryAny,
     mental: foundryAny,
@@ -37,6 +37,11 @@ export default class ProficiencyData extends DataModelComponent {
     social: foundryAny,
     technical: foundryAny,
   }
+
+  applyStrain(strain: number): void;
+}
+
+class ProficiencyData extends DataModelComponent {
 
   static defineSchema() {
     return {
@@ -104,19 +109,19 @@ export default class ProficiencyData extends DataModelComponent {
   get diceParameters(): IDiceParameters { // Placeholder
     return {
       critDice: [1],
+      critBonus: 5,
       critDieBonus: 2,
-      critBonus: 4,
 
       critFailDice: [20],
-      critFailMalus: -2,
-      critFailDieMalus: -4,
+      critFailMalus: -5,
+      critFailDieMalus: -2,
       critFailEvents: [],
 
       qualityStep: 5
     }
   }
 
-  async rollProficiencyCheck(promptResult: IProficiencyPromptResult, transmit = true) {
+  async rollProficiencyCheck(promptResult: IProficiencyPromptResult, transmit = true): Promise<IRollResult> {
     const proficiency = promptResult.proficiency;
     const proficiencyData = Object.values(this.proficiencies)
       .find(profClass => proficiency in profClass)[proficiency]
@@ -133,20 +138,36 @@ export default class ProficiencyData extends DataModelComponent {
       vantage: promptResult.vantage
     }
 
-    console.log(await NewDiceServer.proficiencyCheck(diceConfig))
+    const rollResult: IRollResult = await NewDiceServer.proficiencyCheck(diceConfig);
+    this.applyStrain(promptResult.strain);
 
-    // rollResult.dices = proficiencyData.dices;
-    // rollResult.permanentMod = proficiencyData.value;
-    // rollResult.thresholds = rollResult.dices.map(dice => this.attributes[dice]["value"]);
-
-    // const results = await this.parent.diceServer.proficiencyCheck(
-    //   promptResult.thresholds, promptResult.permanentMod + (promptResult.temporaryMod || 0), promptResult.vantage
-    // );
-
-    // if (transmit) {
-    //   foundry.utils.mergeObject(promptResult, results)
-    //   ChatServer.transmitEvent("ProficiencyCheck", promptResult, roll);
-    // }
-    // return results;
+    if (transmit) {
+      const details: IProficiencyRollMessage = {
+        ...rollResult,
+        dice: [
+          ...proficiencyData.dice.map(
+            (attr: string) => { return {name: attr, threshold: this.attributes[attr].value} }
+          ),
+          {name: "proficiency", threshold: proficiencyData.value}
+        ],
+        modifier: promptResult.modifier,
+        proficiency: promptResult.proficiency,
+        strain: promptResult.strain,
+        effectiveThreshold: rollResult.effectiveThreshold,
+        vantage: promptResult.vantage
+      }
+      const chatConfig: ChatServerConfig = {
+        roll: promptResult.roll,
+        speaker: {
+          actor: promptResult.actorId,
+          scene: promptResult.sceneId,
+          token: promptResult.tokenId
+        }
+      }
+      NewChatServer.transmitEvent("ProficiencyCheck", details, chatConfig);
+    }
+    return rollResult;
   }
 }
+
+export default ProficiencyData;

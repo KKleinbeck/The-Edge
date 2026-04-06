@@ -68,7 +68,7 @@ THE_EDGE.medicine_effects = ["heals", "treats"]
 THE_EDGE.wound_status = ["treatable", "treated"]
 
 // Entries below are primarily implemented in the_edge.js
-THE_EDGE.coreValueMap = {attributes: {}, proficiencies: {}, weapons: {}}
+THE_EDGE.coreValueMap = {attributes: {}, proficiencies: {}, strain: {}, weapons: {}}
 THE_EDGE.effectMap = {
   attributes: {all: []},
   proficiencies: {all: []},
