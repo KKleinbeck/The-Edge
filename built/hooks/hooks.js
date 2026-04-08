@@ -1,10 +1,10 @@
-import Aux from "../../system/auxilliaries.js";
-import ChatServer from "../../system/chat_server.js";
-import DiceServer from "../../system/dice_server.js";
-import executeChatCommands from "./chat-commands.js";
-import ProficiencyConfig from "../../system/config-proficiencies.js";
-import LocalisationServer from "../../system/localisation_server.js";
-import NotificationServer from "../../system/notifications.js";
+import Aux from "../system/auxilliaries.js";
+import ChatServer from "../system/chat_server.js";
+import DiceServer from "../system/dice_server.js";
+import executeChatCommands from "./chat-hooks/chat-commands.js";
+import ProficiencyConfig from "../system/config-proficiencies.js";
+import LocalisationServer from "../system/localisation_server.js";
+import NotificationServer from "../system/notifications.js";
 const { renderTemplate } = foundry.applications.handlebars;
 export default function () {
     Hooks.on("chatMessage", async (_chatLog, message, chatData) => {

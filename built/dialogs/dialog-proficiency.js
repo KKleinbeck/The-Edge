@@ -54,8 +54,10 @@ export default class DialogProficiency extends SliderMixin(DialogV2) {
         promptResult.roll = roll;
         checkData.proficiency = checkData.proficiency.toLowerCase();
         const vantageElement = dialog.element.querySelector(".vantage-hook");
-        if (!(vantageElement instanceof HTMLSelectElement))
+        if (!(vantageElement instanceof HTMLSelectElement)) {
+            ui.notifications.error("VantageElement is not of type HTMLSelectElement");
             return;
+        }
         promptResult.vantage = vantageElement.value;
         const proficiencyPromptResult = foundry.utils.mergeObject(checkData, promptResult);
         checkData.actor.system.rollProficiencyCheck(proficiencyPromptResult);

@@ -32,6 +32,21 @@ export default class Aux {
         }
         return game.actors.get(actorID);
     }
+    static getActorNew(speakerData) {
+        if (speakerData.token) {
+            const sceneID = speakerData.scene;
+            if (!sceneID) {
+                if (!game.canvas.id)
+                    return undefined; // This can happen during startup of the game
+                speakerData.scene = game.canvas.id;
+            }
+            const scene = game.scenes.get(sceneID);
+            const actor = scene.tokens.get(speakerData.token)?.actor;
+            if (actor)
+                return actor;
+        }
+        return game.actors.get(speakerData.actor);
+    }
     static getCombatant() {
         if (game.combat && game.combat.combatant) {
             const combatant = game.combat.combatant;

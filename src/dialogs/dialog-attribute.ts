@@ -1,12 +1,12 @@
-import LocalisationServer from "../system/localisation_server.js";
 import SliderMixin from "../mixins/slider-mixin.js";
+import LocalisationServer from "../system/localisation_server.js";
 
 const { renderTemplate } = foundry.applications.handlebars;
 const { DialogV2 } = foundry.applications.api;
 
-export default class DialogProficiency extends SliderMixin(DialogV2) {
-  static async start(checkData: IProficiencyRollQuery) {
-    const template = "systems/the_edge/templates/dialogs/proficiency.hbs";
+export default class DialogAttribute extends SliderMixin(DialogV2){
+  static async start(checkData: IAttributeRollQuery) {
+    const template = "systems/the_edge/templates/dialogs/attributes.hbs";
     const html = await renderTemplate(template, {});
     const content = document.createElement("div");
     content.innerHTML = html;
@@ -36,29 +36,28 @@ export default class DialogProficiency extends SliderMixin(DialogV2) {
       })
     }
 
-    return new DialogProficiency({
+    return new DialogAttribute({
       window: {
-        title: LocalisationServer.localise(checkData.proficiency, "proficiency") +
-        " " + game.i18n.localize("CHECK"),
+        title: LocalisationServer.localise(checkData.attribute, "attr") + " " + game.i18n.localize("CHECK"),
       },
       content: content,
       buttons: buttons,
       position: {width: 300},
-      submit: (result: any, dialog: DialogProficiency) => {
+      submit: (result: any, dialog: DialogAttribute) => {
         if (result === "cheat") {
-          DialogProficiency.cheatCallback(dialog, checkData);
+          DialogAttribute.cheatCallback(dialog, checkData);
           return;
         }
 
-        DialogProficiency.rollCallback(dialog, checkData, result);
+        DialogAttribute.rollCallback(dialog, checkData, result);
       }
-    }).render({ force: true });
+    }).render(true)
   }
 
-  static rollCallback(dialog: DialogProficiency, checkData: IProficiencyRollQuery, roll: rollType) {
+  static rollCallback(dialog: DialogAttribute, checkData: IAttributeRollQuery, roll: rollType) {
     const promptResult = dialog.getSliderValues();
     promptResult.roll = roll;
-    checkData.proficiency = checkData.proficiency.toLowerCase();
+    checkData.attribute = checkData.attribute.toLowerCase();
 
     const vantageElement = dialog.element.querySelector(".vantage-hook");
     if (!(vantageElement instanceof HTMLSelectElement)) {
@@ -67,12 +66,12 @@ export default class DialogProficiency extends SliderMixin(DialogV2) {
     }
     promptResult.vantage = vantageElement.value;
     
-    const proficiencyPromptResult: IProficiencyPromptResult = foundry.utils.mergeObject(
+    const attributePromptResult: IAttributePromptResult = foundry.utils.mergeObject(
       checkData, promptResult as unknown as IRollPromptResult);
-    checkData.actor.system.rollProficiencyCheck(proficiencyPromptResult);
+    checkData.actor.system.rollAttributeCheck(attributePromptResult);
   }
 
-  static cheatCallback(dialog: DialogProficiency, checkData: IProficiencyRollQuery) {
+  static cheatCallback(dialog: DialogAttribute, checkData) {
     console.log("not implemented yet");
   }
 }

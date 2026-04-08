@@ -73,7 +73,7 @@ class ProficiencyData extends DataModelComponent {
             })
         };
     }
-    get diceParameters() {
+    get proficiencyDiceParameter() {
         return {
             critDice: [1],
             critBonus: 5,
@@ -91,13 +91,13 @@ class ProficiencyData extends DataModelComponent {
             .find(profClass => proficiency in profClass)[proficiency];
         var threshold = proficiencyData.value;
         threshold += proficiencyData.dice.reduce((acc, x) => acc + this.attributes[x].value, 0);
-        const diceConfig = {
-            ...this.diceParameters,
+        const diceServerConfig = {
+            ...this.proficiencyDiceParameter,
             modifier: promptResult.strain + promptResult.modifier,
             threshold: threshold,
             vantage: promptResult.vantage
         };
-        const rollResult = await NewDiceServer.proficiencyCheck(diceConfig);
+        const rollResult = await NewDiceServer.proficiencyCheck(diceServerConfig);
         this.applyStrain(promptResult.strain);
         if (transmit) {
             const details = {
@@ -106,10 +106,11 @@ class ProficiencyData extends DataModelComponent {
                     ...proficiencyData.dice.map((attr) => { return { name: attr, threshold: this.attributes[attr].value }; }),
                     { name: "proficiency", threshold: proficiencyData.value }
                 ],
+                diceServerConfig: diceServerConfig,
+                effectiveThreshold: rollResult.effectiveThreshold,
                 modifier: promptResult.modifier,
                 proficiency: promptResult.proficiency,
                 strain: promptResult.strain,
-                effectiveThreshold: rollResult.effectiveThreshold,
                 vantage: promptResult.vantage
             };
             const chatConfig = {
@@ -120,7 +121,7 @@ class ProficiencyData extends DataModelComponent {
                     token: promptResult.tokenId
                 }
             };
-            NewChatServer.transmitEvent("ProficiencyCheck", details, chatConfig);
+            NewChatServer.transmitEvent("Proficiency Check", details, chatConfig);
         }
         return rollResult;
     }

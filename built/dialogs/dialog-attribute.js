@@ -1,39 +1,67 @@
-import Aux from "../system/auxilliaries.js";
+import SliderMixin from "../mixins/slider-mixin.js";
 import LocalisationServer from "../system/localisation_server.js";
 const { renderTemplate } = foundry.applications.handlebars;
-export default class DialogAttribute extends Dialog {
-    static get defaultOptions() {
-        return foundry.utils.mergeObject(super.defaultOptions, {
-            width: 300
-        });
-    }
+const { DialogV2 } = foundry.applications.api;
+export default class DialogAttribute extends SliderMixin(DialogV2) {
     static async start(checkData) {
-        const template = "systems/the_edge/templates/dialogs/attributes.html";
-        let html = await renderTemplate(template, {});
-        const buttons = {
-            roll: {
-                label: game.i18n.localize("DIALOG.ROLL"),
-                callback: (html) => {
-                    checkData.temporaryMod = parseInt(html.find('[name="Modifier"]').val());
-                    checkData.vantage = html.find('[name="AdvantageSelector"]').val();
-                    const rollType = Aux.parseRollType(html);
-                    checkData.actor.system.rollAttributeCheck(checkData, rollType);
-                }
-            }
-        };
+        const template = "systems/the_edge/templates/dialogs/attributes.hbs";
+        const html = await renderTemplate(template, {});
+        const content = document.createElement("div");
+        content.innerHTML = html;
+        const buttons = [
+            {
+                action: "roll",
+                icon: "fa-regular fa-message",
+                label: LocalisationServer.localise("Roll", "Dialog"),
+            },
+            {
+                action: "whisper",
+                icon: "fa-regular fa-mask",
+                label: LocalisationServer.localise("GM-Whisper", "Dialog"),
+            },
+            {
+                action: "blind",
+                icon: "fa-regular fa-eye-low-vision",
+                label: LocalisationServer.localise("Blind Roll", "Dialog"),
+            },
+        ];
         if (game.user.isGM) {
-            foundry.utils.mergeObject(buttons, {
-                cheat: {
-                    label: game.i18n.localize("DIALOG.CHEAT"),
-                    callback: (html) => console.log(html.find('[name="Modifier"]').val())
-                }
+            buttons.push({
+                action: "cheat",
+                icon: "",
+                label: LocalisationServer.localise("Cheat", "Dialog"),
             });
         }
         return new DialogAttribute({
-            title: LocalisationServer.localise(checkData.attribute, "attr") + " " + game.i18n.localize("CHECK"),
-            content: html,
+            window: {
+                title: LocalisationServer.localise(checkData.attribute, "attr") + " " + game.i18n.localize("CHECK"),
+            },
+            content: content,
             buttons: buttons,
-            default: "roll"
+            position: { width: 300 },
+            submit: (result, dialog) => {
+                if (result === "cheat") {
+                    DialogAttribute.cheatCallback(dialog, checkData);
+                    return;
+                }
+                DialogAttribute.rollCallback(dialog, checkData, result);
+            }
         }).render(true);
+    }
+    static rollCallback(dialog, checkData, roll) {
+        const promptResult = dialog.getSliderValues();
+        promptResult.roll = roll;
+        checkData.attribute = checkData.attribute.toLowerCase();
+        const vantageElement = dialog.element.querySelector(".vantage-hook");
+        if (!(vantageElement instanceof HTMLSelectElement)) {
+            ui.notifications.error("VantageElement is not of type HTMLSelectElement");
+            return;
+        }
+        promptResult.vantage = vantageElement.value;
+        const attributePromptResult = foundry.utils.mergeObject(checkData, promptResult);
+        checkData.actor.system.rollAttributeCheck(attributePromptResult);
+    }
+    static cheatCallback(dialog, checkData) {
+        console.log("not implemented yet");
     }
 }

@@ -8,3 +8,6 @@ interface Array<T> {
   sum(): T;
   variance(): T;
 }
+
+// Helpers
+type WithOptionals<T> = T & Record<string, any>

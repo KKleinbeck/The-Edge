@@ -1,4 +1,5 @@
-import ChatServer from "../../../system/chat_server.js";
+import NewChatServer from "../../../system/new_chat_server.js";
+import NewDiceServer from "../../../system/new_dice_server.js";
 import ValueSchemaField from "../../Fields/value_schema.js";
 import { DataModelComponent } from "../../abstracts.js";
 const { NumberField, SchemaField } = foundry.data.fields;
@@ -40,13 +41,47 @@ export default class AttributeData extends DataModelComponent {
         const { crd, str } = this.attributes;
         return `1d${str.value + crd.value}+${str.value}`;
     }
-    async rollAttributeCheck(checkData, roll = "public", transmit = true) {
-        checkData.threshold = this.attributes[checkData.attribute]["value"] +
-            checkData.temporaryMod;
-        const result = await this.parent.diceServer.attributeCheck(checkData.threshold, checkData.vantage);
+    get attributeDiceParameters() {
+        return {
+            critDice: [1],
+            critBonus: 2,
+            critDieBonus: 0,
+            critFailDice: [20],
+            critFailMalus: -2,
+            critFailDieMalus: 0,
+            critFailEvents: [],
+            qualityStep: 2
+        };
+    }
+    async rollAttributeCheck(promptResult, transmit = true) {
+        const diceServerConfig = {
+            ...this.attributeDiceParameters,
+            modifier: promptResult.modifier,
+            threshold: this.attributes[promptResult.attribute].value,
+            vantage: promptResult.vantage
+        };
+        const rollResult = await NewDiceServer.attributeCheck(diceServerConfig);
         if (transmit) {
-            foundry.utils.mergeObject(checkData, result);
-            ChatServer.transmitEvent("AbilityCheck", checkData, roll);
+            const details = {
+                ...rollResult,
+                attribute: promptResult.attribute,
+                attributeValue: this.attributes[promptResult.attribute].value,
+                diceServerConfig: diceServerConfig,
+                effectiveThreshold: rollResult.effectiveThreshold,
+                modifier: promptResult.modifier,
+                strain: 0,
+                vantage: promptResult.vantage
+            };
+            const chatConfig = {
+                roll: promptResult.roll,
+                speaker: {
+                    actor: promptResult.actorId,
+                    scene: promptResult.sceneId,
+                    token: promptResult.tokenId
+                }
+            };
+            NewChatServer.transmitEvent("Attribute Check", details, chatConfig);
         }
+        return rollResult;
     }
 }

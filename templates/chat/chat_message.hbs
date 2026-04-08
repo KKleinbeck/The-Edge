@@ -1,25 +1,6 @@
 <li class="chat-message message flexcol the_edge" data-message-id="{{message._id}}" {{#if borderColor}}style="border-color:{{borderColor}}" {{/if}}>
   <div class="message-content">
     {{{message.content}}}
-    <header class="message-header flexrow">
-      Why do you not render me
-      <div style="display: flex; gap: 4px; align-items: center;">
-        {{#if user.isGM}}
-          <a class="button message-delete" data-action="deleteMessage" data-tooltip="CHATNOTIFICATION.DELETE"><i class="fas fa-trash"></i></a>
-        {{/if}}
-        {{#if isWhisper}}
-          <span class="chatIndicator"><i data-tooltip="CHATNOTIFICATION.WHISPER" class="fas fa-eye-slash"></i></span>
-        {{else}}
-          <span class="chatIndicator"><i data-tooltip="CHATNOTIFICATION.PUBLIC MESSAGE" class="fas fa-eye"></i></span>
-        {{/if}}
-        {{#if message.blind}}
-          <span class="privateMessageIndicator"><i data-tooltip="CHATNOTIFICATION.BLIND MESSAGE" class="fas fa-mask"></i></span>
-        {{/if}}
-      </div>
-      <span class="message-metadata">
-        <time class="message-timestamp">{{timeSince message.timestamp}}</time>
-      </span>
-    </header>
   </div>
   <!-- Chat Message Footer -->
   <div style="width: 100%; height: 30px;">
@@ -52,12 +33,13 @@
         <a class="button message-delete" data-action="deleteMessage" data-tooltip="CHATNOTIFICATION.DELETE"><i class="fas fa-trash"></i></a>
       {{/if}}
       {{#if isWhisper}}
-        <span class="chatIndicator"><i data-tooltip="CHATNOTIFICATION.WHISPER" class="fas fa-eye-slash"></i></span>
+        <span class="chatIndicator"><i data-tooltip="CHATNOTIFICATION.WHISPER" class="fas fa-mask"></i></span>
       {{else}}
+        {{#if message.blind}}
+        <span class="privateMessageIndicator"><i data-tooltip="CHATNOTIFICATION.BLIND MESSAGE" class="fas fa-eye-slash"></i></span>
+        {{else}}
         <span class="chatIndicator"><i data-tooltip="CHATNOTIFICATION.PUBLIC MESSAGE" class="fas fa-eye"></i></span>
-      {{/if}}
-      {{#if message.blind}}
-        <span class="privateMessageIndicator"><i data-tooltip="CHATNOTIFICATION.BLIND MESSAGE" class="fas fa-mask"></i></span>
+        {{/if}}
       {{/if}}
       </div>
     </div>

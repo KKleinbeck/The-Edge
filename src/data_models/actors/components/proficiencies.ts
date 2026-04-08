@@ -106,7 +106,7 @@ class ProficiencyData extends DataModelComponent {
     };
   }
 
-  get diceParameters(): IDiceParameters { // Placeholder
+  get proficiencyDiceParameter(): IDiceParameters { // Placeholder
     return {
       critDice: [1],
       critBonus: 5,
@@ -131,14 +131,14 @@ class ProficiencyData extends DataModelComponent {
       (acc: number, x: string) => acc + this.attributes[x].value, 0
     );
 
-    const diceConfig: IDiceServerConfig = {
-      ...this.diceParameters,
+    const diceServerConfig: IDiceServerConfig = {
+      ...this.proficiencyDiceParameter,
       modifier: promptResult.strain + promptResult.modifier,
       threshold: threshold,
       vantage: promptResult.vantage
     }
 
-    const rollResult: IRollResult = await NewDiceServer.proficiencyCheck(diceConfig);
+    const rollResult: IRollResult = await NewDiceServer.proficiencyCheck(diceServerConfig);
     this.applyStrain(promptResult.strain);
 
     if (transmit) {
@@ -150,13 +150,14 @@ class ProficiencyData extends DataModelComponent {
           ),
           {name: "proficiency", threshold: proficiencyData.value}
         ],
+        diceServerConfig: diceServerConfig,
+        effectiveThreshold: rollResult.effectiveThreshold,
         modifier: promptResult.modifier,
         proficiency: promptResult.proficiency,
         strain: promptResult.strain,
-        effectiveThreshold: rollResult.effectiveThreshold,
         vantage: promptResult.vantage
       }
-      const chatConfig: ChatServerConfig = {
+      const chatConfig: IChatServerConfig = {
         roll: promptResult.roll,
         speaker: {
           actor: promptResult.actorId,
@@ -164,7 +165,7 @@ class ProficiencyData extends DataModelComponent {
           token: promptResult.tokenId
         }
       }
-      NewChatServer.transmitEvent("ProficiencyCheck", details, chatConfig);
+      NewChatServer.transmitEvent("Proficiency Check", details, chatConfig);
     }
     return rollResult;
   }

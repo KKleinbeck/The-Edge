@@ -84,20 +84,46 @@ export default class NewDiceServer {
   //   return roll;
   // }
 
-  static async attributeCheck(threshold, vantage) {
-    let roll = await this._attributeRoll(threshold);
+  static async attributeCheck(config: IDiceServerConfig) {
+    var dieResult = await this._attributeRoll();
 
-    if (vantage == "Advantage" || vantage == "Disadvantage") {
-      const roll2 = await this._attributeRoll(threshold);
-      roll = this._selectVantageOutcome(vantage, roll, roll2);
+    if (config.vantage == "Advantage") {
+      const dieResults2 = await this._attributeRoll();
+      if (dieResults2 < dieResult) dieResult = dieResults2;
+    } else if (config.vantage == "Disadvantage") {
+      const dieResults2 = await this._attributeRoll();
+      if (dieResults2 > dieResult) dieResult = dieResults2;
     }
 
-    // return this.interpretCheck("attributes", roll);
+    return this.attributeOutcome(dieResult, config);
   }
 
-  static async _attributeRoll(threshold) {
-    let diceRes = await this.genericRoll("1d20");
-    return {diceResult: diceRes, netOutcome: threshold - diceRes};
+  static async _attributeRoll(): Promise<number> {
+    return await this.genericRoll("1d20");
+  }
+
+  static attributeOutcome(dieResult: number, config: IDiceServerConfig): IRollResult {
+    const preResult: Partial<IRollResult> = {
+      effectiveThreshold: config.threshold + config.modifier
+    };
+
+    if (config.critDice.includes(dieResult)) {
+      preResult.effectiveThreshold! += config.critBonus;
+      preResult.outcome = "CritSuccess"
+    } else if (config.critFailDice.includes(dieResult)) {
+      preResult.effectiveThreshold! += config.critFailMalus;
+      preResult.outcome = "CritFailure"
+      preResult.critFailEvent = this.selectFromCritFailEvents(config.critFailEvents);
+    }
+
+    const netOutcome = preResult.effectiveThreshold! - dieResult;
+    return {
+      outcome: netOutcome >= 0 ? "Success" : "Failure",
+      quality: Math.floor(netOutcome / config.qualityStep),
+      rolls: [dieResult],
+      effectiveThreshold: preResult.effectiveThreshold!,
+      ...preResult
+    }
   }
 
   static async proficiencyCheck(config: IDiceServerConfig): Promise<IRollResult> {
@@ -116,7 +142,7 @@ export default class NewDiceServer {
 
   static async _proficiencyRoll(): Promise<number[]> {
     const diceRes = await new Roll("4d20").evaluate();
-    const diceResults = diceRes.dice[0].results.map(x => x.result);
+    const diceResults = diceRes.dice[0].results.map((x: foundryAny) => x.result);
     return diceResults;
   }
   
@@ -128,8 +154,8 @@ export default class NewDiceServer {
     }
 
     const preResult: Partial<IRollResult> = {
-      effectiveThreshold: config.threshold + (nCrits * config.critDieBonus) +
-        (nCritFails * config.critFailDieMalus)
+      effectiveThreshold: config.threshold + config.modifier +
+        (nCrits * config.critDieBonus) + (nCritFails * config.critFailDieMalus) 
     };
     if (nCrits - nCritFails >= 2) {
       preResult.effectiveThreshold! += config.critBonus;
@@ -141,7 +167,7 @@ export default class NewDiceServer {
       preResult.outcome = "CritFailure"
     }
 
-    const netOutcome = preResult.effectiveThreshold! + config.modifier - diceResults.sum();
+    const netOutcome = preResult.effectiveThreshold! - diceResults.sum();
     return {
       outcome: netOutcome >= 0 ? "Success" : "Failure",
       quality: Math.floor(netOutcome / config.qualityStep),

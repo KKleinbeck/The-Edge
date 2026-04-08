@@ -1,0 +1,31 @@
+<h3>{{attrName attribute}}</h3>
+<div class="centered-row">
+  <b>{{genName "Check"}}: </b>
+  <a class="attr-d20-chat d20-{{attribute}} rerollable" data-type="attribute">
+    <span class="d20-overlay" data-tooltip aria-label="{{attrName attribute}} {{genName 'threshold'}}: {{attributeValue}}">
+      {{getEntries rolls 0}}
+    </span>
+  </a>
+</div>
+<div>
+  <b>{{genName "result"}}:</b>
+  <span>{{genName outcome}} {{quality}}&thinsp;{{#if (checkInstance "Success" outcome)}}QL{{else}}FL{{/if}}</span>
+  <div style="padding-left: 5px;">
+    <div>
+      {{getEntries rolls 0}}
+      {{#if (checkInstance "Success" outcome)}}&le;{{else}}&gt;{{/if}}
+      {{effectiveThreshold}} ({{genName "Threshold"}})
+    </div>
+  </div>
+</div>
+<div>
+  <b>{{genName "Modificators"}}:</b>
+  <div style="display: grid; grid-template-columns: repeat(2, min-content); padding-left: 5px; gap: 0 8px;">
+    <div style="white-space: nowrap;">{{genName "Temporary"}}:</div><div style="white-space: nowrap; text-align: end">{{modifier}}</div>
+  </div>
+</div>
+{{#unless (checkEqual vantage "Nothing")}}
+<div class="centered-row">
+  <b>{{genName "with"}} {{genName vantage}}</b>
+</div>
+{{/unless}}

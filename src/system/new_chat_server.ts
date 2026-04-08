@@ -4,16 +4,16 @@ import LocalisationServer from "./localisation_server.js";
 const { renderTemplate } = foundry.applications.handlebars;
 
 export default class NewChatServer {
-  static transmitPlain(msg: string, config?: ChatServerConfig) {
+  static transmitPlain(msg: string, config?: IChatServerConfig) {
     ChatMessage.create(this.createChatData(`<h2>${msg}</h2>`, config))
   }
 
-  static async transmitEvent(id: string, details: Record<string, any>, config?: ChatServerConfig) {
+  static async transmitEvent(id: string, details: Record<string, any>, config: IChatServerConfig = {}) {
     let html: string = "";
     let text = undefined;
     switch (id.toUpperCase()) {
-      case "ABILITYCHECK":
-        html = await renderTemplate("systems/the_edge/templates/chat/attribute_check.html", details);
+      case "ATTRIBUTE CHECK":
+        html = await renderTemplate("systems/the_edge/templates/chat/attribute_check.hbs", details);
         break;
       
       case "COMBAT ACTION":
@@ -104,7 +104,7 @@ export default class NewChatServer {
         html = await renderTemplate("systems/the_edge/templates/chat/skill-description.html", details);
         break;
       
-      case "PROFICIENCYCHECK":
+      case "PROFICIENCY CHECK":
         html = await renderTemplate("systems/the_edge/templates/chat/proficiency_check.hbs", details);
         break;
 
@@ -128,12 +128,12 @@ export default class NewChatServer {
         html = await renderTemplate("systems/the_edge/templates/chat/weapon_check.html", details);
         break;
     }
-    const chatData = this.createChatData(html, config);
-    chatData.system = details;
+    const chatData: Partial<ChatMessageData> = this.createChatData(html, config);
+    chatData.system = {details: details, config: config};
     ChatMessage.create(chatData);
   }
 
-  static createChatData(content: string, config: ChatServerConfig = {}): Partial<ChatMessageData> {
+  static createChatData(content: string, config: IChatServerConfig = {}): Partial<ChatMessageData> {
     const chatData: Partial<ChatMessageData> = {
       user: game.user.id,
       content: content,

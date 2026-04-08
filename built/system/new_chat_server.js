@@ -5,12 +5,12 @@ export default class NewChatServer {
     static transmitPlain(msg, config) {
         ChatMessage.create(this.createChatData(`<h2>${msg}</h2>`, config));
     }
-    static async transmitEvent(id, details, config) {
+    static async transmitEvent(id, details, config = {}) {
         let html = "";
         let text = undefined;
         switch (id.toUpperCase()) {
-            case "ABILITYCHECK":
-                html = await renderTemplate("systems/the_edge/templates/chat/attribute_check.html", details);
+            case "ATTRIBUTE CHECK":
+                html = await renderTemplate("systems/the_edge/templates/chat/attribute_check.hbs", details);
                 break;
             case "COMBAT ACTION":
                 html = await renderTemplate("systems/the_edge/templates/chat/combat_action.html", details);
@@ -76,7 +76,7 @@ export default class NewChatServer {
             case "POST SKILL":
                 html = await renderTemplate("systems/the_edge/templates/chat/skill-description.html", details);
                 break;
-            case "PROFICIENCYCHECK":
+            case "PROFICIENCY CHECK":
                 html = await renderTemplate("systems/the_edge/templates/chat/proficiency_check.hbs", details);
                 break;
             case "RELOAD":
@@ -94,7 +94,7 @@ export default class NewChatServer {
                 break;
         }
         const chatData = this.createChatData(html, config);
-        chatData.system = details;
+        chatData.system = { details: details, config: config };
         ChatMessage.create(chatData);
     }
     static createChatData(content, config = {}) {

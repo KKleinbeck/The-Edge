@@ -52,7 +52,7 @@ interface ChatMessageData {
   sound?: string;
   speaker: ChatSpeakerData;
   style?: foundryAny;
-  system: object;
+  system: IChatSystem;
   timestamp: number | null;
   title?: string;
   type: string;
@@ -109,6 +109,9 @@ interface IFoundry {
     handlebars: foundryAny;
     sheets: {
       ActorSheetV2: typeof ActorSheetV2;
+    };
+    ux: {
+      ContextMenu: foundryAny
     }
   };
   data: {
@@ -121,5 +124,5 @@ interface IFoundry {
   }
   utils: {
     mergeObject<T, U>(a: T, b: U): T & U;
-  }
+  };
 }

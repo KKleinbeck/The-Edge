@@ -42,12 +42,14 @@ interface IRollPromptResult {
 
 // Attributes and Proficiencies
 interface IAttributeRollQuery {
-  attribute: attribute
+  attribute: string
   actor: foundryAny
   actorId: string
   tokenId: string
   sceneId: string // TODO: Scene IDs needed?
 }
+
+interface IAttributePromptResult extends IAttributeRollQuery, IRollPromptResult {}
 
 interface IProficiencyRollQuery {
   proficiency: string
