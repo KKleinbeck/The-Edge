@@ -1,5 +1,6 @@
 import Aux from "../system/auxilliaries.js";
 import ChatServer from "../system/chat_server.js";
+import NewChatServer from "../system/new_chat_server.js";
 import LocalisationServer from "../system/localisation_server.js";
 import THE_EDGE from "../system/config-the-edge.js";
 const { renderTemplate } = foundry.applications.handlebars;
@@ -42,16 +43,23 @@ export default class DialogWeapon extends Dialog {
                         damageRoll: modificators.fireModeModifier.damage + (ammuDamage.bonus > 0 ? ` + ${ammuDamage.bonus}` : "")
                     });
                     // Apply the damage
+                    const chatServerConfig = {
+                        speaker: {
+                            actor: checkData.actorId,
+                            scene: checkData.sceneId,
+                            token: checkData.tokenId
+                        }
+                    };
                     checkData.rolls = [];
                     for (let i = 0; i < modificators.dicesEff; ++i) {
                         checkData.rolls.push({ res: diceRes[i], hit: hits[i] });
                     }
                     for (const id of checkData.targetIds) {
                         checkData["targetId"] = id;
-                        ChatServer.transmitEvent("WeaponCheck", checkData);
+                        NewChatServer.transmitEvent("Weapon Check", checkData, chatServerConfig);
                     }
                     if (checkData.targetIds.length == 0) {
-                        ChatServer.transmitEvent("WeaponCheck", checkData);
+                        NewChatServer.transmitEvent("Weapon Check", checkData, chatServerConfig);
                     }
                     for (const event of failEvents) {
                         ChatServer.transmitEvent("Crit Fail Event", { event: event, check: "Combat check" });

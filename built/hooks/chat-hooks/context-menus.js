@@ -71,7 +71,6 @@ function _handleRerollOrChange(contextHtml, config, newRoll) {
     console.log(contextHtml.dataset, system);
     switch (contextHtml.dataset.type) {
         case "attribute":
-            console.log(system);
             rerollDetails.old = system.details.rolls[0];
             updateAttributeCheck(chatMsgCls, system, newRoll);
             rerollDetails.check = LocalisationServer.localise(system.details.attribute, "attr");
@@ -84,8 +83,7 @@ function _handleRerollOrChange(contextHtml, config, newRoll) {
             break;
         case "weapon":
             rerollDetails.old = system.details.rolls[index].res;
-            // @ts-expect-error
-            const newResults = structuredClone(system.rolls);
+            const newResults = structuredClone(system.details.rolls);
             newResults[index].res = newRoll;
             updateWeaponCheck(chatMsgCls, actor, system, newResults, index);
             rerollDetails.check = LocalisationServer.localise("combat", "combat");
@@ -177,7 +175,7 @@ async function updateWeaponCheck(chatMsgCls, actor, system, newResults, index) {
         }
     }
     details.rolls = newResults;
-    const newContent = await renderTemplate("systems/the_edge/templates/chat/weapon_check.html", details);
+    const newContent = await renderTemplate("systems/the_edge/templates/chat/weapon_check.hbs", details);
     updateChatMessage(chatMsgCls, newContent, system);
 }
 async function updateChatMessage(chatMsgCls, newContent, newSystem) {

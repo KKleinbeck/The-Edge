@@ -89,11 +89,12 @@ export default class NewChatServer {
             case "LONG REST":
                 html = await renderTemplate("systems/the_edge/templates/chat/long-or-short-rest.html", foundry.utils.mergeObject(details, { restType: id }));
                 break;
-            case "WEAPONCHECK":
-                html = await renderTemplate("systems/the_edge/templates/chat/weapon_check.html", details);
+            case "WEAPON CHECK":
+                html = await renderTemplate("systems/the_edge/templates/chat/weapon_check.hbs", details);
                 break;
         }
         const chatData = this.createChatData(html, config);
+        console.log(id, details);
         chatData.system = { details: details, config: config };
         ChatMessage.create(chatData);
     }

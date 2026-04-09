@@ -124,11 +124,12 @@ export default class NewChatServer {
         );
         break;
       
-      case "WEAPONCHECK":
-        html = await renderTemplate("systems/the_edge/templates/chat/weapon_check.html", details);
+      case "WEAPON CHECK":
+        html = await renderTemplate("systems/the_edge/templates/chat/weapon_check.hbs", details);
         break;
     }
     const chatData: Partial<ChatMessageData> = this.createChatData(html, config);
+    console.log(id, details)
     chatData.system = {details: details, config: config};
     ChatMessage.create(chatData);
   }
