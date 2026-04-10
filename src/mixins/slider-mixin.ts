@@ -31,7 +31,7 @@ export default function SliderMixin<T extends intype>(BaseApplication: T): outty
       );
     }
 
-    _sliderClickedEvent(event: Event): void {
+    async _sliderClickedEvent(event: Event): Promise<void> {
       const target = event.currentTarget;
       if (!(target instanceof SVGElement)) return;
       if (!("value" in target.dataset) || !target.dataset.value) return;
@@ -40,13 +40,13 @@ export default function SliderMixin<T extends intype>(BaseApplication: T): outty
       const entryElement = target.closest(".slider-hook");
       if (!(entryElement instanceof HTMLElement)) return;
 
-      this.onValueChanged(entryElement.dataset.id ?? "", value);
-
       if (!(entryElement.dataset.binaryContext)) return;
       const context: ISliderContext = JSON.parse(
         atob(entryElement.dataset.binaryContext));
       context.value = value;
-      this._redrawSlider(entryElement, context);
+      await this._redrawSlider(entryElement, context);
+
+      this.onValueChanged(entryElement.dataset.id ?? "", value);
     }
 
     async _redrawSlider(element: Element, context: ISliderContext) {

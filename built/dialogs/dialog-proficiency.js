@@ -1,11 +1,32 @@
+import Aux from "../system/auxilliaries.js";
 import LocalisationServer from "../system/localisation_server.js";
 import SliderMixin from "../mixins/slider-mixin.js";
 const { renderTemplate } = foundry.applications.handlebars;
 const { DialogV2 } = foundry.applications.api;
 export default class DialogProficiency extends SliderMixin(DialogV2) {
+    constructor(checkData, options) {
+        super(options);
+        this.checkData = checkData;
+        this.vantage = "Nothing";
+    }
+    _onRender(context, options) {
+        super._onRender(context, options);
+        this.element.querySelector(".vantage-hook").addEventListener("change", (event) => {
+            if (!(event.target instanceof HTMLSelectElement))
+                return;
+            this.vantage = event.target.value;
+            this._onChanceChanged();
+        });
+    }
     static async start(checkData) {
+        var threshold = 0;
+        for (const data of checkData.actor.system.getProficiencyDiceThresholds(checkData.proficiency)) {
+            threshold += data.threshold;
+        }
         const template = "systems/the_edge/templates/dialogs/proficiency.hbs";
-        const html = await renderTemplate(template, {});
+        const html = await renderTemplate(template, {
+            chance: Aux.asChance(Aux.proficiencySuccessChance(threshold, checkData.actor.system.proficiencyDiceParameter), true)
+        });
         const content = document.createElement("div");
         content.innerHTML = html;
         const buttons = [
@@ -32,7 +53,7 @@ export default class DialogProficiency extends SliderMixin(DialogV2) {
                 label: LocalisationServer.localise("Cheat", "Dialog"),
             });
         }
-        return new DialogProficiency({
+        return new DialogProficiency(checkData, {
             window: {
                 title: LocalisationServer.localise(checkData.proficiency, "proficiency") +
                     " " + game.i18n.localize("CHECK"),
@@ -64,5 +85,23 @@ export default class DialogProficiency extends SliderMixin(DialogV2) {
     }
     static cheatCallback(dialog, checkData) {
         console.log("not implemented yet");
+    }
+    // Helpers for rendering
+    onValueChanged(_id, _value) { this._onChanceChanged(); }
+    _onChanceChanged() {
+        const sliderValues = this.getSliderValues();
+        let threshold = Object.values(sliderValues).sum();
+        for (const data of this.checkData.actor.system.getProficiencyDiceThresholds(this.checkData.proficiency)) {
+            threshold += data.threshold;
+        }
+        const chanceElement = this.element.querySelector(".chance-hook");
+        if (!chanceElement)
+            return;
+        var chance = Aux.proficiencySuccessChance(threshold, this.checkData.actor.system.proficiencyDiceParameter);
+        if (this.vantage == "Advantage")
+            chance = 1 - (1 - chance) ** 2;
+        else if (this.vantage == "Disadvantage")
+            chance = chance ** 2;
+        chanceElement.innerHTML = Aux.asChance(chance, true);
     }
 }

@@ -15,7 +15,8 @@
   ],
   "styles": [
     "styles/root.css",
-    "styles/simple.css"
+    "styles/simple.css",
+    "styles/ui.css"
   ],
   "languages": [
     {

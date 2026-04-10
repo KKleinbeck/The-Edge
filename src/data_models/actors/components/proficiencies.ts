@@ -106,6 +106,18 @@ class ProficiencyData extends DataModelComponent {
     };
   }
 
+  getProficiencyDiceThresholds(proficiency: string): IDiceThreshold[] {
+    const proficiencyData = Object.values(this.proficiencies)
+      .find(profClass => proficiency in profClass)[proficiency]
+
+    const result: IDiceThreshold[] = [];
+    proficiencyData.dice.forEach((attr: string) => {
+      result.push({name: attr, threshold: this.attributes[attr].value});
+    });
+     result.push({name: "proficiency", threshold: proficiencyData.value});
+    return result;
+  }
+
   get proficiencyDiceParameter(): IDiceParameters { // Placeholder
     return {
       critDice: [1],
@@ -122,14 +134,11 @@ class ProficiencyData extends DataModelComponent {
   }
 
   async rollProficiencyCheck(promptResult: IProficiencyPromptResult, transmit = true): Promise<IRollResult> {
-    const proficiency = promptResult.proficiency;
-    const proficiencyData = Object.values(this.proficiencies)
-      .find(profClass => proficiency in profClass)[proficiency]
+    const proficiencyData = this.getProficiencyDiceThresholds(promptResult.proficiency)
 
-    var threshold = proficiencyData.value;
-    threshold += proficiencyData.dice.reduce(
-      (acc: number, x: string) => acc + this.attributes[x].value, 0
-    );
+    var threshold = 0;
+    for (const data of proficiencyData) threshold += data.threshold;
+    console.log(threshold);
 
     const diceServerConfig: IDiceServerConfig = {
       ...this.proficiencyDiceParameter,
@@ -144,12 +153,7 @@ class ProficiencyData extends DataModelComponent {
     if (transmit) {
       const details: IProficiencyRollMessage = {
         ...rollResult,
-        dice: [
-          ...proficiencyData.dice.map(
-            (attr: string) => { return {name: attr, threshold: this.attributes[attr].value} }
-          ),
-          {name: "proficiency", threshold: proficiencyData.value}
-        ],
+        dice: proficiencyData,
         diceServerConfig: diceServerConfig,
         effectiveThreshold: rollResult.effectiveThreshold,
         modifier: promptResult.modifier,

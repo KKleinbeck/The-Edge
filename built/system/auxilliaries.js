@@ -2,11 +2,15 @@ import THE_EDGE from "./config-the-edge.js";
 import LocalisationServer from "./localisation_server.js";
 const { renderTemplate } = foundry.applications.handlebars;
 export default class Aux {
+    static asChance(value, asHtmlString = false) {
+        value *= 100;
+        if (!asHtmlString)
+            return value;
+        return `${value.toFixed(1)}&nbsp;%`;
+    }
     static objectAt(obj, path) {
         return path.split(".").reduce((a, i) => a[i], obj);
     }
-    // TODO yeet
-    static parseRollType(html) { return html.find('[name="rolltype"]').val() || "roll"; }
     static sleep(duration) { return new Promise(r => setTimeout(r, duration)); }
     static hasRaceCondDanger(id) {
         const lastUpdate = game.data[id];
@@ -167,7 +171,7 @@ export default class Aux {
     static randomInt(min, max) { return min + Math.floor(Math.random() * (max - min + 1)); }
     static pickFromOdds(objectWithOdds) {
         let sum = 0;
-        const cumSum = Object.values(objectWithOdds).map((sum = 0, n => sum += n));
+        const cumSum = Object.values(objectWithOdds).map((n, _index, _array) => { sum += n; return sum; });
         const threshold = this.randomInt(1, cumSum.last());
         const index = cumSum.findIndex(x => x >= threshold);
         return Object.keys(objectWithOdds)[index];
@@ -246,5 +250,36 @@ export default class Aux {
             content = content.replace(match[0], result);
         }
         return content;
+    }
+    static proficiencySuccessChance(baseThreshold, diceParameters) {
+        const { critDice = [], critBonus = 0, critDieBonus = 0, critFailDice = [], critFailMalus = 0, critFailDieMalus = 0, } = diceParameters;
+        const FACES = 20;
+        const total = FACES ** 4;
+        let successes = 0;
+        for (let d1 = 1; d1 <= FACES; d1++) {
+            for (let d2 = 1; d2 <= FACES; d2++) {
+                for (let d3 = 1; d3 <= FACES; d3++) {
+                    for (let d4 = 1; d4 <= FACES; d4++) {
+                        const tuple = [d1, d2, d3, d4];
+                        const critCount = tuple.filter(v => critDice.includes(v)).length;
+                        const critFailCount = tuple.filter(v => critFailDice.includes(v)).length;
+                        let threshold = baseThreshold;
+                        threshold += critDieBonus * critCount;
+                        threshold += critFailDieMalus * critFailCount;
+                        if (critCount >= critFailCount + 2) {
+                            threshold += critBonus;
+                        }
+                        else if (critFailCount >= critCount + 2) {
+                            threshold += critFailMalus;
+                        }
+                        const sum = d1 + d2 + d3 + d4;
+                        if (sum <= threshold) {
+                            successes++;
+                        }
+                    }
+                }
+            }
+        }
+        return successes / total;
     }
 }

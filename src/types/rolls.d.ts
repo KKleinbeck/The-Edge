@@ -1,5 +1,5 @@
 // Generics
-type vantageType = "Advantage" | "Disadvantage" | "Nothing"
+type VantageType = "Advantage" | "Disadvantage" | "Nothing"
 
 interface IDiceParameters {
   critDice: number[]
@@ -16,7 +16,7 @@ interface IDiceParameters {
 interface IDiceServerConfig extends IDiceParameters {
   modifier: number
   threshold: number
-  vantage: vantageType
+  vantage: VantageType
 }
 
 interface ICritFailEvent {
@@ -36,7 +36,7 @@ interface IRollResult {
 interface IRollPromptResult {
   strain: number
   modifier: number
-  vantage: vantageType
+  vantage: VantageType
   roll?: rollType
 }
 
@@ -46,7 +46,7 @@ interface IAttributeRollQuery {
   actor: foundryAny
   actorId: string
   tokenId: string
-  sceneId: string // TODO: Scene IDs needed?
+  sceneId: string
 }
 
 interface IAttributePromptResult extends IAttributeRollQuery, IRollPromptResult {}
@@ -56,7 +56,7 @@ interface IProficiencyRollQuery {
   actor: foundryAny
   actorId: string
   tokenId: string
-  sceneId: string // TODO: Scene IDs needed?
+  sceneId: string
 }
 
 interface IProficiencyPromptResult extends IProficiencyRollQuery, IRollPromptResult {}

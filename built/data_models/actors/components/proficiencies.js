@@ -73,6 +73,16 @@ class ProficiencyData extends DataModelComponent {
             })
         };
     }
+    getProficiencyDiceThresholds(proficiency) {
+        const proficiencyData = Object.values(this.proficiencies)
+            .find(profClass => proficiency in profClass)[proficiency];
+        const result = [];
+        proficiencyData.dice.forEach((attr) => {
+            result.push({ name: attr, threshold: this.attributes[attr].value });
+        });
+        result.push({ name: "proficiency", threshold: proficiencyData.value });
+        return result;
+    }
     get proficiencyDiceParameter() {
         return {
             critDice: [1],
@@ -86,11 +96,11 @@ class ProficiencyData extends DataModelComponent {
         };
     }
     async rollProficiencyCheck(promptResult, transmit = true) {
-        const proficiency = promptResult.proficiency;
-        const proficiencyData = Object.values(this.proficiencies)
-            .find(profClass => proficiency in profClass)[proficiency];
-        var threshold = proficiencyData.value;
-        threshold += proficiencyData.dice.reduce((acc, x) => acc + this.attributes[x].value, 0);
+        const proficiencyData = this.getProficiencyDiceThresholds(promptResult.proficiency);
+        var threshold = 0;
+        for (const data of proficiencyData)
+            threshold += data.threshold;
+        console.log(threshold);
         const diceServerConfig = {
             ...this.proficiencyDiceParameter,
             modifier: promptResult.strain + promptResult.modifier,
@@ -102,10 +112,7 @@ class ProficiencyData extends DataModelComponent {
         if (transmit) {
             const details = {
                 ...rollResult,
-                dice: [
-                    ...proficiencyData.dice.map((attr) => { return { name: attr, threshold: this.attributes[attr].value }; }),
-                    { name: "proficiency", threshold: proficiencyData.value }
-                ],
+                dice: proficiencyData,
                 diceServerConfig: diceServerConfig,
                 effectiveThreshold: rollResult.effectiveThreshold,
                 modifier: promptResult.modifier,

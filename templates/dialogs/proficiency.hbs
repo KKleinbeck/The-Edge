@@ -1,8 +1,13 @@
-<select class="advantage-box vantage-hook" name="AdvantageSelector" id="AdvantageSelector">
-  <option value="Nothing">No Advantage</option>
-  <option value="Advantage">Advantage</option>
-  <option value="Disadvantage">Disadvantage</option>
-</select>
+<div style="display: flex; justify-content: space-between; align-items: end">
+  <select class="advantage-box vantage-hook" name="AdvantageSelector" id="AdvantageSelector">
+    <option value="Nothing">No Advantage</option>
+    <option value="Advantage">Advantage</option>
+    <option value="Disadvantage">Disadvantage</option>
+  </select>
+  <div class="chance-hook box-passive">
+    {{{chance}}}
+  </div>
+</div>
 {{>
   systems/the_edge/templates/generic/slider.hbs
   title=(genName "Modifier")

@@ -24,7 +24,7 @@ export default function SliderMixin(BaseApplication) {
         _attachEffectListeners() {
             this.element.querySelectorAll(".slider-click-hook")?.forEach((x) => x.addEventListener("click", (ev) => this._sliderClickedEvent(ev)));
         }
-        _sliderClickedEvent(event) {
+        async _sliderClickedEvent(event) {
             const target = event.currentTarget;
             if (!(target instanceof SVGElement))
                 return;
@@ -34,12 +34,12 @@ export default function SliderMixin(BaseApplication) {
             const entryElement = target.closest(".slider-hook");
             if (!(entryElement instanceof HTMLElement))
                 return;
-            this.onValueChanged(entryElement.dataset.id ?? "", value);
             if (!(entryElement.dataset.binaryContext))
                 return;
             const context = JSON.parse(atob(entryElement.dataset.binaryContext));
             context.value = value;
-            this._redrawSlider(entryElement, context);
+            await this._redrawSlider(entryElement, context);
+            this.onValueChanged(entryElement.dataset.id ?? "", value);
         }
         async _redrawSlider(element, context) {
             const template = "systems/the_edge/templates/generic/slider.hbs";

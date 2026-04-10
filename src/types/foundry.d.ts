@@ -75,6 +75,7 @@ declare class Dialog {
 declare class DialogV2 extends FoundryHandlebarsApplication {
   constructor(options: foundryAny)
   render(options?: foundryAny): Promise<DialogV2>
+  static prompt(config?: foundryAny): Promise<any>
 }
 
 declare class Hooks {
