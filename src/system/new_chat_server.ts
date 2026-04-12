@@ -129,7 +129,6 @@ export default class NewChatServer {
         break;
     }
     const chatData: Partial<ChatMessageData> = this.createChatData(html, config);
-    console.log(id, details)
     chatData.system = {details: details, config: config};
     ChatMessage.create(chatData);
   }

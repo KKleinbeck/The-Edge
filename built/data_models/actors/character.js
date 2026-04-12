@@ -112,7 +112,8 @@ export default class CharacterData extends CharacterDataParent {
             return;
         }
         const oldVal = Aux.objectAt(this.parent, coreName);
-        const costFun = coreName.includes("proficiencies") ? THE_EDGE.profCost : THE_EDGE.attrCost;
+        const isProfValued = coreName.includes("proficiencies") || coreName.includes("strain");
+        const costFun = isProfValued ? THE_EDGE.profCost : THE_EDGE.attrCost;
         let cost = 0;
         if (newVal > oldVal) {
             for (let n = oldVal; n < newVal; n++)

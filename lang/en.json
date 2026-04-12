@@ -29,7 +29,9 @@
 
     "RUN SPEED": "Run Speed",
     "SPRINT SPEED": "Sprint Speed",
-    "STRIDE SPEED": "Stride Speed"
+    "STRIDE SPEED": "Stride Speed",
+
+    "MAX STRAIN BONUS": "Max Strain level"
   },
   "ATTR_ABBR": {
     "END": "END",
@@ -533,7 +535,7 @@
   "TOOLTIP": {
     "DESIGNATED WEAPON": "Some types of ammunition are only useable with specific names. Specify these here by their names (comma separated).",
     "PENETRATION": "The penetration value reduces the armour's threshold.",
-    
+
     "HEARTRATE ZONE 1": "75% Max Heart Rate",
     "HEARTRATE ZONE 2": "90% Max Heart Rate",
 

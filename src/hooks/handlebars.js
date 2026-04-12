@@ -65,6 +65,7 @@ export default function() {
     checkSubtypedItem: (a) => { return (a == "Weapon" || a == "Consumables");},
     checkST: (a, b) => { return a < b; },
     checkSET: (a, b) => { return a <= b; },
+    checkGET: (a, b) => { return a >= b; },
     checkIsEven: (a) => { return a % 2 ==0; },
     checkAttachment: (a) => { return a.system?.layer === "Outer"; },
     defaultTo: (a, b) => { if(a) return a; return b; },

@@ -68,7 +68,6 @@ function _handleRerollOrChange(contextHtml, config, newRoll) {
     const { actor, chatMsgCls, system } = config;
     const rerollDetails = { name: game.user.name, new: newRoll };
     const index = +(contextHtml.dataset.index || 0);
-    console.log(contextHtml.dataset, system);
     switch (contextHtml.dataset.type) {
         case "attribute":
             rerollDetails.old = system.details.rolls[0];

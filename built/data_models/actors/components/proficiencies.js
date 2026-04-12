@@ -100,7 +100,6 @@ class ProficiencyData extends DataModelComponent {
         var threshold = 0;
         for (const data of proficiencyData)
             threshold += data.threshold;
-        console.log(threshold);
         const diceServerConfig = {
             ...this.proficiencyDiceParameter,
             modifier: promptResult.strain + promptResult.modifier,

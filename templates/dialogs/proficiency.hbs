@@ -15,9 +15,11 @@
   min=-10
   max= 10
 }}
+{{#if (checkGET maxStrain 0)}}
 {{>
   systems/the_edge/templates/generic/slider.hbs
   title=(genName "Strain")
   id="strain"
-  max= 10
+  max=maxStrain
 }}
+{{/if}}

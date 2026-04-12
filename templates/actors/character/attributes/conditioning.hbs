@@ -5,6 +5,15 @@
   <div class="columned-page section-content" style="gap: 10px 5px;">
     {{!-- TODO: This should be a grid layout --}}
     <div class="page-right-aligned">
+      <p style="margin-top: 0px;">
+        {{attrName "Max Strain Bonus"}}&#8199;
+        <input
+          class="core-value"
+          data-target="system.strain.max.advances"
+          value="{{system.strain.max.advances}}"
+          style="width: 50px; text-align: right;"
+        >
+      </p>
       <p data-tooltip aria-label="{{tooltipText 'Heartrate Zone 1'}}" style="margin-top: 0px;">
         {{genName "Zone"}} 1 <i class="fa fa-long-arrow-right" aria-hidden="true"></i> 2&#8199;
         <span class="output" style="width: 50px;">{{system.hrZone1}}</span>

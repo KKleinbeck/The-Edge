@@ -25,16 +25,16 @@ export default class DialogProficiency extends SliderMixin(DialogV2) {
   }
 
   static async start(checkData: IProficiencyRollQuery) {
+    const proficiencyData = checkData.actor.system.getProficiencyDiceThresholds(checkData.proficiency);
     var threshold = 0;
-    for (const data of checkData.actor.system.getProficiencyDiceThresholds(checkData.proficiency)) {
-      threshold += data.threshold;
-    }
+    for (const data of proficiencyData) threshold += data.threshold;
 
     const template = "systems/the_edge/templates/dialogs/proficiency.hbs";
     const html = await renderTemplate(template, {
       chance: Aux.asChance(Aux.proficiencySuccessChance(
         threshold, checkData.actor.system.proficiencyDiceParameter
-      ), true)
+      ), true),
+      maxStrain: proficiencyData.filter(x => x.name == "proficiency")[0].threshold
     });
     const content = document.createElement("div");
     content.innerHTML = html;
@@ -85,6 +85,7 @@ export default class DialogProficiency extends SliderMixin(DialogV2) {
 
   static rollCallback(dialog: DialogProficiency, checkData: IProficiencyRollQuery, roll: rollType) {
     const promptResult = dialog.getSliderValues();
+    if (!(promptResult.strain)) promptResult.strain = 0;
     promptResult.roll = roll;
     checkData.proficiency = checkData.proficiency.toLowerCase();
 

@@ -76,7 +76,6 @@ function _handleRerollOrChange(contextHtml: HTMLAnchorElement, config: IContextM
   const rerollDetails: Record<string, any> = {name: game.user.name, new: newRoll};
   const index = +(contextHtml.dataset.index || 0);
 
-  console.log(contextHtml.dataset, system)
   switch (contextHtml.dataset.type) {
     case "attribute":
       rerollDetails.old = system.details.rolls[0];
