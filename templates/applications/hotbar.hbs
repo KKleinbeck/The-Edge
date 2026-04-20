@@ -40,7 +40,7 @@
       }}
       {{>
         systems/the_edge/templates/generic/progress-bar-modern.hbs
-        name="Heart Rate" value=actor.system.heartRate.value max=actor.system.heartRate.max.value fillId="heartRate"
+        name="Strain" value=actor.system.strain.value max=actor.system.strain.max.value fillId="strain"
       }}
       {{#unless (checkEqual armourProtection.value 0)}}
         {{>

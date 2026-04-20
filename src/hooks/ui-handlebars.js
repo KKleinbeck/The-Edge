@@ -7,7 +7,7 @@ export default function() {
       counter: ["#af9308", "#d6b40a", "#ddbd1dff"],
       default: ["#6366f1", "#3b82f6", "#00f5ff"],
       health: ["#2e7d32", "#4caf50", "#53c24fff"],
-      heartRate: ["#0096c7", "#03045e", "#0e023bff"],
+      strain: ["#fc8414", "#c7411f", "rgb(160, 17, 17)"],
     }
   }
 

@@ -99,11 +99,4 @@ export default class HumanoidData extends DataModelComponent {
         });
         ChatServer.transmitEvent(type, { healing: accHealing, coagulation: accCoagulation, bloodRegen: bloodRegen });
     }
-    // Bloodloss related
-    async applyBloodLoss() {
-        const bleeding = this.wounds.map(x => x.bleeding).sum();
-        const lossRate = this.heartRate.value / this.heartRate.max.value;
-        const bloodLoss = Math.floor(lossRate * bleeding);
-        this.parent.update({ "system.bloodLoss.value": this.bloodLoss.value + bloodLoss });
-    }
 }

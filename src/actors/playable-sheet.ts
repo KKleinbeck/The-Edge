@@ -132,11 +132,6 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       weight: weight,
       overloadLevel: this.actor.system.overloadLevel,
       weightTillNextOverload: this.actor.system.weightTillNextOverload,
-      hrProgressBarData: [
-        {value: context.system.heartRate.min.value, label: "Z1"},
-        {value: context.system.hrZone1, label: "Z2"},
-        {value: context.system.hrZone2, label: "Z3"},
-      ]
     }
 
     context.effectDict = {
