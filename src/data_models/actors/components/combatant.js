@@ -29,10 +29,7 @@ export default class CombatantData extends DataModelComponent {
         statusThreshold: new SchemaField({ status: new NumberField({ initial: 0, integer: true }) }),
         maxUseReduction: new SchemaField({ status: new NumberField({ initial: 0, integer: true }) }),
       }),
-      wounds: new ArrayField(
-        new ObjectField(),
-        { initial: [] }
-      )
+      wounds: new ArrayField(new ObjectField(), { initial: [] })
     };
   }
 

@@ -6,7 +6,6 @@ export default class HumanoidData extends DataModelComponent {
         return {
             age: new NumberField({ initial: 21, integer: true, min: 0, required: true }),
             sex: new StringField({ initial: "female" }),
-            bloodType: new StringField({ initial: "AB" }),
             handedness: new StringField({ initial: "right" }),
             race: new StringField({ initial: "Human" }),
             heartRate: new SchemaField({
@@ -55,48 +54,36 @@ export default class HumanoidData extends DataModelComponent {
         return hrChange;
     }
     // Rest related
-    shortRest() { this._rest("1d3 % 2", "1d3-1", "0", "short rest"); }
-    longRest() { this._rest("2d3kh", "2d6 / 2", "1d3-1", "long rest"); }
-    async _rest(coagulationDice, healingDice, bloodRegenDice, type) {
-        const wounds = this.parent.itemTypes["Wounds"];
+    shortRest() { this._rest("1d3 % 2", "1d3-1", "short rest"); }
+    longRest() { this._rest("2d3kh", "2d6 / 2", "long rest"); }
+    async _rest(coagulationDice, healingDice, type) {
         let accHealing = 0;
         let accCoagulation = 0;
-        let remainingBleeding = 0;
-        for (const wound of wounds) {
-            if (wound.system.bleeding > 0) {
+        const newWounds = [];
+        for (const wound of this.wounds) {
+            if (wound.bleeding > 0) {
                 const coagulationRoll = await new Roll(coagulationDice).evaluate();
                 const coagulation = Math.floor(coagulationRoll.total);
-                if (wound.system.damage == 0 && wound.system.bleeding <= coagulation) {
-                    accCoagulation += wound.system.bleeding;
-                    wound.delete();
-                }
-                else if (coagulation > 0) {
-                    accCoagulation += Math.min(coagulation, wound.system.bleeding);
-                    const newBleeding = Math.max(wound.system.bleeding - coagulation, 0);
-                    wound.update({ "system.bleeding": newBleeding });
-                    remainingBleeding += newBleeding;
-                }
+                accCoagulation += Math.min(coagulation, wound.bleeding);
+                if (wound.damage == 0 && wound.bleeding <= coagulation)
+                    continue;
+                wound.bleeding = Math.max(wound.bleeding - coagulation, 0);
             }
             else {
                 const healingRoll = await new Roll(healingDice).evaluate();
                 const healing = Math.floor(healingRoll.total);
-                if (wound.system.damage <= healing) {
-                    accHealing += wound.system.damage;
-                    wound.delete();
-                }
-                else if (healing > 0) {
-                    accHealing += Math.min(healing, wound.system.damage);
-                    wound.update({ "system.damage": Math.max(wound.system.damage - healing, 0) });
-                }
+                accHealing += Math.min(healing, wound.damage);
+                if (wound.damage <= healing)
+                    continue;
+                wound.damage = Math.max(wound.damage - healing, 0);
             }
+            newWounds.push(wound);
         }
-        const bloodRegenRoll = await new Roll(bloodRegenDice).evaluate();
-        const bloodRegen = Math.min(this.bloodLoss.value, bloodRegenRoll.total - remainingBleeding);
         this.parent.update({
-            "system.health.value": Math.min(this.health.max.max, this.health.value + accHealing),
+            "system.health.value": Math.min(this.health.max.value, this.health.value + accHealing),
             "system.heartRate.value": this.heartRate.min.value,
-            "system.bloodLoss.value": this.bloodLoss.value - bloodRegen
+            "system.wounds": newWounds
         });
-        ChatServer.transmitEvent(type, { healing: accHealing, coagulation: accCoagulation, bloodRegen: bloodRegen });
+        ChatServer.transmitEvent(type, { healing: accHealing, coagulation: accCoagulation });
     }
 }
