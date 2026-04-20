@@ -29,7 +29,8 @@ export default function EffectModifierMixin(BaseApplication) {
             this.redrawModifiers(target, modifiers, context);
         }
         _modifyEffect(event) {
-            if (!(event.currentTarget instanceof HTMLInputElement))
+            if (!(event.currentTarget instanceof HTMLInputElement) &&
+                !(event.currentTarget instanceof HTMLSelectElement))
                 return;
             if (event.currentTarget.dataset.index === undefined)
                 return;

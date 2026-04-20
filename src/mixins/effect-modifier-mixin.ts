@@ -38,7 +38,8 @@ export default function EffectModifierMixin<T extends intype>(BaseApplication: T
     }
 
     _modifyEffect(event: Event): void {
-      if (!(event.currentTarget instanceof HTMLInputElement)) return;
+      if (!(event.currentTarget instanceof HTMLInputElement) &&
+        !(event.currentTarget instanceof HTMLSelectElement)) return;
       if (event.currentTarget.dataset.index === undefined) return;
 
       event.stopPropagation();
@@ -53,7 +54,7 @@ export default function EffectModifierMixin<T extends intype>(BaseApplication: T
       this.redrawModifiers(event.currentTarget, modifiers, context);
     }
 
-    _getModifierData(target: HTMLInputElement): IEffectModifier {
+    _getModifierData(target: HTMLInputElement | HTMLSelectElement): IEffectModifier {
       if (target.dataset.entry === undefined) {
         throw new Error(
           `Input element does not define dataset 'entry'.\nDataset: ${target.dataset}`

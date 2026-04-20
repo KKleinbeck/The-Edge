@@ -14,7 +14,6 @@ export default function () {
             const sceneID = details.combat.combatant.scneeId;
             const actor = Aux.getActor(actorID, tokenID, sceneID);
             actor.system.applyCombatStrain();
-            actor.system.applyBloodLoss();
             game.the_edge.combatLog.endTurn();
         }));
     });

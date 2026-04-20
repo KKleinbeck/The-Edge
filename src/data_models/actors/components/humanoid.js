@@ -46,17 +46,7 @@ export default class HumanoidData extends DataModelComponent {
     return 4 * (strain - zone + 1);
   }
 
-  async applyCombatStrain() {
-    if (this.health.value <= 0) {
-      await this.parent.update(
-        {"system.heartRate.value": Math.max(this.heartRate.value - 10, 0)}
-      );
-    } else {
-      this.applyStrains(game.the_edge.combatLog.strainLog.map(x => x.hrChange));
-    }
-  }
-
-  async applyStrains(strains) {
+  async applyStrains(strains) { // TODO: yeet
     const hr = this.heartRate;
     const isRest = Math.max(...strains) <= 0;
     const threshold = isRest ? hr.min.value : hr.max.value;

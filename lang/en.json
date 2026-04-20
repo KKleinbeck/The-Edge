@@ -273,6 +273,7 @@
   "EFFECT_GROUP": {
     "BLOODLOSSTHRESHOLD": "Blood loss - threshold",
     "BLOODLOSSSTEPSIZE": "Blood loss - step size",
+    "DYING": "Dying",
     "HEALTH - MAX": "Max health",
     "HEARTRATE - DAMAGETHRESHOLD": "Damage buffer heart rate",
     "HEARTRATE - MAX": "Max heart rate",
@@ -287,7 +288,7 @@
     "PAINTHRESHOLD": "Pain - threshold",
     "STRAIN": "Strain",
     "STRAIN - MAX": "Max Strain",
-    "STRAIN - STRAINTHRESHOLD": "Strain - Threshold",
+    "STRAIN - STATUSTHRESHOLD": "Delay strain effects",
     "STRAIN - MAXUSEREDUCTION": "Reduce strain per roll"
   },
   "HERO TOKEN": {

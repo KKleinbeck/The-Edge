@@ -61,41 +61,31 @@ export default class StatusEffectData extends DataModelComponent {
         }
         return damageBodyParts;
     }
-    // async updateBloodloss() {
-    //   let res = this.system.attributes.res.advances + this.system.attributes.res.status;
-    //   let currentBloodLoss = this._getEffect("Vertigo");
-    //   if (currentBloodLoss) res -= currentBloodLoss?.system?.effects[0].value || 0;
-    //   if (res <= 1) return; // Cannot possibly do sensible things right now
-    //   const bloodloss = this.system.bloodLoss.value;
-    //   const statusThreshold = this.system.statusEffects.bloodlossThreshold.status;
-    //   const bloodlossEff = Math.max(bloodloss - statusThreshold - res + 1, 0);
-    //   const stepSize = this.system.statusEffects.bloodlossStepSize.status + Math.floor(res / 2);
-    //   const level = Math.ceil(bloodlossEff / stepSize) + this.system.statusEffects.vertigo.status;
-    //   if (level == 0) {
-    //     await this._deleteEffect("Vertigo");
-    //     return;
-    //   }
-    //   if (!currentBloodLoss) currentBloodLoss = await this._getEffectOrCreate("Vertigo");
-    //   if (currentBloodLoss.system.effects[0].value != -level) {
-    //     await currentBloodLoss.update({"system.effects": [
-    //       {group: "attributes", name: "mental", value: -level},
-    //     ], "system.statusEffect": true, "system.gm_description": `${level}`})
-    //   }
-    // }
+    get isDying() { return this.health.value <= 0; }
+    static dyingModifiers() {
+        return [{
+                group: "generalModifiers", field: "strain - max",
+                value: THE_EDGE.dying.maxStrainBuffer + this.strain.max.advances
+            }];
+    }
     get statusEffects() {
         const statusEffectTemplate = [
             {
-                nameID: "Overload", level: this.overloadLevel,
+                nameID: "Overload", isActive: this.overloadLevel,
                 modFunction: THE_EDGE.overloadModifiers
             },
             {
-                nameID: "Strain", level: this.strainLevel,
+                nameID: "Strain", isActive: this.strainLevel,
                 modFunction: THE_EDGE.strainModifiers
             },
             {
-                nameID: "Pain", level: this.painLevel,
+                nameID: "Pain", isActive: this.painLevel,
                 modFunction: THE_EDGE.painModifiers
             },
+            {
+                nameID: "Dying", isActive: this.isDying,
+                modFunction: StatusEffectData.dyingModifiers
+            }
         ];
         for (const [bodyPart, level] of Object.entries(this.damageBodyPartLevels)) {
             statusEffectTemplate.push({
@@ -104,11 +94,12 @@ export default class StatusEffectData extends DataModelComponent {
             });
         }
         const statusEffects = [];
-        for (const { nameID, level, modFunction } of statusEffectTemplate) {
-            if (level) {
+        for (const { nameID, isActive, modFunction } of statusEffectTemplate) {
+            if (isActive) {
+                const level = Number.isInteger(isActive) ? isActive : undefined;
                 statusEffects.push({
                     name: LocalisationServer.localise(nameID, "Effect_Group"),
-                    level: level, modifiers: modFunction(level)
+                    level: level, modifiers: modFunction.call(this, level)
                 });
             }
         }

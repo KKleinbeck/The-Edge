@@ -58,6 +58,10 @@ THE_EDGE.wound_odds = ({ damage, damageType } = {}) => {
     }
     return {};
 };
+THE_EDGE.dying = {
+    strainPerBR: 5,
+    maxStrainBuffer: 20
+};
 THE_EDGE.fallDamageRoll = (height) => { return `${height}d12 + ${4 * height - 22}`; };
 THE_EDGE.fallDamageWoundCount = (height) => { return Math.floor(height / 2); };
 THE_EDGE.impactDamageRoll = (speed) => { return `${speed}d${speed}+${speed - 30}`; };
