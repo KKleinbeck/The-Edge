@@ -495,10 +495,10 @@ class ItemSheetConsumables extends TheEdgeItemSheet {
         // Remove non necessary headers
         switch (this.item.system.current_type) {
             case "drugs":
-            case "food":
             case "generic":
                 this.constructor.PARTS.form.template = "systems/the_edge/templates/items/meta-no-header.hbs";
                 break;
+            case "food":
             case "grenade":
             case "medicine":
                 this.constructor.PARTS.form.template = "systems/the_edge/templates/items/Consumables-header.hbs";
@@ -514,6 +514,7 @@ class ItemSheetConsumables extends TheEdgeItemSheet {
             displayHint: this.options.displayHint,
             damageTypes: THE_EDGE.combat_damage_types
         };
+        context.smallHeader = ["medicine", "food"].includes(this.item.system.current_type);
         return context;
     }
     getModifiers(target) {

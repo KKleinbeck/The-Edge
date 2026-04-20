@@ -33,7 +33,9 @@ export default class ConsumablesData extends generateDataModelWithComponents(Des
                     })
                 })
             }),
-            food: new SchemaField({}),
+            food: new SchemaField({
+                strainReduction: new StringField({ initial: "0" })
+            }),
             drugs: new SchemaField({}),
             generic: new SchemaField({})
         });

@@ -43,35 +43,34 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
     }
     // Actions
     static async _onItemControl(event, target) {
-        const self = this;
         event.preventDefault();
         // Obtain event data
         const itemElement = target.closest(".item");
-        const item = self.actor.items.get(itemElement?.dataset.itemId);
+        const item = this.actor.items.get(itemElement?.dataset.itemId);
         // Handle different actions
         switch (target.dataset.subaction) {
             case "create":
                 const itemType = target.dataset.type;
                 const cls = getDocumentClass("Item");
-                return cls.create({ name: LocalisationServer.localise("New", "item"), type: itemType }, { parent: self.actor });
+                return cls.create({ name: LocalisationServer.localise("New", "item"), type: itemType }, { parent: this.actor });
             case "edit":
                 return item?.sheet.render(true);
             case "post":
                 ChatServer.transmitEvent("Post Item", { item: item });
                 break;
             case "increase":
-                self.actor.addOrCreateVantage(item);
+                this.actor.addOrCreateVantage(item);
                 break;
             case "decrease":
-                self.actor.decrementVantage(item);
+                this.actor.decrementVantage(item);
                 break;
             case "delete":
                 if (item.type.includes("vantage"))
-                    self.actor.deleteVantage(item);
+                    this.actor.deleteVantage(item);
                 else if (item.type == "Wounds")
-                    self.actor.system.deleteWound(item);
+                    this.actor.system.deleteWound(item);
                 else
-                    DialogItemDeletion.start({ item: item, actor: self.actor });
+                    DialogItemDeletion.start({ item: item, actor: this.actor });
                 break;
             case "toggle-equip":
                 if (item.type == "Armour") {
@@ -82,57 +81,59 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
                     }
                     if (item.system.layer == "Outer") {
                         if (item.system.equipped) {
-                            const parent = self.actor.items.get(item.system.attachments[0].armourId);
+                            const parent = this.actor.items.get(item.system.attachments[0].armourId);
                             await Aux.detachFromParent(parent, item._id, item.system.attachmentPoints.max);
                             await item.update({ "system.attachments": [] });
                             await item.system.toggleEquipped();
                             break;
                         }
                         else {
-                            const attachableArmour = self._findAttachableArmour(item);
+                            const attachableArmour = this._findAttachableArmour(item);
                             if (attachableArmour.length == 0) {
                                 let msg = LocalisationServer.localise("No attachable armour", "Notifications");
                                 ui.notifications.notify(msg);
                                 break;
                             }
-                            DialogArmourAttachment.start({ actor: self.actor, tokenId: self.token?.id, shellId: item.id, attachable: attachableArmour });
+                            DialogArmourAttachment.start({ actor: this.actor, tokenId: this.token?.id, shellId: item.id, attachable: attachableArmour });
                             break;
                         }
                     }
                 }
                 await item.system.toggleEquipped();
-                await self.actor.update({});
+                await this.actor.update({});
                 break;
             case "consume":
                 switch (item.system.current_type) {
                     case "medicine":
-                        const wounds = self.actor.system.wounds;
+                        const wounds = this.actor.system.wounds;
                         if (wounds.length) {
-                            DialogMedicine.start({ medicineItem: item, wounds: wounds, actor: self.actor });
+                            DialogMedicine.start({ medicineItem: item, wounds: wounds, actor: this.actor });
                         }
                         else {
-                            NotificationServer.notify("No wounds on Actor", { name: self.actor.name });
+                            NotificationServer.notify("No wounds on Actor", { name: this.actor.name });
                         }
                         break;
                     case "grenade":
                         ChatServer.transmitEvent("grenade sheet based", {
-                            actorId: self.actor?.id, tokenId: self.token?.id, grenade: item,
+                            actorId: this.actor?.id, tokenId: this.token?.id, grenade: item,
                             details: item.system.subtypes.grenade
                         });
                         item.useOne();
                         break;
                     default:
-                        const existingCopies = self.actor.system.findEffectsByName(item.name);
+                        const existingCopies = this.actor.system.findEffectsByName(item.name);
                         if (existingCopies.length) {
                             NotificationServer.notify("Effect already exists");
                             return;
                         }
                         const hasEffect = item.system.effect.length > 0;
                         if (hasEffect) {
-                            self.actor.system.createNewEffect(item.name, item.system.effect);
+                            this.actor.system.createNewEffect(item.name, item.system.effect);
                         }
-                        ChatServer.transmitEvent("General Consume", {
-                            details: { actorName: self.actor.name, item: item.name },
+                        const strainRoll = await new Roll(item.system.subtypes.food.strainReduction).evaluate();
+                        const strainChange = await this.actor.system.applyStrain(-strainRoll.total);
+                        ChatServer.transmitEvent("Food Consume", {
+                            details: { actorName: this.actor.name, item: item.name, strainReduction: -strainChange },
                             hasEffects: hasEffect
                         });
                         item.useOne();
@@ -142,7 +143,6 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
         }
     }
     static async _onEffectControl(event, target) {
-        const self = this;
         event.preventDefault();
         // Obtain event data
         const effectElement = target.closest(".effect-hook");
@@ -151,41 +151,41 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
         // Handle different actions
         switch (target.dataset.subaction) {
             case "create":
-                await self.actor.system.createNewEffect();
-                self.effectIsExpanded[target.dataset.source].push(false);
+                await this.actor.system.createNewEffect();
+                this.effectIsExpanded[target.dataset.source].push(false);
                 break;
             case "delete":
                 // TODO: proper movement animations
-                self.actor.system.deleteEffect(index);
-                self.effectIsExpanded[source].splice(index, 1);
+                this.actor.system.deleteEffect(index);
+                this.effectIsExpanded[source].splice(index, 1);
                 break;
             case "edit":
                 if (["itemEffects", "skillEffects"].includes(effectElement.dataset.source)) {
                     const id = effectElement?.dataset.id || "";
-                    const item = self.actor.items.get(id);
+                    const item = this.actor.items.get(id);
                     return item?.sheet.render(true);
                 }
                 break;
             case "toggleShowContent":
-                self.effectIsExpanded[source][index] = !self.effectIsExpanded[source][index];
+                this.effectIsExpanded[source][index] = !this.effectIsExpanded[source][index];
                 const container = effectElement.parentElement;
                 const content = effectElement.querySelector(".content");
                 if (!effectElement.classList.contains('expanded')) {
-                    self.expandItem(effectElement, content, container);
+                    this.expandItem(effectElement, content, container);
                 }
                 else {
-                    self.collapseItem(effectElement, content, container);
+                    this.collapseItem(effectElement, content, container);
                 }
                 break;
             case "toggle-active":
                 if (effectElement.dataset.source == "effects") {
-                    self.actor.system.toggleEffect(index);
+                    this.actor.system.toggleEffect(index);
                 }
                 else { // Skill effect
-                    const item = self.actor.items.get(effectElement.dataset.id);
+                    const item = this.actor.items.get(effectElement.dataset.id);
                     await item.system.toggleActive({ render: false });
-                    await self.actor.update({}, { render: false }); // Force effect recalculation
-                    self.render({ force: true }); // Force redraw for icon update
+                    await this.actor.update({}, { render: false }); // Force effect recalculation
+                    this.render({ force: true }); // Force redraw for icon update
                 }
                 break;
         }
@@ -272,40 +272,39 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
         });
     }
     static async _onSkillControl(event, target) {
-        const self = this;
         event.preventDefault();
         // Obtain event data
         const skillElement = target.closest(".skill");
         const skillID = skillElement?.dataset.itemId;
-        const skill = self.actor.items.get(skillID);
+        const skill = this.actor.items.get(skillID);
         // Handle different actions
         switch (target.dataset.subaction) {
             case "increase":
-                return self.actor.skillLevelIncrease(skillID);
+                return this.actor.skillLevelIncrease(skillID);
             case "decrease":
-                return self.actor.skillLevelDecrease(skillID);
+                return this.actor.skillLevelDecrease(skillID);
             case "delete":
-                return self.actor.deleteSkill(skillID);
+                return this.actor.deleteSkill(skillID);
             case "post":
                 ChatServer.transmitEvent("Post Skill", { name: skill.name, type: skill.type, description: skill.system.description });
                 break;
             case "roll":
-                const hrChange = Aux.parseHrCostStr(skill.system.hrCost, skill.name, self.actor.system.heartRate.value, self.actor.system.heartRate.max.value, self.actor.getHRZone());
+                const hrChange = Aux.parseHrCostStr(skill.system.hrCost, skill.name, this.actor.system.heartRate.value, this.actor.system.heartRate.max.value, this.actor.getHRZone());
                 if (hrChange) {
-                    if (game.combat && self.actor._id == game.combat.combatant.actorId) {
+                    if (game.combat && this.actor._id == game.combat.combatant.actorId) {
                         game.the_edge.combatLog.addAction(skill.name, hrChange);
                     }
                     else {
-                        const hrThen = self.actor.system.heartRate.value;
-                        await self.actor.system.applyStrains([hrChange]);
-                        const hrNow = self.actor.system.heartRate.value;
-                        ChatServer.transmitEvent("Combat Action", { actor: self.actor.name, skill: skill.name, hrThen: hrThen, hrNow: hrNow });
+                        const hrThen = this.actor.system.heartRate.value;
+                        await this.actor.system.applyStrains([hrChange]);
+                        const hrNow = this.actor.system.heartRate.value;
+                        ChatServer.transmitEvent("Combat Action", { actor: this.actor.name, skill: skill.name, hrThen: hrThen, hrNow: hrNow });
                     }
                 }
                 if (skill.type == "Medicalskill") {
                     DialogProficiency.start({
-                        actor: self.actor, actorId: self.actor.id, proficiency: skill.system.basis,
-                        tokenId: self.token?.id, sceneId: game.user.viewedScene
+                        actor: this.actor, actorId: this.actor.id, proficiency: skill.system.basis,
+                        tokenId: this.token?.id, sceneId: game.user.viewedScene
                     });
                 }
                 break;
@@ -329,13 +328,12 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
         });
     }
     static onCounterControl(event, target) {
-        const self = this;
         event.preventDefault();
         // Obtain event data
         const counterElement = target.closest(".counter");
         const index = +counterElement?.dataset.index;
         // Handle different actions
-        const counters = self.actor.system.counters || [];
+        const counters = this.actor.system.counters || [];
         switch (target.dataset.subaction) {
             case "create-counter":
                 counters.push({
@@ -363,7 +361,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
                 counters[index].value = (counters[index].value < level) ? level : level - 1;
                 break;
         }
-        self.actor.update({ "system.counters": counters });
+        this.actor.update({ "system.counters": counters });
     }
     // Specific listeners
     _onRender(context, options) {

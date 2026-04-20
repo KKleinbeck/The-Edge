@@ -66,7 +66,8 @@
     "GM-WHISPER": "GM-Whisper",
 
     "REROLLING": "{name} rerolled a {check} check, changing a dice from {old} to {new}.",
-    "CONSUMED": "{actorName} used one {item}.",
+    "CONSUMED FOOD": "{actorName} ate {item}.",
+    "CONSUMED FOOD W STRAIN": "{actorName} ate {item}, reducing their strain by {strainReduction}.",
     "SAME NAME EFFECT": "This created a new effect under the same name.",
 
     "CHANGE HR": "Changing their heart rate: "
@@ -338,6 +339,7 @@
     "MEDICINE": "Medicine",
     "DRUGS": "Drugs",
     "GENERIC": "Generic",
+    "STRAIN REDUCTION": "Strain reduction",
     "USE": "Use",
 
     "BLASTER PISTOLS": "Blaster Pistols",
