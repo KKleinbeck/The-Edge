@@ -160,7 +160,6 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
 
   // actions
   static async _onWoundControl(event, target) {
-    const self = this as unknown as TheEdgePlayableSheet;
     event.preventDefault();
 
     // Obtain event data
@@ -170,51 +169,43 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     // Handle different actions
     switch ( target.dataset.subaction ) {
       case "delete":
-        self.actor.system.deleteWound(index);
+        this.actor.system.deleteWound(index);
         break
     }
   }
 
-  static async useHeroToken(_event, _target) {
-    const self = this as unknown as TheEdgePlayableSheet;
-    await self.actor.system.useHeroToken();
-  }
+  static async useHeroToken(_event, _target) { await this.actor.system.useHeroToken(); }
 
   static async regenerateHeroToken(_event, _target) {
-    const self = this as unknown as TheEdgePlayableSheet;
     if (game.user.isGM) {
-      await self.actor.system.regenerateHeroToken();
+      await this.actor.system.regenerateHeroToken();
     } else {
       // TODO: notify
     }
   }
 
   static async advanceAttr(_event, target) {
-    const self = this as unknown as TheEdgePlayableSheet;
     const dataset = target.dataset;
-    self.actor.system.advanceAttr(dataset.name, dataset.type);
+    this.actor.system.advanceAttr(dataset.name, dataset.type);
   }
 
   static async rollAttribute(_event, target) {
-    const self = this as unknown as TheEdgePlayableSheet;
     DialogAttribute.start({
-      actor: self.actor, actorId: self.actor.id, attribute: target.dataset.attribute,
-      tokenId: self.token?.id, sceneId: game.user.viewedScene // TODO: Scene IDs needed?
+      actor: this.actor, actorId: this.actor.id, attribute: target.dataset.attribute,
+      tokenId: this.token?.id, sceneId: game.user.viewedScene // TODO: Scene IDs needed?
     })
   }
 
   static async rollProficiency(_event, target) {
-    const self = this as unknown as TheEdgePlayableSheet;
     DialogProficiency.start({
-      actor: self.actor, actorId: self.actor.id, proficiency: target.dataset.proficiency,
-      tokenId: self.token?.id, sceneId: game.user.viewedScene
+      actor: this.actor, actorId: this.actor.id, proficiency: target.dataset.proficiency,
+      tokenId: this.token?.id, sceneId: game.user.viewedScene
     })
   }
   
   static async rollAttack(_event, target) {
-    const self = this as unknown as TheEdgePlayableSheet;
-    const actor = self.actor;
-    const token = self.token || Aux.getToken(actor.id);
+    const actor = this.actor;
+    const token = this.token || Aux.getToken(actor.id);
     if (token === null) {
         const msg = LocalisationServer.localise("No Token", "Notifications")
         ui.notifications.notify(msg)
@@ -224,7 +215,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     const sceneId = game.user.viewedScene; // TODO: Needed?
     const weaponID = target.closest(".weapon-id")?.dataset.weaponId ||
       target.dataset.weaponId;
-    const weapon = self.actor.items.get(weaponID);
+    const weapon = this.actor.items.get(weaponID);
     const threshold = weaponID ? actor.system.getWeaponPlOfWeapon(weaponID) : actor.system.combaticsPL;
 
     if (!weaponID || weapon.system.type === "Hand-to-Hand combat") {
@@ -266,10 +257,10 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     } else damageType = "kinetic";
     
     const activeEffects = [
-      ...self.actor.system.effects,
-      ...self.actor.getItemEffects(true),
-      ...self.actor.getSkillEffects(true),
-      ...self.actor.system.statusEffects,
+      ...this.actor.system.effects,
+      ...this.actor.getItemEffects(true),
+      ...this.actor.getSkillEffects(true),
+      ...this.actor.system.statusEffects,
     ];
     const effects: IEffectOverview[] = [];
     for (const effect of activeEffects) {
@@ -293,10 +284,9 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   }
 
   static async reload(_event, target) {
-    const self = this as unknown as TheEdgePlayableSheet;
     const weaponID = target.closest(".weapon-id").dataset.weaponId;
-    const weapon = self.actor.items.get(weaponID);
-    const ammunitionOptions = self.actor.itemTypes["Ammunition"].filter(x => {
+    const weapon = this.actor.items.get(weaponID);
+    const ammunitionOptions = this.actor.itemTypes["Ammunition"].filter(x => {
       const isWhitelisted = (
         x.system.whitelist[x.system.type][weapon.system.type] ||
         weapon.system.type === "Recoilless Rifles"
@@ -308,25 +298,18 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
 
     await DialogReload.start({
       weaponID: weaponID,
-      actor: self.actor,
+      actor: this.actor,
       weapon: weapon,
       ammunitionOptions: ammunitionOptions
     })
   }
 
-  static longRest( _) {
-    const self = this as unknown as TheEdgePlayableSheet;
-    DialogRest.start({actor: self.actor, type: "long rest"});
-  }
-  static shortRest(_) {
-    const self = this as unknown as TheEdgePlayableSheet;
-    DialogRest.start({actor: self.actor, type: "short rest"});
-  }
+  static longRest( _) { DialogRest.start({actor: this.actor, type: "long rest"}); }
+  static shortRest(_) { DialogRest.start({actor: this.actor, type: "short rest"}); }
 
   static applyDamage(_event, target) {
-    const self = this as unknown as TheEdgePlayableSheet;
     const location = target.dataset.location;
-    DialogDamage.start({actor: self.actor, location: location});
+    DialogDamage.start({actor: this.actor, location: location});
   }
 
   // Specific Listeners

@@ -23,15 +23,8 @@
               systems/the_edge/templates/generic/progress-bar-modern.hbs
               value=system.strain.value
               max=system.strain.max.value
+              segments=system.strainLevels
               valueEditable=true valueDataPath="system.strain.value"
-              fillId="heartRate" textScale=1.2
-            }}
-            {{>
-              systems/the_edge/templates/generic/progress-bar-modern.hbs
-              value=system.heartRate.value
-              max=system.heartRate.max.value
-              segments=helpers.hrProgressBarData
-              valueEditable=true valueDataPath="system.heartRate.value"
               fillId="heartRate" textScale=1.2
             }}
           </div>

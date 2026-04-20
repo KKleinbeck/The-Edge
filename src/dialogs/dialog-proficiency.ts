@@ -30,11 +30,12 @@ export default class DialogProficiency extends SliderMixin(DialogV2) {
     for (const data of proficiencyData) threshold += data.threshold;
 
     const template = "systems/the_edge/templates/dialogs/proficiency.hbs";
+    const strainReduction = checkData.actor.system.strain.maxUseReduction.status;
     const html = await renderTemplate(template, {
       chance: Aux.asChance(Aux.proficiencySuccessChance(
         threshold, checkData.actor.system.proficiencyDiceParameter
       ), true),
-      maxStrain: proficiencyData.filter(x => x.name == "proficiency")[0].threshold
+      maxStrain: proficiencyData.filter(x => x.name == "proficiency")[0].threshold + strainReduction
     });
     const content = document.createElement("div");
     content.innerHTML = html;

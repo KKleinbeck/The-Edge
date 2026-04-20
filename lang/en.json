@@ -289,7 +289,7 @@
     "STRAIN": "Strain",
     "STRAIN - MAX": "Max Strain",
     "STRAIN - STATUSTHRESHOLD": "Delay strain effects",
-    "STRAIN - MAXUSEREDUCTION": "Reduce strain per roll"
+    "STRAIN - MAXUSEREDUCTION": "Reduce max strain per roll"
   },
   "HERO TOKEN": {
     "ATTRIBUTE": "{name} used a hero token to improve an ability check.",

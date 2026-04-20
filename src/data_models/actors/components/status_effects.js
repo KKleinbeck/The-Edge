@@ -2,7 +2,7 @@ import THE_EDGE from "../../../system/config-the-edge.js";
 import LocalisationServer from "../../../system/localisation_server.js";
 import { DataModelComponent } from "../../abstracts.js";
 
-const { ArrayField, NumberField, ObjectField, SchemaField } = foundry.data.fields;
+const { NumberField, SchemaField } = foundry.data.fields;
 
 export default class StatusEffectData extends DataModelComponent {
   static defineSchema() {
@@ -34,11 +34,8 @@ export default class StatusEffectData extends DataModelComponent {
   }
 
   get strainLevel() {
-    const strainEffective = Math.max(this.strain.value - this.strain.statusThreshold.status, 0);
-    return Math.min(
-      Math.floor(3 * strainEffective / (this.strain.max.value + 1)),
-      2
-    );
+    const levelIndex = this.strainLevels.map(x => x.value).findIndex(x => x > this.strain.value);
+    return levelIndex == -1 ? 3 : levelIndex;
   }
 
   get painLevel() {

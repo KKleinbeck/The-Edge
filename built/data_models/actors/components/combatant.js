@@ -30,6 +30,13 @@ export default class CombatantData extends DataModelComponent {
             wounds: new ArrayField(new ObjectField(), { initial: [] })
         };
     }
+    get strainLevels() {
+        return [
+            { value: Math.floor(0.25 * this.strain.max.value) + this.strain.statusThreshold.status, label: "L1" },
+            { value: Math.floor(0.50 * this.strain.max.value) + this.strain.statusThreshold.status, label: "L2" },
+            { value: Math.floor(0.75 * this.strain.max.value) + this.strain.statusThreshold.status, label: "L3" },
+        ];
+    }
     deleteWound(index) {
         const update = {
             "system.health.value": Math.min(// Math.min relevant for wound generated while dying

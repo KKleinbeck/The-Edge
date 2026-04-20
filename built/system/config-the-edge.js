@@ -94,16 +94,18 @@ THE_EDGE.strainModifiers = (level) => {
         return [];
     if (level == 1) {
         return [
-            { group: "attributes", field: "crd", value: -1 },
-            { group: "attributes", field: "foc", value: -1 }
+            { group: "generalModifiers", field: "strain - maxUseReduction", value: -1 },
+        ];
+    }
+    if (level == 2) {
+        return [
+            { group: "generalModifiers", field: "strain - maxUseReduction", value: -1 },
+            { group: "proficiencies", field: "all", value: -1 },
         ];
     }
     return [
-        { group: "weapons", field: "all", value: -1 },
-        { group: "attributes", field: "crd", value: -2 },
-        { group: "attributes", field: "foc", value: -2 },
-        { group: "attributes", field: "social", value: -1 },
-        { group: "attributes", field: "mental", value: -1 }
+        { group: "generalModifiers", field: "strain - maxUseReduction", value: -2 },
+        { group: "proficiencies", field: "all", value: -1 },
     ];
 };
 THE_EDGE.painModifiers = (level) => {
