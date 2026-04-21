@@ -106,9 +106,16 @@ THE_EDGE.strainModifiers = (level) => {
       {group: "proficiencies", field: "all", value: -1},
     ];
   } 
+  if (level == 3) {
+    return [
+      {group: "generalModifiers", field: "strain - maxUseReduction", value: -2},
+      {group: "proficiencies", field: "all", value: -1},
+      // TODO: Initiative - 1
+    ];
+  } 
   return [
     {group: "generalModifiers", field: "strain - maxUseReduction", value: -2},
-    {group: "proficiencies", field: "all", value: -1},
+    {group: "proficiencies", field: "all", value: -2},
   ];
 }
 THE_EDGE.painModifiers = (level) => {

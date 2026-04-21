@@ -17,31 +17,12 @@ function PROF_FIELD(diceStrings: string[]) {
 }
 
 interface ProficiencyData {
-  attributes: {
-    end: foundryAny,
-    str: foundryAny,
-    spd: foundryAny,
-    crd: foundryAny,
-    cha: foundryAny,
-    emp: foundryAny,
-    foc: foundryAny,
-    res: foundryAny,
-    int: foundryAny,
-  }
-
-  proficiencies: {
-    environmental: foundryAny,
-    knowledge: foundryAny,
-    mental: foundryAny,
-    physical: foundryAny,
-    social: foundryAny,
-    technical: foundryAny,
-  }
-
   applyStrain(strain: number): void;
 }
 
 class ProficiencyData extends DataModelComponent {
+  declare attributes: ATTRIBUTES
+  declare proficiencies: PROFICIENCIES
 
   static defineSchema() {
     return {

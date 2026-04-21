@@ -35,9 +35,10 @@ export default class CombatantData extends DataModelComponent {
 
   get strainLevels() {
     return [
-      {value: Math.floor(0.25 * this.strain.max.value) + this.strain.statusThreshold.status, label: "L1"},
-      {value: Math.floor(0.50 * this.strain.max.value) + this.strain.statusThreshold.status, label: "L2"},
-      {value: Math.floor(0.75 * this.strain.max.value) + this.strain.statusThreshold.status, label: "L3"},
+      {value: Math.floor(0.2 * this.strain.max.value) + this.strain.statusThreshold.status, label: "L1"},
+      {value: Math.floor(0.4 * this.strain.max.value) + this.strain.statusThreshold.status, label: "L2"},
+      {value: Math.floor(0.6 * this.strain.max.value) + this.strain.statusThreshold.status, label: "L3"},
+      {value: Math.floor(0.8 * this.strain.max.value) + this.strain.statusThreshold.status, label: "L4"},
     ]
   }
 

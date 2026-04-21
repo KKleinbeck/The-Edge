@@ -94,18 +94,25 @@ THE_EDGE.strainModifiers = (level) => {
         return [];
     if (level == 1) {
         return [
-            { group: "generalModifiers", field: "strain - maxUseReduction", value: -1 },
+            { group: "generalModifiers", field: "strain - maxUseReduction", value: -2 },
         ];
     }
     if (level == 2) {
         return [
-            { group: "generalModifiers", field: "strain - maxUseReduction", value: -1 },
+            { group: "generalModifiers", field: "strain - maxUseReduction", value: -2 },
             { group: "proficiencies", field: "all", value: -1 },
         ];
     }
+    if (level == 3) {
+        return [
+            { group: "generalModifiers", field: "strain - maxUseReduction", value: -3 },
+            { group: "proficiencies", field: "all", value: -1 },
+            // TODO: Initiative - 1
+        ];
+    }
     return [
-        { group: "generalModifiers", field: "strain - maxUseReduction", value: -2 },
-        { group: "proficiencies", field: "all", value: -1 },
+        { group: "generalModifiers", field: "strain - maxUseReduction", value: -3 },
+        { group: "proficiencies", field: "all", value: -2 },
     ];
 };
 THE_EDGE.painModifiers = (level) => {

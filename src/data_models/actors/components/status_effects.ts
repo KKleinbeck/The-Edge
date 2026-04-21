@@ -5,6 +5,14 @@ import { DataModelComponent } from "../../abstracts.js";
 const { NumberField, SchemaField } = foundry.data.fields;
 
 export default class StatusEffectData extends DataModelComponent {
+  declare attributes: ATTRIBUTES
+  declare generalModifiers: GENERAL_MODIFIERS
+  declare health: HEALTH
+  declare strain: STRAIN
+  declare static strain: STRAIN
+  declare strainLevels
+  declare wounds: IWound[]
+
   static defineSchema() {
     return {
       generalModifiers: new SchemaField({
@@ -14,7 +22,7 @@ export default class StatusEffectData extends DataModelComponent {
     };
   }
 
-  get overloadLevel() {
+  get overloadLevel(): number {
     const weight = this.parent.itemWeight - this.generalModifiers.overloadThreshold;
     const str = this.attributes.str.advances;
     if (str <= 0) return 0;
@@ -25,7 +33,7 @@ export default class StatusEffectData extends DataModelComponent {
     );
   }
 
-  get weightTillNextOverload() {
+  get weightTillNextOverload(): number {
     const weight = this.parent.itemWeight - this.generalModifiers.overloadThreshold;
     const str = this.attributes.str.advances;
     if (str <= 0) return Infinity;
@@ -33,9 +41,9 @@ export default class StatusEffectData extends DataModelComponent {
     return str * (1.5 + 0.5 * this.overloadLevel) - weight;
   }
 
-  get strainLevel() {
+  get strainLevel(): 1 | 2 | 3 | 4 {
     const levelIndex = this.strainLevels.map(x => x.value).findIndex(x => x > this.strain.value);
-    return levelIndex == -1 ? 3 : levelIndex;
+    return levelIndex == -1 ? 4 : levelIndex;
   }
 
   get painLevel() {
@@ -48,8 +56,8 @@ export default class StatusEffectData extends DataModelComponent {
     return Math.floor(damageTotal / res);
   }
 
-  get damageBodyPartLevels() {
-    const damageBodyParts = {arms: 0, legs: 0, torso: 0, head: 0};
+  get damageBodyPartLevels(): IDamageBodyParts {
+    const damageBodyParts: IDamageBodyParts = {arms: 0, legs: 0, torso: 0, head: 0};
     for (const wound of this.wounds) {
       switch (wound.bodyPart) {
         case "Torso":
@@ -75,7 +83,7 @@ export default class StatusEffectData extends DataModelComponent {
     return damageBodyParts;
   }
 
-  get isDying() { return this.health.value <= 0; }
+  get isDying(): boolean { return this.health.value <= 0; }
   
   static dyingModifiers() {
     return [{
@@ -84,8 +92,8 @@ export default class StatusEffectData extends DataModelComponent {
     }];
   }
 
-  get statusEffects() {
-    const statusEffectTemplate = [
+  get statusEffects(): IStatusEffect[] {
+    const statusEffectTemplate: IStatusEffectTemplate[] = [
       {
         nameID: "Overload", isActive: this.overloadLevel,
         modFunction: THE_EDGE.overloadModifiers
@@ -105,15 +113,15 @@ export default class StatusEffectData extends DataModelComponent {
     ]
     for (const [bodyPart, level] of Object.entries(this.damageBodyPartLevels)) {
       statusEffectTemplate.push({
-        nameID: `Injuries ${bodyPart}`, level: level,
+        nameID: `Injuries ${bodyPart}`, isActive: level,
         modFunction: (x) => THE_EDGE.damageBodyPartModifiers(bodyPart, x)
       })
     }
 
-    const statusEffects = [];
+    const statusEffects: IStatusEffect[] = [];
     for (const {nameID, isActive, modFunction} of statusEffectTemplate) {
       if (isActive) {
-        const level = Number.isInteger(isActive) ? isActive : undefined;
+        const level = typeof isActive === "number" ? isActive : undefined;
         statusEffects.push({
           name: LocalisationServer.localise(nameID, "Effect_Group"),
           level: level, modifiers: modFunction.call(this, level)

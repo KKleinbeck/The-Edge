@@ -27,7 +27,7 @@ export default class StatusEffectData extends DataModelComponent {
     }
     get strainLevel() {
         const levelIndex = this.strainLevels.map(x => x.value).findIndex(x => x > this.strain.value);
-        return levelIndex == -1 ? 3 : levelIndex;
+        return levelIndex == -1 ? 4 : levelIndex;
     }
     get painLevel() {
         const res = 2 * this.attributes.res.value;
@@ -89,14 +89,14 @@ export default class StatusEffectData extends DataModelComponent {
         ];
         for (const [bodyPart, level] of Object.entries(this.damageBodyPartLevels)) {
             statusEffectTemplate.push({
-                nameID: `Injuries ${bodyPart}`, level: level,
+                nameID: `Injuries ${bodyPart}`, isActive: level,
                 modFunction: (x) => THE_EDGE.damageBodyPartModifiers(bodyPart, x)
             });
         }
         const statusEffects = [];
         for (const { nameID, isActive, modFunction } of statusEffectTemplate) {
             if (isActive) {
-                const level = Number.isInteger(isActive) ? isActive : undefined;
+                const level = typeof isActive === "number" ? isActive : undefined;
                 statusEffects.push({
                     name: LocalisationServer.localise(nameID, "Effect_Group"),
                     level: level, modifiers: modFunction.call(this, level)
