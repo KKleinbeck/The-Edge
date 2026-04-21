@@ -12,9 +12,6 @@ export default class ChatServer {
             case "ABILITYCHECK":
                 html = await renderTemplate("systems/the_edge/templates/chat/attribute_check.html", details);
                 break;
-            case "COMBAT ACTION":
-                html = await renderTemplate("systems/the_edge/templates/chat/combat_action.html", details);
-                break;
             case "FIRING EMPTY WEAPON":
                 html = LocalisationServer.parsedLocalisation(id, "Chat", details);
                 break;
@@ -46,6 +43,9 @@ export default class ChatServer {
             case "SHORT REST":
             case "LONG REST":
                 html = await renderTemplate("systems/the_edge/templates/chat/long-or-short-rest.html", foundry.utils.mergeObject(details, { restType: id }));
+                break;
+            case "SKILL USED":
+                html = await renderTemplate("systems/the_edge/templates/chat/skill_used.hbs", details);
                 break;
             case "HERO TOKEN":
                 text = LocalisationServer.parsedLocalisation(details.reason, "Hero Token", details);

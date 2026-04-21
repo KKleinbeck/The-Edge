@@ -372,9 +372,24 @@ class ItemSheetSkill extends TheEdgeItemSheet {
             initial: "details",
         },
     };
+    _footerContent() {
+        let content = `
+      <div style="width: 40%; white-space: nowrap">
+        <input name="system.maxLevel" type="number" id="maxLevel" value="${this.item.system.maxLevel}"
+          style="text-align: right; width: 35%;"/>
+        <label for="maxLevel" style="display: inline-block;">${LocalisationServer.localise("Levels")}</label>
+      </div>
+      <div class="display: flex; gap: 3px; width: 50%; white-space: nowrap">
+        <input type="text" id="cost" name="system.cost" value="${this.item.system.cost}" style="text-align: right; width: 80%"/>
+        <label for="cost" data-tooltip="${LocalisationServer.localise("PH Cost")}">
+          ${LocalisationServer.localise("PH")}
+        </label>
+      </div>
+    `;
+        return content;
+    }
     async _prepareContext(options) {
         const context = await super._prepareContext(options);
-        // context.helpers = {displayHint: this.options.displayHint};
         context.coreRequirements = structuredClone(THE_EDGE.coreValueMap);
         context.coreRequirements.skills = {};
         const skills = game.items.filter(x => x.type.toLowerCase().includes("skill"));

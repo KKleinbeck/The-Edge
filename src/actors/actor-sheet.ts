@@ -336,21 +336,14 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
         );
         break;
       case "roll":
-        const hrChange = Aux.parseHrCostStr(
-          skill.system.hrCost, skill.name,
-          this.actor.system.heartRate.value,
-          this.actor.system.heartRate.max.value,
-          this.actor.getHRZone()
-        )
-        if (hrChange) {
+        const strainChange = await Aux.parseStrainCostStr(skill, this.actor.system.strainLevel);
+        if (strainChange) {
           if (game.combat && this.actor._id == game.combat.combatant.actorId) {
-            game.the_edge.combatLog.addAction(skill.name, hrChange);
+            game.the_edge.combatLog.addAction(skill.name, strainChange);
           } else {
-            const hrThen = this.actor.system.heartRate.value;
-            await this.actor.system.applyStrains([hrChange]);
-            const hrNow = this.actor.system.heartRate.value;
-            ChatServer.transmitEvent("Combat Action",
-              {actor: this.actor.name, skill: skill.name, hrThen: hrThen, hrNow: hrNow}
+            const strainChangeActual = await this.actor.system.applyStrain(strainChange);
+            ChatServer.transmitEvent("Skill Used",
+              {actor: this.actor.name, skill: skill.name, change: strainChangeActual}
             );
           }
         }

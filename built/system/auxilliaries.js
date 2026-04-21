@@ -1,5 +1,6 @@
 import THE_EDGE from "./config-the-edge.js";
 import LocalisationServer from "./localisation_server.js";
+import NotificationServer from "./notifications.js";
 const { renderTemplate } = foundry.applications.handlebars;
 export default class Aux {
     static asChance(value, asHtmlString = false) {
@@ -93,45 +94,31 @@ export default class Aux {
                 return cost.length == 1 ? costs[0] : costs;
             }
         }
-        let msg = LocalisationServer.parsedLocalisation("Wrong cost string", "Notifications", { str: costStr });
-        ui.notifications.notify(msg);
+        NotificationServer.notify("Wrong cost string", { str: costStr });
         return undefined;
-    }
-    static skillHrChange(skill, actor) {
-        return this.parseHrCostStr(skill.system.hrCost, skill.name, actor.system.heartRate.value, actor.system.heartRate.max.value, actor.system.getHRZone());
     }
     static combatRoundHrChange() {
         const isRest = Math.max(...game.the_edge.combatLog.strainLog.map(x => x.hrChange)) <= 0;
         const threshold = isRest ? -Infinity : 0;
         return game.the_edge.combatLog.strainLog.reduce((a, b) => Math.max(b.hrChange, threshold) + a, 0);
     }
-    static parseHrCostStr(costStr, skillName, hrValue, hrLimit, hrZone) {
-        let cost = costStr.replace(/\s+/g, ''); // w.o. whitespace
-        let levels = cost.split("/");
-        if (levels.length != 1 && levels.length != 3) {
-            let msg = LocalisationServer.parsedLocalisation("Wrong hr cost string", "Notifications", { skill: skillName });
-            ui.notifications.notify(msg);
+    static async parseStrainCostStr(skill, currentStrainLevel) {
+        const costs = skill.system.strainCost.replace(/\s+/g, '').split("/");
+        if (costs.length != 1 && costs.length != 5) {
+            NotificationServer.notify("Wrong strain cost string", { skillName: skill.name });
             return undefined;
         }
-        const relevantLevel = levels.length == 1 ? levels[0] : levels[hrZone - 1];
-        if (relevantLevel.toUpperCase() == "N.A.") {
-            let msg = LocalisationServer.parsedLocalisation("Invalid HR zone", "Notifications", { skill: skillName, zone: hrZone });
-            ui.notifications.notify(msg);
+        const costRoll = costs.length == 1 ? costs[0] : costs[currentStrainLevel];
+        if (costRoll.toUpperCase() == "N.A.") {
+            NotificationServer.notify("Invalid Strain Level", { skillName: skill.name, level: currentStrainLevel });
             return undefined;
         }
-        const regex = /^(\d+)(%?)(?:\((\d+)\))?$/;
-        const match = relevantLevel.match(regex);
-        if (!match) {
-            let msg = LocalisationServer.parsedLocalisation("wrong hr cost format", "Notifications", { skill: skillName, str: relevantLevel });
-            ui.notifications.notify(msg);
+        else if (!Roll.validate(costRoll)) {
+            NotificationServer.notify("Wrong Strain cost Format", { skillName: skill.name, costRoll: costRoll });
             return undefined;
         }
-        var hrChange = parseInt(match[1]);
-        if (match[2] === '%')
-            hrChange = Math.floor((hrLimit - hrValue) * hrChange / 100);
-        if (match[3])
-            hrChange = Math.max(hrChange, parseInt(match[3]));
-        return hrChange;
+        const roll = await new Roll(costRoll).evaluate();
+        return roll.total;
     }
     static getSkillCost(skill, mode = undefined) {
         let level = skill.system.level;

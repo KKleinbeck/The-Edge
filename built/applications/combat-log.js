@@ -100,13 +100,13 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
         }
         this.render();
     }
-    _onRender(context, options) {
+    _onRender(_context, _options) {
         this.element.querySelector("select[name=skill-picker]")?.addEventListener("change", ev => {
             const combatant = Aux.getCombatant();
             const skillId = ev.target.value;
             if (combatant && skillId) {
                 const skill = combatant.items.get(skillId);
-                const hrChange = Aux.skillHrChange(skill, combatant);
+                const hrChange = Aux.parseStrainCostStr(skill, combatant.system.strainLevel);
                 if (hrChange)
                     this.addAction(skill.name, hrChange);
             }

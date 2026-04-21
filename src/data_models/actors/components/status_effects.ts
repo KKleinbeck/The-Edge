@@ -41,7 +41,7 @@ export default class StatusEffectData extends DataModelComponent {
     return str * (1.5 + 0.5 * this.overloadLevel) - weight;
   }
 
-  get strainLevel(): 1 | 2 | 3 | 4 {
+  get strainLevel(): 0 | 1 | 2 | 3 | 4 {
     const levelIndex = this.strainLevels.map(x => x.value).findIndex(x => x > this.strain.value);
     return levelIndex == -1 ? 4 : levelIndex;
   }

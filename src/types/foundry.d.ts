@@ -85,6 +85,7 @@ declare class Hooks {
 declare class Roll {
   constructor(arg: foundryAny)
   evaluate(): foundryAny
+  static validate(roll: string): boolean
 }
 
 // Functions

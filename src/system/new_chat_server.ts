@@ -16,10 +16,6 @@ export default class NewChatServer {
         html = await renderTemplate("systems/the_edge/templates/chat/attribute_check.hbs", details);
         break;
       
-      case "COMBAT ACTION":
-        html = await renderTemplate("systems/the_edge/templates/chat/combat_action.html", details);
-        break;
-      
       case "CRIT FAIL EVENT":
         text = LocalisationServer.parsedLocalisation(details.event, "Crit Fail Event")
         html = await renderTemplate(
@@ -122,6 +118,10 @@ export default class NewChatServer {
           "systems/the_edge/templates/chat/long-or-short-rest.html",
           foundry.utils.mergeObject(details, {restType: id})
         );
+        break;
+      
+      case "SKILL USED":
+        html = await renderTemplate("systems/the_edge/templates/chat/skill_used.hbs", details);
         break;
       
       case "WEAPON CHECK":
