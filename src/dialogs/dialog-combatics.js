@@ -38,16 +38,6 @@ export default class DialogCombatics extends Dialog{
           };
           foundry.utils.mergeObject(details, modificators)
           ChatServer.transmitEvent("WeaponCheck", details);
-
-          // Append to strainLog
-          const hrChange = checkData.actor.system.getHrChangeFromStrain(1);
-          if (game.combat) {
-            game.the_edge.combatLog.addAction(
-              LocalisationServer.localise("Weapon attack"), hrChange
-            );
-          } else {
-            checkData.actor.system.applyStrains([hrChange]);
-          }
         }
       },
       cancel: {

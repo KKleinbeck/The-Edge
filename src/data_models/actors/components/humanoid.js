@@ -45,20 +45,6 @@ export default class HumanoidData extends DataModelComponent {
     return 4 * (strain - zone + 1);
   }
 
-  async applyStrains(strains) { // TODO: yeet
-    const hr = this.heartRate;
-    const isRest = Math.max(...strains) <= 0;
-    const threshold = isRest ? hr.min.value : hr.max.value;
-    const clamper = isRest ? Math.max : Math.min;
-
-    let hrChange = isRest ? strains.sum() : strains.filter(x => x >= 0).sum();
-    const hrNew = clamper(hr.value + hrChange, threshold);
-    hrChange = hrNew - hr.value;
-    await this.parent.update({"system.heartRate.value": hrNew});
-
-    return hrChange;
-  }
-
   // Rest related
   shortRest() {this._rest("1d3 % 2", "1d3-1", "short rest")}
   longRest() {this._rest("2d3kh", "2d6 / 2", "long rest")}
