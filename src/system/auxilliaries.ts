@@ -11,11 +11,14 @@ export default class Aux {
     return `${value.toFixed(1)}&nbsp;%`
   }
 
+
   static objectAt(obj, path) {
     return path.split(".").reduce((a,i) => a[i], obj);
   }
 
+
   static sleep(duration: number) { return new Promise(r => setTimeout(r, duration)); }
+
 
   static hasRaceCondDanger(id) {
     const lastUpdate = game.data[id]
@@ -26,6 +29,7 @@ export default class Aux {
     }
     return true;
   }
+
 
   static getActor(actorID, tokenID, sceneID = undefined) {
     let actor = undefined;
@@ -40,6 +44,8 @@ export default class Aux {
     }
     return game.actors.get(actorID);
   }
+
+
   static getActorNew(speakerData) { // TODO: use speaker data interface
     if (speakerData.token) {
       const sceneID = speakerData.scene;
@@ -54,6 +60,7 @@ export default class Aux {
     return game.actors.get(speakerData.actor);
   }
 
+
   static getCombatant(): foundryAny {
     if (game.combat && game.combat.combatant) {
       const combatant = game.combat.combatant;
@@ -61,6 +68,7 @@ export default class Aux {
     }
     return undefined;
   }
+
 
   static getToken(actorID, sceneID = undefined) {
     if (!sceneID) {
@@ -74,6 +82,7 @@ export default class Aux {
     return null
   }
 
+
   static getPlayerTokens(): foundryAny[] {
     const scene = game.canvas.scene;
 
@@ -86,9 +95,11 @@ export default class Aux {
     return tokens;
   }
 
+
   static _language_cost_table(humanSpoken) {
     return humanSpoken ? [200, 400, 1000, 2000, 3200, 3200] : [600, 3000, 6400]
   }
+
 
   static parseCostStr(costStr, maxLevel = undefined) {
     let cost = costStr.replace(/\s+/g, '') // w.o. whitespace
@@ -103,11 +114,13 @@ export default class Aux {
     return undefined;
   }
 
+
   static combatRoundHrChange() {
     const isRest = Math.max(...game.the_edge.combatLog.strainLog.map(x => x.hrChange)) <= 0;
     const threshold = isRest ? -Infinity : 0;
     return game.the_edge.combatLog.strainLog.reduce((a, b) => Math.max(b.hrChange, threshold) + a, 0);
   }
+
 
   static async parseStrainCostStr(skill: foundryAny, currentStrainLevel: 0 | 1 | 2 | 3 | 4): Promise<number | undefined> {
     const costs = skill.system.strainCost.replace(/\s+/g, '').split("/");
@@ -128,6 +141,7 @@ export default class Aux {
     const roll = await new Roll(costRoll).evaluate();
     return roll.total;
   }
+
 
   static getSkillCost(skill, mode = undefined) {
     let level = skill.system.level;
@@ -161,7 +175,9 @@ export default class Aux {
     return cost[level - 1];
   }
 
+
   static randomInt(min: number, max: number): number { return min + Math.floor(Math.random() * (max - min + 1)); }
+
 
   static pickFromOdds(objectWithOdds) {
     let sum: number = 0;
@@ -172,6 +188,7 @@ export default class Aux {
     const index = cumSum.findIndex(x => x >= threshold);
     return Object.keys(objectWithOdds)[index];
   }
+
 
   static generateWoundLocation(crit: boolean, sex, givenLocation = undefined) {
     let locationDescription = "";
@@ -198,6 +215,7 @@ export default class Aux {
     return [locationDescription, [x,y]];
   }
 
+
   static async detachFromParent(parent, childId, regainedAttachmentPoints) {
     const newAttachments = parent.system.attachments.filter(x => x.shellId != childId);
     await parent.update({
@@ -205,6 +223,7 @@ export default class Aux {
       "system.attachmentPoints.used": parent.system.attachmentPoints.used - regainedAttachmentPoints
     });
   }
+
 
   static async promptInput(title_dialog_id = "Prompt number") {
     var result = await foundry.applications.api.DialogV2.prompt({
@@ -219,7 +238,9 @@ export default class Aux {
     return result;
   }
 
+
   static tokenDistance(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+
 
   static async replacePlaceholderInContent(content, context) {
     // TODO: phase out by directly acting on DOM, see hooks/applications.ts
@@ -247,6 +268,7 @@ export default class Aux {
     return content;
   }
 
+  
   static proficiencySuccessChance(
     baseThreshold: number,
     diceParameters: Partial<IDiceParameters>
