@@ -141,5 +141,10 @@ THE_EDGE.translationPercentage = {
   5:  90,
   6: 100
 }
+THE_EDGE.strainCost = {
+  striding: 0,
+  running: 3,
+  sprinting: 6
+}
 
 export default THE_EDGE

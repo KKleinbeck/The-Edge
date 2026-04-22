@@ -1,5 +1,6 @@
 import LocalisationServer from "../system/localisation_server.js";
 import Aux from "../system/auxilliaries.js";
+import THE_EDGE from "../system/config-the-edge.js";
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2) {
     constructor(options) {
@@ -17,7 +18,6 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
         },
         actions: {
             undoAction: CombatLog._undoAction,
-            addAction: CombatLog._addAction
         },
         window: {
             title: "Combat Log"
@@ -29,7 +29,7 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
             template: "systems/the_edge/templates/applications/combat-log.hbs"
         }
     };
-    async _prepareContext(options) {
+    async _prepareContext(_options) {
         const context = {};
         const isRest = Math.max(...this.strainLog.map(x => x.hrChange)) <= 0;
         context.strain = this.strainLog.map(x => {
@@ -51,9 +51,13 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
                 context.movementIndex = this.movementIndex;
                 context.movements = [];
                 for (const movement of context.movementOptions[context.movementIndex].pattern) {
+                    console.log(movement);
                     context.movements.push({
                         name: LocalisationServer.localise(["Idle", "Stride", "Run", "Sprint"][movement], "Combat"),
-                        hrChange: combatant.system.getHrChangeFromStrain(movement)
+                        hrChange: [
+                            0, THE_EDGE.strainCost.striding,
+                            THE_EDGE.strainCost.running, THE_EDGE.strainCost.sprinting
+                        ][movement]
                     });
                 }
             }
@@ -83,21 +87,6 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
         const payload = { name: name, hrChange: hrChange };
         this.strainLog.push(payload);
         game.the_edge.socketHandler.emit("ADD_TO_COMBAT_LOG", payload);
-        this.render();
-    }
-    static _addAction(_event, target) {
-        switch (target.dataset.details) {
-            case "strain":
-                const strainLevel = target.dataset.level;
-                const combatant = Aux.getCombatant();
-                const hrChange = combatant ? combatant.system.getHrChangeFromStrain(+strainLevel) : 0;
-                const payload = {
-                    name: LocalisationServer.localise("Strain level", "Combat") + " " + target.dataset.level,
-                    hrChange: hrChange
-                };
-                this.strainLog.push(payload);
-                game.the_edge.socketHandler.emit("ADD_TO_COMBAT_LOG", payload);
-        }
         this.render();
     }
     _onRender(_context, _options) {
@@ -151,9 +140,9 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
         ];
         if (speeds[3] == 0)
             return []; // We cannot possibly do anything here
-        const hrCost = [
-            actor.system.getHrChangeFromStrain(0), actor.system.getHrChangeFromStrain(1),
-            actor.system.getHrChangeFromStrain(2), actor.system.getHrChangeFromStrain(3)
+        const strainCost = [
+            0, THE_EDGE.strainCost.striding, THE_EDGE.strainCost.running,
+            THE_EDGE.strainCost.sprinting
         ];
         const minActions = Math.ceil(distance / speeds[3]);
         const maxActions = Math.ceil(distance / speeds[1]);
@@ -166,7 +155,7 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
                 if (pattern.includes(0))
                     continue; // Prevent idle actions in calculation
                 const patternDist = CombatLog.calculateTotalFromPattern(pattern, speeds) + 0.0001;
-                const patternCost = CombatLog.calculateTotalFromPattern(pattern, hrCost);
+                const patternCost = CombatLog.calculateTotalFromPattern(pattern, strainCost);
                 if (distance < patternDist && lowestCost >= patternCost) {
                     if (lowestCost > patternCost || currentPattern?.variance() > pattern.variance()) {
                         lowestCost = patternCost;

@@ -1,8 +1,8 @@
 <div class="combat-log">
-  <div style="padding-bottom: 10px;">
+  <div style="display: flex; padding-bottom: 10px; align-items: end; gap: 10px">
     <div style="display: inline-flex; gap: 10px;">
       {{genName "Movement"}}
-      <div>
+      <div style="white-space: nowrap;">
         <input name="distance" type="number" value="{{round distance 1}}" placeholder="0" style="max-width: 44px; max-height: 20px; text-align: right;"/>
         m
       </div>
@@ -12,7 +12,7 @@
         {{#if (checkNotEmpty movementOptions)}}
           {{#each movementOptions as |option|}}
             <option value="@index" {{#if (checkEqual @index ../movementIndex)}}selected{{/if}}>
-              {{genName "Actions"}} {{option.actions}} (+{{option.cost}} {{genName "HR"}})
+              {{genName "Actions"}} {{option.actions}} (+{{option.cost}} {{genName "Strain"}})
             </option>
           {{/each}}
         {{/if}}
@@ -22,8 +22,8 @@
 
   <div style="display: table; padding-bottom: 5px;">
     <div style="display: table-row;">
-      <div style="display: table-cell;"><b>{{genName 'Action'}}</b></div>
-      <div style="display: table-cell; text-align: right; width: 100%;"><b>{{genName 'HR'}}</b></div>
+      <div style="display: table-cell;"><b>{{genName 'Actions'}}</b></div>
+      <div style="display: table-cell; text-align: right; width: 100%;"><b>{{genName 'Strain'}}</b></div>
       <div style="display: table-cell; min-width: 17px;"></div>
     </div>
 
@@ -63,12 +63,6 @@
       </div>
     </div>
   {{/if}}
-  <div style="display: flex;">
-    <button data-action="addAction" data-details="strain" data-level="0" title="{{tooltipText 'Strain Level 0'}}">SL 0</button>
-    <button data-action="addAction" data-details="strain" data-level="1" title="{{tooltipText 'Strain Level 1'}}">SL 1</button>
-    <button data-action="addAction" data-details="strain" data-level="2" title="{{tooltipText 'Strain Level 2'}}">SL 2</button>
-    <button data-action="addAction" data-details="strain" data-level="3" title="{{tooltipText 'Strain Level 3'}}">SL 3</button>
-  </div>
   {{#if hrChanged}}
     <select class="skill-picker" name="skill-picker">
       <option class="skill-option" value="" selected>{{genName "Select Skill"}}</option>
