@@ -27,11 +27,11 @@
       <div style="display: table-cell; min-width: 17px;"></div>
     </div>
 
-    {{#if (checkNotEmpty strain)}}
-      {{#each strain as |action|}}
+    {{#if (checkNotEmpty strainLog)}}
+      {{#each strainLog as |entry|}}
         <div style="display: table-row; white-space: nowrap;">
-          <div style="display: table-cell;">{{action.name}}</div>
-          <div style="display: table-cell; text-align: right;">{{action.hrChange}}</div>
+          <div style="display: table-cell;">{{entry.name}}</div>
+          <div style="display: table-cell; text-align: right;">{{entry.strainChange}}</div>
           <div style="display: table-cell; text-align: right;">
             <a data-action="undoAction" data-index="{{@index}}"><i class="fa-solid fa-xmark" title="{{genName 'Remove'}}"></i></a>
           </div>
@@ -43,27 +43,21 @@
       {{#each movements as |movement|}}
         <div style="display: table-row; white-space: nowrap;">
           <div style="display: table-cell;">{{movement.name}}</div>
-          <div style="display: table-cell; text-align: right;">{{movement.hrChange}}</div>
+          <div style="display: table-cell; text-align: right;">{{movement.strainChange}}</div>
         </div>
       {{/each}}
     {{/if}}
   </div>
-  {{#if (checkNotEmpty strain)}}
+  {{#unless (checkEqual strainNow strainThen)}}
     <div style="display: flex; justify-content: space-around; padding-bottom: 10px;">
       <div>
-        {{#if dying}}
-          {{hrNow}} ({{genName "Zone"}} {{zoneNow}})
-          <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
-          {{hrThen}} ({{genName "Zone"}} {{zoneThen}})
-        {{else}}
-          {{hrNow}}
-          <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
-          {{hrThen}} ({{genName "Dying"}})
-        {{/if}}
+        {{strainNow}} ({{genName "Level"}} {{levelNow}})
+        <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+        {{strainThen}} ({{genName "Level"}} {{levelThen}})
       </div>
     </div>
-  {{/if}}
-  {{#if hrChanged}}
+  {{/unless}}
+  {{#if (checkNotEmpty skills)}}
     <select class="skill-picker" name="skill-picker">
       <option class="skill-option" value="" selected>{{genName "Select Skill"}}</option>
       {{#each skills as |skill|}}

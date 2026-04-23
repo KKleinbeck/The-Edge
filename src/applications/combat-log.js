@@ -9,6 +9,7 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
     super(options);
     this.distance = 0;
     this.movementIndex = 0;
+    this.movementOptions = [];
     this.strainLog = [];
   }
 
@@ -34,55 +35,28 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
     }
   }
 
+
   async _prepareContext(_options) {
     const context = {};
-    const isRest = Math.max(...this.strainLog.map(x => x.hrChange)) <= 0;
-    context.strain = this.strainLog.map(x => {
-        const hrChange = !isRest && x.hrChange < 0 ? `0 (${x.hrChange})` : x.hrChange;
-        return {name: x.name, hrChange: hrChange};
-    });
+    context.strainLog = this.strainLog;
     
     const combatant = Aux.getCombatant();
     if (combatant) context.skills = combatant.itemTypes["Combatskill"];
 
     context.distance = this.distance;
-    if (this.distance > 0) {
-      context.movementOptions = CombatLog.getMovements(this.distance, combatant);
-      if (context.movementOptions.length === 0) context.movements = [];
-      else if (this.movementIndex >= context.movementOptions.length) {
-        this.changeMovementIndex(0);
-      } else {
-        context.movementIndex = this.movementIndex;
+    context.movementOptions = this.movementOptions;
+    context.movementIndex = this.movementIndex;
+    if (this.distance > 0) context.movements = this.getMovementStrainLog();
 
-        context.movements = [];
-        for (const movement of context.movementOptions[context.movementIndex].pattern) {
-          console.log(movement)
-          context.movements.push({
-            name: LocalisationServer.localise(
-              ["Idle", "Stride", "Run", "Sprint"][movement], "Combat"
-            ),
-            hrChange: [
-              0, THE_EDGE.strainCost.striding,
-              THE_EDGE.strainCost.running, THE_EDGE.strainCost.sprinting
-            ][movement]
-          });
-        }
-      }
-    }
-
-    context.hrNow = combatant.system.heartRate.value;
-    if (combatant.system.health.value <= 0) {
-      context.hrThen = combatant.system.heartRate.value - 10;
-    } else {
-      context.hrThen = combatant.system.heartRate.value + Aux.combatRoundHrChange();
-      if (context.movements?.length >= 0) {
-        for (const movement of context.movements) { context.hrThen += movement.hrChange }
-      }
-      context.dying = true;
-    }
-    context.hrChanged = (context.skills.length >= 0) || (context.movements.length >= 0);
-    context.zoneNow = combatant.system.getHRZone();
-    context.zoneThen = combatant.system.getHRZone(context.hrThen);
+    context.strainNow = combatant.system.strain.value;
+    context.strainThen = (
+      context.strainNow +
+      (context.movements?.reduce((acc, movement) => acc + movement.strainChange, 0) ?? 0) +
+      (context.strainLog?.reduce((acc, entry) => acc + entry.strainChange, 0) ?? 0)
+    );
+    context.levelNow = combatant.system.strainLevel;
+    context.levelThen = combatant.system.strainLevels
+      .map(x => x.value).findIndex(x => x > context.strainThen);
 
     return context;
   }
@@ -91,21 +65,21 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
     return LocalisationServer.localise("Combat Log", "Combat");
   }
 
-  async addAction(name, hrChange) {
-    const payload = {name: name, hrChange: hrChange};
+  async addAction(name, strainChange) {
+    const payload = {name: name, strainChange: strainChange};
     this.strainLog.push(payload);
     game.the_edge.socketHandler.emit("ADD_TO_COMBAT_LOG", payload)
     this.render();
   }
 
   _onRender(_context, _options) {
-    this.element.querySelector("select[name=skill-picker]")?.addEventListener("change", ev => {
+    this.element.querySelector("select[name=skill-picker]")?.addEventListener("change", async ev => {
       const combatant = Aux.getCombatant();
       const skillId = ev.target.value;
       if (combatant && skillId) {
         const skill = combatant.items.get(skillId);
-        const hrChange = Aux.parseStrainCostStr(skill, combatant.system.strainLevel);
-        if (hrChange) this.addAction(skill.name, hrChange);
+        const strainChange = await Aux.parseStrainCostStr(skill, combatant.system.strainLevel);
+        if (strainChange) this.addAction(skill.name, strainChange);
       }
     });
 
@@ -118,17 +92,23 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
     })
   }
 
+
   addToDistance(additional) {
     this.distance += additional;
+    this.movementOptions = CombatLog.getMovementOptions(this.distance);
     game.the_edge.socketHandler.emit("ADD_DISTANCE_TRAVELLED", additional);
     this.render();
   }
 
+
   changeDistance(newDistance) {
     this.distance = newDistance;
+    this.movementOptions = CombatLog.getMovementOptions(this.distance);
+    if (this.movementIndex >= this.movementOptions.length) this.changeMovementIndex(0);
     game.the_edge.socketHandler.emit("CHANGE_DISTANCE_TRAVELLED", newDistance);
     this.render();
   }
+
 
   changeMovementIndex(newIndex) {
     this.movementIndex = newIndex;
@@ -136,12 +116,15 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
     this.render();
   }
 
+
   endTurn() {
     this.distance = 0;
     this.movementIndex = 0;
+    this.movementOptions = [];
     this.strainLog = [];
     game.the_edge.socketHandler.emit("END_TURN");
   }
+
 
   static _undoAction(_event, target) {
     const index = +target.dataset.index;
@@ -150,7 +133,10 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
     this.render();
   }
 
-  static getMovements(distance, actor) {
+
+  static getMovementOptions(distance) {
+    const actor = Aux.getCombatant();
+
     const speeds = [
       0, actor.system.strideSpeed, actor.system.runSpeed, actor.system.sprintSpeed
     ];
@@ -162,8 +148,10 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
     const minActions = Math.ceil(distance / speeds[3]);
     const maxActions = Math.ceil(distance / speeds[1]);
 
-    const patterns = []
+    const patterns = [];
     for (let actions = minActions; actions <= maxActions; actions++) {
+      if (actions > 6) break; // This is way too inefficient, I need to overhaul this
+
       let currentPattern = null;
       let lowestCost = Infinity;
       for (let iterator = Math.pow(4, actions) - 1; iterator >= Math.pow(4, actions - 1); iterator--) {
@@ -180,8 +168,10 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
       }
       patterns.push({actions: actions, pattern: currentPattern, cost: lowestCost});
     }
+    
     return patterns;
   }
+
 
   static getMovementPattern(state) {
     const pattern = [state % 4];
@@ -193,9 +183,27 @@ export default class CombatLog extends HandlebarsApplicationMixin(ApplicationV2)
     return pattern;
   }
 
+
   static calculateTotalFromPattern(pattern, target) {
-    let acc = 0;
-    for (const movement of pattern) {acc += target[movement];}
-    return acc;
+    return pattern.reduce((acc, movement) => acc + target[movement], 0);
+  }
+
+  
+  getMovementStrainLog() {
+    if (!this.movementOptions.length) return [];
+
+    const movementStrainLog = [];
+    for (const movementIndex of this.movementOptions[this.movementIndex].pattern) {
+      movementStrainLog.push({
+        name: LocalisationServer.localise(
+          ["Idle", "Stride", "Run", "Sprint"][movementIndex], "Combat"
+        ),
+        strainChange: [
+          0, THE_EDGE.strainCost.striding,
+          THE_EDGE.strainCost.running, THE_EDGE.strainCost.sprinting
+        ][movementIndex]
+      });
+    }
+    return movementStrainLog;
   }
 }
