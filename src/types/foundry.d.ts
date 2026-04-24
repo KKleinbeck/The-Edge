@@ -61,8 +61,10 @@ interface ChatMessageData {
 }
 
 declare class ChatMessage {
+  constructor(data: Partial<ChatMessageData>, operation?: foundryAny)
+  static applyRollMode(data: Partial<ChatMessageData>, rollMode: string)
   static getWhisperRecipients()
-  static create(data: Partial<ChatMessageData>, operation?: foundryAny): Promise<foundryAny>
+  static create(data?: Partial<ChatMessageData>, operation?: foundryAny): Promise<foundryAny>
 }
 
 declare class Dialog {

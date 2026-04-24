@@ -32,11 +32,11 @@
       {{#if user.isGM}}
         <a class="button message-delete" data-action="deleteMessage" data-tooltip="CHATNOTIFICATION.DELETE"><i class="fas fa-trash"></i></a>
       {{/if}}
-      {{#if isWhisper}}
-        <span class="chatIndicator"><i data-tooltip="CHATNOTIFICATION.WHISPER" class="fas fa-mask"></i></span>
-      {{else}}
-        {{#if message.blind}}
+      {{#if message.blind}}
         <span class="privateMessageIndicator"><i data-tooltip="CHATNOTIFICATION.BLIND MESSAGE" class="fas fa-eye-slash"></i></span>
+      {{else}}
+        {{#if isWhisper}}
+        <span class="chatIndicator"><i data-tooltip="CHATNOTIFICATION.WHISPER" class="fas fa-mask"></i></span>
         {{else}}
         <span class="chatIndicator"><i data-tooltip="CHATNOTIFICATION.PUBLIC MESSAGE" class="fas fa-eye"></i></span>
         {{/if}}
