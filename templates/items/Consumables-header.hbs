@@ -1,4 +1,4 @@
-<header class="sheet-header-item" style="{{#if (checkEqual item.system.current_type "medicine")}}flex: 0 0 56px;{{/if}}">
+<header class="sheet-header-item" style="{{#if smallHeader}}flex: 0 0 56px;{{/if}}">
   {{#if (checkEqual item.system.current_type "grenade")}}
     <div class="item-columned-page" style="gap: 15px;">
       <table class="grenade">
@@ -73,5 +73,13 @@
         </select>
       </div>
     </div> 
+  {{/if}}
+  {{#if (checkEqual item.system.current_type "food")}}
+    <div style="display: flex; width: 100%; gap: 5px; justify-content: center; align-items:center;">
+      <label for="strainReduction">{{itemName "Strain Reduction"}}</label>
+      <input type="text" id="strainReduction"
+        name="system.subtypes.food.strainReduction" value="{{item.system.subtypes.food.strainReduction}}"
+        style="width: 90px; text-align: center;">
+    </div>
   {{/if}}
 </header>

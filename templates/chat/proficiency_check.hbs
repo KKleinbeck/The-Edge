@@ -1,0 +1,48 @@
+<h3>{{proficiencyName proficiency}}{{#if titleDetails}} - {{titleDetails}}{{/if}}</h3>
+<div class="centered-row">
+  <b>{{genName "Check"}}: </b>
+  {{#each dice as |die|}}
+  <a class="attr-d20-chat d20-{{die.name}} rerollable" data-index={{@index}} data-type="proficiency">
+    <span class="d20-overlay"
+      {{#if (checkEqual die.name "proficiency")}}
+      data-tooltip="{{genName 'proficiency level'}}: {{die.threshold}}"
+      {{else}}
+      data-tooltip="{{attrName die.name}} {{genName 'threshold'}}: {{die.threshold}}"
+      {{/if}}
+    >
+      {{getEntries ../rolls @index}}
+    </span>
+  </a>
+  {{/each}}
+</div>
+<div>
+  <b>{{genName "result"}}:</b>
+  <span>{{genName outcome}} {{quality}}&thinsp;{{#if (checkInstance "Success" outcome)}}QL{{else}}FL{{/if}}</span>
+  <div style="padding-left: 5px;">
+    <div>
+      {{genName "total"}} {{total}}
+      {{#if (checkInstance "Success" outcome)}}&le;{{else}}&gt;{{/if}}
+      {{effectiveThreshold}} ({{genName "Threshold"}})
+    </div>
+  </div>
+</div>
+<div>
+  <b>{{genName "Modificators"}}:</b>
+  <div style="display: grid; grid-template-columns: repeat(2, min-content); padding-left: 5px; gap: 0 8px;">
+    <div style="white-space: nowrap;">{{genName "Strain"}}:</div><div style="white-space: nowrap; text-align: end">{{strain}}</div>
+    <div style="white-space: nowrap;">{{genName "Temporary"}}:</div><div style="white-space: nowrap; text-align: end">{{modifier}}</div>
+  </div>
+</div>
+{{#unless (checkEqual vantage "Nothing")}}
+<div class="centered-row">
+  <b>{{genName "with"}} {{genName vantage}}</b>
+</div>
+{{/unless}}
+{{#if rollOutcome}}
+<div class="roll-outcome" style="padding-top: 10px;">
+  <b>{{genName "Outcome"}}</b>
+  <span class="outcome-details">
+    {{rollOutcome}}
+  </span>
+</div>
+{{/if}}

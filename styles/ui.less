@@ -1,0 +1,46 @@
+@import "root.less";
+
+@bevel-size: 20px;
+@bevel-color: #f0f0f0;
+
+.beveled-box {
+  width: 200px;
+  height: 100px;
+  position: relative;
+  background: @bevel-color;
+  border: none;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    width: @bevel-size;
+    height: @bevel-size;
+    background: linear-gradient(135deg, transparent 50%, @bevel-color 50%);
+  }
+
+  &::before {
+    top: 0;
+    left: 0;
+  }
+
+  &::after {
+    top: 0;
+    right: 0;
+    background: linear-gradient(-135deg, transparent 50%, @bevel-color 50%);
+  }
+
+  background:
+    linear-gradient(45deg, transparent 50%, @bevel-color 50%) bottom left,
+    linear-gradient(-45deg, transparent 50%, @bevel-color 50%) bottom right;
+  background-repeat: no-repeat;
+  background-size: @bevel-size @bevel-size;
+}
+
+.box-passive {
+  padding: 1px 5px 1px 5px;
+  border: 3px solid var(--color-ui-main-background-2);
+  box-shadow:
+    1px 1px 3px fade(@color-ui-main-background-2, 50%) inset,
+    1px 1px 3px fade(@color-ui-main-background-2, 50%);
+}

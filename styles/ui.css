@@ -1,0 +1,43 @@
+:root {
+  --color-ui-main-1: #70D7F2;
+  --color-ui-main-background: #31395A;
+  --color-ui-main-background-1: #2A395A;
+  --color-ui-main-background-2: #2A507A;
+  --color-ui-secondary: #bd9f09;
+  --color-ui-secondary-1: #F29D70;
+  --font-main-color: #e4e7fe;
+  --font-secondary-color: #ccc;
+  --color-text-light-highlight: #FFF;
+}
+.beveled-box {
+  width: 200px;
+  height: 100px;
+  position: relative;
+  background: #f0f0f0;
+  border: none;
+  background: linear-gradient(45deg, transparent 50%, #f0f0f0 50%) bottom left, linear-gradient(-45deg, transparent 50%, #f0f0f0 50%) bottom right;
+  background-repeat: no-repeat;
+  background-size: 20px 20px;
+}
+.beveled-box::before,
+.beveled-box::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, transparent 50%, #f0f0f0 50%);
+}
+.beveled-box::before {
+  top: 0;
+  left: 0;
+}
+.beveled-box::after {
+  top: 0;
+  right: 0;
+  background: linear-gradient(-135deg, transparent 50%, #f0f0f0 50%);
+}
+.box-passive {
+  padding: 1px 5px 1px 5px;
+  border: 3px solid var(--color-ui-main-background-2);
+  box-shadow: 1px 1px 3px rgba(42, 80, 122, 0.5) inset, 1px 1px 3px rgba(42, 80, 122, 0.5);
+}

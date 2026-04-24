@@ -1,0 +1,26 @@
+<div style="display: flex; justify-content: space-between; align-items: end">
+  <select class="advantage-box vantage-hook" name="AdvantageSelector" id="AdvantageSelector">
+    <option value="Nothing">No Advantage</option>
+    <option value="Advantage">Advantage</option>
+    <option value="Disadvantage">Disadvantage</option>
+  </select>
+  <div class="chance-hook box-passive">
+    {{{chance}}}
+  </div>
+</div>
+{{>
+  systems/the_edge/templates/generic/slider.hbs
+  title=(genName "Modifier")
+  id="modifier"
+  min=-10
+  max= 10
+  isDynamic=1
+}}
+{{#if (checkGET maxStrain 1)}}
+{{>
+  systems/the_edge/templates/generic/slider.hbs
+  title=(genName "Strain")
+  id="strain"
+  max=maxStrain
+}}
+{{/if}}

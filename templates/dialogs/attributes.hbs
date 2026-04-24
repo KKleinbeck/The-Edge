@@ -1,0 +1,13 @@
+<select class="advantage-box vantage-hook" name="AdvantageSelector" id="AdvantageSelector">
+  <option value="Nothing">No Advantage</option>
+  <option value="Advantage">Advantage</option>
+  <option value="Disadvantage">Disadvantage</option>
+</select>
+{{>
+  systems/the_edge/templates/generic/slider.hbs
+  title=(genName "Modifier")
+  id="modifier"
+  min=-10
+  max= 10
+  isDynamic=1
+}}

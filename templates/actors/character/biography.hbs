@@ -29,15 +29,6 @@
     </div>
     <input name="system.race" type="text" value="{{system.race}}" placeholder="{{genName 'Race ...'}}" style="max-width: 80px; text-align: right;"/>
     <div style="white-space: nowrap;">
-      <label for="Blood Type Selector">{{genName "Blood type"}}</label>
-      <select class="selection-box" name="system.bloodType" id="Blood Type Selector" style="width: 50px; padding: 0 2px 0 0;">
-        <option value="AB" {{#if (checkEqual system.bloodType 'AB')}}selected{{/if}}>AB</option>
-        <option value="B" {{#if (checkEqual system.bloodType 'B')}}selected{{/if}}>B</option>
-        <option value="A" {{#if (checkEqual system.bloodType 'A')}}selected{{/if}}>A</option>
-        <option value="0" {{#if (checkEqual system.bloodType '0')}}selected{{/if}}>0</option>
-      </select>
-    </div>
-    <div style="white-space: nowrap;">
       <label for="Handedness Selector">{{genName "Handedness"}}</label>
       <select class="selection-box" name="system.handedness" id="Handedness Selector" style="width: 60px; padding: 0 2px 0 0;">
         <option value="right" {{#if (checkEqual system.handedness 'right')}}selected{{/if}}>{{genName "right"}}</option>
