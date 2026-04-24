@@ -5,8 +5,12 @@ Interface:
 - min (optional): Smallest value the slider may take
 - max: Largest value the Slider may take
 - value (optional): Current value the slider posses, Default: 0
+- isDynamic (optional): Whether the slider can grow
  --}}
-{{#define min=(or min 0) id=(or id title) value=(or value 0)}}
+{{#define
+  min=(or min 0) id=(or id title) value=(or value 0) isDynamic=(or isDynamic 0)
+  _orig_min=(or _orig_min min) _orig_max=(or _orig_max max)
+}}
 <div class="slider-hook" data-id="{{id}}" data-binary-context="{{dumpContext}}">
   {{title}}
   {{#define

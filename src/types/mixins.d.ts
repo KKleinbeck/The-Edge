@@ -33,9 +33,13 @@ interface SliderStatic {
 }
 
 interface ISliderContext {
-  id: string,
-  max: number,
-  min: number,
-  title: string,
+  id: string
+  max: number
+  min: number
+  title: string
   value: number
+  isDynamic: boolean | number
+
+  _orig_min: number
+  _orig_max: number
 }

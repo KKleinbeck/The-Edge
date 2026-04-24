@@ -19,17 +19,20 @@ export default function SliderMixin<T extends intype>(BaseApplication: T): outty
       return sliderValues;
     }
 
+
     // Private interface
     _onRender(context: foundryAny, options: foundryAny): void {
       super._onRender(context, options)
       this._attachEffectListeners();
     }
 
+
     _attachEffectListeners(): void {
       this.element.querySelectorAll(".slider-click-hook")?.forEach(
         (x: Element) => x.addEventListener("click", (ev: Event) => this._sliderClickedEvent(ev))
       );
     }
+
 
     async _sliderClickedEvent(event: Event): Promise<void> {
       const target = event.currentTarget;
@@ -44,10 +47,21 @@ export default function SliderMixin<T extends intype>(BaseApplication: T): outty
       const context: ISliderContext = JSON.parse(
         atob(entryElement.dataset.binaryContext));
       context.value = value;
+      if (context.isDynamic) {
+        if (value === context.min) context.min *= 2;
+        if (value === context.max) context.max *= 2;
+        while (value > 0.5 * context.min && context.min !== context._orig_min) {
+          context.min = Math.min(Math.floor(context.min / 2), context._orig_min);
+        }
+        while (value < 0.5 * context.max && context.max !== context._orig_max) {
+          context.max = Math.max(Math.floor(context.max / 2), context._orig_max);
+        }
+      }
       await this._redrawSlider(entryElement, context);
 
       this.onValueChanged(entryElement.dataset.id ?? "", value);
     }
+
 
     async _redrawSlider(element: Element, context: ISliderContext) {
       const template = "systems/the_edge/templates/generic/slider.hbs";

@@ -38,6 +38,18 @@ export default function SliderMixin(BaseApplication) {
                 return;
             const context = JSON.parse(atob(entryElement.dataset.binaryContext));
             context.value = value;
+            if (context.isDynamic) {
+                if (value === context.min)
+                    context.min *= 2;
+                if (value === context.max)
+                    context.max *= 2;
+                while (value > 0.5 * context.min && context.min !== context._orig_min) {
+                    context.min = Math.min(Math.floor(context.min / 2), context._orig_min);
+                }
+                while (value < 0.5 * context.max && context.max !== context._orig_max) {
+                    context.max = Math.max(Math.floor(context.max / 2), context._orig_max);
+                }
+            }
             await this._redrawSlider(entryElement, context);
             this.onValueChanged(entryElement.dataset.id ?? "", value);
         }
