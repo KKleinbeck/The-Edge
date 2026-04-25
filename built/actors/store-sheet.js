@@ -188,7 +188,7 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
         const payload = {
             sceneId: game.canvas.id,
             tokenId: token.id,
-            storeId: this.actor.token.id,
+            storeId: this.actor.token?.id ?? this.actor.id,
             itemId: itemInformation.itemId
         };
         if (game.user.isGM) {
@@ -201,7 +201,7 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
     static handleBuyOrRetrieve(payload) {
         const { sceneId, tokenId, storeId, itemId } = payload;
         const scene = game.scenes.get(sceneId);
-        const store = scene.tokens.get(storeId).actor;
+        const store = scene.tokens.get(storeId)?.actor ?? game.actors.get(storeId);
         const actor = scene.tokens.get(tokenId).actor;
         const item = store.items.get(itemId);
         const price = item.system.value * store.system.tradeFactor;
@@ -241,7 +241,7 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
         const payload = {
             sceneId: game.canvas.id,
             tokenId: token.id,
-            storeId: this.actor.token.id,
+            storeId: this.actor.token?.id ?? this.actor.id,
             itemId: itemInformation.itemId
         };
         if (game.user.isGM) {
@@ -254,7 +254,7 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
     static async handleSellOrStore(payload) {
         const { sceneId, tokenId, storeId, itemId } = payload;
         const scene = game.scenes.get(sceneId);
-        const store = scene.tokens.get(storeId).actor;
+        const store = scene.tokens.get(storeId)?.actor ?? game.actors.get(storeId);
         const actor = scene.tokens.get(tokenId).actor;
         const item = actor.items.get(itemId);
         const price = item.system.value / store.system.tradeFactor;

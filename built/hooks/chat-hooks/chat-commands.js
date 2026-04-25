@@ -120,7 +120,6 @@ function _createLevelByUserID(speakingActors) {
     }, {}); // Collect defaults for all
     for (const actorData of speakingActors) {
         for (const ownerID of actorData.ownerIDs) {
-            console.log(ownerID);
             userProficiency[ownerID] = Math.max(actorData.languageLevel, userProficiency[ownerID]);
         }
     }

@@ -1330,14 +1330,14 @@ table.chat-table td {
   text-align: right;
 }
 
+/* TODO: Work on implementation in ui.less */
 .beveled-box {
   display: flex;
   height: 22px;
   padding: 0 6px 0 6px;
   position: relative;
   align-items: center;
-  background: url("../assets/button.svg") no-repeat;
-  background-size: 100% 100%;
+  border: 1px solid var(--color-text-light-highlight);
 }
 .beveled-box:hover {
   filter: drop-shadow(
