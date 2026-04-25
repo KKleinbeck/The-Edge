@@ -104,6 +104,7 @@ function _translateForProficientUsers(language, message, newMessage) {
     const content = _createMessageForLevel(
       level, language, message, newMessage
     );
+    console.log(content, users)
     ChatMessage.create({
       content: content,
       whisper: users
@@ -115,17 +116,23 @@ function _translateForProficientUsers(language, message, newMessage) {
 
 function _getSpeakingActors(language) {
   const speakingActors = game.actors.map(actor => {
-    const learnedLevels = actor.itemTypes["Languageskill"].filter(
-      x => x.name.toLowerCase() == language
-    ).map(x => x.system.level);
+    const learnedLevels = actor.itemTypes["Languageskill"]?.filter(
+      x => {x.name.toLowerCase() == language}
+    ).map(x => x.system.level) ?? 0;
 
     const nativeLevel = (
-      language == actor.system.nativeLanguage.toLowerCase() ?
+      actor.system.nativeLanguage?.toLowerCase().includes(language) ?
       6 : 0
     );
 
+    console.log(actor.ownership)
+    const properOwners = [];
+    for (const [actorId, ownershipLevel] of Object.entries(actor.ownership)) {
+      if (ownershipLevel === 3) properOwners.push(actorId);
+    }
+
     return {
-      ownerIDs: actor.ownership,
+      ownerIDs: properOwners,
       languageLevel: Math.max(nativeLevel, ...learnedLevels)
     }
   }).filter(x => x.languageLevel);
@@ -142,7 +149,7 @@ function _createLevelByUserID(speakingActors) {
   ); // Collect defaults for all
 
   for (const actorData of speakingActors) {
-    for (const ownerID of Object.keys(actorData.ownerIDs)) {
+    for (const ownerID of actorData.ownerIDs) {
       userProficiency[ownerID] = Math.max(
         actorData.languageLevel,
         userProficiency[ownerID]

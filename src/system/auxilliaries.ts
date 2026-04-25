@@ -54,8 +54,10 @@ export default class Aux {
         speakerData.scene = game.canvas.id;
       }
       const scene = game.scenes.get(sceneID);
-      const actor = scene.tokens.get(speakerData.token)?.actor;
-      if (actor) return actor;
+      if (scene) {
+        const actor = scene.tokens.get(speakerData.token)?.actor;
+        if (actor) return actor;
+      }
     }
     return game.actors.get(speakerData.actor);
   }
