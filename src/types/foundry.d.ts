@@ -122,6 +122,7 @@ interface IFoundry {
     fields: {
       ArrayField: foundryAny
       NumberField: foundryAny
+      ObjectField: foundryAny
       SchemaField: foundryAny
       StringField: foundryAny 
     }

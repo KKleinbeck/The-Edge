@@ -174,18 +174,19 @@ export default class Aux {
   static randomInt(min: number, max: number): number { return min + Math.floor(Math.random() * (max - min + 1)); }
 
 
-  static pickFromOdds(objectWithOdds) {
+  static pickFromOdds<T extends string>(objectWithOdds: Record<T, number | undefined>): T {
     let sum: number = 0;
     const cumSum = Object.values(objectWithOdds).map(
       (n: unknown, _index: number, _array: unknown[]): number => {sum += (n as number); return sum;}
     );
     const threshold = this.randomInt(1, cumSum.last());
     const index = cumSum.findIndex(x => x >= threshold);
-    return Object.keys(objectWithOdds)[index];
+    return Object.keys(objectWithOdds)[index] as T;
   }
 
 
-  static generateWoundLocation(crit: boolean, sex, givenLocation = undefined) {
+  static generateWoundLocation(
+    crit: boolean, sex: TSex, givenLocation = undefined): [TBodyPart, TCoordinate] {
     let locationDescription = "";
     if (givenLocation === undefined) {
       if (crit) locationDescription = "Head";
@@ -207,7 +208,7 @@ export default class Aux {
     let [t, phi] = [Math.random(), 2 * Math.PI * Math.random()];
     let x = (1-t)*x0 + t*x1 + r * Math.cos(phi);
     let y = (1-t)*y0 + t*y1 + r * Math.sin(phi);
-    return [locationDescription, [x,y]];
+    return [locationDescription as TBodyPart, [x,y]];
   }
 
 

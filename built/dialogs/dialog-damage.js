@@ -75,7 +75,7 @@ class DialogGenericWound extends Dialog {
     }
     static async start(checkData) {
         const template = `systems/the_edge/templates/dialogs/new-wound.html`;
-        const details = { damageTypes: Object.keys(THE_EDGE.bleeding_threshold).filter(x => x != "fall" && x != "impact") };
+        const details = { damageTypes: Object.keys(THE_EDGE.bleedingThreshold).filter(x => x != "fall" && x != "impact") };
         let html = await renderTemplate(template, details);
         let buttons = {
             apply: {

@@ -4,6 +4,8 @@ type attribute = "end" | "str" | "spd" | "crd" | "cha" | "emp" | "foc" | "res" |
 
 type TBodyPart = "Torso" | "Head" | "LegsLeft" | "LegsRight" | "ArmsLeft" | "ArmsRight"
 
+type TCoordinate = [number, number]
+
 interface Array<T> {
   random(): T;
   last(): T;

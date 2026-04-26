@@ -39,7 +39,7 @@ THE_EDGE.cover_map = {
 THE_EDGE.combat_damage_types = [
     "energy", "kinetic", "elemental"
 ];
-THE_EDGE.bleeding_threshold = {
+THE_EDGE.bleedingThreshold = {
     "energy": 25, "kinetic": 10, "elemental": 50, "fall": 15, "impact": 15, "HandToHand": 25
 };
 THE_EDGE.wound_odds = ({ damage, damageType } = {}) => {

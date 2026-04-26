@@ -813,7 +813,7 @@ class ItemSheetWeapon extends RangeChartSelectorMixin(TheEdgeItemSheet) {
     this.item.update({"system.fireModes": fireModes})
   }
 
-   _onModeModify(event) {
+  _onModeModify(event) {
     const target = event.target;
     const index = +target.dataset.index;
 

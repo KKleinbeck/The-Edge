@@ -29,6 +29,8 @@ interface PROFICIENCIES {
   technical: foundryAny
 }
 
+type TSex = "female" | "male" | "other"
+
 interface STRAIN {
   value: foundryAny
   max: foundryAny
@@ -38,8 +40,14 @@ interface STRAIN {
 
 interface IWound {
   bodyPart: TBodyPart
+  coordinates: TCoordinate
   damage: number
+  status: TWoundStatus
+  type: TWoundType
 }
+
+type TWoundStatus = "treatable" | "treated"
+type TWoundType = "abrasion" | "fracture" | "laceration" | "light burn" | "strong burn"
 
 // Helpers
 interface IDamageBodyParts {
@@ -48,6 +56,8 @@ interface IDamageBodyParts {
   torso: number
   head: number
 }
+
+type TDamageTypes = "energy" | "elemental" | "fall" | "HandToHand" | "impact" | "kinetic"
 
 interface IStatusEffectTemplate {
   nameID: string
@@ -59,4 +69,13 @@ interface IStatusEffect {
   name: string
   level: number | undefined
   modifiers: IModifier[]
+}
+
+interface IWoundDetails {
+  bleeding: number
+  bodyPart: TBodyPart
+  coordinates: TCoordinate
+  damage: number
+  damageType: TDamageTypes
+  source: string
 }

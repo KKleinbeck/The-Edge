@@ -62,11 +62,16 @@ export default class CombatantData extends DataModelComponent {
                 update["system.strain.value"] = this.strain.value + damage - healthBuffer;
             }
             await this.parent.update(update);
-            const bt = THE_EDGE.bleeding_threshold[damageType];
-            woundDetails.bleeding = Math.floor(damage / bt) + ((damage % bt) / bt < Math.random());
-            await this.generateNewWound(damageType, woundDetails);
+            const bt = THE_EDGE.bleedingThreshold[damageType];
+            woundDetails.bleeding = CombatantData._determineBleeding(damage, bt);
+            woundDetails.source = damageType;
+            await this.generateNewWound(woundDetails);
         }
         return protectionLog;
+    }
+    static _determineBleeding(damage, bleedingThreshold) {
+        return Math.floor(damage / bleedingThreshold) +
+            +((damage % bleedingThreshold) / bleedingThreshold < Math.random());
     }
     async _determineArmourProtection(damage, penetration, damageType, location) {
         const protectionLog = {};
@@ -83,11 +88,11 @@ export default class CombatantData extends DataModelComponent {
         return [protectionLog, damage];
     }
     async applyFallDamage(height, location) {
-        const woundCountGuess = THE_EDGE.fallDamageWoundCount(speed);
+        const woundCountGuess = THE_EDGE.fallDamageWoundCount(height);
         const damageDetails = {
             damageRoll: THE_EDGE.fallDamageRoll(height),
             nWounds: Aux.randomInt(Math.ceil(woundCountGuess / 3), woundCountGuess),
-            description: `${height}m`, location, location, height: height
+            description: `${height}m`, location: location, height: height
         };
         await this._applyImpactOrFallDamage("fall", damageDetails);
     }
@@ -96,7 +101,7 @@ export default class CombatantData extends DataModelComponent {
         const damageDetails = {
             damageRoll: THE_EDGE.impactDamageRoll(speed),
             nWounds: Aux.randomInt(Math.ceil(woundCountGuess / 3), woundCountGuess),
-            description: `${speed}m/s`, location, location, speed: speed
+            description: `${speed}m/s`, location: location, speed: speed
         };
         await this._applyImpactOrFallDamage("impact", damageDetails);
     }
@@ -104,20 +109,34 @@ export default class CombatantData extends DataModelComponent {
         details.damage = Math.max(await DiceServer.genericRoll(details.damageRoll), 0);
         let damageRemaining = details.damage;
         const approxDamagePerWound = Math.ceil(details.damage / details.nWounds);
+        const bt = THE_EDGE.bleedingThreshold[type];
         for (let i = 0; i < 2 * details.nWounds; i++) {
             const nextDamage = Math.min(damageRemaining, Math.floor(approxDamagePerWound / 2) + Aux.randomInt(1, approxDamagePerWound));
-            await this.applyDamage(nextDamage, false, 0, type, LocalisationServer.localise(`${type} damage title`) + " " + details.description, details.location);
+            const [bodyPart, coordinates] = Aux.generateWoundLocation(false, this.sex);
+            const woundDetails = {
+                bleeding: CombatantData._determineBleeding(damageRemaining, bt),
+                bodyPart: bodyPart,
+                coordinates: coordinates,
+                damage: nextDamage,
+                damageType: type,
+                source: LocalisationServer.localise(`${type} damage title`) + " " + details.description
+            };
+            await this.generateNewWound(woundDetails);
             damageRemaining -= Math.ceil(nextDamage);
             if (damageRemaining <= 0)
                 break;
-            break;
         }
-        details.actor = this.namel;
+        // TODO: refactor to use this.applyDamage to handle death correctly
+        this.parent.update({ "system.health.value": Math.max(this.health.value - details.damage, 0) });
+        details.actor = this.parent.name;
         ChatServer.transmitEvent(type, details);
     }
-    async generateNewWound(source, woundDetails) {
-        const wound = { source: source, status: "treatable", ...woundDetails };
-        wound.type = Aux.pickFromOdds(THE_EDGE.wound_odds(woundDetails));
+    async generateNewWound(woundDetails) {
+        const wound = {
+            status: "treatable",
+            type: Aux.pickFromOdds(THE_EDGE.wound_odds(woundDetails)),
+            ...woundDetails
+        };
         this.wounds.push(wound);
         await this.parent.update({ "system.wounds": this.wounds });
     }

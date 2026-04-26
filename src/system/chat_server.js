@@ -29,7 +29,7 @@ export default class ChatServer {
         break;
       
       case "WEAPONCHECK":
-        html = await renderTemplate("systems/the_edge/templates/chat/weapon_check.html", details);
+        html = await renderTemplate("systems/the_edge/templates/chat/weapon_check.hbs", details);
         break;
       
       case "MEDICINE":

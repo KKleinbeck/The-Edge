@@ -9,13 +9,15 @@
           {{/each}}
         </select>
         <label for="is-elemental">{{combatName "Elemental"}}</label>
-        <input type="checkbox" id="is-elemental" name="system.isElemental" {{#if item.system.isElemental}}checked{{/if}} style="margin-left: 0px;"/>
+        <input type="checkbox" id="is-elemental" name="system.isElemental"
+          {{#if item.system.isElemental}}checked{{/if}} style="margin-left: 0px;"/>
         {{#if (checkEqual item.system.type "Hand-to-Hand combat")}}
           <label for="Damage">{{genName "Damage"}}</label>
           {{#each item.system.fireModes as |mode|}}
             {{#if @first}}
               <input class="firing-mode firing-mode-modify" data-index="{{@index}}" type="text"
-                data-target="damage" value="{{mode.damage}}" style="width: 120px; text-align: right;" id="Damage"/>
+                data-field="damage" data-target="damage" value="{{mode.damage}}"
+                style="width: 120px; text-align: right;" id="Damage"/>
             {{/if}}
           {{/each}}
         {{/if}}
