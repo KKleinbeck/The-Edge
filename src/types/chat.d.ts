@@ -1,5 +1,12 @@
 type rollType = "public" | "blind" | "whisper"
 
+type ChatId = (
+  "ATTRIBUTE CHECK" | "CRIT FAIL EVENT" | "FALL" | "FIRING EMPTY WEAPON" |  "FOOD CONSUME" |
+  "GENERIC DAMAGE" | "GRENADE SHEET BASED" | "GRENADE CONTEXT BASED" | "HERO TOKEN" |
+  "IMPACT" | "MEDICINE" | "POST ITEM" | "POST SKILL" | "PROFICIENCY CHECK" | "RELOAD" |
+  "REROLL" | "SHORT REST" | "LONG REST" | "SKILL USED" | "WEAPON CHECK"
+)
+
 interface IChatServerConfig {
   roll?: rollType
   speaker?: ChatSpeakerData

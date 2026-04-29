@@ -1,5 +1,4 @@
-import LocalisationServer from "../system/localisation_server.js";
-import ChatServer from "../system/chat_server.js";
+import NewChatServer from "../system/new_chat_server.js";
 const { renderTemplate } = foundry.applications.handlebars;
 export default class DialogCombatics extends Dialog {
     static get defaultOptions() {
@@ -21,16 +20,28 @@ export default class DialogCombatics extends Dialog {
                         threshold: Math.max(1, tempModificator + checkData.threshold),
                         vantage: vantage, fireModeModifier: { damage: checkData.damage }
                     };
-                    let [crits, damage, diceRes, hits] = await checkData.actor.system.rollAttackCheck(1, modificators.threshold, vantage, checkData.damage);
+                    const prompt = {
+                        damageRoll: checkData.damage,
+                        nRolls: 1,
+                        threshold: modificators.threshold,
+                        vantage
+                    };
+                    const attackRollResult = await checkData.actor.system.rollAttackCheck(prompt);
                     // Apply the damage
-                    let details = {
-                        name: checkData.name, rolls: [{ res: diceRes[0], hit: hits[0] }], damage: damage,
-                        actorId: checkData.actor.id, damageRoll: modificators.fireModeModifier.damage,
-                        tempModificator: tempModificator, weaponType: "Melee", targetId: checkData.targetId,
-                        sceneId: checkData.sceneId, crits: crits, damageType: "kinetic"
+                    const details = {
+                        name: checkData.name, rolls: [{ res: attackRollResult.diceResults[0], hit: attackRollResult.hits[0] }],
+                        damageRoll: modificators.fireModeModifier.damage, tempModificator: tempModificator, weaponType: "Melee",
+                        targetId: checkData.targetId, damageType: "kinetic", ...attackRollResult
                     };
                     foundry.utils.mergeObject(details, modificators);
-                    ChatServer.transmitEvent("WeaponCheck", details);
+                    const config = {
+                        speaker: {
+                            actor: checkData.actor.id,
+                            scene: checkData.sceneId,
+                            token: checkData.token.id
+                        }
+                    };
+                    NewChatServer.transmitEvent("WEAPON CHECK", details, config);
                 }
             },
             cancel: {

@@ -141,7 +141,9 @@ export default class DiceServer {
         let roll = await this._attackRoll(dices, threshold);
         if (vantage == "Advantage" || vantage == "Disadvantage") {
             const roll2 = await this._attackRoll(dices, threshold);
+            console.log(roll.diceResults, roll2.diceResults);
             roll = this._selectVantageOutcome(vantage, roll, roll2);
+            console.log(roll.diceResults);
         }
         return this.interpretCheck("weapons", roll, { damageDice: damageDice, dices: dices, critThreshold: critThreshold });
     }

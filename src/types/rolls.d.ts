@@ -13,6 +13,7 @@ interface IDiceParameters {
 
   qualityStep: number
 }
+
 interface IDiceServerConfig extends IDiceParameters {
   modifier: number
   threshold: number
@@ -60,3 +61,28 @@ interface IProficiencyRollQuery {
 }
 
 interface IProficiencyPromptResult extends IProficiencyRollQuery, IRollPromptResult {}
+
+// Combat
+interface IAttackRollPreResult {
+  crits: boolean[]
+  diceResults: number[]
+  hits: boolean[]
+}
+
+interface IAttackRollResult extends IAttackRollPreResult {
+  damage: number[]
+  failEvent: string
+}
+
+interface IAttackRollPrompt {
+  damageRoll: string
+  nRolls: number
+  threshold: number
+  vantage: VantageType
+}
+
+interface IDiceServerAttackConfig extends IAttackRollPrompt {
+  critDice: number[]
+  critFailDice: number[]
+  critFailCheckThreshold: number
+}

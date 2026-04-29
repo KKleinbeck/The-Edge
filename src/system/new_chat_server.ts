@@ -8,7 +8,7 @@ export default class NewChatServer {
     ChatMessage.create(this.createChatData(`<h2>${msg}</h2>`, config))
   }
 
-  static async transmitEvent(id: string, details: Record<string, any>, config: IChatServerConfig = {}) {
+  static async transmitEvent(id: ChatId, details: Record<string, any>, config: IChatServerConfig = {}) {
     let html: string = "";
     let text = undefined;
     switch (id.toUpperCase()) {

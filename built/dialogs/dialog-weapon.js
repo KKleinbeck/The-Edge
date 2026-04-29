@@ -1,7 +1,5 @@
 import Aux from "../system/auxilliaries.js";
-import ChatServer from "../system/chat_server.js";
 import NewChatServer from "../system/new_chat_server.js";
-import LocalisationServer from "../system/localisation_server.js";
 import THE_EDGE from "../system/config-the-edge.js";
 const { renderTemplate } = foundry.applications.handlebars;
 export default class DialogWeapon extends Dialog {
@@ -16,6 +14,13 @@ export default class DialogWeapon extends Dialog {
         const templateParams = foundry.utils.mergeObject({ sizeModifiers: THE_EDGE.sizeModifiers, movements: THE_EDGE.movements, cover: THE_EDGE.cover }, checkData);
         const template = "systems/the_edge/templates/dialogs/weapon.hbs";
         let html = await renderTemplate(template, templateParams);
+        const chatServerConfig = {
+            speaker: {
+                actor: checkData.actorId,
+                scene: checkData.sceneId,
+                token: checkData.tokenId
+            }
+        };
         const buttons = {
             roll: {
                 label: game.i18n.localize("DIALOG.ROLL"),
@@ -25,7 +30,7 @@ export default class DialogWeapon extends Dialog {
                     // Subtract ammunition and determine effective dices
                     const ammuCapa = checkData.ammunition.system.capacity;
                     if (ammuCapa.value <= 0) {
-                        ChatServer.transmitEvent("Firing empty weapon", { name: checkData.actor.name });
+                        NewChatServer.transmitEvent("FIRING EMPTY WEAPON", { name: checkData.actor.name }, chatServerConfig);
                         return;
                     }
                     const ammuCost = Math.min(modificators.fireModeModifier.cost, ammuCapa.value);
@@ -35,34 +40,34 @@ export default class DialogWeapon extends Dialog {
                     checkData.ammunition.update({ "system.capacity.value": ammuCapa.value - ammuCost });
                     // Roll the attack
                     foundry.utils.mergeObject(modificators, { dicesEff: dices });
-                    const [crits, damage, diceRes, hits, failEvents] = await checkData.actor.system.rollAttackCheck(dices, modificators.threshold, modificators.vantage, modificators.fireModeModifier.damage, checkData.damageType);
+                    const prompt = {
+                        damageRoll: modificators.fireModeModifier.damage, // Add ammu modifier here
+                        nRolls: dices,
+                        threshold: modificators.threshold,
+                        vantage: modificators.vantage
+                    };
+                    const attackRollResult = await checkData.actor.system.rollAttackCheck(prompt);
                     const ammuDamage = checkData.ammunition.system.damage;
-                    damage.forEach((e, i) => { damage[i] += ammuDamage.bonus; });
+                    attackRollResult.damage.forEach((_e, i) => { attackRollResult.damage[i] += ammuDamage.bonus; });
                     foundry.utils.mergeObject(checkData, {
-                        damage: damage, crits: crits, penetration: ammuDamage.penetration,
-                        damageRoll: modificators.fireModeModifier.damage + (ammuDamage.bonus > 0 ? ` + ${ammuDamage.bonus}` : "")
+                        penetration: ammuDamage.penetration,
+                        damageRoll: modificators.fireModeModifier.damage + (ammuDamage.bonus > 0 ? ` + ${ammuDamage.bonus}` : ""),
+                        ...attackRollResult
                     });
                     // Apply the damage
-                    const chatServerConfig = {
-                        speaker: {
-                            actor: checkData.actorId,
-                            scene: checkData.sceneId,
-                            token: checkData.tokenId
-                        }
-                    };
                     checkData.rolls = [];
-                    for (let i = 0; i < modificators.dicesEff; ++i) {
-                        checkData.rolls.push({ res: diceRes[i], hit: hits[i] });
+                    for (let i = 0; i < dices; ++i) {
+                        checkData.rolls.push({ res: attackRollResult.diceResults[i], hit: attackRollResult.hits[i] });
                     }
                     for (const id of checkData.targetIds) {
                         checkData["targetId"] = id;
-                        NewChatServer.transmitEvent("Weapon Check", checkData, chatServerConfig);
+                        NewChatServer.transmitEvent("WEAPON CHECK", checkData, chatServerConfig);
                     }
                     if (checkData.targetIds.length == 0) {
-                        NewChatServer.transmitEvent("Weapon Check", checkData, chatServerConfig);
+                        NewChatServer.transmitEvent("WEAPON CHECK", checkData, chatServerConfig);
                     }
-                    for (const event of failEvents) {
-                        ChatServer.transmitEvent("Crit Fail Event", { event: event, check: "Combat check" });
+                    if (attackRollResult.failEvent) {
+                        NewChatServer.transmitEvent("CRIT FAIL EVENT", { event: attackRollResult.failEvent, check: "Combat check" }, chatServerConfig);
                     }
                 }
             },
@@ -108,6 +113,7 @@ export default class DialogWeapon extends Dialog {
         }
         if (smallest === Infinity)
             return undefined;
+        // @ts-expect-error
         return Object.entries(THE_EDGE.sizes).find(([_, value]) => value > smallest)[0];
     }
     static parseSheet(html, checkData) {

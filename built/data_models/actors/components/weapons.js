@@ -1,4 +1,5 @@
 import THE_EDGE from "../../../system/config-the-edge.js";
+import NewDiceServer from "../../../system/new_dice_server.js";
 import ValueSchemaField from "../../Fields/value_schema.js";
 import { DataModelComponent } from "../../abstracts.js";
 const { NumberField, SchemaField } = foundry.data.fields;
@@ -47,8 +48,14 @@ export default class WeaponData extends DataModelComponent {
         }
         return level;
     }
-    async rollAttackCheck(dices, threshold, vantage, damageDice, _damageType) {
-        const results = await this.parent.diceServer.attackCheck(dices, threshold, vantage, damageDice, Math.floor((this.weapons.general["General weapon proficiency"].value || 0) / 2));
-        return results;
+    // async rollAttackCheck(dices: number, threshold: number, vantage: VantageType, damageDice: string, _damageType): Promise<IAttackRollResult> {
+    async rollAttackCheck(prompt) {
+        const config = {
+            critDice: [1],
+            critFailDice: [20],
+            critFailCheckThreshold: Math.floor((this.weapons.general["General weapon proficiency"].value) / 2),
+            ...prompt
+        };
+        return await NewDiceServer.attackCheck(config);
     }
 }

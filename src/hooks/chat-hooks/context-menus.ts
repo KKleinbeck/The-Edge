@@ -96,7 +96,7 @@ function _handleRerollOrChange(contextHtml: HTMLAnchorElement, config: IContextM
       rerollDetails.check = LocalisationServer.localise("combat", "combat");
       break;
   }
-  NewChatServer.transmitEvent("Reroll", rerollDetails);
+  NewChatServer.transmitEvent("REROLL", rerollDetails);
 }
 
 // Helper functions

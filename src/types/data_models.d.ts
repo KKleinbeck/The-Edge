@@ -38,6 +38,34 @@ interface STRAIN {
   maxUseReduction: foundryAny
 }
 
+interface IWeapons {
+  energy: IWeaponsEnergy
+  general: IWeaponsGeneral
+  kinetic: IWeaponsKinetic
+}
+
+interface IWeaponsEnergy {
+  "Blaster Pistols": foundryAny
+  "Pulse Rifle": foundryAny
+  "SABs": foundryAny
+  "Blaster Shockguns": foundryAny
+  "Blaster Snipers": foundryAny
+}
+
+interface IWeaponsGeneral {
+  "General weapon proficiency": foundryAny
+  "Hand-to-Hand combat": foundryAny
+  "Recoilless Rifles": foundryAny
+}
+
+interface IWeaponsKinetic {
+  "Kinetic Pistols": foundryAny
+  "Slug Throwers": foundryAny
+  "LMGs": foundryAny
+  "Shotguns": foundryAny
+  "Projectile Snipers": foundryAny
+}
+
 interface IWound {
   bodyPart: TBodyPart
   coordinates: TCoordinate

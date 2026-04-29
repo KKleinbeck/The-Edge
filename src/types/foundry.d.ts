@@ -34,10 +34,10 @@ declare class ActorSheetV2 extends FoundryHandlebarsApplication {
 
 // Classes
 interface ChatSpeakerData {
-    actor?: string;
-    alias?: string;
-    scene?: string;
-    token?: string;
+  actor?: string;
+  alias?: string;
+  scene?: string;
+  token?: string;
 }
 
 interface ChatMessageData {

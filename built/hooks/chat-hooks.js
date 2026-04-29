@@ -69,15 +69,16 @@ export default function () {
         }
         const applyDamageButton = html.querySelector(".apply-damage");
         if (applyDamageButton) {
-            applyDamageButton.addEventListener("click", async (ev) => {
+            applyDamageButton.addEventListener("click", async (_ev) => {
                 if (!game.user.isGM) {
                     NotificationServer.notify("Requires GM");
                     return;
                 }
-                if (sys.targetId) {
-                    const scene = game.scenes.get(sys.sceneId);
-                    const target = scene.tokens.get(sys.targetId)?.actor;
-                    const protectionLog = await applyDamage(target, sys.damage, sys.penetration === undefined ? 0 : sys.penetration, sys.crits, sys.damageType, sys.name);
+                const details = sys.details; // TODO Type
+                if (details.targetId) {
+                    const scene = game.scenes.get(sys.config.speaker.scene);
+                    const target = scene.tokens.get(details.targetId)?.actor;
+                    const protectionLog = await applyDamage(target, details.damage, details.penetration === undefined ? 0 : details.penetration, details.crits, details.damageType, details.name);
                     if (Object.keys(protectionLog).length != 0) {
                         const template = "systems/the_edge/templates/chat/meta-protection-log.html";
                         const protectionHtml = await renderTemplate(template, { protection: protectionLog });
@@ -93,7 +94,7 @@ export default function () {
         }
         const applyGrenadeDamage = html.querySelector(".apply-grenade-damage");
         if (applyGrenadeDamage) {
-            applyGrenadeDamage.addEventListener("click", async (ev) => {
+            applyGrenadeDamage.addEventListener("click", async (_ev) => {
                 if (!game.user.isGM) {
                     NotificationServer.notify("Requires GM");
                     return;

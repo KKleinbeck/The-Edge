@@ -149,7 +149,7 @@ class ProficiencyData extends DataModelComponent {
           token: promptResult.tokenId
         }
       }
-      NewChatServer.transmitEvent("Proficiency Check", details, chatConfig);
+      NewChatServer.transmitEvent("PROFICIENCY CHECK", details, chatConfig);
     }
     return rollResult;
   }

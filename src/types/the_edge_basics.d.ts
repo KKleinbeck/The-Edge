@@ -6,6 +6,14 @@ type TBodyPart = "Torso" | "Head" | "LegsLeft" | "LegsRight" | "ArmsLeft" | "Arm
 
 type TCoordinate = [number, number]
 
+type TWeapon = (
+  "Blaster Pistols" | "Pulse Rifle" | "SABs" | "Blaster Shockguns" | "Blaster Snipers" |
+  "General weapon proficiency" | "Hand-to-Hand combat" | "Recoilless Rifles" |
+  "Kinetic Pistols" | "Slug Throwers" | "LMGs" | "Shotguns" | "Projectile Snipers"
+)
+
+type TWeaponType = "energy" | "general" | "kinetic"
+
 interface Array<T> {
   random(): T;
   last(): T;

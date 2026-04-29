@@ -1,4 +1,5 @@
 import THE_EDGE from "../../../system/config-the-edge.js";
+import NewDiceServer from "../../../system/new_dice_server.js";
 import ValueSchemaField from "../../Fields/value_schema.js";
 import { DataModelComponent } from "../../abstracts.js";
 
@@ -12,6 +13,8 @@ function WEAPON_FIELD() {
 }
 
 export default class WeaponData extends DataModelComponent {
+  declare weapons: IWeapons
+
   static defineSchema() {
     return {
       weapons: new SchemaField({
@@ -38,27 +41,30 @@ export default class WeaponData extends DataModelComponent {
     };
   }
 
-  getWeaponLevel(weaponType) {
-    const type = THE_EDGE.weapon_damage_types[weaponType];
-    let level = Math.floor((
+  getWeaponLevel(weaponType: TWeapon): number {
+    const type: TWeaponType = THE_EDGE.weapon_damage_types[weaponType];
+    let level: number = Math.floor((
       this.weapons[type][weaponType].value +
       this.weapons.general["General weapon proficiency"].value
     ) / 2);
     if (weaponType == "Hand-to-Hand combat") return level;
 
-    const partner = THE_EDGE.weapon_partners[weaponType];
+    const partner: TWeapon = THE_EDGE.weapon_partners[weaponType];
     if (partner) {
-      const partnerType = THE_EDGE.weapon_damage_types[partner];
+      const partnerType: TWeaponType = THE_EDGE.weapon_damage_types[partner];
       level += Math.floor(this.weapons[partnerType][partner].value / 4);
     }
     return level;
   }
 
-  async rollAttackCheck(dices, threshold, vantage, damageDice, _damageType) {
-    const results = await this.parent.diceServer.attackCheck(
-      dices, threshold, vantage, damageDice,
-      Math.floor((this.weapons.general["General weapon proficiency"].value || 0) / 2)
-    );
-    return results;
+  // async rollAttackCheck(dices: number, threshold: number, vantage: VantageType, damageDice: string, _damageType): Promise<IAttackRollResult> {
+  async rollAttackCheck(prompt: IAttackRollPrompt): Promise<IAttackRollResult> {
+    const config: IDiceServerAttackConfig = {
+      critDice: [1],
+      critFailDice: [20],
+      critFailCheckThreshold: Math.floor((this.weapons.general["General weapon proficiency"].value) / 2),
+      ...prompt
+    }
+    return await NewDiceServer.attackCheck(config);
   }
 }

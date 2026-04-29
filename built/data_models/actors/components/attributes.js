@@ -80,7 +80,7 @@ export default class AttributeData extends DataModelComponent {
                     token: promptResult.tokenId
                 }
             };
-            NewChatServer.transmitEvent("Attribute Check", details, chatConfig);
+            NewChatServer.transmitEvent("ATTRIBUTE CHECK", details, chatConfig);
         }
         return rollResult;
     }

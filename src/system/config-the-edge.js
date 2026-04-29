@@ -1,4 +1,7 @@
-const THE_EDGE = {}
+import CombatConfig from "./config-combat.js";
+const THE_EDGE = {
+  combatConfig: CombatConfig
+}
 
 // IMPORTANT: Multiple config entries are dynamically generated from the template.json.
 //   This happens in the Hooks.on("init").
