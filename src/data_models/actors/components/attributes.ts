@@ -1,5 +1,5 @@
 import NewChatServer from "../../../system/new_chat_server.js";
-import NewDiceServer from "../../../system/new_dice_server.js";
+import DiceServer from "../../../system/dice_server.js";
 import ValueSchemaField from "../../Fields/value_schema.js";
 import { DataModelComponent } from "../../abstracts.js";
 
@@ -73,7 +73,7 @@ export default class AttributeData extends DataModelComponent {
       vantage: promptResult.vantage
     }
 
-    const rollResult: IRollResult = await NewDiceServer.attributeCheck(diceServerConfig);
+    const rollResult: IRollResult = await DiceServer.attributeCheck(diceServerConfig);
 
     if (transmit) {
       const details: IAttributeRollMessage = {

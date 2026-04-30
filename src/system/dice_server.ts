@@ -1,6 +1,6 @@
 import THE_EDGE from "./config-the-edge.js";
 
-export default class NewDiceServer {
+export default class DiceServer {
   static selectFromCritFailEvents(critFailEvents:  ICritFailEvent[]): string {
     const table: string[] = [];
     for (const elem of critFailEvents) {
@@ -114,7 +114,7 @@ export default class NewDiceServer {
       if (netOutcome2 < netOutcome) roll = roll2;
     }
 
-    return NewDiceServer.attackOutcome(roll, config);
+    return DiceServer.attackOutcome(roll, config);
   }
 
   static async _attackRoll(config: IDiceServerAttackConfig): Promise<[IAttackRollPreResult, number]> {
@@ -140,16 +140,16 @@ export default class NewDiceServer {
     for (let i = 0; i < config.nRolls; ++i) {
       if (!preResult.hits[i]) continue;
 
-      damage.push((await NewDiceServer.genericRoll(config.damageRoll)));
+      damage.push((await DiceServer.genericRoll(config.damageRoll)));
       if (preResult.crits[i]) {
-        damage[damage.length-1] += NewDiceServer.max(config.damageRoll);
+        damage[damage.length-1] += DiceServer.max(config.damageRoll);
       }
     }
 
     let failEvent = "";
     const nFailures = preResult.diceResults.filter(x => config.critFailDice.includes(x));
     if (nFailures.length >= 0.33335 * preResult.diceResults.length) {
-      const failCheck = (await NewDiceServer.genericRoll("1d20"));
+      const failCheck = (await DiceServer.genericRoll("1d20"));
       if (config.critFailDice.includes(failCheck) || failCheck > config.critFailCheckThreshold) {
         failEvent = this.selectFromCritFailEvents(THE_EDGE.combatConfig.critFailTable);
       }

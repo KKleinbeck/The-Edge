@@ -1,6 +1,5 @@
 import Aux from "../../system/auxilliaries.js";
 import NewChatServer from "../../system/new_chat_server.js";
-import NewDiceServer from "../../system/new_dice_server.js";
 import DiceServer from "../../system/dice_server.js";
 import LocalisationServer from "../../system/localisation_server.js";
 import ProficiencyConfig from "../../system/config-proficiencies.js";
@@ -60,7 +59,7 @@ async function _heroTokenCallback(contextHtml: HTMLAnchorElement, config: IConte
 }
 
 async function _rerollCallback(contextHtml: HTMLAnchorElement, config: IContextMenuHookConfig) {
-  const newRoll = await NewDiceServer.genericRoll("1d20");
+  const newRoll = await DiceServer.genericRoll("1d20");
   _handleRerollOrChange(contextHtml, config, newRoll);
 }
 
@@ -107,7 +106,7 @@ function _heroTokenAttributeCheck (chatMsgCls: foundryAny, system: IChatSystem) 
 
 async function updateAttributeCheck(chatMsgCls: foundryAny, system: IChatSystem, newResult: number) {
   const { details } = system;
-  foundry.utils.mergeObject(details, NewDiceServer.attributeOutcome(newResult, details.diceServerConfig));
+  foundry.utils.mergeObject(details, DiceServer.attributeOutcome(newResult, details.diceServerConfig));
   const newContent = await renderTemplate(
     "systems/the_edge/templates/chat/attribute_check.hbs", details);
   updateChatMessage(chatMsgCls, newContent, system);
@@ -132,7 +131,7 @@ function _heroTokenProficiencyCheck(chatMsgCls: foundryAny, system: IChatSystem)
 
 async function updateProficiencyCheck(chatMsgCls: foundryAny, system: IChatSystem, newResults: number[]) {
   const { details } = system;
-  foundry.utils.mergeObject(details, NewDiceServer.proficiencyOutcome(newResults, details.diceServerConfig));
+  foundry.utils.mergeObject(details, DiceServer.proficiencyOutcome(newResults, details.diceServerConfig));
   if ("interpretation" in details) {
     details.interpretation = ProficiencyConfig.rollOutcome(details.proficiency, details.quality);
   }
@@ -152,7 +151,8 @@ function _heroTokenWeaponCheck(chatMsgCls: foundryAny, actor: foundryAny, system
 async function updateWeaponCheck(chatMsgCls: foundryAny, actor: foundryAny, system: IChatSystem, newResults, index: number) {
   const { details } = system;
   if ((newResults[index].res <= details.threshold || newResults[index].res == 1) &&
-    !actor.diceServer.interpretationParams.weapons.critFail.includes(newResults[index].res)) {
+    // TODO: Refactor once we have a generic crit interface
+    ![20].includes(newResults[index].res)) {
     newResults[index].hit = true;
   } else newResults[index].hit = false;
 
@@ -164,13 +164,14 @@ async function updateWeaponCheck(chatMsgCls: foundryAny, actor: foundryAny, syst
 
   if (details.rolls[index].hit) { // Previous roll was a hit
     if (!newResults[index].hit) details.damage.splice(hitIndex, 1);
-    else if (actor.diceServer.interpretationParams.weapons.crit.includes(newResults[index].res) &&
-      !actor.diceServer.interpretationParams.weapons.crit.includes(details.rolls[index].res)) {
+    // TODO: Refactor once we have a generic crit interface
+    else if ([1].includes(newResults[index].res) &&
+      ![1].includes(details.rolls[index].res)) {
       details.damage[hitIndex] += DiceServer.max(details.damageRoll);
     } else if (newResults[index].res != 1 && details.rolls[index].res == 1) {
       details.damage[hitIndex] -= DiceServer.max(details.damageRoll);
     }
-  } else { // Precious roll wasn't a hit
+  } else { // Previous roll wasn't a hit
     if (newResults[index].hit) {
       details.damage = [
         ...details.damage.slice(0, hitIndex),

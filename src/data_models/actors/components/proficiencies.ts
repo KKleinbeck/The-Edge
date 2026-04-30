@@ -1,5 +1,5 @@
 import NewChatServer from "../../../system/new_chat_server.js";
-import NewDiceServer from "../../../system/new_dice_server.js";
+import DiceServer from "../../../system/dice_server.js";
 import ValueSchemaField from "../../Fields/value_schema.js";
 import { DataModelComponent } from "../../abstracts.js";
 
@@ -127,7 +127,7 @@ class ProficiencyData extends DataModelComponent {
       vantage: promptResult.vantage
     }
 
-    const rollResult: IRollResult = await NewDiceServer.proficiencyCheck(diceServerConfig);
+    const rollResult: IRollResult = await DiceServer.proficiencyCheck(diceServerConfig);
     this.applyStrain(promptResult.strain);
 
     if (transmit) {

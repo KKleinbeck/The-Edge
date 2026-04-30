@@ -67,6 +67,7 @@ interface IWeaponsKinetic {
 }
 
 interface IWound {
+  bleeding: number
   bodyPart: TBodyPart
   coordinates: TCoordinate
   damage: number

@@ -1,5 +1,5 @@
 import NewChatServer from "../../../system/new_chat_server.js";
-import NewDiceServer from "../../../system/new_dice_server.js";
+import DiceServer from "../../../system/dice_server.js";
 import ValueSchemaField from "../../Fields/value_schema.js";
 import { DataModelComponent } from "../../abstracts.js";
 const { NumberField, SchemaField } = foundry.data.fields;
@@ -60,7 +60,7 @@ export default class AttributeData extends DataModelComponent {
             threshold: this.attributes[promptResult.attribute].value,
             vantage: promptResult.vantage
         };
-        const rollResult = await NewDiceServer.attributeCheck(diceServerConfig);
+        const rollResult = await DiceServer.attributeCheck(diceServerConfig);
         if (transmit) {
             const details = {
                 ...rollResult,

@@ -1,5 +1,5 @@
 import THE_EDGE from "../../../system/config-the-edge.js";
-import NewDiceServer from "../../../system/new_dice_server.js";
+import DiceServer from "../../../system/dice_server.js";
 import ValueSchemaField from "../../Fields/value_schema.js";
 import { DataModelComponent } from "../../abstracts.js";
 const { NumberField, SchemaField } = foundry.data.fields;
@@ -56,6 +56,6 @@ export default class WeaponData extends DataModelComponent {
             critFailCheckThreshold: Math.floor((this.weapons.general["General weapon proficiency"].value) / 2),
             ...prompt
         };
-        return await NewDiceServer.attackCheck(config);
+        return await DiceServer.attackCheck(config);
     }
 }

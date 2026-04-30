@@ -1,5 +1,4 @@
 import Aux from "../system/auxilliaries.js";
-import DiceServer from "../system/dice_server.js";
 import LocalisationServer from "../system/localisation_server.js";
 import NotificationServer from "../system/notifications.js";
 import THE_EDGE from "../system/config-the-edge.js";
@@ -8,11 +7,6 @@ import THE_EDGE from "../system/config-the-edge.js";
  * @extends {Actor}
  */
 export class TheEdgeActor extends Actor {
-    constructor(...args) {
-        super(...args);
-        // DiceServer stores actors crit dice
-        this.diceServer = new DiceServer();
-    }
     async update(data = {}, operation = {}) {
         this.system.onUpdate(data);
         await super.update(data, operation);

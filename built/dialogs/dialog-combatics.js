@@ -28,10 +28,11 @@ export default class DialogCombatics extends Dialog {
                     };
                     const attackRollResult = await checkData.actor.system.rollAttackCheck(prompt);
                     // Apply the damage
+                    // TODO: Define this interface
                     const details = {
                         name: checkData.name, rolls: [{ res: attackRollResult.diceResults[0], hit: attackRollResult.hits[0] }],
                         damageRoll: modificators.fireModeModifier.damage, tempModificator: tempModificator, weaponType: "Melee",
-                        targetId: checkData.targetId, damageType: "kinetic", ...attackRollResult
+                        targetId: checkData.targetId, damageType: "kinetic", ...attackRollResult, prompt
                     };
                     foundry.utils.mergeObject(details, modificators);
                     const config = {
