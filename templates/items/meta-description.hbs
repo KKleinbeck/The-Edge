@@ -13,7 +13,7 @@
   {{#if userIsGM}}
     <h4>{{genName "GM Notes"}}</h4>
     {{#if editable}} 
-      <prose-mirror name="system.gm_description" data-document-u-u-i-d="{{item.uuid}}" value="{{item.system.gm_description}}" collaborate="true" toggled="false">
+      <prose-mirror name="system.gmDescription" data-document-u-u-i-d="{{item.uuid}}" value="{{item.system.gm_description}}" collaborate="true" toggled="false">
         {{{gmDescriptionHTML}}}
       </prose-mirror>
     {{else}} {{{gmDescriptionHTML}}}
