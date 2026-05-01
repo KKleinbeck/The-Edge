@@ -115,13 +115,6 @@ export default class Aux {
   }
 
 
-  static combatRoundHrChange() {
-    const isRest = Math.max(...game.the_edge.combatLog.strainLog.map(x => x.hrChange)) <= 0;
-    const threshold = isRest ? -Infinity : 0;
-    return game.the_edge.combatLog.strainLog.reduce((a, b) => Math.max(b.hrChange, threshold) + a, 0);
-  }
-
-
   static async parseStrainCostStr(skill: foundryAny, currentStrainLevel: 0 | 1 | 2 | 3 | 4): Promise<number | undefined> {
     const costs = skill.system.strainCost.replace(/\s+/g, '').split("/");
     if (costs.length != 1 && costs.length != 5) {

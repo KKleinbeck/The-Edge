@@ -10,39 +10,8 @@ export default class HumanoidData extends DataModelComponent {
       sex: new StringField({ initial: "female" }),
       handedness: new StringField({ initial: "right" }),
       race: new StringField({ initial: "Human" }),
-      heartRate: new SchemaField({
-        value: new NumberField({ initial: 60, integer: true, min: 0, required: true }),
-        min: new SchemaField({
-          value: new NumberField({ initial: 0, integer: true, min: 0 }),
-          status: new NumberField({ initial: 0, integer: true, min: 0 }),
-          baseline : new NumberField({ initial: 60, integer: true, min: 0 }),
-        }),
-        max: new SchemaField({
-          value: new NumberField({ initial: 195, integer: true, min: 0 }),
-          status: new NumberField({ initial: 0, integer: true, min: 0 }),
-          baseline : new NumberField({ initial: 195, integer: true, min: 0 }),
-        }),
-        damageThreshold: new SchemaField({ status: new NumberField({ initial: 0, integer: true }) }),
-      }),
       nativeLanguage: new StringField({ initial: "Standard"}),
     };
-  }
-
-  // Heartrate  related
-  get hrZone1() {return 5 * Math.floor(this.heartRate.max.value * 75 / 500)}
-  get hrZone2() {return 5 * Math.floor(this.heartRate.max.value * 90 / 500)}
-
-  getHRZone(hr = undefined) {
-    hr = hr ? hr : this.heartRate.value;
-    if (hr < this.hrZone1) return 1;
-    if (hr < this.hrZone2) return 2;
-    return 3;
-  }
-
-  getHrChangeFromStrain(strain) {
-    const zone = this.getHRZone();
-    if (strain < zone) return 2 * (strain - zone);
-    return 4 * (strain - zone + 1);
   }
 
   // Rest related
@@ -75,7 +44,6 @@ export default class HumanoidData extends DataModelComponent {
 
     this.parent.update({
       "system.health.value": Math.min(this.health.max.value, this.health.value + accHealing),
-      "system.heartRate.value": this.heartRate.min.value,
       "system.wounds": newWounds
     });
     ChatServer.transmitEvent(

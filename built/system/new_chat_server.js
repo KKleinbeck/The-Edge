@@ -99,14 +99,15 @@ export default class NewChatServer {
     }
     static createChatData(content, config = {}) {
         const chatData = {
-            user: game.user.id,
             content: content,
         };
         if ("speaker" in config)
             chatData.speaker = config.speaker;
         if ("roll" in config) {
-            if (config.roll == "blind")
-                chatData.blind = true;
+            if (config.roll == "blind") {
+                ChatMessage.applyRollMode(chatData, "blindroll");
+                // TODO this becomes `applyMode` in V14
+            }
             else if (config.roll == "whisper") {
                 chatData.whisper = [
                     game.user.id,

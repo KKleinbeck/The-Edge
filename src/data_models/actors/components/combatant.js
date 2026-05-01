@@ -173,8 +173,10 @@ export default class CombatantData extends DataModelComponent {
         )}
       );
     } else {
-      // this.applyStrains(game.the_edge.combatLog.strainLog.map(x => x.hrChange));
-      // TODO: replace by this.applyStrain
+      this.applyStrain(
+        game.the_edge.combatLog.strainLog.reduce((acc, entry) => acc + entry.strainChange, 0) +
+        game.the_edge.combatLog.getMovementStrainLog().reduce((acc, entry) => acc + entry.strainChange, 0)
+      );
     }
   }
 }

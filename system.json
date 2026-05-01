@@ -58,7 +58,7 @@
   "socket": true,
   "primaryTokenAttribute": "health.value",
   "secondaryTokenAttribute": "heartRate.value",
-  "version": "v0.14.1",
+  "version": "v0.15.0",
   "manifest": "https://raw.githubusercontent.com/KKleinbeck/The-Edge/master/system.json",
-  "download": "https://github.com/KKleinbeck/The-Edge/archive/refs/tags/v0.14.1.zip"
+  "download": "https://github.com/KKleinbeck/The-Edge/archive/refs/tags/v0.15.0.zip"
 }
