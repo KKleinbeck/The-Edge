@@ -89,10 +89,10 @@ THE_EDGE.weapon_partners = {}
 THE_EDGE.overloadModifiers = (level) => {
   const modifiers = []
   if (level > 0) {
-    modifiers.push({group: "proficiencies", field: "physical", value: -1})
+    modifiers.push({group: "proficiencies", field: "physical", value: -1});
   }
   if (level > 1) {
-    modifiers.push({group: "attributes", field: "physical", value: -level + 1})
+    modifiers.push({group: "attributes", field: "physical", value: -level + 1});
   }
   return modifiers;
 }

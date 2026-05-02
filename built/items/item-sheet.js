@@ -176,7 +176,7 @@ export class TheEdgeItemSheet extends EffectModifierMixin(IconSelectorMixin(Hand
             secrets: this.document.isOwner,
             async: true
         });
-        context.gmDescriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.item.system.gm_description, {
+        context.gmDescriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.item.system.gmDescription, {
             secrets: this.document.isOwner,
             async: true
         });

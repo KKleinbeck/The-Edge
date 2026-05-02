@@ -128,6 +128,13 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       bodyParts: ["Torso", "Head", "Arms", "Legs"],
       bleeding: this.actor.system.wounds.map(x => x.bleeding).sum(),
       damage: this.actor.system.wounds.map(x => x.damage).sum(),
+      initiative: {
+        baseFormula: CONFIG.Combat.initiative.formula,
+        parsedFormula: Roll.parse(
+          CONFIG.Combat.initiative.formula,
+          foundry.utils.flattenObject(this.actor.system)
+        ).reduce((acc: string, dieTerm: foundryAny) => acc + dieTerm.formula, "")
+      },
       itemTypes: ["Weapon", "Armour", "Ammunition", "Gear", "Consumables"],
       weight: weight,
       overloadLevel: this.actor.system.overloadLevel,

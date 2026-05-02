@@ -4,4 +4,8 @@ export default class NotificationServer {
         const msg = LocalisationServer.parsedLocalisation(id, "Notifications", details);
         ui.notifications.notify(msg);
     }
+    static error(id, details = {}) {
+        const msg = LocalisationServer.parsedLocalisation(id, "Notifications", details);
+        ui.notifications.error(msg);
+    }
 }

@@ -87,6 +87,7 @@ declare class Hooks {
 declare class Roll {
   constructor(arg: foundryAny)
   evaluate(): foundryAny
+  static parse(formula: string, data: object): foundryAny[]
   static validate(roll: string): boolean
 }
 
@@ -128,6 +129,13 @@ interface IFoundry {
     }
   }
   utils: {
+    flattenObject(obj: object, _d?: number): object
     mergeObject<T, U>(a: T, b: U): T & U;
   };
+}
+
+declare class CONFIG {
+  static Combat: {
+    initiative: foundryAny
+  }
 }

@@ -1,9 +1,10 @@
 import LocalisationServer from "./localisation_server.js";
+import NotificationServer from "./notifications.js";
 export default function setupGameSettings() {
     // Register system settings
     game.settings.register("the_edge", "macroShorthand", {
-        name: "SETTINGS.SimpleMacroShorthandN",
-        hint: "SETTINGS.SimpleMacroShorthandL",
+        name: "SETTINGS.MACRO SHORTHAND NAME",
+        hint: "SETTINGS.MACRO SHORTHAND HINT",
         scope: "world",
         type: Boolean,
         default: true,
@@ -11,13 +12,13 @@ export default function setupGameSettings() {
     });
     // Register initiative setting.
     game.settings.register("the_edge", "initFormula", {
-        name: "SETTINGS.SimpleInitFormulaN",
-        hint: "SETTINGS.SimpleInitFormulaL",
+        name: "SETTINGS.INIT FORMULA NAME",
+        hint: "SETTINGS.INIT FORMULA HINT",
         scope: "world",
         type: String,
-        default: "1d20 + 1d@spd + 1d@foc - 2",
+        default: "1d@spd + 1d@foc + @initiative",
         config: true,
-        onChange: formula => _simpleUpdateInit(formula, true)
+        onChange: (formula) => _simpleUpdateInit(formula, true)
     });
     const initFormula = game.settings.get("the_edge", "initFormula");
     _simpleUpdateInit(initFormula);
@@ -25,21 +26,26 @@ export default function setupGameSettings() {
     LicenceDialog.prepareContent();
     game.settings.registerMenu("the_edge", "licences", {
         name: "SETTINGS.LICENCES",
-        label: "SETTINGS.LICENCES_SHOW",
-        hint: "A description of what will occur in the submenu dialog.",
+        label: "SETTINGS.LICENCES SHOW",
+        hint: "SETTINGS.LICENCES DESCRIPTION",
         icon: "fa-solid fa-bars",
         type: LicenceDialog,
         restricted: false
     });
 }
 function _simpleUpdateInit(formula, notify = false) {
+    if (game.settings.get("the_edge", "macroShorthand")) {
+        formula = formula.replace(/@([a-zA-Z]+)/g, "@attributes.$1.value");
+        formula = formula.replace("@attributes.initiative.value", "@initiative.status");
+    }
     const isValid = Roll.validate(formula);
     if (!isValid) {
-        if (notify) {
-            ui.notifications.error(`${game.i18n.localize("SIMPLE.NotifyInitFormulaInvalid")}: ${formula}`);
-        }
+        if (notify)
+            NotificationServer.notify("Settings.Init Formula Invalid", { formula });
         return;
     }
+    if (notify)
+        NotificationServer.notify("Settings.Init Formula Updated", { formula });
     CONFIG.Combat.initiative.formula = formula;
 }
 class LicenceDialog extends foundry.applications.api.DialogV2 {
@@ -69,7 +75,7 @@ class LicenceDialog extends foundry.applications.api.DialogV2 {
         return await fetch(path).then((res) => res.text());
     }
     static scrollableBox(text) {
-        let scrollableElement = `
+        const scrollableElement = `
       <div style="height: 100px; overflow-y: scroll; border: 3px solid black;
         border-radius: 8px; padding: 4px;"
       >

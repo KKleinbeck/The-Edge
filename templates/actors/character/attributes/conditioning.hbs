@@ -32,8 +32,8 @@
           style="width: 50px; text-align: right; padding-right: 5px;"
         >
       </p>
-      <div class="output" data-tooltip="{{genName 'Default'}}: 1d20 + 1d-Spd + 1d-Foc - 2">
-        1d20 + 1d{{system.attributes.spd.value}} + 1d{{system.attributes.foc.value}} - 2</systemData>
+      <div class="output" data-tooltip="{{helpers.initiative.baseFormula}}">
+        {{helpers.initiative.parsedFormula}}
       </div>
     </div>
   </div>

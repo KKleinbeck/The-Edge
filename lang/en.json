@@ -278,6 +278,7 @@
     "HEARTRATE - DAMAGETHRESHOLD": "Damage buffer heart rate",
     "HEARTRATE - MAX": "Max heart rate",
     "HEARTRATE - MIN": "Min heart rate",
+    "INITIATIVE - STATUS": "Initiative",
     "INJURIES ARMS": "Injuries arms",
     "INJURIES HEAD": "Injuries head",
     "INJURIES LEGS": "Injuries legs",
@@ -429,7 +430,12 @@
     "NO PLAYER ACTORS": "Could not find any suitable characters. Make sure they have a player owner.",
     "NO WOUNDS ON ACTOR": "{name} is not wounded and will not use medicine",
 
-    "TOO EXPENSIVE": "{name} cannot afford item. Price: {price} - Available credits: {credits}"
+    "TOO EXPENSIVE": "{name} cannot afford item. Price: {price} - Available credits: {credits}",
+
+    "SETTINGS": {
+      "INIT FORMULA UPDATED": "Initiative formula was updated to {formula}",
+      "INIT FORMULA INVALID": "Initiative formula was invalid: {formula}"
+    }
   },
   "PROFICIENCY": {
     "ENVIRONMENTAL": "Environmental",
@@ -489,16 +495,14 @@
   },
   "SETTINGS": {
     "LICENCES": "Licences",
-    "LICENCES_SHOW": "Display Licences",
-    "LICENCES_DESCRIPTION": "The Edge uses various third party tools. Their usage Licences can be displayed here.",
-    "SimpleMacroShorthandN": "Shortened Macro Syntax",
-    "SimpleMacroShorthandL": "Enable a shortened macro syntax which allows referencing attributes directly, for example @str instead of @attributes.str.value. Disable this setting if you need the ability to reference the full attribute model, for example @attributes.str.value.",
-    "SimpleInitFormulaN": "Initiative Formula",
-    "SimpleInitFormulaL": "Enter an initiative formula, such as d20+d@attributes.str.value"
+    "LICENCES SHOW": "Display Licences",
+    "LICENCES DESCRIPTION": "The Edge uses various third party tools. Their usage Licences can be displayed here.",
+    "MACRO SHORTHAND NAME": "Shortened Macro Syntax",
+    "MACRO SHORTHAND HINT": "Enable a shortened macro syntax which allows referencing attributes directly, for example @str instead of @attributes.str.value. Disable this setting if you need the ability to reference the full attribute model, for example @attributes.str.advances.",
+    "INIT FORMULA NAME": "Initiative Formula",
+    "INIT FORMULA HINT": "Enter an initiative formula, such as d20+d@attributes.str.value"
   },
   "SIMPLE": {
-    "NotifyInitFormulaUpdated": "Initiative formula was updated to",
-    "NotifyInitFormulaInvalid": "Initiative formula was invalid",
     "NotifyGroupDuplicate": "Attribute group already exists.",
     "NotifyGroupAttrDuplicate": "Attribute group already exists as an attribute.",
     "NotifyGroupAlphanumeric": "Attribute group names may not contain spaces or periods.",

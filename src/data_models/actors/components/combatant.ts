@@ -23,6 +23,9 @@ export default class CombatantData extends DataModelComponent {
           status: new NumberField({ required: true, integer: true, initial: 0 }),
         })
       }),
+      initiative: new SchemaField({
+        status: new NumberField({ required: true, integer: true, initial: 0 }),
+      }),
       strain: new SchemaField({
         value: new NumberField({ initial: 0, integer: true, min: 0, required: true }),
         max: new SchemaField({

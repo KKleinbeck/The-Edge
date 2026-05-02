@@ -7,4 +7,11 @@ export default class NotificationServer {
     );
     ui.notifications.notify(msg);
   }
+
+  static error(id: string, details: Record<string, any> = {}) {
+    const msg = LocalisationServer.parsedLocalisation(
+      id, "Notifications", details
+    );
+    ui.notifications.error(msg);
+  }
 }
