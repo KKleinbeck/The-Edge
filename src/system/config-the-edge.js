@@ -1,6 +1,8 @@
-import CombatConfig from "./config-combat.js";
+import { COMBAT_CONFIG } from "./configs/config-combat.js";
+import { STATUS_EFFECTS } from "./configs/status-effects.js";
 const THE_EDGE = {
-  combatConfig: CombatConfig
+  combatConfig: COMBAT_CONFIG,
+  statusEffects: STATUS_EFFECTS
 }
 
 // IMPORTANT: Multiple config entries are dynamically generated from the template.json.
@@ -85,55 +87,6 @@ THE_EDGE.effectMap = {
 THE_EDGE.weapon_damage_types = {"Recoilless Rifles": "general"}
 THE_EDGE.weapon_partners = {}
 
-// Status Effects
-THE_EDGE.overloadModifiers = (level) => {
-  const modifiers = []
-  if (level > 0) {
-    modifiers.push({group: "proficiencies", field: "physical", value: -1});
-  }
-  if (level > 1) {
-    modifiers.push({group: "attributes", field: "physical", value: -level + 1});
-  }
-  return modifiers;
-}
-THE_EDGE.strainModifiers = (level) => {
-  if (level == 0) return [];
-  if (level == 1) {
-    return [
-      {group: "generalModifiers", field: "strain - maxUseReduction", value: -1},
-    ];
-  } 
-  if (level == 2) {
-    return [
-      {group: "generalModifiers", field: "strain - maxUseReduction", value: -1},
-      {group: "proficiencies", field: "all", value: -1},
-    ];
-  } 
-  if (level == 3) {
-    return [
-      {group: "generalModifiers", field: "strain - maxUseReduction", value: -2},
-      {group: "proficiencies", field: "all", value: -1},
-      // TODO: Initiative - 1
-    ];
-  } 
-  return [
-    {group: "generalModifiers", field: "strain - maxUseReduction", value: -2},
-    {group: "proficiencies", field: "all", value: -2},
-  ];
-}
-THE_EDGE.painModifiers = (level) => {
-  if (level == 0) return [];
-  if (level == 1) return [{group: "proficiencies", field: "all", value: -1}]
-  return [
-    {group: "proficiencies", field: "all", value: -Math.ceil(level / 2)},
-    {group: "weapons", field: "General weapon proficiency", value: -Math.floor(level / 2)}
-  ];
-}
-THE_EDGE.injuryMap = {"torso": "end", "head": "foc", "arms": "crd", "legs": "spd"}
-THE_EDGE.damageBodyPartModifiers = (bodyPart, level) => {
-  if (level == 0) return [];
-  return [{group: "attributes", field: THE_EDGE.injuryMap[bodyPart], value: -level}];
-}
 THE_EDGE.translationPercentage = {
   // Maps language level to chance of getting a word
   0:   0,

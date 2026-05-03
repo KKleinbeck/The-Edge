@@ -104,7 +104,6 @@ function _translateForProficientUsers(language, message, newMessage) {
     const content = _createMessageForLevel(
       level, language, message, newMessage
     );
-    console.log(content, users)
     ChatMessage.create({
       content: content,
       whisper: users
@@ -125,7 +124,6 @@ function _getSpeakingActors(language) {
       6 : 0
     );
 
-    console.log(actor.ownership)
     const properOwners = [];
     for (const [actorId, ownershipLevel] of Object.entries(actor.ownership)) {
       if (ownershipLevel === 3) properOwners.push(actorId);

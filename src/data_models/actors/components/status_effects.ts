@@ -96,15 +96,15 @@ export default class StatusEffectData extends DataModelComponent {
     const statusEffectTemplate: IStatusEffectTemplate[] = [
       {
         nameID: "Overload", isActive: this.overloadLevel,
-        modFunction: THE_EDGE.overloadModifiers
+        modFunction: THE_EDGE.statusEffects.overloadModifiers
       },
       {
         nameID: "Strain", isActive: this.strainLevel,
-        modFunction: THE_EDGE.strainModifiers
+        modFunction: THE_EDGE.statusEffects.strainModifiers
       },
       {
         nameID: "Pain", isActive: this.painLevel,
-        modFunction: THE_EDGE.painModifiers
+        modFunction: THE_EDGE.statusEffects.painModifiers
       },
       {
         nameID: "Dying", isActive: this.isDying,
@@ -114,7 +114,9 @@ export default class StatusEffectData extends DataModelComponent {
     for (const [bodyPart, level] of Object.entries(this.damageBodyPartLevels)) {
       statusEffectTemplate.push({
         nameID: `Injuries ${bodyPart}`, isActive: level,
-        modFunction: (x) => THE_EDGE.damageBodyPartModifiers(bodyPart, x)
+        modFunction: (x) => THE_EDGE.statusEffects.damageBodyPartModifiers(
+          bodyPart as keyof IDamageBodyParts, x
+        )
       })
     }
 

@@ -8,7 +8,9 @@ import { DataModelComponent } from "../../abstracts.js";
 const { ArrayField, NumberField, ObjectField, SchemaField } = foundry.data.fields;
 
 export default class CombatantData extends DataModelComponent {
+  declare attributes: ATTRIBUTES
   declare health: HEALTH
+  declare movementSpeed: {status: number}
   declare sex: TSex
   declare strain: STRAIN
   declare wounds: IWound[]
@@ -37,8 +39,27 @@ export default class CombatantData extends DataModelComponent {
         statusThreshold: new SchemaField({ status: new NumberField({ initial: 0, integer: true }) }),
         maxUseReduction: new SchemaField({ status: new NumberField({ initial: 0, integer: true }) }),
       }),
+      movementSpeed: new SchemaField({ status: new NumberField({ initial: 0, integer: true })}),
       wounds: new ArrayField(new ObjectField(), { initial: [] })
     };
+  }
+
+  get strideSpeed() {
+    const {spd, foc} = this.attributes;
+    const status = Math.floor(this.movementSpeed.status);
+    return status + Math.min(5 + Math.floor(spd.value / 6  ), Math.floor(foc.value * 0.75));
+  }
+
+  get runSpeed() {
+    const {spd, foc} = this.attributes;
+    const status = Math.floor(1.5 * this.movementSpeed.status);
+    return status + Math.min(7 + Math.floor(spd.value / 3  ), Math.floor(foc.value * 1.25));
+  }
+
+  get sprintSpeed() {
+    const {spd, foc} = this.attributes;
+    const status = Math.floor(2 * this.movementSpeed.status);
+    return status + Math.min(8 + Math.floor(spd.value / 1.5), Math.floor(foc.value * 1.75));
   }
 
   get strainLevels() {

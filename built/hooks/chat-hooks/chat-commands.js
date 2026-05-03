@@ -87,7 +87,6 @@ function _translateForProficientUsers(language, message, newMessage) {
         if (level == 0)
             continue;
         const content = _createMessageForLevel(level, language, message, newMessage);
-        console.log(content, users);
         ChatMessage.create({
             content: content,
             whisper: users
@@ -100,7 +99,6 @@ function _getSpeakingActors(language) {
         const learnedLevels = actor.itemTypes["Languageskill"]?.filter(x => { x.name.toLowerCase() == language; }).map(x => x.system.level) ?? 0;
         const nativeLevel = (actor.system.nativeLanguage?.toLowerCase().includes(language) ?
             6 : 0);
-        console.log(actor.ownership);
         const properOwners = [];
         for (const [actorId, ownershipLevel] of Object.entries(actor.ownership)) {
             if (ownershipLevel === 3)
