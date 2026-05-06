@@ -41,23 +41,22 @@ interface IRollPromptResult {
   roll?: rollType
 }
 
-// Attributes and Proficiencies
-interface IAttributeRollQuery {
-  attribute: string
+interface _IRollActor {
   actor: foundryAny
   actorId: string
-  tokenId: string
+  tokenId?: string
   sceneId: string
+}
+
+// Attributes and Proficiencies
+interface IAttributeRollQuery extends _IRollActor {
+  attribute: string
 }
 
 interface IAttributePromptResult extends IAttributeRollQuery, IRollPromptResult {}
 
-interface IProficiencyRollQuery {
+interface IProficiencyRollQuery extends _IRollActor{
   proficiency: string
-  actor: foundryAny
-  actorId: string
-  tokenId: string
-  sceneId: string
 }
 
 interface IProficiencyPromptResult extends IProficiencyRollQuery, IRollPromptResult {}
@@ -81,8 +80,18 @@ interface IAttackRollPrompt {
   vantage: VantageType
 }
 
-interface IDiceServerAttackConfig extends IAttackRollPrompt {
+interface IAttackRollQuery extends _IRollActor {
+  damageRoll: string
+  name: string
+  targetId?: string
+  threshold: number
+  token: foundryAny
+}
+
+interface IAttackDiceParameters {
   critDice: number[]
   critFailDice: number[]
   critFailCheckThreshold: number
 }
+
+interface IDiceServerAttackConfig extends IAttackRollPrompt, IAttackDiceParameters {}

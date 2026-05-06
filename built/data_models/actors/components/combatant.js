@@ -42,7 +42,6 @@ export default class CombatantData extends DataModelComponent {
     get runSpeed() {
         const { spd, foc } = this.attributes;
         const status = Math.floor(1.5 * this.movementSpeed.status);
-        console.log(status, this.movementSpeed.status);
         return status + Math.min(7 + Math.floor(spd.value / 3), Math.floor(foc.value * 1.25));
     }
     get sprintSpeed() {

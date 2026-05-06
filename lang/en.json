@@ -252,9 +252,11 @@
     "NEW EFFECT": "New Effect"
   },
   "DIALOG": {
+    "ATTACK": "Attack",
     "CANCEL": "Cancel",
     "CHANGE DICE": "Change dice",
     "CHEAT": "Cheat",
+    "CHEAT ATTACK ROLL": "Cheat attack roll",
     "CLICK TO INPUT": "Click to input",
     "COMBAT ACTIONS": "Combat Actions",
     "DELETE ITEM": "Delete {name}?",

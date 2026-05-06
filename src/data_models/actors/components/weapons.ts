@@ -57,14 +57,18 @@ export default class WeaponData extends DataModelComponent {
     return level;
   }
 
-  // async rollAttackCheck(dices: number, threshold: number, vantage: VantageType, damageDice: string, _damageType): Promise<IAttackRollResult> {
-  async rollAttackCheck(prompt: IAttackRollPrompt): Promise<IAttackRollResult> {
-    const config: IDiceServerAttackConfig = {
+  get attackDiceParameters(): IAttackDiceParameters {
+    return {
       critDice: [1],
       critFailDice: [20],
       critFailCheckThreshold: Math.floor((this.weapons.general["General weapon proficiency"].value) / 2),
-      ...prompt
-    }
+    };
+  }
+
+  async rollAttackCheck(prompt: IAttackRollPrompt): Promise<IAttackRollResult> {
+    const config: IDiceServerAttackConfig = {
+      ...this.attackDiceParameters, ...prompt
+    };
     return await DiceServer.attackCheck(config);
   }
 }

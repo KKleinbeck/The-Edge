@@ -213,7 +213,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
         ui.notifications.notify(msg)
       return undefined;
     }
-    const targetIds = Array.from(game.user.targets.map(x => x.id));  //targets is set
+    const targetIds: string[] = Array.from(game.user.targets.map(x => x.id));  //targets is set
     const sceneId = game.user.viewedScene; // TODO: Needed?
     const weaponID = target.closest(".weapon-id")?.dataset.weaponId ||
       target.dataset.weaponId;
@@ -228,12 +228,11 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
         ui.notifications.notify(msg)
         return undefined;
       }
-      const damage = weaponID ? weapon.system.fireModes[0].damage : actor.system.combaticsDamage;
+      const damageRoll = weaponID ? weapon.system.fireModes[0].damage : actor.system.combaticsDamage;
       const name = weaponID ? weapon.name : LocalisationServer.localise("Hand to Hand combat", "combat");
       DialogCombatics.start({
-        actor: actor, token: token, sceneId: sceneId, targetId: targetIds[0] || undefined,
-        name: name, threshold: threshold, damage: damage
-      })
+        actor, actorId: actor.id, token, sceneId, targetId: targetIds[0] || undefined, name, threshold, damageRoll
+      });
       return undefined;
     }
 

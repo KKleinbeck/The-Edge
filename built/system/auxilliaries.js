@@ -3,11 +3,11 @@ import LocalisationServer from "./localisation_server.js";
 import NotificationServer from "./notifications.js";
 const { renderTemplate } = foundry.applications.handlebars;
 export default class Aux {
-    static asChance(value, asHtmlString = false) {
+    static asChance(value, asHtmlString = false, digits = 1) {
         value *= 100;
         if (!asHtmlString)
             return value;
-        return `${value.toFixed(1)}&nbsp;%`;
+        return `${value.toFixed(digits)}&nbsp;%`;
     }
     static objectAt(obj, path) {
         return path.split(".").reduce((a, i) => a[i], obj);
@@ -265,5 +265,14 @@ export default class Aux {
             }
         }
         return successes / total;
+    }
+    static attackSuccessChance(baseThreshold, diceParameters) {
+        let successes = 0;
+        const { critFailDice = [20] } = diceParameters;
+        for (let d = 1; d <= 20; d++) {
+            if (d <= baseThreshold && !critFailDice.includes(d))
+                successes++;
+        }
+        return successes / 20;
     }
 }

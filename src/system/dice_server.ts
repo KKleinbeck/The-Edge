@@ -124,7 +124,7 @@ export default class DiceServer {
     let netOutcome: number = 0;
     for (let i = 0; i < config.nRolls; ++i) {
       diceResults.push(await this.genericRoll("1d20"));
-      crits.push(config.critDice.includes[diceResults[i]]);
+      crits.push(config.critDice.includes(diceResults[i]));
       hits.push(
         diceResults[i] <= config.threshold && !(config.critFailDice.includes(diceResults[i]))
       );

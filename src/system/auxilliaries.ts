@@ -5,10 +5,10 @@ import NotificationServer from "./notifications.js";
 const { renderTemplate } = foundry.applications.handlebars;
 
 export default class Aux {
-  static asChance(value: number, asHtmlString: boolean = false): number | string {
+  static asChance(value: number, asHtmlString: boolean = false, digits: number = 1): number | string {
     value *= 100;
     if (!asHtmlString) return value;
-    return `${value.toFixed(1)}&nbsp;%`
+    return `${value.toFixed(digits)}&nbsp;%`
   }
 
 
@@ -221,7 +221,7 @@ export default class Aux {
   }
 
 
-  static async promptInput(title_dialog_id = "Prompt number") {
+  static async promptInput(title_dialog_id = "Prompt number"): Promise<number> {
     var result = await foundry.applications.api.DialogV2.prompt({
       window: { title: LocalisationServer.localise(title_dialog_id, "dialog") },
       position: { width: 100 },
@@ -311,5 +311,20 @@ export default class Aux {
     }
 
     return successes / total;
+  }
+
+
+  static attackSuccessChance(
+    baseThreshold: number,
+    diceParameters: Partial<IAttackDiceParameters>
+  ): number {
+    let successes: number = 0;
+    const { critFailDice = [20] } = diceParameters;
+
+    for (let d = 1; d <= 20; d++) {
+      if (d <= baseThreshold && !critFailDice.includes(d)) successes++;
+    }
+
+    return successes / 20;
   }
 }

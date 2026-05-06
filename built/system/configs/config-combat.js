@@ -6,5 +6,8 @@ export const COMBAT_CONFIG = {
         { name: "Mag drop", frequency: 5 }, { name: "Random discharge", frequency: 5 },
         { name: "Broken grip", frequency: 5 }, { name: "Barrel misaligned", frequency: 5 },
         { name: "Barrel damaged", frequency: 2 }, { name: "Catastrophic failure", frequency: 1 }
-    ]
+    ],
+    handToHandMaxStrain: (handToHandLevel, strainMaxUseReduction) => {
+        return Math.floor(handToHandLevel / 2.5 + strainMaxUseReduction);
+    }
 };

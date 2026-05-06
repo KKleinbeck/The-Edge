@@ -207,7 +207,7 @@ export default class CombatantData extends DataModelComponent {
     await this.parent.update({"system.wounds": this.wounds});
   }
 
-  async applyStrain(strain) {
+  async applyStrain(strain: number) {
     const newValue = Math.clamp(this.strain.value + strain, 0, this.strain.max.value);
     const change = newValue - this.strain.value;
     await this.parent.update({"system.strain.value": newValue});
