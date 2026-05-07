@@ -117,45 +117,43 @@ export default class DiceServer {
     return DiceServer.attackOutcome(roll, config);
   }
 
-  static async _attackRoll(config: IDiceServerAttackConfig): Promise<[IAttackRollPreResult, number]> {
-    const crits: boolean[] = [];
-    const diceResults: number[] = [];
-    const hits: boolean[] = [];
+  static async _attackRoll(config: IDiceServerAttackConfig): Promise<[IAttackRoll[], number]> {
+    const rolls: IAttackRoll[] = []
     let netOutcome: number = 0;
     for (let i = 0; i < config.nRolls; ++i) {
-      diceResults.push(await this.genericRoll("1d20"));
-      crits.push(config.critDice.includes(diceResults[i]));
-      hits.push(
-        diceResults[i] <= config.threshold && !(config.critFailDice.includes(diceResults[i]))
-      );
-      netOutcome += +hits[i] + 2 * (+crits[i]);
+      const diceResult = await this.genericRoll("1d20");
+      const crit = config.critDice.includes(diceResult);
+      const hit = diceResult <= config.threshold && !(config.critFailDice.includes(diceResult));
+      rolls.push({crit, diceResult, hit});
+
+      netOutcome += +hit + 2 * (+crit);
     }
-    return [{crits, diceResults, hits}, netOutcome];
+    return [rolls, netOutcome];
   }
 
   static async attackOutcome(
-    preResult: IAttackRollPreResult, config: IDiceServerAttackConfig
+    rolls: IAttackRoll[], config: IDiceServerAttackConfig
   ): Promise<IAttackRollResult> {
     let damage: number[] = [];
     for (let i = 0; i < config.nRolls; ++i) {
-      if (!preResult.hits[i]) continue;
+      if (!rolls[i].hit) continue;
 
       damage.push((await DiceServer.genericRoll(config.damageRoll)));
-      if (preResult.crits[i]) {
+      if (rolls[i].crit) {
         damage[damage.length-1] += DiceServer.max(config.damageRoll);
       }
     }
 
     let failEvent = "";
-    const nFailures = preResult.diceResults.filter(x => config.critFailDice.includes(x));
-    if (nFailures.length >= 0.33335 * preResult.diceResults.length) {
+    const nCritFailures = rolls.map(x => x.diceResult).filter(x => config.critFailDice.includes(x));
+    if (nCritFailures.length >= 0.33335 * config.nRolls) {
       const failCheck = (await DiceServer.genericRoll("1d20"));
       if (config.critFailDice.includes(failCheck) || failCheck > config.critFailCheckThreshold) {
         failEvent = this.selectFromCritFailEvents(THE_EDGE.combatConfig.critFailTable);
       }
     }
 
-    return {damage, failEvent, ...preResult};
+    return {damage, failEvent, rolls};
   }
 
   static async genericRoll(rollDescription: string): Promise<number> {

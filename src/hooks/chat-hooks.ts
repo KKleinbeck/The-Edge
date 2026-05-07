@@ -96,7 +96,7 @@ export default function() {
           const target = scene.tokens.get(details.targetId)?.actor;
           const protectionLog = await applyDamage(
             target, details.damage, details.penetration === undefined ? 0 : details.penetration,
-            details.crits, details.damageType, details.name
+            details.rolls.map(x => x.crit), details.damageType, details.name
           );
           if (Object.keys(protectionLog).length != 0) {
             const template = "systems/the_edge/templates/chat/meta-protection-log.html";
@@ -166,9 +166,9 @@ export default function() {
 }
 
 function rollIsReady(id, target) {
-    if (Aux.hasRaceCondDanger(id)) return false;
-    if (target.className.includes("roll-offline")) return false;
-    return true;
+  if (Aux.hasRaceCondDanger(id)) return false;
+  if (target.className.includes("roll-offline")) return false;
+  return true;
 };
 
 function rollFollowUps(elem) {
@@ -195,7 +195,7 @@ function updateChatMessageFromHTML(chatMsgCls, html, sys) {
   )
 }
 
-async function applyDamage(target, damage, penetration, crits, damageType, name) {
+async function applyDamage(target: foundryAny, damage: number[], penetration, crits: boolean[], damageType, name) {
   const protectionLog: any = {};
   const partialLogs: any[] = [];
   for (let i = 0; i < damage.length; ++i){

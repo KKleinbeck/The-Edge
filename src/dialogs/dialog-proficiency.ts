@@ -7,7 +7,7 @@ const { DialogV2 } = foundry.applications.api;
 
 export default class DialogProficiency extends SliderMixin(DialogV2) {
   declare checkData: IProficiencyRollQuery
-  declare vantage: VantageType
+  declare vantage: TVantage
 
   constructor (checkData: IProficiencyRollQuery, options: foundryAny) {
     super(options);
@@ -19,7 +19,7 @@ export default class DialogProficiency extends SliderMixin(DialogV2) {
     super._onRender(context, options);
     this.element.querySelector(".vantage-hook")!.addEventListener("change", (event: Event) => {
       if(!(event.target instanceof HTMLSelectElement)) return;
-      this.vantage = event.target.value as VantageType;
+      this.vantage = event.target.value as TVantage;
       this._onChanceChanged();
     });
   }

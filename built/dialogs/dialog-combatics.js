@@ -62,15 +62,15 @@ export default class DialogCombatics extends SliderMixin(DialogV2) {
     async cheatCallback() {
         const sliderValues = this.getSliderValues();
         const threshold = this.checkData.threshold + Object.values(sliderValues).sum();
-        const roll = await Aux.promptInput(LocalisationServer.localise("Cheat attack roll", "dialog"));
+        const diceResult = await Aux.promptInput(LocalisationServer.localise("Cheat attack roll", "dialog"));
         const diceParameters = this.checkData.actor.system.attackDiceParameters;
-        const isCrit = diceParameters.critDice.includes(roll);
-        const isHit = isCrit || (roll <= this.checkData.threshold && !diceParameters.critFailDice.includes(roll));
-        var damage = isHit ? [await DiceServer.genericRoll(this.checkData.damageRoll)] : [];
-        if (isCrit)
-            damage[0] += await DiceServer.max(this.checkData.damageRoll);
+        const crit = diceParameters.critDice.includes(diceResult);
+        const hit = crit || (diceResult <= this.checkData.threshold && !diceParameters.critFailDice.includes(diceResult));
+        var damage = hit ? [await DiceServer.genericRoll(this.checkData.damageRoll)] : [];
+        if (crit)
+            damage[0] += DiceServer.max(this.checkData.damageRoll);
         var attackRollResult = {
-            crits: [isCrit], damage: damage, diceResults: [roll], failEvent: "", hits: [isHit],
+            damage: damage, failEvent: "", rolls: [{ crit, diceResult, hit }],
         };
         this._transmitRoll(threshold, attackRollResult);
     }
@@ -85,6 +85,7 @@ export default class DialogCombatics extends SliderMixin(DialogV2) {
         this._transmitRoll(threshold, attackRollResult);
     }
     _transmitRoll(threshold, attackRollResult) {
+        const sliderValues = this.getSliderValues();
         const config = {
             speaker: {
                 actor: this.checkData.actor.id,
@@ -92,13 +93,13 @@ export default class DialogCombatics extends SliderMixin(DialogV2) {
                 token: this.checkData.token.id
             }
         };
-        console.log({ ...this.checkData, ...attackRollResult, threshold: threshold });
         const details = {
             ...this.checkData,
             ...attackRollResult,
+            ...sliderValues,
+            isMelee: true,
             threshold: threshold,
             vantage: this.vantage,
-            weaponType: "Melee"
         };
         NewChatServer.transmitEvent("WEAPON CHECK", details, config);
     }

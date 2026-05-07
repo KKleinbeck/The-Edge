@@ -69,10 +69,6 @@ export default class DialogWeapon extends Dialog{
           })
 
           // Apply the damage
-          checkData.rolls = []
-          for (let i = 0; i < dices; ++i) {
-            checkData.rolls.push({res: attackRollResult.diceResults[i], hit: attackRollResult.hits[i]})
-          }
           for (const id of checkData.targetIds) {
             checkData["targetId"] = id;
             NewChatServer.transmitEvent("WEAPON CHECK", checkData, chatServerConfig);

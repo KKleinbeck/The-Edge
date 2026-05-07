@@ -186,7 +186,7 @@ export default class Aux {
 
 
   static generateWoundLocation(
-    crit: boolean, sex: TSex, givenLocation = undefined): [TBodyPart, TCoordinate] {
+    crit: boolean, sex: TSex, givenLocation: TBodyPartCoarse | undefined = undefined): [TBodyPart, TCoordinate] {
     let locationDescription = "";
     if (givenLocation === undefined) {
       if (crit) locationDescription = "Head";

@@ -78,7 +78,7 @@ export default function () {
                 if (details.targetId) {
                     const scene = game.scenes.get(sys.config.speaker.scene);
                     const target = scene.tokens.get(details.targetId)?.actor;
-                    const protectionLog = await applyDamage(target, details.damage, details.penetration === undefined ? 0 : details.penetration, details.crits, details.damageType, details.name);
+                    const protectionLog = await applyDamage(target, details.damage, details.penetration === undefined ? 0 : details.penetration, details.rolls.map(x => x.crit), details.damageType, details.name);
                     if (Object.keys(protectionLog).length != 0) {
                         const template = "systems/the_edge/templates/chat/meta-protection-log.html";
                         const protectionHtml = await renderTemplate(template, { protection: protectionLog });

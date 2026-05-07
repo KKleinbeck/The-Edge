@@ -112,37 +112,36 @@ export default class DiceServer {
         return DiceServer.attackOutcome(roll, config);
     }
     static async _attackRoll(config) {
-        const crits = [];
-        const diceResults = [];
-        const hits = [];
+        const rolls = [];
         let netOutcome = 0;
         for (let i = 0; i < config.nRolls; ++i) {
-            diceResults.push(await this.genericRoll("1d20"));
-            crits.push(config.critDice.includes(diceResults[i]));
-            hits.push(diceResults[i] <= config.threshold && !(config.critFailDice.includes(diceResults[i])));
-            netOutcome += +hits[i] + 2 * (+crits[i]);
+            const diceResult = await this.genericRoll("1d20");
+            const crit = config.critDice.includes(diceResult);
+            const hit = diceResult <= config.threshold && !(config.critFailDice.includes(diceResult));
+            rolls.push({ crit, diceResult, hit });
+            netOutcome += +hit + 2 * (+crit);
         }
-        return [{ crits, diceResults, hits }, netOutcome];
+        return [rolls, netOutcome];
     }
-    static async attackOutcome(preResult, config) {
+    static async attackOutcome(rolls, config) {
         let damage = [];
         for (let i = 0; i < config.nRolls; ++i) {
-            if (!preResult.hits[i])
+            if (!rolls[i].hit)
                 continue;
             damage.push((await DiceServer.genericRoll(config.damageRoll)));
-            if (preResult.crits[i]) {
+            if (rolls[i].crit) {
                 damage[damage.length - 1] += DiceServer.max(config.damageRoll);
             }
         }
         let failEvent = "";
-        const nFailures = preResult.diceResults.filter(x => config.critFailDice.includes(x));
-        if (nFailures.length >= 0.33335 * preResult.diceResults.length) {
+        const nCritFailures = rolls.map(x => x.diceResult).filter(x => config.critFailDice.includes(x));
+        if (nCritFailures.length >= 0.33335 * config.nRolls) {
             const failCheck = (await DiceServer.genericRoll("1d20"));
             if (config.critFailDice.includes(failCheck) || failCheck > config.critFailCheckThreshold) {
                 failEvent = this.selectFromCritFailEvents(THE_EDGE.combatConfig.critFailTable);
             }
         }
-        return { damage, failEvent, ...preResult };
+        return { damage, failEvent, rolls };
     }
     static async genericRoll(rollDescription) {
         const roll = await new Roll(rollDescription).evaluate();

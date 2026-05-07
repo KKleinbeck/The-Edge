@@ -71,7 +71,7 @@ export default class CombatantData extends DataModelComponent {
     ]
   }
 
-  deleteWound(index) {
+  deleteWound(index: number) {
     const update = {
       "system.health.value": Math.min( // Math.min relevant for wound generated while dying
         this.health.value + this.wounds[index].damage, this.health.max.value

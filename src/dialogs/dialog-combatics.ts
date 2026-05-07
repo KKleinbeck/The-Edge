@@ -10,7 +10,7 @@ const { DialogV2 } = foundry.applications.api;
 
 export default class DialogCombatics extends SliderMixin(DialogV2){
   declare checkData: IAttackRollQuery
-  declare vantage: VantageType
+  declare vantage: TVantage
 
   constructor (checkData: IAttackRollQuery, options: foundryAny) {
     super(options);
@@ -22,7 +22,7 @@ export default class DialogCombatics extends SliderMixin(DialogV2){
     super._onRender(context, options);
     this.element.querySelector(".vantage-hook")!.addEventListener("change", (event: Event) => {
       if(!(event.target instanceof HTMLSelectElement)) return;
-      this.vantage = event.target.value as VantageType;
+      this.vantage = event.target.value as TVantage;
       this._onChanceChanged();
     });
   }
@@ -75,19 +75,19 @@ export default class DialogCombatics extends SliderMixin(DialogV2){
     const sliderValues = this.getSliderValues();
     const threshold: number = this.checkData.threshold + (Object.values(sliderValues).sum() as number);
 
-    const roll: number = await Aux.promptInput(
+    const diceResult: number = await Aux.promptInput(
       LocalisationServer.localise("Cheat attack roll", "dialog")
     );
     const diceParameters: IAttackDiceParameters = this.checkData.actor.system.attackDiceParameters;
-    const isCrit: boolean = diceParameters.critDice.includes(roll);
-    const isHit: boolean = isCrit || (
-      roll <= this.checkData.threshold && !diceParameters.critFailDice.includes(roll)
+    const crit: boolean = diceParameters.critDice.includes(diceResult);
+    const hit: boolean = crit || (
+      diceResult <= this.checkData.threshold && !diceParameters.critFailDice.includes(diceResult)
     );
-    var damage: number[] = isHit ? [await DiceServer.genericRoll(this.checkData.damageRoll)] : [];
-    if (isCrit) damage[0] += await DiceServer.max(this.checkData.damageRoll);
+    var damage: number[] = hit ? [await DiceServer.genericRoll(this.checkData.damageRoll)] : [];
+    if (crit) damage[0] += DiceServer.max(this.checkData.damageRoll);
 
     var attackRollResult: IAttackRollResult = {
-      crits: [isCrit], damage: damage ,diceResults: [roll], failEvent: "", hits: [isHit],
+      damage: damage, failEvent: "", rolls: [{crit, diceResult, hit}],
     };
 
     this._transmitRoll(threshold, attackRollResult);
@@ -107,6 +107,8 @@ export default class DialogCombatics extends SliderMixin(DialogV2){
   }
 
   _transmitRoll(threshold: number, attackRollResult: IAttackRollResult) {
+    const sliderValues = this.getSliderValues() as {modifier: number, strain: number};
+
     const config: IChatServerConfig = {
       speaker: {
         actor: this.checkData.actor.id,
@@ -114,15 +116,13 @@ export default class DialogCombatics extends SliderMixin(DialogV2){
         token: this.checkData.token.id
       }
     }
-    console.log(
-      {...this.checkData, ...attackRollResult, threshold: threshold}
-    )
-    const details = {
+    const details: IDetailsWeaponCheck = {
       ...this.checkData,
       ...attackRollResult,
+      ...sliderValues,
+      isMelee: true,
       threshold: threshold,
       vantage: this.vantage,
-      weaponType: "Melee"
     };
     NewChatServer.transmitEvent(
       "WEAPON CHECK", details, config

@@ -3,6 +3,7 @@ type Constructor<T = {}> = new (...args: any[]) => T;
 type attribute = "end" | "str" | "spd" | "crd" | "cha" | "emp" | "foc" | "res" | "int"
 
 type TBodyPart = "Torso" | "Head" | "LegsLeft" | "LegsRight" | "ArmsLeft" | "ArmsRight"
+type TBodyPartCoarse = "Torso" | "Head" | "Legs" | "Arms"
 
 type TCoordinate = [number, number]
 

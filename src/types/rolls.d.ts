@@ -1,5 +1,5 @@
 // Generics
-type VantageType = "Advantage" | "Disadvantage" | "Nothing"
+type TVantage = "Advantage" | "Disadvantage" | "Nothing"
 
 interface IDiceParameters {
   critDice: number[]
@@ -17,7 +17,7 @@ interface IDiceParameters {
 interface IDiceServerConfig extends IDiceParameters {
   modifier: number
   threshold: number
-  vantage: VantageType
+  vantage: TVantage
 }
 
 interface ICritFailEvent {
@@ -37,7 +37,7 @@ interface IRollResult {
 interface IRollPromptResult {
   strain: number
   modifier: number
-  vantage: VantageType
+  vantage: TVantage
   roll?: rollType
 }
 
@@ -62,13 +62,14 @@ interface IProficiencyRollQuery extends _IRollActor{
 interface IProficiencyPromptResult extends IProficiencyRollQuery, IRollPromptResult {}
 
 // Combat
-interface IAttackRollPreResult {
-  crits: boolean[]
-  diceResults: number[]
-  hits: boolean[]
+interface IAttackRoll {
+  crit: boolean
+  diceResult: number
+  hit: boolean
 }
 
-interface IAttackRollResult extends IAttackRollPreResult {
+interface IAttackRollResult {
+  rolls: IAttackRoll[]
   damage: number[]
   failEvent: string
 }
@@ -77,7 +78,7 @@ interface IAttackRollPrompt {
   damageRoll: string
   nRolls: number
   threshold: number
-  vantage: VantageType
+  vantage: TVantage
 }
 
 interface IAttackRollQuery extends _IRollActor {
