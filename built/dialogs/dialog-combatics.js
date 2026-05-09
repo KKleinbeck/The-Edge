@@ -97,6 +97,7 @@ export default class DialogCombatics extends SliderMixin(DialogV2) {
             ...this.checkData,
             ...attackRollResult,
             ...sliderValues,
+            damageType: "HandToHand",
             isMelee: true,
             threshold: threshold,
             vantage: this.vantage,

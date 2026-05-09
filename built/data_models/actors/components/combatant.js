@@ -66,11 +66,13 @@ export default class CombatantData extends DataModelComponent {
         update["system.wounds"] = this.wounds;
         this.parent.update(update);
     }
-    async applyDamage(damage, crit, penetration, damageType, name, givenLocation = undefined) {
-        const woundDetails = { source: name, damageType: damageType };
-        [woundDetails.bodyPart, woundDetails.coordinates] = Aux.generateWoundLocation(crit, this.sex, givenLocation);
+    async applyDamage(config) {
+        const { damageType } = config;
+        let { damage } = config;
+        const woundDetails = { source: config.name, damageType: damageType };
+        [woundDetails.bodyPart, woundDetails.coordinates] = Aux.generateWoundLocation(config.crit, this.sex, config.givenLocation);
         let protectionLog = {};
-        [protectionLog, damage] = await this._determineArmourProtection(damage, penetration, damageType, woundDetails.bodyPart);
+        [protectionLog, damage] = await this._determineArmourProtection(damage, config.penetration, damageType, woundDetails.bodyPart);
         woundDetails.damage = damage;
         if (damage > 0) {
             const health = this.health.value;
@@ -83,7 +85,6 @@ export default class CombatantData extends DataModelComponent {
             await this.parent.update(update);
             const bt = THE_EDGE.bleedingThreshold[damageType];
             woundDetails.bleeding = CombatantData._determineBleeding(damage, bt);
-            woundDetails.source = damageType;
             await this.generateNewWound(woundDetails);
         }
         return protectionLog;

@@ -195,11 +195,17 @@ function updateChatMessageFromHTML(chatMsgCls, html, sys) {
   )
 }
 
-async function applyDamage(target: foundryAny, damage: number[], penetration, crits: boolean[], damageType, name) {
+async function applyDamage(
+  target: foundryAny, damage: number[], penetration, crits: boolean[], damageType: TDamageTypes, name: string
+) {
   const protectionLog: any = {};
   const partialLogs: any[] = [];
   for (let i = 0; i < damage.length; ++i){
-    const partialLog = await target.system.applyDamage(damage[i], crits[i], penetration, damageType, name);
+    const config: IFApplyDamage = {
+      crit: crits[i], damage: damage[i], damageType,
+      name, penetration,
+    }
+    const partialLog = await target.system.applyDamage(config);
     partialLogs.push(partialLog);
   }
 

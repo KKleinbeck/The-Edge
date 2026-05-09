@@ -81,15 +81,21 @@ class DialogGenericWound extends Dialog {
             apply: {
                 label: LocalisationServer.localise("apply"),
                 callback: async (html) => {
-                    const damage = parseInt(html.find('[name="damage"]').val());
-                    const type = html.find('[name="type"]').val();
-                    var partialLog = await checkData.actor.system.applyDamage(damage, false, 0, type, LocalisationServer.localise("New wound"), checkData.location);
+                    const config = {
+                        crit: false,
+                        damage: parseInt(html.find('[name="damage"]').val()),
+                        damageType: html.find('[name="type"]').val(),
+                        givenLocation: checkData.location,
+                        penetration: 0,
+                        name: LocalisationServer.localise("New wound"),
+                    };
+                    var partialLog = await checkData.actor.system.applyDamage(config);
                     const protectionLog = {};
                     for (const [key, value] of Object.entries(partialLog))
                         protectionLog[key] = [value];
                     ChatServer.transmitEvent("Generic damage", {
-                        actor: checkData.actor.name, damage: damage,
-                        type: type, protection: protectionLog
+                        actor: checkData.actor.name, damage: config.damage,
+                        type: config.damageType, protection: protectionLog
                     });
                 }
             },

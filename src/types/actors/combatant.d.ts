@@ -1,4 +1,4 @@
-interface IApplyDamage {
+interface IFApplyDamage {
   crit: boolean
   damage: number
   damageType: TDamageTypes

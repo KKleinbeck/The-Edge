@@ -168,7 +168,11 @@ async function applyDamage(target, damage, penetration, crits, damageType, name)
     const protectionLog = {};
     const partialLogs = [];
     for (let i = 0; i < damage.length; ++i) {
-        const partialLog = await target.system.applyDamage(damage[i], crits[i], penetration, damageType, name);
+        const config = {
+            crit: crits[i], damage: damage[i], damageType,
+            name, penetration,
+        };
+        const partialLog = await target.system.applyDamage(config);
         partialLogs.push(partialLog);
     }
     // Two loop approach: 1. Setup Log, 2. Populate log
