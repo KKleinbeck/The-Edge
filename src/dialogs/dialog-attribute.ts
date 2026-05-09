@@ -1,13 +1,19 @@
-import SliderMixin from "../mixins/slider-mixin.js";
 import LocalisationServer from "../system/localisation_server.js";
+import SliderMixin from "../mixins/slider-mixin.js";
+import THE_EDGE from "../system/config-the-edge.js";
 
 const { renderTemplate } = foundry.applications.handlebars;
 const { DialogV2 } = foundry.applications.api;
 
 export default class DialogAttribute extends SliderMixin(DialogV2){
   static async start(checkData: IAttributeRollQuery) {
-    const template = "systems/the_edge/templates/dialogs/attributes.hbs";
-    const html = await renderTemplate(template, {});
+    const template = "systems/the_edge/templates/dialogs/basic-rolls.hbs";
+    const attributeLevel = checkData.actor.system.attributes[checkData.attribute].value;
+    const strainMaxUseReduction = checkData.actor.system.strain.maxUseReduction.status;
+    const html = await renderTemplate(template, {
+      maxStrain: THE_EDGE.attributesMaxStrain(attributeLevel, strainMaxUseReduction),
+      strainHintType: "Attribute Strain"
+    });
     const content = document.createElement("div");
     content.innerHTML = html;
 

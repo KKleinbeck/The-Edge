@@ -28,14 +28,15 @@ export default class DialogCombatics extends SliderMixin(DialogV2){
   }
 
   static async start(checkData: IAttackRollQuery) {
-    const template = "systems/the_edge/templates/dialogs/combatics.hbs";
-    const handToHandLevel: number = checkData.actor.system.getWeaponLevel("Hand-to-Hand combat");
+    const template = "systems/the_edge/templates/dialogs/basic-rolls.hbs";
+    const handToHandLevel: number = checkData.actor.system.weapons.general["Hand-to-Hand combat"].value;
     const strainMaxUseReduction = checkData.actor.system.strain.maxUseReduction.status;
     const html = await renderTemplate(template, {
       chance: Aux.asChance(Aux.attackSuccessChance(
         checkData.threshold, checkData.actor.system.attackDiceParameters
       ), true, 0),
-      maxStrain: THE_EDGE.combatConfig.handToHandMaxStrain(handToHandLevel, strainMaxUseReduction)
+      maxStrain: THE_EDGE.combatConfig.handToHandMaxStrain(handToHandLevel, strainMaxUseReduction),
+      strainHintType: "Combatics strain"
     });
     const content = document.createElement("div");
     content.innerHTML = html;
@@ -94,14 +95,14 @@ export default class DialogCombatics extends SliderMixin(DialogV2){
   }
 
   async attackCallback(): Promise<void> {
-    const sliderValues = this.getSliderValues();
+    const sliderValues = this.getSliderValues() as {modifier: number, strain: number};
     const threshold: number = this.checkData.threshold + (Object.values(sliderValues).sum() as number);
     
     const prompt: IAttackRollPrompt = {
       threshold, nRolls: 1, vantage: this.vantage, damageRoll: this.checkData.damageRoll
     }
     const attackRollResult: IAttackRollResult = await this.checkData.actor.system.rollAttackCheck(prompt);
-    // TODO apply strain
+    this.checkData.actor.system.applyStrain(sliderValues.strain);
 
     this._transmitRoll(threshold, attackRollResult);
   }

@@ -97,5 +97,8 @@ THE_EDGE.strainCost = {
     striding: 0,
     running: 3,
     sprinting: 6
-};
+},
+    THE_EDGE.attributesMaxStrain = (attributeLevel, strainMaxUseReduction) => {
+        return Math.max(Math.floor((attributeLevel - 3) / 3 + strainMaxUseReduction), 0);
+    };
 export default THE_EDGE;

@@ -4,9 +4,11 @@
     <option value="Advantage">Advantage</option>
     <option value="Disadvantage">Disadvantage</option>
   </select>
+  {{#if chance}}
   <div class="chance-hook box-passive">
     {{{chance}}}
   </div>
+  {{/if}}
 </div>
 {{>
   systems/the_edge/templates/generic/slider.hbs
@@ -22,5 +24,6 @@
   title=(genName "Strain")
   id="strain"
   max=maxStrain
+  hint=strainHintType
 }}
 {{/if}}

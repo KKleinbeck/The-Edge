@@ -2,7 +2,7 @@
 <div class="centered-row">
   <b>{{genName "Check"}}: </b>
   <a class="attr-d20-chat d20-{{attribute}} rerollable" data-type="attribute">
-    <span class="d20-overlay" data-tooltip aria-label="{{attrName attribute}} {{genName 'threshold'}}: {{attributeValue}}">
+    <span class="d20-overlay" data-tooltip aria-label="{{attrName attribute}}: {{attributeValue}}">
       {{getEntries rolls 0}}
     </span>
   </a>
@@ -21,6 +21,7 @@
 <div>
   <b>{{genName "Modificators"}}:</b>
   <div style="display: grid; grid-template-columns: repeat(2, min-content); padding-left: 5px; gap: 0 8px;">
+    <div style="white-space: nowrap;">{{genName "Strain"}}:</div><div style="white-space: nowrap; text-align: end">{{strain}}</div>
     <div style="white-space: nowrap;">{{genName "Temporary"}}:</div><div style="white-space: nowrap; text-align: end">{{modifier}}</div>
   </div>
 </div>

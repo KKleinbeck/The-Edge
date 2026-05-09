@@ -13,6 +13,7 @@ function ATTR_FIELD() {
 
 export default class AttributeData extends DataModelComponent {
   declare attributes: ATTRIBUTES
+  declare applyStrain
   
   static defineSchema() {
     return {
@@ -53,12 +54,13 @@ export default class AttributeData extends DataModelComponent {
   async rollAttributeCheck(promptResult: IAttributePromptResult, transmit = true): Promise<IRollResult> {
     const diceServerConfig: IDiceServerConfig = {
       ...this.attributeDiceParameters,
-      modifier: promptResult.modifier,
+      modifier: promptResult.modifier + promptResult.strain,
       threshold: this.attributes[promptResult.attribute].value,
       vantage: promptResult.vantage
     }
 
     const rollResult: IRollResult = await DiceServer.attributeCheck(diceServerConfig);
+    this.applyStrain(promptResult.strain);
 
     if (transmit) {
       const details: IAttributeRollMessage = {
@@ -68,7 +70,7 @@ export default class AttributeData extends DataModelComponent {
         diceServerConfig: diceServerConfig,
         effectiveThreshold: rollResult.effectiveThreshold,
         modifier: promptResult.modifier,
-        strain: 0,
+        strain: promptResult.strain,
         vantage: promptResult.vantage
       }
       const chatConfig: IChatServerConfig = {

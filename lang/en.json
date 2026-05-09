@@ -270,7 +270,11 @@
 
     "SELECT": "Select",
     "SUBMIT": "Submit",
-    "YES": "Yes"
+    "YES": "Yes",
+
+    "ATTRIBUTE STRAIN": "1 strain point for every 3 attribute level, starting at level 6",
+    "COMBATICS STRAIN": "1 strain point for every 2.5 level in hand-to-hand combat",
+    "PROFICIENCY STRAIN": "1 strain point per proficiency level"
   },
   "EFFECT_GROUP": {
     "BLOODLOSSTHRESHOLD": "Blood loss - threshold",
