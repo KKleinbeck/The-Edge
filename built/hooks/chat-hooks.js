@@ -33,7 +33,7 @@ export default function () {
                 const target = ev.currentTarget;
                 if (!rollIsReady("proficiency-roll", target))
                     return undefined;
-                const proficiencyRoll = await actor.rollProficiencyCheck({ proficiency: sys.check }, false);
+                const proficiencyRoll = await actor.system.rollProficiencyCheck({ proficiency: sys.check }, false);
                 const elem = $(target);
                 elem.find(".roll").remove();
                 switch (proficiencyRoll.outcome) {
@@ -106,10 +106,13 @@ export default function () {
                 const grenadeTile = scene.tiles.get(sys.grenadeTileId);
                 const logs = {};
                 for (const token of scene.tokens) {
+                    if (token.actor.type === "Store")
+                        continue;
                     const factor = scene.grid.distance / scene.grid.size;
                     const distance = factor * Math.hypot(token.x - grenadeTile.x, token.y - grenadeTile.y);
                     if (distance < maxDistance) {
                         const damage = await DiceServer.genericRoll(grenadeDetails.damage[distance < closeDistance ? 0 : 1]);
+                        console.log(token.actor);
                         const partialLog = await applyDamage(token.actor, [damage], 0, [false], grenadeDetails.type, sys.nameGrenade);
                         // Add damage and protection to the log
                         let protection = 0;

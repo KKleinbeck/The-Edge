@@ -14,6 +14,6 @@
   </select>
   <button data-action="rollCheck" style="justify-content: space-between;">
     <div>{{genName "Roll check"}}</div>
-    <div>{{#if (checkST 0 chosenActor.penalty)}}+{{/if}}{{chosenActor.modifier}} {{genName "Mod"}}</div>
+    <div>({{genName "Mod"}} {{#if (checkST 0 chosenActor.penalty)}}+{{/if}}{{chosenActor.modifier}})</div>
   </button>
 </div>

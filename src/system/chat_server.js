@@ -25,7 +25,7 @@ export default class ChatServer {
         break;
       
       case "PROFICIENCYCHECK":
-        html = await renderTemplate("systems/the_edge/templates/chat/proficiency_check.html", details);
+        html = await renderTemplate("systems/the_edge/templates/chat/proficiency_check.hbs", details);
         break;
       
       case "WEAPONCHECK":

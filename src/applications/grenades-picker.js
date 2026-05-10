@@ -21,7 +21,7 @@ export default class GrenadePicker extends HandlebarsApplicationMixin(Applicatio
       if (token.actor.type !== "character") continue;
 
       const grenades = token.actor.itemTypes["Consumables"].filter(
-        x => {return "grenade" == x.system.subtype;}
+        x => {return "grenade" == x.system.current_type;}
       )
       if (grenades.length >= 1) {
         const distance = this._getDistance(this.targetPosition, token);
@@ -95,11 +95,11 @@ export default class GrenadePicker extends HandlebarsApplicationMixin(Applicatio
 
     const token = canvas.scene.tokens.get(chosenActor.id);
     const checkData = {
-      proficiency: "throwing", temporaryMod: chosenActor.modifier, vantage: "Nothing",
+      proficiency: "throwing", modifier: chosenActor.modifier, vantage: "Nothing",
       actor: token.actor, actorId: token.actor.id, tokenId: token.id, sceneId: canvas.scene.id,
-      titleDetails: chosenGrenade.name, grenade: chosenGrenade
+      titleDetails: chosenGrenade.name, grenade: chosenGrenade, strain: 0
     };
-    const proficiencyRoll = await token.actor.rollProficiencyCheck(checkData, false);
+    const proficiencyRoll = await token.actor.system.rollProficiencyCheck(checkData, false);
     foundry.utils.mergeObject(checkData, proficiencyRoll);
 
     const rollOutcome = ProficiencyConfig.rollOutcome("throwing", proficiencyRoll.quality);
@@ -128,13 +128,13 @@ export default class GrenadePicker extends HandlebarsApplicationMixin(Applicatio
     const dist = rollOutcome.distance * canvas.scene.grid.size;
     if (proficiencyRoll.quality >= 0) {
       const angle = Math.PI * (45 * rollOutcome.dir + 40 * Math.random() - 20) / 180;
-      position.x = targetPosition.x + dist * Math.sin(angle);
-      position.y = targetPosition.y - dist * Math.cos(angle);
+      position.x = Math.floor(targetPosition.x + dist * Math.sin(angle));
+      position.y = Math.floor(targetPosition.y - dist * Math.cos(angle));
     } else {
       const angle = Math.atan2(token.y - targetPosition.y, token.x - targetPosition.x) +
         Math.PI * (180 * rollOutcome.dir + 40 * Math.random() - 20 + 90) / 180;
-      position.x = token.x + dist * Math.sin(angle);
-      position.y = token.y - dist * Math.cos(angle);
+      position.x = Math.floor(token.x + dist * Math.sin(angle));
+      position.y = Math.floor(token.y - dist * Math.cos(angle));
     }
     const grenadeTile = await cls.create(
       {
