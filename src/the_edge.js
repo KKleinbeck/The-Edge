@@ -131,6 +131,8 @@ Hooks.once("init", async function() {
   CONFIG.Actor.dataModels.Store = StoreData;
   CONFIG.Actor.documentClass = TheEdgeActor;
 
+  // CONFIG.Combat.documentClass = undefined;
+
   CONFIG.Item.dataModels.Advantage = VantageData;
   CONFIG.Item.dataModels.Ammunition = AmmunitionData;
   CONFIG.Item.dataModels.Armour = ArmourData;
