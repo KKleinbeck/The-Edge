@@ -86,7 +86,8 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
                 return;
         }
     }
-    async _prepareContext(_options) {
+    async _prepareContext(options) {
+        const context = await super._prepareContext(options);
         context.store = this.document;
         context.tokens = this.playerTokens;
         context.selectedTokenIndex = this.selectedTokenIndex;
@@ -120,7 +121,7 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
                 // Sort items by subtype
                 context.groups = {};
                 for (const item of this.actor.itemTypes["Consumables"]) {
-                    if (!(item.system.subtype in context.groups)) {
+                    if (!(item.system.current_type in context.groups)) {
                         context.groups[item.system.current_type] = [item];
                     }
                     else {
