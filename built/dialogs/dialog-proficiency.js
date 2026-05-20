@@ -1,22 +1,11 @@
 import Aux from "../system/auxilliaries.js";
+import CheckDialog from "./meta-check-dialog.js";
 import LocalisationServer from "../system/localisation_server.js";
-import SliderMixin from "../mixins/slider-mixin.js";
 const { renderTemplate } = foundry.applications.handlebars;
-const { DialogV2 } = foundry.applications.api;
-export default class DialogProficiency extends SliderMixin(DialogV2) {
+export default class DialogProficiency extends CheckDialog {
     constructor(checkData, options) {
         super(options);
         this.checkData = checkData;
-        this.vantage = "Nothing";
-    }
-    _onRender(context, options) {
-        super._onRender(context, options);
-        this.element.querySelector(".vantage-hook").addEventListener("change", (event) => {
-            if (!(event.target instanceof HTMLSelectElement))
-                return;
-            this.vantage = event.target.value;
-            this._onChanceChanged();
-        });
     }
     static async start(checkData) {
         const proficiencyData = checkData.actor.system.getProficiencyDiceThresholds(checkData.proficiency);
@@ -74,17 +63,16 @@ export default class DialogProficiency extends SliderMixin(DialogV2) {
         }).render({ force: true });
     }
     static rollCallback(dialog, checkData, roll) {
-        const promptResult = dialog.getSliderValues();
-        if (!(promptResult.strain))
-            promptResult.strain = 0;
-        promptResult.roll = roll;
+        const sliderValues = dialog.getSliderValues();
         checkData.proficiency = checkData.proficiency.toLowerCase();
         const vantageElement = dialog.element.querySelector(".vantage-hook");
         if (!(vantageElement instanceof HTMLSelectElement)) {
             ui.notifications.error("VantageElement is not of type HTMLSelectElement");
             return;
         }
-        promptResult.vantage = vantageElement.value;
+        const promptResult = { roll, ...dialog.promptResult };
+        if (!(promptResult.strain))
+            promptResult.strain = 0;
         const proficiencyPromptResult = foundry.utils.mergeObject(checkData, promptResult);
         checkData.actor.system.rollProficiencyCheck(proficiencyPromptResult);
     }
@@ -93,6 +81,7 @@ export default class DialogProficiency extends SliderMixin(DialogV2) {
     }
     // Helpers for rendering
     onValueChanged(_id, _value) { this._onChanceChanged(); }
+    onVantageChanged() { this._onChanceChanged(); }
     _onChanceChanged() {
         const sliderValues = this.getSliderValues();
         let threshold = Object.values(sliderValues).sum();

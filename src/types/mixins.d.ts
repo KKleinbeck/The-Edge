@@ -26,7 +26,7 @@ interface IModifiersAndContext {
 // ----------------------------------------
 // Slider Modifier
 interface SliderInstance {
-  getSliderValues(): Record<string, number | string>
+  getSliderValues(): Record<string, number>
 }
 interface SliderStatic {
   getSliderValuesFromElement(element: Element): Record<string, number | string>
