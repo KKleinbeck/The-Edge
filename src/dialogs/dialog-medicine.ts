@@ -13,10 +13,11 @@ export default class DialogMedicine extends Dialog{
   static async start(checkData: IDialogMedicineData) {
     const medicine = checkData.medicineItem.system.subtypes.medicine;
     const effect = medicine.effect;
-    const wounds = checkData.wounds.filter(x => x.status != "treated")
+    const wounds = checkData.wounds;
+    const hasNoWounds = wounds.filter(x => x.status != "treated").length == 0;
 
     const template = "systems/the_edge/templates/dialogs/medicine.hbs";
-    const html = await renderTemplate(template, {"wounds": wounds});
+    const html = await renderTemplate(template, {wounds, hasNoWounds});
     const buttons = {
       select: {
         label: game.i18n.localize("DIALOG.SELECT"),
