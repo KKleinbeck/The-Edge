@@ -280,10 +280,19 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
         // Handle different actions
         switch (target.dataset.subaction) {
             case "increase":
+                if (skill.type == "Advantage" || skill.type == "Disadvantage") {
+                    return this.actor.addOrCreateVantage(skill);
+                }
                 return this.actor.skillLevelIncrease(skillID);
             case "decrease":
+                if (skill.type == "Advantage" || skill.type == "Disadvantage") {
+                    return this.actor.decrementVantage(skill);
+                }
                 return this.actor.skillLevelDecrease(skillID);
             case "delete":
+                if (skill.type == "Advantage" || skill.type == "Disadvantage") {
+                    return this.actor.deleteVantage(skill);
+                }
                 return this.actor.deleteSkill(skillID);
             case "post":
                 ChatServer.transmitEvent("Post Skill", { name: skill.name, type: skill.type, description: skill.system.description });

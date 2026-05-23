@@ -4,6 +4,17 @@ declare const foundry: IFoundry
 declare const game: foundryAny
 declare const ui: foundryAny
 
+interface FoundryContainer<T> {
+  get(id: string): T;
+  reduce(reduceFn: Function, initial: any): any;
+  filter(filterFn: Function): FoundryContainer<T>;
+  length: number
+  
+  // Iterator Protocol
+  [Symbol.iterator](): Iterator<T>
+  next(): T
+}
+
 // Applications
 declare class FoundryHandlebarsApplication {
   _onRender(context: any, options: any): void
@@ -12,9 +23,37 @@ declare class FoundryHandlebarsApplication {
 }
 
 // Documents
-declare class Item {
+declare class FoundryDocument {
   static implementation: foundryAny
+
+  id: string
+  name: string
+  type: string
 }
+
+declare class Actor extends FoundryDocument {
+  getFlag(a: string, b: string): boolean
+  items: Items
+  itemTypes: Record<string, Items>
+  system: {
+    attributes: ATTRIBUTES
+    AdvantagePoints: {used: number, max: number}
+    PracticeHours: foundryAny
+    onUpdate(data: any): void
+  }
+  update(data: any, operation?: any): Promise<any>
+}
+
+interface Actors extends FoundryContainer<Actor> {}
+
+declare class Item extends FoundryDocument {
+  system: foundryAny
+
+  update(data: foundryAny, options?: foundryAny): Promise<void>
+  delete()
+}
+
+interface Items extends FoundryContainer<Item> {}
 
 // Sheets
 interface IDEFAULT_OPTIONS {

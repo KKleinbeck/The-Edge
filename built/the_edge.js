@@ -110,20 +110,10 @@ Hooks.once("init", async function () {
         diceServer: new DiceServer(),
         socketHandler: new SocketHandler()
     };
-    // Register actor sheets
-    foundry.documents.collections.Actors.unregisterSheet('core', foundry.appv1.sheets.ActorSheet);
-    const actorSheets = [
-        { sheetClass: TheEdgePlayableSheet, types: ['character'], makeDefault: true },
-        { sheetClass: TheEdgeStoreSheet, types: ['Store'], makeDefault: true },
-    ];
-    actorSheets.forEach(({ sheetClass, types, makeDefault }) => {
-        foundry.documents.collections.Actors.registerSheet('the_edge', sheetClass, { types, makeDefault });
-    });
     // Define custom Document classes
     CONFIG.Actor.dataModels.character = CharacterData;
     CONFIG.Actor.dataModels.Store = StoreData;
     CONFIG.Actor.documentClass = TheEdgeActor;
-    // CONFIG.Combat.documentClass = undefined;
     CONFIG.Item.dataModels.Advantage = VantageData;
     CONFIG.Item.dataModels.Ammunition = AmmunitionData;
     CONFIG.Item.dataModels.Armour = ArmourData;
@@ -138,6 +128,16 @@ Hooks.once("init", async function () {
     CONFIG.Item.documentClass = TheEdgeItem;
     CONFIG.Token.documentClass = TheEdgeTokenDocument;
     CONFIG.Token.objectClass = TheEdgeToken;
+    // Register actor, item and other sheets
+    foundry.documents.collections.Actors.unregisterSheet('core', foundry.appv1.sheets.ActorSheet);
+    const actorSheets = [
+        { sheetClass: TheEdgePlayableSheet, types: ['character'], makeDefault: true },
+        { sheetClass: TheEdgeStoreSheet, types: ['Store'], makeDefault: true },
+    ];
+    actorSheets.forEach(({ sheetClass, types, makeDefault }) => {
+        foundry.documents.collections.Actors.registerSheet('the_edge', sheetClass, { types, makeDefault });
+    });
+    TheEdgeItemSheet.setupSheets();
     // Alter the default chat system
     CONFIG.ChatMessage.template = "systems/the_edge/templates/chat/chat_message.hbs";
     CONFIG.ui.chat.MESSAGE_PATTERNS = {
@@ -145,8 +145,6 @@ Hooks.once("init", async function () {
         language: /^\/language\s+([a-zA-Z]+)\s+(.*)$/,
         ...CONFIG.ui.chat.MESSAGE_PATTERNS,
     };
-    // Register item sheets
-    TheEdgeItemSheet.setupSheets();
     // UI setup
     CONFIG.ui.hotbar = TheEdgeHotbar;
     setupGameSettings();

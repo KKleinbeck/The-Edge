@@ -238,16 +238,7 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
         store.system.addCredits(chids, digital);
       }
 
-      const existingCopy = actor.findItem(item);
-      if (existingCopy && "quantity" in item.system) {
-        existingCopy.update({"system.quantity": existingCopy.system.quantity + 1});
-      } else {
-        const itemCls = getDocumentClass("Item");
-        const newSystem = {...item.system};
-        newSystem.quantity = 1;
-        itemCls.create({name: item.name, type: item.type, system: newSystem}, {parent: actor});
-      }
-
+      actor.addOneItem(item);
       if (item.system.quantity > 1) item.update({"system.quantity": item.system.quantity - 1});
       else item.delete();
     }
@@ -263,8 +254,7 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
     const price = +itemInformation.price;
     if (credits < price && !this.actor.system.isStorage) {
       NotificationServer.notify(
-        "Too expensive",
-        {name: this.actor.name, price: price, credits: credits}
+        "Too expensive", {name: this.actor.name, price: price, credits: credits}
       );
       return
     }
@@ -298,20 +288,10 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
         actor.system.addCredits(chids, digital);
       }
 
-      const existingCopy = store.findItem(item);
-      if (existingCopy && "quantity" in item.system) {
-        existingCopy.update({"system.quantity": existingCopy.system.quantity + 1});
-      } else {
-        const itemCls = getDocumentClass("Item");
-        const newSystem = {...item.system};
-        newSystem.quantity = 1;
-        itemCls.create({name: item.name, type: item.type, system: newSystem}, {parent: store});
-      }
-      
+      store.addOneItem(item);
       if (item.system.quantity > 1) await item.update({"system.quantity": item.system.quantity - 1});
       else await item.delete();
       
-      console.log("Emitting")
       game.the_edge.socketHandler.emit("ITEM_SOLD_OR_STORED", {sceneId, tokenId, storeId});
     }
   }
