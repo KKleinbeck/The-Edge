@@ -279,7 +279,8 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
                 await item.update({ "system.quantity": item.system.quantity - 1 });
             else
                 await item.delete();
-            // TODO: emit event so that user can potentially redraw
+            console.log("Emitting");
+            game.the_edge.socketHandler.emit("ITEM_SOLD_OR_STORED", { sceneId, tokenId, storeId });
         }
     }
 }
