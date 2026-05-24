@@ -4,9 +4,9 @@ import NotificationServer from "../system/notifications.js";
 import THE_EDGE from "../system/config-the-edge.js";
 
 export class TheEdgeActor extends Actor {
-  async update(data={}, operation={}) {
+  async update(data={}, operation={}): Promise<TheEdgeActor> {
     this.system.onUpdate(data);
-    await super.update(data, operation)
+    return await super.update(data, operation) as unknown as TheEdgeActor;
   }
 
 

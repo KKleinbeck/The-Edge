@@ -28,7 +28,12 @@ declare class FoundryDocument {
 
   id: string
   name: string
+  parent: foundryAny | undefined
   type: string
+
+  delete()
+  update(data: any, operation?: any): Promise<FoundryDocument>
+  static updateDocuments(updates?: foundryAny[], operation?: foundryAny): Promise<any>
 }
 
 declare class Actor extends FoundryDocument {
@@ -41,19 +46,33 @@ declare class Actor extends FoundryDocument {
     PracticeHours: foundryAny
     onUpdate(data: any): void
   }
-  update(data: any, operation?: any): Promise<any>
 }
 
 interface Actors extends FoundryContainer<Actor> {}
 
+declare class Combatant extends FoundryDocument {
+  getInitiativeRoll(formula: string): Roll
+
+  actor: foundryAny
+  initiative: number
+  system: {
+    baseInitiative: number
+    strainInitiative?: number
+  }
+}
+
 declare class Item extends FoundryDocument {
   system: foundryAny
-
-  update(data: foundryAny, options?: foundryAny): Promise<void>
-  delete()
 }
 
 interface Items extends FoundryContainer<Item> {}
+
+declare class TokenDocument {
+  static getTrackedAttributes(data: foundryAny, _path: string[]): foundryAny
+
+  getBarAttribute(barName: string, options: {alternative?: string}): foundryAny
+  actor: Actor
+}
 
 // Sheets
 interface IDEFAULT_OPTIONS {
@@ -128,6 +147,8 @@ declare class Roll {
   evaluate(): foundryAny
   static parse(formula: string, data: object): foundryAny[]
   static validate(roll: string): boolean
+
+  get total(): number
 }
 
 // Functions
@@ -154,10 +175,18 @@ interface IFoundry {
     sheets: {
       ActorSheetV2: typeof ActorSheetV2;
     };
+    sidebar: {
+      tabs: {CombatTracker: foundryAny}
+    }
     ux: {
       ContextMenu: foundryAny
     }
   };
+  canvas: {
+    placeables: {
+      Token: foundryAny
+    }
+  }
   data: {
     fields: {
       ArrayField: foundryAny
@@ -169,6 +198,7 @@ interface IFoundry {
   }
   utils: {
     flattenObject(obj: object, _d?: number): object
+    getProperty(a: foundryAny, path: string): foundryAny
     mergeObject<T, U>(a: T, b: U): T & U;
   };
 }

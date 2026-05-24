@@ -5,11 +5,11 @@
       {{#each system.attributes as |details attribute|}}
       <div class="table-header">
         <a data-action="advanceAttr" data-name="{{attribute}}" data-type="refund" data-cost="{{details.refund}}">
-          <i class="fas fa-minus advance-fa" style="font-size: 10px;"></i>
+          <i class="fas fa-minus" style="font-size: 10px;"></i>
         </a>
         <b>{{attrAbbr attribute}}</b>
         <a data-action="advanceAttr" data-name="{{attribute}}" data-type="advance" data-cost="{{details.cost}}">
-          <i class="fas fa-plus advance-fa" style="font-size: 10px;"></i>
+          <i class="fas fa-plus" style="font-size: 10px;"></i>
         </a>
       </div>
       {{/each}}

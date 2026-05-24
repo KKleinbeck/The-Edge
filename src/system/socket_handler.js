@@ -8,7 +8,6 @@ export class SocketHandler {
   }
 
   registerSocketHandlers() {
-    console.log(this.identifier)
     game.socket.on(this.identifier, ({ type, payload }) => {
       switch (type) {
         // Combat Log related

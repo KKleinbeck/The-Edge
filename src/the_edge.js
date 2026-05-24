@@ -18,12 +18,14 @@ import VantageData from "./data_models/items/vantage.js";
 import WeaponData from "./data_models/items/weapon.js";
 
 import { TheEdgeActor } from "./actors/actor.js";
+import { TheEdgeCombatant } from "./documents/Combatant.js";
+import { TheEdgeCombatTracker } from "./system/sidebar/combat_tracker.js";
 import { TheEdgeItem } from "./items/item.js";
 import { SocketHandler } from "./system/socket_handler.js";
 import { TheEdgeItemSheet } from "./items/item-sheet.js";
 import { TheEdgePlayableSheet } from "./actors/playable-sheet.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
-import { TheEdgeToken, TheEdgeTokenDocument } from "./token.js";
+import { TheEdgeToken, TheEdgeTokenDocument } from "./documents/token.js";
 import { TheEdgeStoreSheet } from "./actors/store-sheet.js";
 
 Hooks.once("init", async function() {
@@ -120,6 +122,8 @@ Hooks.once("init", async function() {
   CONFIG.Actor.dataModels.Store = StoreData;
   CONFIG.Actor.documentClass = TheEdgeActor;
 
+  CONFIG.Combatant.documentClass = TheEdgeCombatant;
+
   CONFIG.Item.dataModels.Advantage = VantageData;
   CONFIG.Item.dataModels.Ammunition = AmmunitionData;
   CONFIG.Item.dataModels.Armour = ArmourData;
@@ -147,6 +151,9 @@ Hooks.once("init", async function() {
   });
 
   TheEdgeItemSheet.setupSheets()
+
+  // Alter the combat tracker
+  CONFIG.ui.combat = TheEdgeCombatTracker;
 
   // Alter the default chat system
   CONFIG.ChatMessage.template = "systems/the_edge/templates/chat/chat_message.hbs";

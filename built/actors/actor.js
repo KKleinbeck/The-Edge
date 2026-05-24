@@ -5,7 +5,7 @@ import THE_EDGE from "../system/config-the-edge.js";
 export class TheEdgeActor extends Actor {
     async update(data = {}, operation = {}) {
         this.system.onUpdate(data);
-        await super.update(data, operation);
+        return await super.update(data, operation);
     }
     /**
      * Is this Actor used as a template for other Actors?

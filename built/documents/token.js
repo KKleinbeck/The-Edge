@@ -1,7 +1,6 @@
-import THE_EDGE from "./system/config-the-edge.js";
 export class TheEdgeTokenDocument extends TokenDocument {
-    /** @inheritdoc */
-    getBarAttribute(barName, { alternative } = {}) {
+    getBarAttribute(barName, options) {
+        const alternative = options?.alternative;
         const data = super.getBarAttribute(barName, { alternative });
         const attr = alternative || this[barName]?.attribute;
         if (!data || !attr || !this.actor)
@@ -24,11 +23,6 @@ export class TheEdgeTokenDocument extends TokenDocument {
         };
     }
 }
-/* -------------------------------------------- */
-/**
- * Extend the base Token class to implement additional system-specific logic.
- * @extends {Token}
- */
 export class TheEdgeToken extends foundry.canvas.placeables.Token {
     _drawBar(number, bar, data) {
         if ("min" in data) {
