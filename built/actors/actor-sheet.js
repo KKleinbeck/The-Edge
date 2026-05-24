@@ -146,11 +146,15 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
         event.preventDefault();
         // Obtain event data
         const effectElement = target.closest(".effect-hook");
+        if (!(effectElement instanceof HTMLElement))
+            return;
         const index = effectElement?.dataset.index || "";
         const source = effectElement?.dataset.source || "";
         // Handle different actions
         switch (target.dataset.subaction) {
             case "create":
+                if (!target.dataset.source)
+                    return;
                 await this.actor.system.createNewEffect();
                 this.effectIsExpanded[target.dataset.source].push(false);
                 break;
@@ -160,6 +164,8 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
                 this.effectIsExpanded[source].splice(index, 1);
                 break;
             case "edit":
+                if (!effectElement.dataset.source)
+                    return;
                 if (["itemEffects", "skillEffects"].includes(effectElement.dataset.source)) {
                     const id = effectElement?.dataset.id || "";
                     const item = this.actor.items.get(id);
@@ -224,13 +230,13 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
             // AFTER layout animation finishes → expand content
             setTimeout(() => {
                 this.revealContent(content);
-                item.querySelector(".chevron-hook").classList.add("rotate180");
+                item.querySelector(".chevron-hook").classList.add("rotate90");
             }, DURATION);
         });
     }
     collapseItem(item, content, container) {
         const DURATION = 300;
-        item.querySelector(".chevron-hook").classList.remove("rotate180");
+        item.querySelector(".chevron-hook").classList.remove("rotate90");
         this.hideContent(content);
         setTimeout(() => {
             const items = [...container.children];
@@ -280,10 +286,19 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
         // Handle different actions
         switch (target.dataset.subaction) {
             case "increase":
+                if (skill.type == "Advantage" || skill.type == "Disadvantage") {
+                    return this.actor.addOrCreateVantage(skill);
+                }
                 return this.actor.skillLevelIncrease(skillID);
             case "decrease":
+                if (skill.type == "Advantage" || skill.type == "Disadvantage") {
+                    return this.actor.decrementVantage(skill);
+                }
                 return this.actor.skillLevelDecrease(skillID);
             case "delete":
+                if (skill.type == "Advantage" || skill.type == "Disadvantage") {
+                    return this.actor.deleteVantage(skill);
+                }
                 return this.actor.deleteSkill(skillID);
             case "post":
                 ChatServer.transmitEvent("Post Skill", { name: skill.name, type: skill.type, description: skill.system.description });

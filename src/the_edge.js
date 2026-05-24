@@ -18,12 +18,15 @@ import VantageData from "./data_models/items/vantage.js";
 import WeaponData from "./data_models/items/weapon.js";
 
 import { TheEdgeActor } from "./actors/actor.js";
+import { TheEdgeCombat } from "./documents/Combat.js";
+import { TheEdgeCombatant } from "./documents/Combatant.js";
+import { TheEdgeCombatTracker } from "./system/sidebar/combat_tracker.js";
 import { TheEdgeItem } from "./items/item.js";
 import { SocketHandler } from "./system/socket_handler.js";
 import { TheEdgeItemSheet } from "./items/item-sheet.js";
 import { TheEdgePlayableSheet } from "./actors/playable-sheet.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
-import { TheEdgeToken, TheEdgeTokenDocument } from "./token.js";
+import { TheEdgeToken, TheEdgeTokenDocument } from "./documents/token.js";
 import { TheEdgeStoreSheet } from "./actors/store-sheet.js";
 
 Hooks.once("init", async function() {
@@ -115,23 +118,13 @@ Hooks.once("init", async function() {
     socketHandler: new SocketHandler()
   };
 
-  // Register actor sheets
-  foundry.documents.collections.Actors.unregisterSheet('core', foundry.appv1.sheets.ActorSheet);
-
-  const actorSheets = [
-    { sheetClass: TheEdgePlayableSheet, types: ['character'], makeDefault: true },
-    { sheetClass: TheEdgeStoreSheet, types: ['Store'], makeDefault: true },
-  ];
-  actorSheets.forEach(({ sheetClass, types, makeDefault }) => {
-    foundry.documents.collections.Actors.registerSheet('the_edge', sheetClass, { types, makeDefault });
-  });
-
   // Define custom Document classes
   CONFIG.Actor.dataModels.character = CharacterData;
   CONFIG.Actor.dataModels.Store = StoreData;
   CONFIG.Actor.documentClass = TheEdgeActor;
 
-  // CONFIG.Combat.documentClass = undefined;
+  CONFIG.Combat.documentClass = TheEdgeCombat;
+  CONFIG.Combatant.documentClass = TheEdgeCombatant;
 
   CONFIG.Item.dataModels.Advantage = VantageData;
   CONFIG.Item.dataModels.Ammunition = AmmunitionData;
@@ -149,6 +142,21 @@ Hooks.once("init", async function() {
   CONFIG.Token.documentClass = TheEdgeTokenDocument;
   CONFIG.Token.objectClass = TheEdgeToken;
 
+  // Register actor, item and other sheets
+  foundry.documents.collections.Actors.unregisterSheet('core', foundry.appv1.sheets.ActorSheet);
+  const actorSheets = [
+    { sheetClass: TheEdgePlayableSheet, types: ['character'], makeDefault: true },
+    { sheetClass: TheEdgeStoreSheet, types: ['Store'], makeDefault: true },
+  ];
+  actorSheets.forEach(({ sheetClass, types, makeDefault }) => {
+    foundry.documents.collections.Actors.registerSheet('the_edge', sheetClass, { types, makeDefault });
+  });
+
+  TheEdgeItemSheet.setupSheets()
+
+  // Alter the combat tracker
+  CONFIG.ui.combat = TheEdgeCombatTracker;
+
   // Alter the default chat system
   CONFIG.ChatMessage.template = "systems/the_edge/templates/chat/chat_message.hbs";
   CONFIG.ui.chat.MESSAGE_PATTERNS = {
@@ -156,9 +164,6 @@ Hooks.once("init", async function() {
     language: /^\/language\s+([a-zA-Z]+)\s+(.*)$/,
     ...CONFIG.ui.chat.MESSAGE_PATTERNS,
   }
-
-  // Register item sheets
-  TheEdgeItemSheet.setupSheets()
 
   // UI setup
   CONFIG.ui.hotbar = TheEdgeHotbar;

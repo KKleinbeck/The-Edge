@@ -1,7 +1,13 @@
 <div class="check-dialog-box" style="padding-bottom: 15px;">
+  {{#if hasNoWounds}}
+  {{detailedLocalisation "Dialog" "No treatable wounds"}}
+  {{else}}
   <select name="WoundSelector">
     {{#each wounds as |wound|}}
+      {{#unless (checkEqual wound.status "treated")}}
       <option value="{{@index}}">{{itemName wound.bodyPart}} - D{{wound.damage}} B{{wound.bleeding}}</option>
+      {{/unless}}
     {{/each}}
   </select>
+  {{/if}}
 </div>

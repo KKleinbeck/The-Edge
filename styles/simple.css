@@ -680,11 +680,6 @@ textarea {
   line-height: 24px !important;
   color: var(--font-main-color);
 }
-.the_edge .editor-wrap
-.the_edge .advance-fa {
-  font-size: 8pt;
-  color: #888;
-}
 .the_edge .sheet-header-item {
   flex: 0 0 110px;
   overflow: hidden;
@@ -1084,8 +1079,8 @@ textarea {
 .the_edge .chevron-hook {
   transition: rotate 300ms ease;
 }
-.the_edge .rotate180 {
-  rotate: 180deg;
+.the_edge .rotate90 {
+  rotate: 90deg;
 }
 
 .main-row {

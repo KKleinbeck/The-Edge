@@ -1,10 +1,6 @@
-/**
- * Extend the base TokenDocument to support resource type attributes.
- * @extends {TokenDocument}
- */
 export class TheEdgeTokenDocument extends TokenDocument {
-    /** @inheritdoc */
-    getBarAttribute(barName, { alternative } = {}) {
+    getBarAttribute(barName, options) {
+        const alternative = options?.alternative;
         const data = super.getBarAttribute(barName, { alternative });
         const attr = alternative || this[barName]?.attribute;
         if (!data || !attr || !this.actor)
@@ -16,26 +12,17 @@ export class TheEdgeTokenDocument extends TokenDocument {
         data.editable = true;
         return data;
     }
-    /* -------------------------------------------- */
     static getTrackedAttributes(data, _path = []) {
         if (data || _path.length)
             return super.getTrackedAttributes(data, _path);
-        data = {};
-        for (const model of Object.values(game.system.model.Actor)) {
-            foundry.utils.mergeObject(data, model);
-        }
-        for (const actor of game.actors) {
-            if (actor.isTemplate)
-                foundry.utils.mergeObject(data, actor.toObject());
-        }
-        return super.getTrackedAttributes(data);
+        return {
+            // System paths to fields with value and max,
+            bar: [["health"], ["strain"]],
+            // System paths to fields with only a value
+            value: []
+        };
     }
 }
-/* -------------------------------------------- */
-/**
- * Extend the base Token class to implement additional system-specific logic.
- * @extends {Token}
- */
 export class TheEdgeToken extends foundry.canvas.placeables.Token {
     _drawBar(number, bar, data) {
         if ("min" in data) {

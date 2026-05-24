@@ -1,14 +1,13 @@
 <div class="effect-list" style="padding: 0px 5px 0px 5px; overflow: hidden;">
   {{#each effects as |effect|}}
     <div class="effect-box effect-hook {{#if (getEntries ../effectIsExpandedList @index)}}expanded{{/if}}"
-      style="cursor: pointer;" data-index="{{@index}}" data-id="{{effect.id}}"
-      data-source="{{../source}}" data-action="effectControl" data-subaction="edit">
-      <div style="display: flex; justify-content: space-between">
+      data-index="{{@index}}" data-id="{{effect.id}}" data-source="{{../source}}"
+      data-action="effectControl" data-subaction="edit">
+      <div style="display: flex; justify-content: space-between; cursor: pointer;"
+        {{#if ../expandable}}data-action="effectControl" data-subaction="toggleShowContent"{{/if}}>
         <div style="display: flex; gap: 5px; align-items: end; width: 75%; white-space: nowrap;">
           {{#if ../expandable}}
-            <a data-action="effectControl" data-subaction="toggleShowContent">
-              <i class="chevron-hook fa-regular fa-chevron-down {{#if (getEntries ../effectIsExpandedList @index)}}rotate180{{/if}}"></i>
-            </a>
+            <a><i class="chevron-hook fa-regular fa-chevron-right"></i></a>
           {{/if}}
           {{#if ../isUserEffect}}
             <input class="effect-name-hook"

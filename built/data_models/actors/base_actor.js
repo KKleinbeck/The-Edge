@@ -5,6 +5,7 @@ export default class CharacterBaseData extends DataModelComponent {
     static defineSchema() {
         return {
             biography: new HTMLField(),
+            notes: new HTMLField(),
             heroToken: new SchemaField({
                 max: new NumberField({ initial: 2, min: 0, required: true }),
                 available: new NumberField({ initial: 1, min: 0, required: true }),

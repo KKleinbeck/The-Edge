@@ -1,9 +1,8 @@
+import CheckDialog from "./meta-check-dialog.js";
 import LocalisationServer from "../system/localisation_server.js";
-import SliderMixin from "../mixins/slider-mixin.js";
 import THE_EDGE from "../system/config-the-edge.js";
 const { renderTemplate } = foundry.applications.handlebars;
-const { DialogV2 } = foundry.applications.api;
-export default class DialogAttribute extends SliderMixin(DialogV2) {
+export default class DialogAttribute extends CheckDialog {
     static async start(checkData) {
         const template = "systems/the_edge/templates/dialogs/basic-rolls.hbs";
         const attributeLevel = checkData.actor.system.attributes[checkData.attribute].value;
@@ -55,15 +54,14 @@ export default class DialogAttribute extends SliderMixin(DialogV2) {
         }).render(true);
     }
     static rollCallback(dialog, checkData, roll) {
-        const promptResult = dialog.getSliderValues();
-        promptResult.roll = roll;
-        checkData.attribute = checkData.attribute.toLowerCase();
+        const sliderValues = dialog.getSliderValues();
         const vantageElement = dialog.element.querySelector(".vantage-hook");
         if (!(vantageElement instanceof HTMLSelectElement)) {
             ui.notifications.error("VantageElement is not of type HTMLSelectElement");
             return;
         }
-        promptResult.vantage = vantageElement.value;
+        const promptResult = { roll, ...dialog.promptResult };
+        checkData.attribute = checkData.attribute.toLowerCase();
         const attributePromptResult = foundry.utils.mergeObject(checkData, promptResult);
         checkData.actor.system.rollAttributeCheck(attributePromptResult);
     }

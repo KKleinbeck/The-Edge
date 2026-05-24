@@ -88,13 +88,12 @@ export default class Aux {
         return humanSpoken ? [200, 400, 1000, 2000, 3200, 3200] : [600, 3000, 6400];
     }
     static parseCostStr(costStr, maxLevel = undefined) {
-        let cost = costStr.replace(/\s+/g, ''); // w.o. whitespace
+        costStr = costStr.replace(/\s+/g, ''); // w.o. whitespace
         const regex = /^(\d+\/)*\d+$/; // parse [n_1 / n_2 / ...] n_m
-        if (regex.test(cost)) {
-            const costs = cost.split('/').map(Number);
-            if (!maxLevel || costs.length == maxLevel || costs.length == 1) {
-                return cost.length == 1 ? costs[0] : costs;
-            }
+        if (regex.test(costStr)) {
+            const costs = costStr.split('/').map(Number);
+            if (!maxLevel || costs.length == maxLevel || costs.length == 1)
+                return costs;
         }
         NotificationServer.notify("Wrong cost string", { str: costStr });
         return undefined;
@@ -117,40 +116,41 @@ export default class Aux {
         const roll = await new Roll(costRoll).evaluate();
         return roll.total;
     }
-    static getSkillCost(skill, mode = undefined) {
-        let level = skill.system.level;
+    static getSkillCost(skill, mode) {
+        const level = skill.system.level;
         if (skill.type == "Languageskill") {
-            if (mode == "delete") {
-                return this._language_cost_table(skill.system.humanSpoken)
-                    .slice(0, level).reduce((a, b) => a + b, 0);
+            switch (mode) {
+                case "delete":
+                    return this._language_cost_table(skill.system.humanSpoken)
+                        .slice(0, level).reduce((a, b) => a + b, 0);
+                case "increase":
+                    if ((skill.system.humanSpoken && level == 6) || (!skill.system.humanSpoken && level == 3))
+                        return undefined;
+                    return this._language_cost_table(skill.system.humanSpoken)[level];
+                case "decrease":
+                    return this._language_cost_table(skill.system.humanSpoken)[level - 1];
             }
-            else if (mode == "increase") {
-                if ((skill.system.humanSpoken && level == 6) || (!skill.system.humanSpoken && level == 3))
-                    return undefined;
-                return this._language_cost_table(skill.system.humanSpoken)[level];
-            }
-            return this._language_cost_table(skill.system.humanSpoken)[level - 1];
         }
         // combatskills, skills, medicalskills
-        let maxLevel = skill.system.maxLevel;
-        let cost = this.parseCostStr(skill.system.cost, maxLevel);
-        if (typeof cost === "undefined")
+        const maxLevel = skill.system.maxLevel;
+        const costs = this.parseCostStr(skill.system.AP, maxLevel);
+        if (typeof costs === "undefined")
             return undefined;
-        if (!isNaN(cost)) { // cost is number
+        if (costs.length === 1) { // cost is number
             if (mode == "delete")
-                return level * cost;
+                return level * costs[0];
             else if (mode == "increase" && level == skill.system.maxLevel)
                 return undefined;
-            return +cost;
+            return costs[0];
         }
         if (mode == "delete")
-            return cost.slice(0, level).reduce((a, b) => a + b, 0);
+            return costs.slice(0, level).reduce((a, b) => a + b, 0);
         else if (mode == "increase") {
             if (level == skill.system.maxLevel)
                 return undefined;
-            return cost[level];
+            return costs[level];
         }
-        return cost[level - 1];
+        return costs[level - 1];
     }
     static randomInt(min, max) { return min + Math.floor(Math.random() * (max - min + 1)); }
     static pickFromOdds(objectWithOdds) {

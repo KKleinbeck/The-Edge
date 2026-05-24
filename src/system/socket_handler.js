@@ -42,11 +42,18 @@ export class SocketHandler {
         
         // Store related
         case "BUY_OR_RETRIEVE":
-          TheEdgeStoreSheet.handleBuyOrRetrieve(payload)
+          if (game.user.isGM) TheEdgeStoreSheet.handleBuyOrRetrieve(payload);
           break;
 
         case "SELL_OR_STORE":
-          TheEdgeStoreSheet.handleSellOrStore(payload)
+          if (game.user.isGM) TheEdgeStoreSheet.handleSellOrStore(payload);
+          break;
+        
+        case "ITEM_SOLD_OR_STORED":
+          const scene = game.scenes.get(payload.sceneId);
+          const store = scene.tokens.get(payload.storeId)?.actor ?? game.actors.get(payload.storeId);
+          const actor = scene.tokens.get(payload.tokenId).actor;
+          if (actor.isOwner) store.render(true);
           break;
         
         // Other actions

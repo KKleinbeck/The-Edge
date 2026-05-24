@@ -10,6 +10,7 @@ export default class DiceServer {
     }
     static async attributeCheck(config) {
         var dieResult = await this._attributeRoll();
+        dieResult = 20;
         if (config.vantage == "Advantage") {
             const dieResults2 = await this._attributeRoll();
             if (dieResults2 < dieResult)

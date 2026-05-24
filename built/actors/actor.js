@@ -2,24 +2,16 @@ import Aux from "../system/auxilliaries.js";
 import LocalisationServer from "../system/localisation_server.js";
 import NotificationServer from "../system/notifications.js";
 import THE_EDGE from "../system/config-the-edge.js";
-/**
- * Extend the base Actor document to support attributes and groups with a custom template creation dialog.
- * @extends {Actor}
- */
 export class TheEdgeActor extends Actor {
     async update(data = {}, operation = {}) {
         this.system.onUpdate(data);
-        await super.update(data, operation);
+        return await super.update(data, operation);
     }
     /**
      * Is this Actor used as a template for other Actors?
-     * @type {boolean}
      */
     get isTemplate() {
         return !!this.getFlag("the_edge", "isTemplate");
-    }
-    interpretCheck(type, roll) {
-        return this.diceServer.interpretCheck(type, roll);
     }
     get itemWeight() {
         return this.items.reduce((a, b) => a + ((b.system?.quantity || 1) * b.system?.weight || 0), 0);
@@ -33,10 +25,12 @@ export class TheEdgeActor extends Actor {
             }
         }
         // Skill doesn't exist yet
-        if (!this.fulfillsRequirements(newSkill, true))
+        if (!this.fulfillsRequirements(newSkill, 1))
             return false;
         const ph = this.system.PracticeHours;
-        let cost = Aux.getSkillCost(newSkill);
+        const cost = Aux.getSkillCost(newSkill, "increase");
+        if (typeof cost === "undefined")
+            return false;
         if (cost <= ph.max - ph.used) {
             this.update({ "system.PracticeHours.used": ph.used + cost });
             return true;
@@ -47,10 +41,10 @@ export class TheEdgeActor extends Actor {
         }
         return false;
     }
-    fulfillsRequirements(skill, newSkill = false) {
+    fulfillsRequirements(skill, newSkillLevel = 0) {
         if (skill.type == "Languageskill")
             return true;
-        const level = skill.system.level - newSkill;
+        const level = skill.system.level - newSkillLevel;
         const requirements = skill.system.requirements[level];
         if (requirements === undefined || requirements.length == 0)
             return true;
@@ -58,7 +52,7 @@ export class TheEdgeActor extends Actor {
             const group = requirement.group;
             const details = structuredClone(requirement);
             if (group == "skills") {
-                const skillRef = this.items.filter(x => x.name.toLowerCase() == requirement.field.toLowerCase());
+                const skillRef = this.items.filter((x) => x.name.toLowerCase() == requirement.field.toLowerCase());
                 if (skillRef.length == 0) {
                     NotificationServer.notify("Missing requirements", details);
                     return false;
@@ -81,11 +75,25 @@ export class TheEdgeActor extends Actor {
         }
         return true;
     }
+    async addOneItem(item) {
+        const existingCopy = this.findItem(item);
+        if (existingCopy && "quantity" in item.system) {
+            await existingCopy.update({ "system.quantity": existingCopy.system.quantity + 1 });
+        }
+        else {
+            const itemCls = getDocumentClass("Item");
+            const newSystem = { ...item.system };
+            newSystem.quantity = 1;
+            await itemCls.create({ name: item.name, type: item.type, system: newSystem }, { parent: this });
+        }
+    }
     skillLevelIncrease(skillID) {
         let skill = this.items.get(skillID);
         if (!this.fulfillsRequirements(skill))
             return false;
-        let cost = Aux.getSkillCost(skill, "increase");
+        const cost = Aux.getSkillCost(skill, "increase");
+        if (typeof cost === 'undefined')
+            return false;
         const ph = this.system.PracticeHours;
         if (cost < ph.max - ph.used) {
             this.update({ "system.PracticeHours.used": ph.used + cost });
@@ -95,9 +103,11 @@ export class TheEdgeActor extends Actor {
         return false;
     }
     skillLevelDecrease(skillID) {
-        let skill = this.items.get(skillID);
-        let level = skill.system.level;
-        let gain = Aux.getSkillCost(skill, "decrease");
+        const skill = this.items.get(skillID);
+        const level = skill.system.level;
+        const gain = Aux.getSkillCost(skill, "decrease");
+        if (typeof gain === 'undefined')
+            return;
         const ph = this.system.PracticeHours;
         this.update({ "system.PracticeHours.used": ph.used - gain });
         if (level > 1)
@@ -107,24 +117,24 @@ export class TheEdgeActor extends Actor {
     }
     deleteSkill(skillID) {
         const skill = this.items.get(skillID);
-        let gain = Aux.getSkillCost(skill, "delete");
+        const gain = Aux.getSkillCost(skill, "delete");
+        if (typeof gain === 'undefined')
+            return;
         const ph = this.system.PracticeHours;
         this.update({ "system.PracticeHours.used": ph.used - gain });
         skill.delete();
     }
     async addOrCreateVantage(vantage) {
-        let AP = this.system.AdvantagePoints;
+        const AP = this.system.AdvantagePoints;
         // Can be created or leveled?
         if (vantage.type == "Advantage" && vantage.system.AP + AP.used > AP.max) {
-            let msg = LocalisationServer.parsedLocalisation("AP missing", "Notifications", { name: vantage.name, need: vantage.system.AP, available: AP.max - AP.used });
-            ui.notifications.notify(msg);
-            return false;
+            NotificationServer.notify("AP missing", { name: vantage.name, need: vantage.system.AP, available: AP.max - AP.used });
+            return;
         }
         const existingCopy = this.findItem(vantage);
         if (existingCopy && existingCopy.system.level >= existingCopy.system.maxLevel) {
-            let msg = LocalisationServer.parsedLocalisation("Max Level", "Notifications", { name: vantage.name });
-            ui.notifications.notify(msg);
-            return false;
+            NotificationServer.notify("Max Level", { name: vantage.name });
+            return;
         }
         // Now create or level
         let update = vantage.type == "Advantage" ?
@@ -132,14 +142,11 @@ export class TheEdgeActor extends Actor {
             { "system.AdvantagePoints.max": this.system.AdvantagePoints.max + vantage.system.AP };
         if (existingCopy) {
             const sys = existingCopy.system;
-            if (sys.maxLevel > sys.level) {
-                await existingCopy.update({ "system.level": sys.level + 1 });
-            }
+            await existingCopy.update({ "system.level": sys.level + 1 });
         }
         else {
             const cls = getDocumentClass("Item");
-            const newVantage = await cls.create({ name: vantage.name, type: vantage.type }, { parent: this });
-            newVantage.update({ "system": vantage.system });
+            await cls.create({ name: vantage.name, type: vantage.type, system: { ...vantage.system, level: 1 } }, { parent: this });
         }
         await this.update(update);
     }
@@ -147,9 +154,8 @@ export class TheEdgeActor extends Actor {
         const AP = this.system.AdvantagePoints;
         const itemAP = vantage.system.AP;
         if (vantage.type == "Disadvantage" && AP.max - itemAP < AP.used) {
-            let msg = LocalisationServer.parsedLocalisation("AP missing decrement", "Notifications", { name: vantage.name, need: itemAP, available: AP.max - AP.used });
-            ui.notifications.notify(msg);
-            return undefined;
+            NotificationServer.notify("AP missing decrement", { name: vantage.name, need: itemAP, available: AP.max - AP.used });
+            return;
         }
         if (vantage.type == "Advantage")
             this.update({ "system.AdvantagePoints.used": AP.used - itemAP });
@@ -164,9 +170,8 @@ export class TheEdgeActor extends Actor {
         const AP = this.system.AdvantagePoints;
         const itemAP = (vantage.system.hasLevels ? vantage.system.level : 1) * vantage.system.AP;
         if (vantage.type == "Disadvantage" && AP.max - itemAP < AP.used) {
-            let msg = LocalisationServer.parsedLocalisation("AP missing deletion", "Notifications", { name: vantage.name, need: itemAP, available: AP.max - AP.used });
-            ui.notifications.notify(msg);
-            return undefined;
+            NotificationServer.notify("AP missing deletion", { name: vantage.name, need: itemAP, available: AP.max - AP.used });
+            return;
         }
         if (vantage.type == "Advantage")
             this.update({ "system.AdvantagePoints.used": AP.used - itemAP });
@@ -175,22 +180,22 @@ export class TheEdgeActor extends Actor {
         vantage.delete();
     }
     findItem(item) {
-        let _existingCopy = false;
+        let existingCopy = undefined;
         for (const _item of this.itemTypes[item.type]) {
             if (_item.name == item.name) {
                 if (_item.type == "Ammunition") {
                     const _cap = _item.system.capacity;
                     const cap = item.system.capacity;
                     if (_cap.max == cap.max && _cap.value == cap.value && !_item.system.loaded) {
-                        _existingCopy = _item;
+                        existingCopy = _item;
                     }
                 }
                 else {
-                    _existingCopy = _item;
+                    existingCopy = _item;
                 }
             }
         }
-        return _existingCopy;
+        return existingCopy;
     }
     getSkillEffects(onlyActive = false) {
         function skillFilter(skill) {
@@ -232,13 +237,16 @@ export class TheEdgeActor extends Actor {
         const shell = this.items.get(shellId);
         const availableAttachment = armour.system.attachmentPoints.max - armour.system.attachmentPoints.used;
         if (shell.system.attachmentPoints.max > availableAttachment) {
-            let msg = LocalisationServer.parsedLocalisation("Missing Attachment points", "Notifications", { available: availableAttachment, needed: shell.system.attachmentPoints.max });
-            ui.notifications.notify(msg);
+            NotificationServer.notify("Missing Attachment points", { available: availableAttachment, needed: shell.system.attachmentPoints.max });
+            return;
         }
         // Hack relevant information into the shells attachment list, needed in item.js upon breaking
-        shell.update({ "system.equipped": true, "system.attachments": [{ actorId: this.id, tokenId: tokenId, armourId: armour._id }] });
+        shell.update({
+            "system.equipped": true,
+            "system.attachments": [{ actorId: this.id, tokenId: tokenId, armourId: armour.id }]
+        });
         const attachments = armour.system.attachments;
-        attachments.push({ actorId: this.id, tokenId: tokenId, shellId: shell._id, shell: shell });
+        attachments.push({ actorId: this.id, tokenId: tokenId, shellId: shell.id, shell: shell });
         armour.update({
             "system.attachments": attachments,
             "system.attachmentPoints.used": armour.system.attachmentPoints.used + shell.system.attachmentPoints.max

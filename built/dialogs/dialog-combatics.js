@@ -1,25 +1,14 @@
 import Aux from "../system/auxilliaries.js";
 import NewChatServer from "../system/new_chat_server.js";
+import CheckDialog from "./meta-check-dialog.js";
 import DiceServer from "../system/dice_server.js";
 import LocalisationServer from "../system/localisation_server.js";
-import SliderMixin from "../mixins/slider-mixin.js";
 import THE_EDGE from "../system/config-the-edge.js";
 const { renderTemplate } = foundry.applications.handlebars;
-const { DialogV2 } = foundry.applications.api;
-export default class DialogCombatics extends SliderMixin(DialogV2) {
+export default class DialogCombatics extends CheckDialog {
     constructor(checkData, options) {
         super(options);
         this.checkData = checkData;
-        this.vantage = "Nothing";
-    }
-    _onRender(context, options) {
-        super._onRender(context, options);
-        this.element.querySelector(".vantage-hook").addEventListener("change", (event) => {
-            if (!(event.target instanceof HTMLSelectElement))
-                return;
-            this.vantage = event.target.value;
-            this._onChanceChanged();
-        });
     }
     static async start(checkData) {
         const template = "systems/the_edge/templates/dialogs/basic-rolls.hbs";
@@ -76,17 +65,16 @@ export default class DialogCombatics extends SliderMixin(DialogV2) {
         this._transmitRoll(threshold, attackRollResult);
     }
     async attackCallback() {
-        const sliderValues = this.getSliderValues();
-        const threshold = this.checkData.threshold + Object.values(sliderValues).sum();
+        const promptResult = this.promptResult;
+        const threshold = this.checkData.threshold + promptResult.modifier + promptResult.strain;
         const prompt = {
             threshold, nRolls: 1, vantage: this.vantage, damageRoll: this.checkData.damageRoll
         };
         const attackRollResult = await this.checkData.actor.system.rollAttackCheck(prompt);
-        this.checkData.actor.system.applyStrain(sliderValues.strain);
+        this.checkData.actor.system.applyStrain(promptResult.strain);
         this._transmitRoll(threshold, attackRollResult);
     }
     _transmitRoll(threshold, attackRollResult) {
-        const sliderValues = this.getSliderValues();
         const config = {
             speaker: {
                 actor: this.checkData.actor.id,
@@ -97,16 +85,16 @@ export default class DialogCombatics extends SliderMixin(DialogV2) {
         const details = {
             ...this.checkData,
             ...attackRollResult,
-            ...sliderValues,
+            ...this.promptResult,
             damageType: "HandToHand",
             isMelee: true,
             threshold: threshold,
-            vantage: this.vantage,
         };
         NewChatServer.transmitEvent("WEAPON CHECK", details, config);
     }
     // Helpers for rendering
     onValueChanged(_id, _value) { this._onChanceChanged(); }
+    onVantageChanged() { this._onChanceChanged(); }
     _onChanceChanged() {
         const sliderValues = this.getSliderValues();
         const threshold = this.checkData.threshold + Object.values(sliderValues).sum();
