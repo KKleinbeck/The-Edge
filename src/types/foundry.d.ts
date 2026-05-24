@@ -50,6 +50,11 @@ declare class Actor extends FoundryDocument {
 
 interface Actors extends FoundryContainer<Actor> {}
 
+declare class Combat extends FoundryDocument {
+  nextRound(): Promise<Combat>
+  combatants: foundryAny
+}
+
 declare class Combatant extends FoundryDocument {
   getInitiativeRoll(formula: string): Roll
 

@@ -15,7 +15,7 @@ export class TheEdgeCombatant extends Combatant {
     if ("system.strainInitiative" in dataCandidate) {
       const strainDelta = dataCandidate["system.strainInitiative"] - (this.system.strainInitiative ?? 0);
       data.initiative = this.initiative + strainDelta;
-      this.actor.system.applyStrain(strainDelta);
+      if(!operation?.isRoundReset) this.actor.system.applyStrain(strainDelta);
     }
 
     return super.update(data, operation) as unknown as Combatant;
@@ -31,4 +31,7 @@ export class TheEdgeCombatant extends Combatant {
       "system.strainInitiative": 0
     });
   }
+
+
+  roundReset() {this.update({"system.strainInitiative": 0}, {isRoundReset: true});}
 }

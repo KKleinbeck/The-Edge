@@ -18,6 +18,7 @@ import VantageData from "./data_models/items/vantage.js";
 import WeaponData from "./data_models/items/weapon.js";
 
 import { TheEdgeActor } from "./actors/actor.js";
+import { TheEdgeCombat } from "./documents/Combat.js";
 import { TheEdgeCombatant } from "./documents/Combatant.js";
 import { TheEdgeCombatTracker } from "./system/sidebar/combat_tracker.js";
 import { TheEdgeItem } from "./items/item.js";
@@ -122,6 +123,7 @@ Hooks.once("init", async function() {
   CONFIG.Actor.dataModels.Store = StoreData;
   CONFIG.Actor.documentClass = TheEdgeActor;
 
+  CONFIG.Combat.documentClass = TheEdgeCombat;
   CONFIG.Combatant.documentClass = TheEdgeCombatant;
 
   CONFIG.Item.dataModels.Advantage = VantageData;
