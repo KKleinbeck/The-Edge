@@ -1079,8 +1079,8 @@ textarea {
 .the_edge .chevron-hook {
   transition: rotate 300ms ease;
 }
-.the_edge .rotate180 {
-  rotate: 180deg;
+.the_edge .rotate90 {
+  rotate: 90deg;
 }
 
 .main-row {
