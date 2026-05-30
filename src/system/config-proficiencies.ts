@@ -1,6 +1,6 @@
 export default class ProficiencyConfig {
-  static rollOutcome(proficiency, ql) {
-    const outcome = {};
+  static rollOutcome(proficiency: string, ql: number): IRollOutcome {
+    const outcome: Partial<IRollOutcome> = {};
     switch (proficiency) {
       case "throwing":
         if (ql >= 7) {
@@ -11,7 +11,7 @@ export default class ProficiencyConfig {
           outcome.distance = 0;
           outcome.dir = 0;
           outcome.description = "Object lands exactly at target";
-        } else if (ql >= 1) {
+        } else if (ql >= 0) {
           outcome.distance = 9 - 1.5*ql;
           outcome.dir = [0, 1, 2, 3, 4, 5, 6, 7].random();
 
@@ -37,6 +37,6 @@ export default class ProficiencyConfig {
         }
         break;
     }
-    return outcome;
+    return outcome as IRollOutcome;
   }
 }

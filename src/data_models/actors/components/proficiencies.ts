@@ -114,7 +114,7 @@ class ProficiencyData extends DataModelComponent {
     }
   }
 
-  async rollProficiencyCheck(promptResult: IProficiencyPromptResult, transmit = true): Promise<IRollResult> {
+  async rollProficiencyCheck(promptResult: IProficiencyPromptResult, onSubmitCallback?: Function): Promise<IRollResult> {
     const proficiencyData = this.getProficiencyDiceThresholds(promptResult.proficiency)
 
     var threshold = 0;
@@ -130,17 +130,20 @@ class ProficiencyData extends DataModelComponent {
     const rollResult: IRollResult = await DiceServer.proficiencyCheck(diceServerConfig);
     this.applyStrain(promptResult.strain);
 
-    if (transmit) {
-      const details: IProficiencyRollMessage = {
-        ...rollResult,
-        dice: proficiencyData,
-        diceServerConfig: diceServerConfig,
-        effectiveThreshold: rollResult.effectiveThreshold,
-        modifier: promptResult.modifier,
-        proficiency: promptResult.proficiency,
-        strain: promptResult.strain,
-        vantage: promptResult.vantage
-      }
+    const rollDetails: IProficiencyRollMessage = {
+      ...rollResult,
+      dice: proficiencyData,
+      diceServerConfig: diceServerConfig,
+      effectiveThreshold: rollResult.effectiveThreshold,
+      modifier: promptResult.modifier,
+      proficiency: promptResult.proficiency,
+      strain: promptResult.strain,
+      vantage: promptResult.vantage
+    }
+
+    if (onSubmitCallback) onSubmitCallback(rollDetails);
+    
+    if (promptResult.transmit ?? true) {
       const chatConfig: IChatServerConfig = {
         roll: promptResult.roll,
         speaker: {
@@ -149,7 +152,7 @@ class ProficiencyData extends DataModelComponent {
           token: promptResult.tokenId
         }
       }
-      NewChatServer.transmitEvent("PROFICIENCY CHECK", details, chatConfig);
+      NewChatServer.transmitEvent("PROFICIENCY CHECK", rollDetails, chatConfig);
     }
     return rollResult;
   }

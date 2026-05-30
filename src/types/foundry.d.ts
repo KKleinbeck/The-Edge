@@ -1,8 +1,11 @@
 type foundryAny = any
 
+declare const canvas: ICanvas
 declare const foundry: IFoundry
 declare const game: foundryAny
 declare const ui: foundryAny
+
+interface IPosition {x: number, y: number}
 
 interface FoundryContainer<T> {
   get(id: string): T;
@@ -166,6 +169,18 @@ declare class HandlebarsApplicationMixinPartial {
 declare function HandlebarsApplicationMixin<T extends Constructor>(x: T):
   T & Constructor<HandlebarsApplicationMixinPartial>;
 
+// Canvas Interface
+interface ICanvas {
+  scene: {
+    grid: {
+      distance: number
+      size: number
+    }
+    id: string
+    tokens: FoundryContainer<foundryAny>
+  }
+}
+
 // Foundry Interface
 interface IFoundry {
   abstract: {
@@ -173,6 +188,7 @@ interface IFoundry {
   };
   applications: {
     api: {
+      ApplicationV2: foundryAny
       DialogV2: typeof DialogV2;
       HandlebarsApplicationMixin: typeof HandlebarsApplicationMixin;
     };

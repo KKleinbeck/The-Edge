@@ -13,7 +13,7 @@ export default class DialogProficiency extends CheckDialog {
     this.checkData = checkData;
   }
 
-  static async start(checkData: IProficiencyRollQuery) {
+  static async start(checkData: IProficiencyRollQuery, onSubmitCallback?: Function): Promise<DialogV2> {
     const proficiencyData = checkData.actor.system.getProficiencyDiceThresholds(checkData.proficiency);
     var threshold = 0;
     for (const data of proficiencyData) threshold += data.threshold;
@@ -24,6 +24,7 @@ export default class DialogProficiency extends CheckDialog {
       chance: Aux.asChance(Aux.proficiencySuccessChance(
         threshold, checkData.actor.system.proficiencyDiceParameter
       ), true),
+      modifierValue: checkData.modifier ?? 0,
       maxStrain: proficiencyData.filter(x => x.name == "proficiency")[0].threshold + strainReduction,
       strainHintType: "proficiency strain"
     });
@@ -63,18 +64,16 @@ export default class DialogProficiency extends CheckDialog {
       content: content,
       buttons: buttons,
       position: {width: 300},
-      submit: (result: any, dialog: DialogProficiency) => {
-        if (result === "cheat") {
-          DialogProficiency.cheatCallback(dialog, checkData);
-          return;
-        }
-
-        DialogProficiency.rollCallback(dialog, checkData, result);
+      submit: async (result: any, dialog: DialogProficiency): Promise<void> => {
+        if (result === "cheat") DialogProficiency.cheatCallback(dialog, checkData, onSubmitCallback);
+        else DialogProficiency.rollCallback(dialog, checkData, result, onSubmitCallback);
       }
     }).render({ force: true });
   }
 
-  static rollCallback(dialog: DialogProficiency, checkData: IProficiencyRollQuery, roll: rollType) {
+  static async rollCallback(
+    dialog: DialogProficiency, checkData: IProficiencyRollQuery, roll: rollType, onSubmitCallback: Function | undefined
+  ) {
     const sliderValues = dialog.getSliderValues();
     checkData.proficiency = checkData.proficiency.toLowerCase();
 
@@ -88,10 +87,10 @@ export default class DialogProficiency extends CheckDialog {
     
     const proficiencyPromptResult: IProficiencyPromptResult = foundry.utils.mergeObject(
       checkData, promptResult);
-    checkData.actor.system.rollProficiencyCheck(proficiencyPromptResult);
+    checkData.actor.system.rollProficiencyCheck(proficiencyPromptResult, onSubmitCallback);
   }
 
-  static cheatCallback(dialog: DialogProficiency, checkData: IProficiencyRollQuery) {
+  static cheatCallback(dialog: DialogProficiency, checkData: IProficiencyRollQuery, onSubmitCallback: Function | undefined) {
     console.log("not implemented yet");
   }
 

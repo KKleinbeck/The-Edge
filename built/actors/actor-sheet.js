@@ -114,11 +114,12 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
                         }
                         break;
                     case "grenade":
-                        ChatServer.transmitEvent("grenade sheet based", {
-                            actorId: this.actor?.id, tokenId: this.token?.id, grenade: item,
-                            details: item.system.subtypes.grenade
-                        });
-                        item.useOne();
+                        NotificationServer.notify("Grenade use tipp");
+                        // ChatServer.transmitEvent("grenade sheet based", {
+                        //   actorId: this.actor?.id, tokenId: this.token?.id, grenade: item,
+                        //   details: item.system.subtypes.grenade
+                        // })
+                        // item.useOne();
                         break;
                     default:
                         const existingCopies = this.actor.system.findEffectsByName(item.name);
