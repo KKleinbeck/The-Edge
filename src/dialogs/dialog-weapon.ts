@@ -134,14 +134,14 @@ export default class DialogWeapon extends Dialog{
     const precision =  html.find('[name="PrecisionSelector"]').val();
     const pIndex = precision == "aimed" ? 1 : 0;
     const tempModificator = parseInt(html.find('[name="Modifier"]').val()); 
+
     let range = html.find('[name="RangeSelector"]').val();
-    if (checkData.distance) {
-      if (checkData.distance < 2) range = "less_2m";
-      else if (checkData.distance < 20) range = "less_20m";
-      else if (checkData.distance < 200) range = "less_200m";
-      else if (checkData.distance < 1000) range = "less_1km";
-      else range = "more_1km";
-    }
+    if (checkData.distance < 2) range = "less_2m";
+    else if (checkData.distance < 20) range = "less_20m";
+    else if (checkData.distance < 200) range = "less_200m";
+    else if (checkData.distance < 1000) range = "less_1km";
+    else range = "more_1km";
+
     let size = html.find('[name="SizeSelector"]').val();
     if (checkData.smallestSize) size = checkData.smallestSize;
     const movement = html.find('[name="MovementSelector"]').val();
@@ -150,9 +150,9 @@ export default class DialogWeapon extends Dialog{
     if (fireMode === undefined && checkData.fireModes.length === 1) { // When we do not offer a drop down menu
       fireMode = checkData.fireModes[0].name;
     }
-    let fireModeIndex = checkData.fireModes.findIndex((x) => x.name === fireMode);
+    const fireModeIndex = checkData.fireModes.findIndex((x) => x.name === fireMode);
 
-    let threshold = Math.max(1, checkData.threshold + tempModificator +
+    const threshold = Math.max(1, checkData.threshold + tempModificator +
       checkData.rangeChart[range][pIndex] + THE_EDGE.sizeModifiers[size][pIndex] +
       THE_EDGE.movements[movement][pIndex] + THE_EDGE.cover[cover] +
       checkData.fireModes[fireModeIndex].precisionPenalty[pIndex]);

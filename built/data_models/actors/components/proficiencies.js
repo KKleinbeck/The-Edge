@@ -95,7 +95,7 @@ class ProficiencyData extends DataModelComponent {
             qualityStep: 5
         };
     }
-    async rollProficiencyCheck(promptResult, transmit = true) {
+    async rollProficiencyCheck(promptResult, onSubmitCallback) {
         const proficiencyData = this.getProficiencyDiceThresholds(promptResult.proficiency);
         var threshold = 0;
         for (const data of proficiencyData)
@@ -108,17 +108,19 @@ class ProficiencyData extends DataModelComponent {
         };
         const rollResult = await DiceServer.proficiencyCheck(diceServerConfig);
         this.applyStrain(promptResult.strain);
-        if (transmit) {
-            const details = {
-                ...rollResult,
-                dice: proficiencyData,
-                diceServerConfig: diceServerConfig,
-                effectiveThreshold: rollResult.effectiveThreshold,
-                modifier: promptResult.modifier,
-                proficiency: promptResult.proficiency,
-                strain: promptResult.strain,
-                vantage: promptResult.vantage
-            };
+        const rollDetails = {
+            ...rollResult,
+            dice: proficiencyData,
+            diceServerConfig: diceServerConfig,
+            effectiveThreshold: rollResult.effectiveThreshold,
+            modifier: promptResult.modifier,
+            proficiency: promptResult.proficiency,
+            strain: promptResult.strain,
+            vantage: promptResult.vantage
+        };
+        if (onSubmitCallback)
+            onSubmitCallback(rollDetails);
+        if (promptResult.transmit ?? true) {
             const chatConfig = {
                 roll: promptResult.roll,
                 speaker: {
@@ -127,7 +129,7 @@ class ProficiencyData extends DataModelComponent {
                     token: promptResult.tokenId
                 }
             };
-            NewChatServer.transmitEvent("PROFICIENCY CHECK", details, chatConfig);
+            NewChatServer.transmitEvent("PROFICIENCY CHECK", rollDetails, chatConfig);
         }
         return rollResult;
     }

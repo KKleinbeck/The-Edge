@@ -13,7 +13,7 @@ export default class ProficiencyConfig {
                     outcome.dir = 0;
                     outcome.description = "Object lands exactly at target";
                 }
-                else if (ql >= 1) {
+                else if (ql >= 0) {
                     outcome.distance = 9 - 1.5 * ql;
                     outcome.dir = [0, 1, 2, 3, 4, 5, 6, 7].random();
                     const dir = [

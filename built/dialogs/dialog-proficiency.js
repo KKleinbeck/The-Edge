@@ -7,7 +7,7 @@ export default class DialogProficiency extends CheckDialog {
         super(options);
         this.checkData = checkData;
     }
-    static async start(checkData) {
+    static async start(checkData, onSubmitCallback) {
         const proficiencyData = checkData.actor.system.getProficiencyDiceThresholds(checkData.proficiency);
         var threshold = 0;
         for (const data of proficiencyData)
@@ -16,6 +16,7 @@ export default class DialogProficiency extends CheckDialog {
         const strainReduction = checkData.actor.system.strain.maxUseReduction.status;
         const html = await renderTemplate(template, {
             chance: Aux.asChance(Aux.proficiencySuccessChance(threshold, checkData.actor.system.proficiencyDiceParameter), true),
+            modifierValue: checkData.modifier ?? 0,
             maxStrain: proficiencyData.filter(x => x.name == "proficiency")[0].threshold + strainReduction,
             strainHintType: "proficiency strain"
         });
@@ -53,16 +54,15 @@ export default class DialogProficiency extends CheckDialog {
             content: content,
             buttons: buttons,
             position: { width: 300 },
-            submit: (result, dialog) => {
-                if (result === "cheat") {
-                    DialogProficiency.cheatCallback(dialog, checkData);
-                    return;
-                }
-                DialogProficiency.rollCallback(dialog, checkData, result);
+            submit: async (result, dialog) => {
+                if (result === "cheat")
+                    DialogProficiency.cheatCallback(dialog, checkData, onSubmitCallback);
+                else
+                    DialogProficiency.rollCallback(dialog, checkData, result, onSubmitCallback);
             }
         }).render({ force: true });
     }
-    static rollCallback(dialog, checkData, roll) {
+    static async rollCallback(dialog, checkData, roll, onSubmitCallback) {
         const sliderValues = dialog.getSliderValues();
         checkData.proficiency = checkData.proficiency.toLowerCase();
         const vantageElement = dialog.element.querySelector(".vantage-hook");
@@ -74,9 +74,9 @@ export default class DialogProficiency extends CheckDialog {
         if (!(promptResult.strain))
             promptResult.strain = 0;
         const proficiencyPromptResult = foundry.utils.mergeObject(checkData, promptResult);
-        checkData.actor.system.rollProficiencyCheck(proficiencyPromptResult);
+        checkData.actor.system.rollProficiencyCheck(proficiencyPromptResult, onSubmitCallback);
     }
-    static cheatCallback(dialog, checkData) {
+    static cheatCallback(dialog, checkData, onSubmitCallback) {
         console.log("not implemented yet");
     }
     // Helpers for rendering

@@ -32,12 +32,7 @@ export class SocketHandler {
         
         // Grenade related
         case "CREATE_GRENADE_TILE":
-          if (game.user.isGM) {
-            GrenadePicker.createGrenadeTile(
-              payload.proficiencyRoll, payload.rollOutcome, payload.token,
-              payload.checkData, payload.targetPosition
-            );
-          }
+          if (game.user.isGM) GrenadePicker.createGrenadeTile(payload);
           break;
         
         // Store related

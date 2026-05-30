@@ -1,5 +1,6 @@
 import THE_EDGE from "../system/config-the-edge.js";
-import ChatServer from "../system/chat_server.js";
+import NewChatServer from "../system/new_chat_server.js";
+import DialogProficiency from "../dialogs/dialog-proficiency.js";
 import ProficiencyConfig from "../system/config-proficiencies.js";
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 export default class GrenadePicker extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -19,7 +20,7 @@ export default class GrenadePicker extends HandlebarsApplicationMixin(Applicatio
             const grenades = token.actor.itemTypes["Consumables"].filter(x => { return "grenade" == x.system.current_type; });
             if (grenades.length >= 1) {
                 const distance = this._getDistance(this.targetPosition, token);
-                const size = Object.entries(THE_EDGE.sizes).find(([_, value]) => value > token.actor.system.height)[0];
+                const size = Object.values(THE_EDGE.sizes).find((value, _index, _obj) => value > token.actor.system.height);
                 const modifier = this._getDistanceModifier(distance, size);
                 this.actorOptions.push({
                     id: token.id, name: token.actor.name, distance: distance, modifier: modifier, grenades: grenades
@@ -48,13 +49,12 @@ export default class GrenadePicker extends HandlebarsApplicationMixin(Applicatio
         }
     };
     hasContent() { return this.actorOptions.length >= 1; }
-    async _prepareContext(options) {
-        const context = {};
-        context.actors = this.actorOptions;
-        context.chosenActor = context.actors[this.chosenActorIndex];
-        context.chosenActorIndex = this.chosenActorIndex;
-        context.grenadeOptions = context.actors[this.chosenActorIndex].grenades;
-        return context;
+    async _prepareContext(_options) {
+        const actors = this.actorOptions;
+        const chosenActor = actors[this.chosenActorIndex];
+        const chosenActorIndex = this.chosenActorIndex;
+        const grenadeOptions = actors[this.chosenActorIndex].grenades;
+        return { actors, chosenActor, chosenActorIndex, grenadeOptions };
     }
     _getDistance(mousePosition, token) {
         const factor = canvas.scene.grid.distance / canvas.scene.grid.size;
@@ -78,56 +78,78 @@ export default class GrenadePicker extends HandlebarsApplicationMixin(Applicatio
         });
     }
     static async _rollCheck(_event, target) {
-        const chosenActor = this.actorOptions[this.chosenActorIndex];
-        const grenadeIndex = +target.parentNode.querySelector(".grenade-selection").value;
-        const chosenGrenade = chosenActor.grenades[grenadeIndex];
-        const token = canvas.scene.tokens.get(chosenActor.id);
-        const checkData = {
-            proficiency: "throwing", modifier: chosenActor.modifier, vantage: "Nothing",
-            actor: token.actor, actorId: token.actor.id, tokenId: token.id, sceneId: canvas.scene.id,
-            titleDetails: chosenGrenade.name, grenade: chosenGrenade, strain: 0
+        const actorOptions = this.actorOptions[this.chosenActorIndex];
+        const token = canvas.scene.tokens.get(actorOptions.id);
+        const rollQuery = {
+            proficiency: "throwing", actor: token.actor, actorId: token.actor.id, tokenId: token.id,
+            sceneId: canvas.scene.id, transmit: false, modifier: actorOptions.modifier
         };
-        const proficiencyRoll = await token.actor.system.rollProficiencyCheck(checkData, false);
-        foundry.utils.mergeObject(checkData, proficiencyRoll);
-        const rollOutcome = ProficiencyConfig.rollOutcome("throwing", proficiencyRoll.quality);
-        foundry.utils.mergeObject(checkData, { rollOutcome: rollOutcome.description });
-        ChatServer.transmitEvent("ProficiencyCheck", checkData);
+        DialogProficiency.start(rollQuery, (rollDetails) => this._onRollCompleted(rollDetails, target));
+        this.close();
+        return;
+        // const checkData = {
+        //   proficiency: "throwing", modifier: chosenActor.modifier, vantage: "Nothing",
+        //   actor: token.actor, actorId: token.actor.id, tokenId: token.id, sceneId: canvas.scene.id,
+        //   titleDetails: chosenGrenade.name, grenade: chosenGrenade, strain: 0
+        // };
+        const proficiencyRoll = await token.actor.system.rollProficiencyCheck(rollQuery, false);
+        foundry.utils.mergeObject(rollQuery, proficiencyRoll);
+    }
+    _onRollCompleted(rollDetails, target) {
+        const { token, chosenGrenade } = this._getTokenAndGrenade(target) ?? {};
+        if (!token)
+            return;
+        const rollOutcome = ProficiencyConfig.rollOutcome("throwing", rollDetails.quality);
+        foundry.utils.mergeObject(rollDetails, { rollOutcome, titleDetails: chosenGrenade.name });
+        const chatServerConfig = { speaker: { scene: canvas.scene.id, token: token.id } };
+        NewChatServer.transmitEvent("PROFICIENCY CHECK", rollDetails, chatServerConfig);
         const payload = {
-            proficiencyRoll: proficiencyRoll, rollOutcome: rollOutcome,
-            token: { x: token.x, y: token.y }, checkData: checkData,
-            targetPosition: this.targetPosition
+            actor: token.actor, rollDetails: rollDetails, tokenPosition: { x: token.x, y: token.y },
+            targetPosition: this.targetPosition, grenade: chosenGrenade, sceneId: canvas.scene.id
         };
         game.the_edge.socketHandler.emit("CREATE_GRENADE_TILE", payload);
-        if (game.user.isActiveGM) { // As we do not catch our own events
-            GrenadePicker.createGrenadeTile(proficiencyRoll, rollOutcome, payload.token, checkData, this.targetPosition);
-        }
+        if (game.user.isActiveGM)
+            GrenadePicker.createGrenadeTile(payload); // As we do not catch our own events
         chosenGrenade.useOne();
-        this.close();
     }
-    static async createGrenadeTile(proficiencyRoll, rollOutcome, token, checkData, targetPosition) {
+    _getTokenAndGrenade(target) {
+        if (!target.parentNode)
+            return;
+        const grenadeIndex = +target.parentNode.querySelector(".grenade-selection").value;
+        const chosenActor = this.actorOptions[this.chosenActorIndex];
+        const token = canvas.scene.tokens.get(chosenActor.id);
+        const chosenGrenade = chosenActor.grenades[grenadeIndex];
+        return { token, chosenGrenade };
+    }
+    static async createGrenadeTile(payload) {
+        const { rollDetails, tokenPosition, targetPosition, grenade } = payload;
         const cls = getDocumentClass("Tile");
-        const position = { x: 0, y: 0 };
-        const dist = rollOutcome.distance * canvas.scene.grid.size;
-        if (proficiencyRoll.quality >= 0) {
-            const angle = Math.PI * (45 * rollOutcome.dir + 40 * Math.random() - 20) / 180;
-            position.x = Math.floor(targetPosition.x + dist * Math.sin(angle));
-            position.y = Math.floor(targetPosition.y - dist * Math.cos(angle));
-        }
-        else {
-            const angle = Math.atan2(token.y - targetPosition.y, token.x - targetPosition.x) +
-                Math.PI * (180 * rollOutcome.dir + 40 * Math.random() - 20 + 90) / 180;
-            position.x = Math.floor(token.x + dist * Math.sin(angle));
-            position.y = Math.floor(token.y - dist * Math.cos(angle));
-        }
+        const position = GrenadePicker._createGrenadePosition(rollDetails.quality, rollDetails.rollOutcome, tokenPosition, targetPosition);
         const grenadeTile = await cls.create({
             width: 80, height: 80, ...position, elevation: 1,
             texture: { src: "systems/the_edge/icons/fragger.png" }
         }, { parent: canvas.scene });
         const details = {
-            nameGrenade: checkData.titleDetails, nameActor: checkData.actor.name,
-            grenade: checkData.grenade, grenadeTileId: grenadeTile.id,
-            sceneId: checkData.sceneId
+            nameGrenade: rollDetails.titleDetails, nameActor: payload.actor.name,
+            grenade, grenadeTileId: grenadeTile.id,
+            sceneId: payload.sceneId
         };
-        ChatServer.transmitEvent("GRENADE CONTEXT BASED", details);
+        NewChatServer.transmitEvent("GRENADE CONTEXT BASED", details);
+    }
+    static _createGrenadePosition(quality, rollOutcome, tokenPosition, targetPosition) {
+        const position = { x: 0, y: 0 };
+        const dist = rollOutcome.distance * canvas.scene.grid.size;
+        if (quality >= 0) {
+            const angle = Math.PI * (45 * rollOutcome.dir + 40 * Math.random() - 20) / 180;
+            position.x = Math.floor(targetPosition.x + dist * Math.sin(angle));
+            position.y = Math.floor(targetPosition.y - dist * Math.cos(angle));
+        }
+        else {
+            const angle = Math.atan2(tokenPosition.y - targetPosition.y, tokenPosition.x - targetPosition.x) +
+                Math.PI * (180 * rollOutcome.dir + 40 * Math.random() - 20 + 90) / 180;
+            position.x = Math.floor(tokenPosition.x + dist * Math.sin(angle));
+            position.y = Math.floor(tokenPosition.y - dist * Math.cos(angle));
+        }
+        return position;
     }
 }

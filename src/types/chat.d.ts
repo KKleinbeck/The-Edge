@@ -40,6 +40,7 @@ interface IProficiencyRollMessage extends IRollResult, IRollPromptResult {
   strain: number
   diceServerConfig: IDiceServerConfig
   interpretation?: IProficiencyRollInterpretation
+  titleDetails?: string
 }
 
 // Hooks

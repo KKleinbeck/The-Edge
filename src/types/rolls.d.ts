@@ -41,25 +41,32 @@ interface IRollPromptResult {
   roll?: rollType
 }
 
-interface _IRollActor {
+interface _IRollMeta {
   actor: foundryAny
   actorId: string
   tokenId?: string
   sceneId: string
+  transmit?: boolean
 }
 
 // Attributes and Proficiencies
-interface IAttributeRollQuery extends _IRollActor {
+interface IAttributeRollQuery extends _IRollMeta {
+  attribute: string
+  modifier?: number
+}
+
+interface IAttributePromptResult extends _IRollMeta, IRollPromptResult {
   attribute: string
 }
 
-interface IAttributePromptResult extends IAttributeRollQuery, IRollPromptResult {}
-
-interface IProficiencyRollQuery extends _IRollActor{
+interface IProficiencyRollQuery extends _IRollMeta {
   proficiency: string
+  modifier?: number
 }
 
-interface IProficiencyPromptResult extends IProficiencyRollQuery, IRollPromptResult {}
+interface IProficiencyPromptResult extends _IRollMeta, IRollPromptResult {
+  proficiency: string
+}
 
 // Combat
 interface IAttackRoll {
@@ -81,7 +88,7 @@ interface IAttackRollPrompt {
   vantage: TVantage
 }
 
-interface IAttackRollQuery extends _IRollActor {
+interface IAttackRollQuery extends _IRollMeta {
   damageRoll: string
   name: string
   targetId?: string
