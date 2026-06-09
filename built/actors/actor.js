@@ -232,6 +232,11 @@ export class TheEdgeActor extends Actor {
             };
         });
     }
+    effectHooks(field, details) {
+        const effects = foundry.utils.mergeObject(this.getItemEffects(true), this.getSkillEffects(true));
+        console.log(effects);
+        return effects;
+    }
     attachOuterArmour(armourId, shellId, tokenId) {
         const armour = this.items.get(armourId);
         const shell = this.items.get(shellId);

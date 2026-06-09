@@ -66,9 +66,17 @@ export default class WeaponData extends DataModelComponent {
   }
 
   async rollAttackCheck(prompt: IAttackRollPrompt): Promise<IAttackRollResult> {
-    const config: IDiceServerAttackConfig = {
+    const diceServerConfig: IDiceServerAttackConfig = {
       ...this.attackDiceParameters, ...prompt
     };
-    return await DiceServer.attackCheck(config);
+    Hooks.call(
+      "onModifierEvent", "rollAttackCheck-Prior", {actor: this.parent, diceServerConfig, prompt}
+    );
+    const attackOutcome = await DiceServer.attackCheck(diceServerConfig);
+    Hooks.call(
+      "onModifierEvent", "rollAttackCheck-Posterior",
+      {actor: this.parent, attackOutcome, diceServerConfig, prompt}
+    );
+    return attackOutcome;
   }
 }

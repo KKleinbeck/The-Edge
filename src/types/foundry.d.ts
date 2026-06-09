@@ -5,7 +5,7 @@ declare const foundry: IFoundry
 declare const game: foundryAny
 declare const ui: foundryAny
 
-interface IPosition {x: number, y: number}
+interface TPosition {x: number, y: number}
 
 interface FoundryContainer<T> {
   get(id: string): T;
@@ -80,6 +80,11 @@ declare class TokenDocument {
 
   getBarAttribute(barName: string, options: {alternative?: string}): foundryAny
   actor: Actor
+}
+
+// Hooks
+declare namespace Hooks {
+  function call(event: string, ...args: unknown[]): boolean;
 }
 
 // Sheets
@@ -171,6 +176,10 @@ declare function HandlebarsApplicationMixin<T extends Constructor>(x: T):
 
 // Canvas Interface
 interface ICanvas {
+  app: {
+    view: foundryAny
+  }
+  mousePosition: TPosition
   scene: {
     grid: {
       distance: number

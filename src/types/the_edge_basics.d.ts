@@ -7,6 +7,10 @@ type TBodyPartCoarse = "Torso" | "Head" | "Legs" | "Arms"
 
 type TCoordinate = [number, number]
 
+type TEventNames = (
+  "rollAttackCheck-Prior" | "rollAttackCheck-Posterior"
+)
+
 type TWeapon = (
   "Blaster Pistols" | "Pulse Rifle" | "SABs" | "Blaster Shockguns" | "Blaster Snipers" |
   "General weapon proficiency" | "Hand-to-Hand combat" | "Recoilless Rifles" |

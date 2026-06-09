@@ -2,7 +2,6 @@ import initHooks from "./hooks/init.js";
 import THE_EDGE from "./system/config-the-edge.js";
 import CombatLog from "./applications/combat-log.js";
 import DiceServer from "./system/dice_server.js";
-import GrenadePicker from "./applications/grenades-picker.js";
 import setupGameSettings from "./system/settings.js";
 import TheEdgeHotbar from "./applications/hotbar.js";
 import CharacterData from "./data_models/actors/character.js";
@@ -25,6 +24,7 @@ import { TheEdgePlayableSheet } from "./actors/playable-sheet.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
 import { TheEdgeToken, TheEdgeTokenDocument } from "./documents/token.js";
 import { TheEdgeStoreSheet } from "./actors/store-sheet.js";
+import registerCustomHooks from "./system/hooks.js";
 Hooks.once("init", async function () {
     console.log(`Initializing the Galaxy`);
     // Useful helpers
@@ -164,55 +164,5 @@ Hooks.once("init", async function () {
     // Preload template partials
     await preloadHandlebarsTemplates();
 });
-Hooks.on("ready", function () {
-    let rightClickStart = null;
-    let startPos = null;
-    let gp = null;
-    // TODO: make user controllable options
-    const maxClickDuration = 300; // ms
-    const maxMoveDistance = 5; // px
-    canvas.app.view.addEventListener("mousedown", e => {
-        if (e.button === 2) {
-            rightClickStart = Date.now();
-            startPos = { x: e.clientX, y: e.clientY };
-        }
-    });
-    canvas.app.view.addEventListener("mouseup", e => {
-        if (e.button === 2 && rightClickStart) {
-            if (Date.now() - game.the_edge.tokenClickTime < maxClickDuration) {
-                rightClickStart = null;
-                return;
-            }
-            const duration = Date.now() - rightClickStart;
-            const dx = e.clientX - startPos.x;
-            const dy = e.clientY - startPos.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            if (duration < maxClickDuration && distance < maxMoveDistance) {
-                if (gp)
-                    gp.close();
-                gp = new GrenadePicker({
-                    position: { left: e.clientX, top: e.clientY },
-                    mousePosition: canvas.mousePosition
-                });
-                if (gp.hasContent()) {
-                    gp.render(true);
-                    e.preventDefault();
-                }
-            }
-            rightClickStart = null;
-        }
-    });
-    // Redraw the hotbar to a sensible actor
-    ui.hotbar._onResize(); // Initialize size
-    ui.hotbar.render(true);
-});
-Hooks.on("renderTokenHUD", function (_tokenHUG) {
-    preventGrenadePick();
-});
-Hooks.on("closeBasePlaceableHUD", function (_tokenHUD) {
-    preventGrenadePick();
-});
-function preventGrenadePick() {
-    game.the_edge.tokenClickTime = Date.now();
-}
+registerCustomHooks();
 initHooks();

@@ -11,8 +11,8 @@ interface _IExtendedRollMessage extends IProficiencyRollMessage {
 interface _IGrenadePickerPayload {
   actor: Actor
   rollDetails: _IExtendedRollMessage
-  tokenPosition: IPosition
-  targetPosition: IPosition
+  tokenPosition: TPosition
+  targetPosition: TPosition
   grenade: Item
   sceneId: string
 }
@@ -191,9 +191,9 @@ export default class GrenadePicker extends HandlebarsApplicationMixin(Applicatio
   }
 
   static _createGrenadePosition(
-    quality: number, rollOutcome: IThrowingOutcome, tokenPosition: IPosition, targetPosition: IPosition
-  ): IPosition {
-    const position: IPosition = {x: 0, y: 0};
+    quality: number, rollOutcome: IThrowingOutcome, tokenPosition: TPosition, targetPosition: TPosition
+  ): TPosition {
+    const position: TPosition = {x: 0, y: 0};
     const dist = rollOutcome.distance * canvas.scene.grid.size;
     if (quality >= 0) {
       const angle = Math.PI * (45 * rollOutcome.dir + 40 * Math.random() - 20) / 180;
