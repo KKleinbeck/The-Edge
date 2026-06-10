@@ -33,87 +33,12 @@ import registerCustomHooks from "./system/hooks.js";
 Hooks.once("init", async function() {
   console.log(`Initializing the Galaxy`);
   // Useful helpers
-  Array.prototype.random = function () {
-    return this[Math.floor((Math.random()*this.length))];
-  }
-  Array.prototype.last = function () {
-    return this[this.length - 1];
-  }
-  Array.prototype.sum = function () {
-    return this.reduce((a,b) => a+b,0);
-  }
-  Array.prototype.variance = function () {
-    const sum = this.sum();
-    return this.reduce((a,b) => a + b*b, -sum) / this.length;
-  }
-  Number.prototype.mod = function (n) {
-    // Javascripts % returns remainder, not module (-1 % n == -1 != n - 1)
-    return ((this % n) + n) % n;
-  }
-  String.prototype.rsplit = function(sep, maxsplit = 1) {
-      var split = this.split(sep || /\s+/);
-      return maxsplit ? [ split.slice(0, -maxsplit).join(sep) ].concat(split.slice(-maxsplit)) : split;
-  }
+  _extendNativePrototypes();
 
   // Generating maps for the fundamental data model
-  const characterDataInstance = new CharacterData();
-  THE_EDGE.characterSchema = characterDataInstance.toObject();
-  const coreValues = Object.keys(foundry.utils.flattenObject(THE_EDGE.characterSchema))
-    .filter(x => x.split(".").last() == "advances");
-  for (const coreValue of coreValues) {
-    const parts = coreValue.split(".");
-    THE_EDGE.coreValueMap[parts[0]][parts[parts.length-2]] = coreValue.replace(".advances", "");
-  }
-
-  const basicEffects = Object.keys(foundry.utils.flattenObject(THE_EDGE.characterSchema))
-    .filter(x => x.split(".").last() == "status" || x.split(".")[0] == "generalModifiers");
-  for (let effect of basicEffects) {
-    const parts = effect.split(".");
-    effect = "system." + effect;
-    if (THE_EDGE.effectMap[parts[0]]) {
-      if (parts.length == 2 || parts.length == 3) {
-        THE_EDGE.effectMap[parts[0]][parts[1]] = [effect];
-      } else {
-        THE_EDGE.effectMap[parts[0]][parts[2]] = [effect];
-        if (THE_EDGE.effectMap[parts[0]][parts[1]]) {
-          THE_EDGE.effectMap[parts[0]][parts[1]].push(effect);
-        } else THE_EDGE.effectMap[parts[0]][parts[1]] = [effect];
-      }
-      THE_EDGE.effectMap[parts[0]].all?.push(effect);
-    } else {
-      THE_EDGE.effectMap["generalModifiers"][parts[0] + " - " + parts[1]] = [effect];
-    }
-  }
-  THE_EDGE.effectMap["attributes"]["physical"] = [
-    THE_EDGE.effectMap["attributes"]["end"], THE_EDGE.effectMap["attributes"]["str"], 
-    THE_EDGE.effectMap["attributes"]["spd"], THE_EDGE.effectMap["attributes"]["crd"], 
-  ]
-  THE_EDGE.effectMap["attributes"]["social"] = [
-    THE_EDGE.effectMap["attributes"]["cha"], THE_EDGE.effectMap["attributes"]["emp"], 
-  ]
-  THE_EDGE.effectMap["attributes"]["mental"] = [
-    THE_EDGE.effectMap["attributes"]["foc"], THE_EDGE.effectMap["attributes"]["res"], 
-    THE_EDGE.effectMap["attributes"]["int"]
-  ]
-  THE_EDGE.definedEffects = structuredClone(THE_EDGE.effectMap);
-  for (const group of ["attributes", "proficiencies", "weapons"]) {
-    THE_EDGE.definedEffects[group].crit = undefined;
-    THE_EDGE.definedEffects[group].critFail = undefined;
-  }
-
-  const generalWeapons = Object.keys(THE_EDGE.characterSchema.weapons.general);
-  const energyWeapons = Object.keys(THE_EDGE.characterSchema.weapons.energy);
-  const kineticWeapons = Object.keys(THE_EDGE.characterSchema.weapons.kinetic);
-  for (let i = 0; i < energyWeapons.length; ++i) {
-    THE_EDGE.weapon_damage_types[generalWeapons[i]] = "general";
-    THE_EDGE.weapon_damage_types[energyWeapons[i]] = "energy";
-    THE_EDGE.weapon_damage_types[kineticWeapons[i]] = "kinetic";
-    THE_EDGE.weapon_partners[energyWeapons[i]] = kineticWeapons[i];
-    THE_EDGE.weapon_partners[kineticWeapons[i]] = energyWeapons[i];
-  }
+  _finaliseConfigSetup()
 
   game.the_edge = {
-    config: THE_EDGE,
     combatLog: new CombatLog(),
     diceServer: new DiceServer(),
     socketHandler: new SocketHandler()
@@ -185,3 +110,90 @@ Hooks.once("init", async function() {
 registerCustomHooks();
 
 initHooks();
+
+function _extendNativePrototypes() {
+  Array.prototype.random = function () {
+    return this[Math.floor((Math.random()*this.length))];
+  }
+  Array.prototype.last = function () {
+    return this[this.length - 1];
+  }
+  Array.prototype.sum = function () {
+    return this.reduce((a,b) => a+b,0);
+  }
+  Array.prototype.variance = function () {
+    const sum = this.sum();
+    return this.reduce((a,b) => a + b*b, -sum) / this.length;
+  }
+  Number.prototype.mod = function (n) {
+    // Javascripts % returns remainder, not module (-1 % n == -1 != n - 1)
+    return ((this % n) + n) % n;
+  }
+  String.prototype.rsplit = function(sep, maxsplit = 1) {
+      var split = this.split(sep || /\s+/);
+      return maxsplit ? [ split.slice(0, -maxsplit).join(sep) ].concat(split.slice(-maxsplit)) : split;
+  }
+}
+
+function _finaliseConfigSetup() {
+  const characterDataInstance = new CharacterData();
+  THE_EDGE.characterSchema = characterDataInstance.toObject();
+  const coreValues = Object.keys(foundry.utils.flattenObject(THE_EDGE.characterSchema))
+    .filter(x => x.split(".").last() == "advances");
+  for (const coreValue of coreValues) {
+    const parts = coreValue.split(".");
+    THE_EDGE.coreValueMap[parts[0]][parts[parts.length-2]] = coreValue.replace(".advances", "");
+  }
+
+  const basicEffects = Object.keys(foundry.utils.flattenObject(THE_EDGE.characterSchema))
+    .filter(x => x.split(".").last() == "status" || x.split(".")[0] == "generalModifiers");
+  for (let effect of basicEffects) {
+    const parts = effect.split(".");
+    effect = "system." + effect;
+    if (THE_EDGE.effectMap[parts[0]]) {
+      if (parts.length == 2 || parts.length == 3) {
+        THE_EDGE.effectMap[parts[0]][parts[1]] = [effect];
+      } else {
+        THE_EDGE.effectMap[parts[0]][parts[2]] = [effect];
+        if (THE_EDGE.effectMap[parts[0]][parts[1]]) {
+          THE_EDGE.effectMap[parts[0]][parts[1]].push(effect);
+        } else THE_EDGE.effectMap[parts[0]][parts[1]] = [effect];
+      }
+      THE_EDGE.effectMap[parts[0]].all?.push(effect);
+    } else {
+      THE_EDGE.effectMap["generalModifiers"][parts[0] + " - " + parts[1]] = [effect];
+    }
+  }
+  THE_EDGE.effectMap["attributes"]["physical"] = [
+    THE_EDGE.effectMap["attributes"]["end"], THE_EDGE.effectMap["attributes"]["str"], 
+    THE_EDGE.effectMap["attributes"]["spd"], THE_EDGE.effectMap["attributes"]["crd"], 
+  ]
+  THE_EDGE.effectMap["attributes"]["social"] = [
+    THE_EDGE.effectMap["attributes"]["cha"], THE_EDGE.effectMap["attributes"]["emp"], 
+  ]
+  THE_EDGE.effectMap["attributes"]["mental"] = [
+    THE_EDGE.effectMap["attributes"]["foc"], THE_EDGE.effectMap["attributes"]["res"], 
+    THE_EDGE.effectMap["attributes"]["int"]
+  ]
+
+  // definedEffects only holds the string names, not the targets
+  THE_EDGE.definedEffects = {};
+  for (const [group, fields] of Object.entries(THE_EDGE.effectMap)) {
+    THE_EDGE.definedEffects[group] = Object.keys(fields);
+  }
+  for (const group of ["attributes", "proficiencies", "weapons"]) {
+    THE_EDGE.definedEffects[group].crit = undefined;
+    THE_EDGE.definedEffects[group].critFail = undefined;
+  }
+
+  const generalWeapons = Object.keys(THE_EDGE.characterSchema.weapons.general);
+  const energyWeapons = Object.keys(THE_EDGE.characterSchema.weapons.energy);
+  const kineticWeapons = Object.keys(THE_EDGE.characterSchema.weapons.kinetic);
+  for (let i = 0; i < energyWeapons.length; ++i) {
+    THE_EDGE.weapon_damage_types[generalWeapons[i]] = "general";
+    THE_EDGE.weapon_damage_types[energyWeapons[i]] = "energy";
+    THE_EDGE.weapon_damage_types[kineticWeapons[i]] = "kinetic";
+    THE_EDGE.weapon_partners[energyWeapons[i]] = kineticWeapons[i];
+    THE_EDGE.weapon_partners[kineticWeapons[i]] = energyWeapons[i];
+  }
+}

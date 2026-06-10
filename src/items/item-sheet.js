@@ -14,6 +14,10 @@ export class TheEdgeItemSheet extends EffectModifierMixin(IconSelectorMixin(Hand
     super(options);
     this.headerWidth = 0;
     this.headerHeight = 0;
+
+    this.definedEffects = structuredClone(THE_EDGE.definedEffects);
+    const dynamicModifiers = THE_EDGE.dynamicModifiers(this.item.type);
+    if (dynamicModifiers) this.definedEffects.dynamicModifiers = dynamicModifiers;
   }
 
   static DEFAULT_OPTIONS = {
@@ -202,11 +206,7 @@ export class TheEdgeItemSheet extends EffectModifierMixin(IconSelectorMixin(Hand
       }
     );
     context.userIsGM = game.user.isGM;
-    context.definedEffects = structuredClone(THE_EDGE.effectMap);
-    for (const group of ["attributes", "proficiencies", "weapons"]) {
-      context.definedEffects[group].crit = undefined;
-      context.definedEffects[group].critFail = undefined;
-    }
+    context.definedEffects = this.definedEffects;
     return context;
   }
 

@@ -299,7 +299,10 @@
     "STRAIN": "Strain",
     "STRAIN - MAX": "Max Strain",
     "STRAIN - STATUSTHRESHOLD": "Delay strain effects",
-    "STRAIN - MAXUSEREDUCTION": "Reduce max strain per roll"
+    "STRAIN - MAXUSEREDUCTION": "Reduce max strain per roll",
+
+    "ROLLATTACKCHECK-PRIOR": "Before attack roll",
+    "ROLLATTACKCHECK-POSTERIOR": "After attack roll"
   },
   "HERO TOKEN": {
     "ATTRIBUTE": "{name} used a hero token to improve an ability check.",
@@ -635,6 +638,7 @@
   "DISADVANTAGES": "Disadvantages",
   "DISTANCE": "Distance",
   "DYING": "Dying",
+  "DYNAMICMODIFIERS": "Dynamic mods",
   "EFFECTS": "Effects",
   "EXPLANATIONS": "Explanations",
   "FAILURE": "Failure",

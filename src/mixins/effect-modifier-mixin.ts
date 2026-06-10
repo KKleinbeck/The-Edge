@@ -6,6 +6,8 @@ type intype = Constructor<FoundryHandlebarsApplication>;
 type outtype<T> = T & Constructor<EffectModifier>;
 export default function EffectModifierMixin<T extends intype>(BaseApplication: T): outtype<T> {
   return class EffectModifier extends BaseApplication {
+    declare definedEffects: Record<string, string[]>
+
     static DEFAULT_OPTIONS = {
       actions: {
         createModifier: EffectModifier._createModifier,
@@ -18,7 +20,7 @@ export default function EffectModifierMixin<T extends intype>(BaseApplication: T
       return {modifiers: [], context: {}};
     }
     async updateModifiers(
-      _modifiers: IEffectModifier[], _context: EffectModifierMixinContext
+      _modifiers: IModifier[], _context: EffectModifierMixinContext
     ): Promise<void> {};
 
     // Private interface
@@ -54,7 +56,7 @@ export default function EffectModifierMixin<T extends intype>(BaseApplication: T
       this.redrawModifiers(event.currentTarget, modifiers, context);
     }
 
-    _getModifierData(target: HTMLInputElement | HTMLSelectElement): IEffectModifier {
+    _getModifierData(target: HTMLInputElement | HTMLSelectElement): Partial<IModifier> {
       if (target.dataset.entry === undefined) {
         throw new Error(
           `Input element does not define dataset 'entry'.\nDataset: ${target.dataset}`
@@ -62,10 +64,10 @@ export default function EffectModifierMixin<T extends intype>(BaseApplication: T
       };
 
       const entry: string = target.dataset.entry;
-      const result: IEffectModifier = {};
+      const result: Partial<IModifier> = {};
       result[entry] = entry == "value" ? parseInt(target.value) : target.value;
       if (entry == "group") { // Also set a sensible name if the group changes
-        result.field = Object.keys(THE_EDGE.effectMap[target.value])[0];
+        result.field = Object.keys(this.definedEffects[target.value])[0];
       }
       return result;
     }
@@ -83,14 +85,14 @@ export default function EffectModifierMixin<T extends intype>(BaseApplication: T
 
     async redrawModifiers(
       target: Element,
-      modifiers: IEffectModifier[],
+      modifiers: IModifier[],
       context: EffectModifierMixinContext
     ): Promise<void> {
       const template = "systems/the_edge/templates/generic/effect-modifiers.hbs";
       const html = await renderTemplate(
         template, {
           modifiers: modifiers,
-          definedEffects: THE_EDGE.definedEffects,
+          definedEffects: this.definedEffects,
           interactive: true,
           ...context
         }

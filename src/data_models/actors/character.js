@@ -86,7 +86,9 @@ export default class CharacterData extends CharacterDataParent {
     ];
     for (const effect of itemAndSkillEffects) {
       for (const modifier of effect) {
-        addToResult(THE_EDGE.effectMap[modifier.group][modifier.field], modifier.value);
+        if (modifier.group in THE_EDGE.effectMap) {
+          addToResult(THE_EDGE.effectMap[modifier.group][modifier.field], modifier.value);
+        }
       }
     }
     return activeModifiers;

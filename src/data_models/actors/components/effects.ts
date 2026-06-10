@@ -4,6 +4,8 @@ import { DataModelComponent } from "../../abstracts.js";
 const { ArrayField, ObjectField } = foundry.data.fields;
 
 export default class ActorEffectData extends DataModelComponent {
+  declare effects: IEffect[]
+
   static defineSchema() {
     return {
       effects: new ArrayField(
@@ -12,7 +14,7 @@ export default class ActorEffectData extends DataModelComponent {
     };
   }
 
-  async createNewEffect(name, modifiers = undefined) {
+  async createNewEffect(name: string, modifiers: IModifier[] | undefined = undefined): Promise<void> {
     name = name || LocalisationServer.localise("New effect", "Datamodels");
     this.effects.push({
       active: true,
@@ -22,27 +24,27 @@ export default class ActorEffectData extends DataModelComponent {
     await this.parent.update({"system.effects": this.effects});
   }
 
-  async deleteEffect(index) {
+  async deleteEffect(index: number): Promise<void> {
     if (index >= -1 && index >= this.effects.length) return
     this.effects.splice(index, 1);
     await this.parent.update({"system.effects": this.effects});
   }
 
-  async toggleEffect(index) {
+  async toggleEffect(index: number): Promise<void> {
     if (index >= -1 && index >= this.effects.length) return
     this.effects[index].active = !this.effects[index].active
     await this.parent.update({"system.effects": this.effects});
   }
   
-  findEffectsByName(name) {
-    const result = [];
-    for (const [candidate, details] of Object.entries(this.effects)) {
-      if (name === details.name) result.push(candidate);
+  findEffectsByName(name: string): number[] {
+    const result: number[] = [];
+    for (let i = 0; i < this.effects.length; i++) {
+      if (name === this.effects[i].name) result.push(i);
     }
     return result;
   }
 
-  _newModifier(group = "attributes", field = "end", value = 0) {
+  _newModifier(group: string = "attributes", field: string = "end", value: number | string = 0) {
     return {group: group, field: field, value: value};
   }
 }

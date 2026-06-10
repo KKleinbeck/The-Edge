@@ -1,4 +1,3 @@
-import THE_EDGE from "../system/config-the-edge.js";
 const { renderTemplate } = foundry.applications.handlebars;
 export default function EffectModifierMixin(BaseApplication) {
     return class EffectModifier extends BaseApplication {
@@ -55,7 +54,7 @@ export default function EffectModifierMixin(BaseApplication) {
             const result = {};
             result[entry] = entry == "value" ? parseInt(target.value) : target.value;
             if (entry == "group") { // Also set a sensible name if the group changes
-                result.field = Object.keys(THE_EDGE.effectMap[target.value])[0];
+                result.field = Object.keys(this.definedEffects[target.value])[0];
             }
             return result;
         }
@@ -73,7 +72,7 @@ export default function EffectModifierMixin(BaseApplication) {
             const template = "systems/the_edge/templates/generic/effect-modifiers.hbs";
             const html = await renderTemplate(template, {
                 modifiers: modifiers,
-                definedEffects: THE_EDGE.definedEffects,
+                definedEffects: this.definedEffects,
                 interactive: true,
                 ...context
             });

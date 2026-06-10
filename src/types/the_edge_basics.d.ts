@@ -26,10 +26,16 @@ interface Array<T> {
   variance(): T;
 }
 
+interface IEffect {
+  name: string
+  modifiers: IModifier[]
+  active?: boolean
+}
+
 interface IModifier {
   group: string
   field: string
-  value: number
+  value: number | string
 }
 
 // Helpers

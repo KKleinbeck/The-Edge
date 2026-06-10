@@ -2,7 +2,7 @@
 // Effect Modifier
 declare class EffectModifier {
   getModifiers(_target: Element): IModifiersAndContext
-  updateModifiers(modifiers: IEffectModifier[], context: EffectModifierMixinContext): Promise<void>;
+  updateModifiers(modifiers: IModifier[], context: EffectModifierMixinContext): Promise<void>;
 }
 
 interface IEffectOverview {
@@ -10,16 +10,10 @@ interface IEffectOverview {
   value: number | string
 }
 
-interface IEffectModifier {
-  group?: string
-  field?: string
-  value?: number | string
-}
-
 type EffectModifierMixinContext = any
 
 interface IModifiersAndContext {
-  modifiers: IEffectModifier[]
+  modifiers: IModifier[]
   context: EffectModifierMixinContext
 }
 

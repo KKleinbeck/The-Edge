@@ -9,17 +9,21 @@
   {{#each modifiers as |modifier|}}
     <div style="display: flex; gap: 5px; align-items: end;">
       <select class="selection-box modifier-hook" data-index="{{@index}}" data-entry="group" style="padding: 0 2px 0 2px; min-width: 33%;">
-        {{#each ../definedEffects as |name group|}}
+        {{#each ../definedEffects as |_ group|}}
           <option value="{{group}}" {{#if (checkEqual modifier.group group)}}selected{{/if}}>{{genName group}}</option>
         {{/each}}
       </select>
       <select class="selection-box modifier-hook" data-index="{{@index}}" data-entry="field"
         style="padding: 0 2px 0 px; min-width: 50%; text-overflow: ellipsis;">
-        {{#each (getEntry ../definedEffects modifier.group) as |target field|}}
+        {{#each (getEntry ../definedEffects modifier.group) as |field|}}
           <option value="{{field}}" {{#if (checkEqual modifier.field field)}}selected{{/if}}>{{effectRequirementName field modifier.group}}</option>
         {{/each}}
       </select>
+      {{#unless (checkEqual group "dynamicModifiers")}}
       <input class="modifier-hook" data-index="{{@index}}" type="number" data-entry="value" value="{{modifier.value}}" style="text-align: right;"/>
+      {{else}}
+      <a style="min-width: 37px; text-align: center;"><i class="fa-regular fa-pen-to-square"></i></a>
+      {{/unless}}
       <a data-action="deleteModifier" data-index="{{@index}}" title="{{ itemName 'delete' }}"><i class="fas fa-trash"></i></a>
     </div>
   {{/each}}

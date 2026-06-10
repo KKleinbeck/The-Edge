@@ -1,6 +1,9 @@
 import { COMBAT_CONFIG } from "./configs/config-combat.js";
+import { EFFECTS } from "./configs/effects.js";
 import { STATUS_EFFECTS } from "./configs/status-effects.js";
 const THE_EDGE = {
+    effectMap: EFFECTS.effectMap,
+    dynamicModifiers: EFFECTS.dynamicModifiers,
     combatConfig: COMBAT_CONFIG,
     statusEffects: STATUS_EFFECTS
 };
@@ -75,12 +78,6 @@ THE_EDGE.medicine_effects = ["heals", "treats"];
 THE_EDGE.wound_status = ["treatable", "treated"];
 // Entries below are primarily implemented in the_edge.js
 THE_EDGE.coreValueMap = { attributes: {}, proficiencies: {}, strain: {}, weapons: {} };
-THE_EDGE.effectMap = {
-    attributes: { all: [] },
-    proficiencies: { all: [] },
-    weapons: { all: [] },
-    generalModifiers: {}
-};
 THE_EDGE.weapon_damage_types = { "Recoilless Rifles": "general" };
 THE_EDGE.weapon_partners = {};
 THE_EDGE.translationPercentage = {

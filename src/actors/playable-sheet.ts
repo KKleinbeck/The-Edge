@@ -12,12 +12,16 @@ import { TheEdgeActorSheet } from "./actor-sheet.js";
 
 // @ts-expect-error
 export class TheEdgePlayableSheet extends TheEdgeActorSheet {
+  declare definedEffects: Record<string, string[]>
+
   constructor(...args: ConstructorParameters<typeof TheEdgeActorSheet>) {
     super(...args);
     this.effectIsExpanded = {
       statusEffects: Array(this.actor.system.statusEffects.length).fill(false),
       effects: Array(this.actor.system.effects.length).fill(false),
     };
+
+    this.definedEffects = structuredClone(THE_EDGE.definedEffects);
   }
 
   static DEFAULT_OPTIONS = {...TheEdgeActorSheet.DEFAULT_OPTIONS,
@@ -99,7 +103,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       mental: Object.keys(context.system.proficiencies["mental"]),
     })
 
-    context.definedEffects = THE_EDGE.definedEffects;
+    context.definedEffects = this.definedEffects;
     Object.entries(this.actor.itemTypes).forEach(([type, entries]) => {
       context[type] = entries;
     })

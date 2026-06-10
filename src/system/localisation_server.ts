@@ -13,7 +13,8 @@ export default class LocalisationServer {
     if (type == "skills") return id;
     switch (type) {
       case "attributes": return LocalisationServer.localise(id, "attr");
-      case "generalModifiers": return LocalisationServer.localise(id, "effect_group")
+      case "dynamicModifiers": return LocalisationServer.localise(id, "effect_group");
+      case "generalModifiers": return LocalisationServer.localise(id, "effect_group");
       case "proficiencies": return LocalisationServer.localise(id, "proficiency");
       case "weapons": return LocalisationServer.localise(id, "combat");
     }

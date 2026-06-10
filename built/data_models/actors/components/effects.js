@@ -30,9 +30,9 @@ export default class ActorEffectData extends DataModelComponent {
     }
     findEffectsByName(name) {
         const result = [];
-        for (const [candidate, details] of Object.entries(this.effects)) {
-            if (name === details.name)
-                result.push(candidate);
+        for (let i = 0; i < this.effects.length; i++) {
+            if (name === this.effects[i].name)
+                result.push(i);
         }
         return result;
     }
