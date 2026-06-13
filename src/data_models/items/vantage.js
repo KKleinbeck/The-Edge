@@ -10,8 +10,8 @@ export default class VantageData extends generateDataModelWithComponents(
   static defineSchema() {
     const schema = super.defineSchema();
     schema.AP = new NumberField({ initial: 0, interger: true });
-    schema.level = new NumberField({ initial: 0, interger: true });
-    schema.maxLevel = new NumberField({ initial: 0, interger: true });
+    schema.level = new NumberField({ initial: 1, interger: true });
+    schema.maxLevel = new NumberField({ initial: 1, interger: true });
     return schema;
   }
 }

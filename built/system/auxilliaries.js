@@ -133,13 +133,13 @@ export default class Aux {
         }
         // combatskills, skills, medicalskills
         const maxLevel = skill.system.maxLevel;
-        const costs = this.parseCostStr(skill.system.AP, maxLevel);
+        const costs = this.parseCostStr(skill.system.cost, maxLevel);
         if (typeof costs === "undefined")
             return undefined;
         if (costs.length === 1) { // cost is number
             if (mode == "delete")
                 return level * costs[0];
-            else if (mode == "increase" && level == skill.system.maxLevel)
+            else if (mode == "increase" && level >= skill.system.maxLevel)
                 return undefined;
             return costs[0];
         }
