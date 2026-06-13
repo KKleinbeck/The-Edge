@@ -11,7 +11,6 @@ export default class DiceServer {
 
   static async attributeCheck(config: IDiceServerConfig) {
     var dieResult = await this._attributeRoll();
-    dieResult = 20
 
     if (config.vantage == "Advantage") {
       const dieResults2 = await this._attributeRoll();
@@ -122,10 +121,10 @@ export default class DiceServer {
     const rolls: IAttackRoll[] = []
     let netOutcome: number = 0;
     for (let i = 0; i < config.nRolls; ++i) {
-      const diceResult = await this.genericRoll("1d20");
-      const crit = config.critDice.includes(diceResult);
-      const hit = diceResult <= config.threshold && !(config.critFailDice.includes(diceResult));
-      rolls.push({crit, diceResult, hit});
+      const dieResult = await this.genericRoll("1d20");
+      const crit = config.critDice.includes(dieResult);
+      const hit = dieResult <= config.threshold && !(config.critFailDice.includes(dieResult));
+      rolls.push({crit, dieResult, hit});
 
       netOutcome += +hit + 2 * (+crit);
     }
@@ -146,7 +145,7 @@ export default class DiceServer {
     }
 
     let failEvent = "";
-    const nCritFailures = rolls.map(x => x.diceResult).filter(x => config.critFailDice.includes(x));
+    const nCritFailures = rolls.map(x => x.dieResult).filter(x => config.critFailDice.includes(x));
     if (nCritFailures.length >= 0.33335 * config.nRolls) {
       const failCheck = (await DiceServer.genericRoll("1d20"));
       if (config.critFailDice.includes(failCheck) || failCheck > config.critFailCheckThreshold) {

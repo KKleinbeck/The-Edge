@@ -71,7 +71,7 @@ interface IProficiencyPromptResult extends _IRollMeta, IRollPromptResult {
 // Combat
 interface IAttackRoll {
   crit: boolean
-  diceResult: number
+  dieResult: number
   hit: boolean
 }
 
