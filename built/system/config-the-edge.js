@@ -4,6 +4,8 @@ import { STATUS_EFFECTS } from "./configs/status-effects.js";
 const THE_EDGE = {
     effectMap: EFFECTS.effectMap,
     dynamicModifiers: EFFECTS.dynamicModifiers,
+    isDynamicModifier: EFFECTS.isDynamicModifier,
+    dynamicModifierDefaults: EFFECTS.dynamicModifierDefaults,
     combatConfig: COMBAT_CONFIG,
     statusEffects: STATUS_EFFECTS
 };

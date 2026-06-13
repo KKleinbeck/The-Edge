@@ -22,9 +22,13 @@
       {{#unless (checkEqual group "dynamicModifiers")}}
       <input class="modifier-hook" data-index="{{@index}}" type="number" data-entry="value" value="{{modifier.value}}" style="text-align: right;"/>
       {{else}}
-      <a style="min-width: 37px; text-align: center;"><i class="fa-regular fa-pen-to-square"></i></a>
+      <a style="min-width: 37px; text-align: center;" data-action="editDynamicModifier" data-index="{{@index}}">
+        <i class="fa-regular fa-pen-to-square"></i>
+      </a>
       {{/unless}}
-      <a data-action="deleteModifier" data-index="{{@index}}" title="{{ itemName 'delete' }}"><i class="fas fa-trash"></i></a>
+      <a data-action="deleteModifier" data-index="{{@index}}" title="{{ itemName 'delete' }}">
+        <i class="fas fa-trash"></i>
+      </a>
     </div>
   {{/each}}
 {{else}}

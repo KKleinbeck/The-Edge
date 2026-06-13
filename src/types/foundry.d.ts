@@ -201,6 +201,9 @@ interface IFoundry {
       DialogV2: typeof DialogV2;
       HandlebarsApplicationMixin: typeof HandlebarsApplicationMixin;
     };
+    elements: {
+      HTMLCodeMirrorElement: foundryAny
+    }
     handlebars: foundryAny;
     sheets: {
       ActorSheetV2: typeof ActorSheetV2;

@@ -1,3 +1,5 @@
+import DialogDynamicModifier from "../dialogs/dialog-dynamic-modifier.js";
+import THE_EDGE from "../system/config-the-edge.js";
 const { renderTemplate } = foundry.applications.handlebars;
 export default function EffectModifierMixin(BaseApplication) {
     return class EffectModifier extends BaseApplication {
@@ -5,6 +7,7 @@ export default function EffectModifierMixin(BaseApplication) {
             actions: {
                 createModifier: EffectModifier._createModifier,
                 deleteModifier: EffectModifier._deleteModifier,
+                editDynamicModifier: EffectModifier._editDynamicModifier
             }
         };
         // Interface functions - need to be overwritten
@@ -42,6 +45,9 @@ export default function EffectModifierMixin(BaseApplication) {
                     continue;
                 modifiers[index][key] = value;
             }
+            if (modifiers[index].group !== "dynamicModifiers" && typeof modifiers[index].value === "string") {
+                modifiers[index].value = 0;
+            }
             this.updateModifiers(modifiers, context);
             this.redrawModifiers(event.currentTarget, modifiers, context);
         }
@@ -54,7 +60,13 @@ export default function EffectModifierMixin(BaseApplication) {
             const result = {};
             result[entry] = entry == "value" ? parseInt(target.value) : target.value;
             if (entry == "group") { // Also set a sensible name if the group changes
-                result.field = Object.keys(this.definedEffects[target.value])[0];
+                result.field = this.definedEffects[target.value][0];
+                if (result[entry] === "dynamicModifiers") {
+                    result.value = THE_EDGE.dynamicModifierDefaults(result.field);
+                }
+            }
+            if (entry == "field" && THE_EDGE.isDynamicModifier(result[entry])) {
+                result.value = THE_EDGE.dynamicModifierDefaults(result.field);
             }
             return result;
         }
@@ -67,6 +79,18 @@ export default function EffectModifierMixin(BaseApplication) {
             this.updateModifiers(modifiers, context);
             // @ts-expect-error 2339
             this.redrawModifiers(target, modifiers, context);
+        }
+        static async _editDynamicModifier(_event, target) {
+            const index = target.dataset.index;
+            // @ts-expect-error 2339 we know we are called with a correct `this`
+            const { modifiers, context } = this.getModifiers();
+            const currentModifier = modifiers[index];
+            const newValue = await DialogDynamicModifier.prompt(currentModifier.value);
+            if (newValue === null)
+                return; // Dialog was dismissed
+            currentModifier.value = newValue;
+            // @ts-expect-error 2339
+            this.updateModifiers(modifiers, context);
         }
         async redrawModifiers(target, modifiers, context) {
             const template = "systems/the_edge/templates/generic/effect-modifiers.hbs";

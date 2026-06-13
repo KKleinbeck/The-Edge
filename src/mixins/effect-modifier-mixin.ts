@@ -1,3 +1,4 @@
+import DialogDynamicModifier from "../dialogs/dialog-dynamic-modifier.js";
 import THE_EDGE from "../system/config-the-edge.js";
 
 const { renderTemplate } = foundry.applications.handlebars;
@@ -8,12 +9,15 @@ export default function EffectModifierMixin<T extends intype>(BaseApplication: T
   return class EffectModifier extends BaseApplication {
     declare definedEffects: Record<string, string[]>
 
+
     static DEFAULT_OPTIONS = {
       actions: {
         createModifier: EffectModifier._createModifier,
         deleteModifier: EffectModifier._deleteModifier,
+        editDynamicModifier: EffectModifier._editDynamicModifier
       }
     }
+
 
     // Interface functions - need to be overwritten
     getModifiers(_target: Element): IModifiersAndContext {
@@ -29,6 +33,7 @@ export default function EffectModifierMixin<T extends intype>(BaseApplication: T
       this.attachEffectListeners();
     }
 
+
     static _createModifier(_event: Event, target: Element): void {
       // @ts-expect-error 2339 as the method is defined as static
       const {modifiers, context} = this.getModifiers(target);
@@ -38,6 +43,7 @@ export default function EffectModifierMixin<T extends intype>(BaseApplication: T
       // @ts-expect-error 2339
       this.redrawModifiers(target, modifiers, context);
     }
+
 
     _modifyEffect(event: Event): void {
       if (!(event.currentTarget instanceof HTMLInputElement) &&
@@ -52,9 +58,13 @@ export default function EffectModifierMixin<T extends intype>(BaseApplication: T
         if (key === undefined) continue;
         modifiers[index][key] = value;
       }
+      if (modifiers[index].group !== "dynamicModifiers" && typeof modifiers[index].value === "string") {
+        modifiers[index].value = 0;
+      }
       this.updateModifiers(modifiers, context);
       this.redrawModifiers(event.currentTarget, modifiers, context);
     }
+
 
     _getModifierData(target: HTMLInputElement | HTMLSelectElement): Partial<IModifier> {
       if (target.dataset.entry === undefined) {
@@ -67,10 +77,17 @@ export default function EffectModifierMixin<T extends intype>(BaseApplication: T
       const result: Partial<IModifier> = {};
       result[entry] = entry == "value" ? parseInt(target.value) : target.value;
       if (entry == "group") { // Also set a sensible name if the group changes
-        result.field = Object.keys(this.definedEffects[target.value])[0];
+        result.field = this.definedEffects[target.value][0];
+        if (result[entry] === "dynamicModifiers") {
+          result.value = THE_EDGE.dynamicModifierDefaults(result.field as TEventNames);
+        }
+      }
+      if ( entry == "field" && THE_EDGE.isDynamicModifier(result[entry] as string) ) {
+        result.value = THE_EDGE.dynamicModifierDefaults(result.field as TEventNames);
       }
       return result;
     }
+
 
     static _deleteModifier(_event: Event, target: HTMLElement): void {
       // @ts-expect-error 2339 as the method is defined as static
@@ -82,6 +99,20 @@ export default function EffectModifierMixin<T extends intype>(BaseApplication: T
       // @ts-expect-error 2339
       this.redrawModifiers(target, modifiers, context);
     }
+
+
+    static async _editDynamicModifier(_event: Event, target: HTMLElement): Promise<void> {
+      const index = target.dataset.index;
+      // @ts-expect-error 2339 we know we are called with a correct `this`
+      const {modifiers, context} = this.getModifiers();
+      const currentModifier = modifiers[index];
+      const newValue = await DialogDynamicModifier.prompt(currentModifier.value);
+      if (newValue === null) return; // Dialog was dismissed
+      currentModifier.value = newValue;
+      // @ts-expect-error 2339
+      this.updateModifiers(modifiers, context);
+    }
+
 
     async redrawModifiers(
       target: Element,
@@ -109,6 +140,7 @@ export default function EffectModifierMixin<T extends intype>(BaseApplication: T
         }
       );
     }
+
 
     attachEffectListeners(): void {
       this.element.querySelectorAll(".modifier-hook")?.forEach(
