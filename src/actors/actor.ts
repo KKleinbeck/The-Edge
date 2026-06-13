@@ -275,6 +275,15 @@ export class TheEdgeActor extends Actor {
     const effects = foundry.utils.mergeObject(
       this.getItemEffects(true), this.getSkillEffects(true)
     );
+    console.log("Before", details.diceServerConfig.critDice)
+    for (const effect of effects) {
+      for (const modifier of effect.modifiers) {
+        if (modifier.field === field) {
+          Aux.evalOnEventWith(modifier.value, details);
+        }
+      }
+    }
+    console.log("After", details.diceServerConfig.critDice)
     return effects;
   }
 

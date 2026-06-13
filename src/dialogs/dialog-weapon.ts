@@ -67,6 +67,7 @@ export default class DialogWeapon extends Dialog{
             damageRoll: modificators.fireModeModifier.damage + (ammuDamage.bonus > 0 ? ` + ${ammuDamage.bonus}` : ""),
             ...attackRollResult
           })
+          console.log(checkData)
 
           // Apply the damage
           for (const id of checkData.targetIds) {

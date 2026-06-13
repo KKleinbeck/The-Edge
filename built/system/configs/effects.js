@@ -19,12 +19,25 @@ export const EFFECTS = {
         return EVENT_NAMES.includes(field);
     },
     dynamicModifierDefaults: (field) => {
+        const header = "// Your macro needs to define a function `onEvent`\n" +
+            "// with as single argument `details`.\n" +
+            "// This is the entry point of the event.\n\n";
         switch (field) {
             case "rollAttackCheck-Posterior":
+                return header + "function onEvent(details) {\n" +
+                    "  console.log(details)\n" +
+                    "  // details.actor = ...\n" +
+                    "  // details.attackOutcome = ...\n" +
+                    "  // details.diceServerConfig = ...\n" +
+                    "  // details.prompt = ...\n" +
+                    "  return details;\n}";
             case "rollAttackCheck-Prior":
-                return "function onEvent(checkData) {\n" +
-                    "  console.log(checkData)\n" +
-                    "  return checkData;\n}";
+                return header + "function onEvent(details) {\n" +
+                    "  console.log(details)\n" +
+                    "  // details.actor = ...\n" +
+                    "  // details.diceServerConfig = ...\n" +
+                    "  // details.prompt = ...\n" +
+                    "  return details;\n}";
         }
     }
 };

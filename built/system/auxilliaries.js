@@ -9,18 +9,17 @@ export default class Aux {
             return value;
         return `${value.toFixed(digits)}&nbsp;%`;
     }
-    static objectAt(obj, path) {
-        return path.split(".").reduce((a, i) => a[i], obj);
-    }
-    static sleep(duration) { return new Promise(r => setTimeout(r, duration)); }
-    static hasRaceCondDanger(id) {
-        const lastUpdate = game.data[id];
-        if (lastUpdate === undefined || Date.now() - lastUpdate > 350) {
-            // Prevent too frequent updates to avoid race conditions
-            game.data[id] = Date.now();
-            return false;
+    static evalOnEventWith(definition, details) {
+        const onEvent = new Function("details", `
+      ${definition};
+      return onEvent(details);
+    `);
+        try {
+            onEvent(details);
         }
-        return true;
+        catch {
+            NotificationServer.error("Illicit event");
+        }
     }
     static getActor(actorID, tokenID, sceneID = undefined) {
         let actor = undefined;
@@ -61,6 +60,16 @@ export default class Aux {
         }
         return undefined;
     }
+    static getPlayerTokens() {
+        const scene = game.canvas.scene;
+        const tokens = [];
+        for (var token of scene.tokens) {
+            if (token.actor.type === "character" && token.isOwner) {
+                tokens.push(token);
+            }
+        }
+        return tokens;
+    }
     static getToken(actorID, sceneID = undefined) {
         if (!sceneID) {
             if (!game.canvas.id)
@@ -74,16 +83,19 @@ export default class Aux {
         }
         return null;
     }
-    static getPlayerTokens() {
-        const scene = game.canvas.scene;
-        const tokens = [];
-        for (var token of scene.tokens) {
-            if (token.actor.type === "character" && token.isOwner) {
-                tokens.push(token);
-            }
+    static hasRaceCondDanger(id) {
+        const lastUpdate = game.data[id];
+        if (lastUpdate === undefined || Date.now() - lastUpdate > 350) {
+            // Prevent too frequent updates to avoid race conditions
+            game.data[id] = Date.now();
+            return false;
         }
-        return tokens;
+        return true;
     }
+    static objectAt(obj, path) {
+        return path.split(".").reduce((a, i) => a[i], obj);
+    }
+    static sleep(duration) { return new Promise(r => setTimeout(r, duration)); }
     static _language_cost_table(humanSpoken) {
         return humanSpoken ? [200, 400, 1000, 2000, 3200, 3200] : [600, 3000, 6400];
     }

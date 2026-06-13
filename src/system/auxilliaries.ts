@@ -12,22 +12,17 @@ export default class Aux {
   }
 
 
-  static objectAt(obj, path) {
-    return path.split(".").reduce((a,i) => a[i], obj);
-  }
+  static evalOnEventWith(definition: string, details: Record<string, any>): undefined {
+    const onEvent = new Function("details", `
+      ${definition};
+      return onEvent(details);
+    `);
 
-
-  static sleep(duration: number) { return new Promise(r => setTimeout(r, duration)); }
-
-
-  static hasRaceCondDanger(id) {
-    const lastUpdate = game.data[id]
-    if (lastUpdate === undefined || Date.now() - lastUpdate > 350) {
-      // Prevent too frequent updates to avoid race conditions
-      game.data[id] = Date.now();
-      return false;
+    try {
+      onEvent(details);
+    } catch {
+      NotificationServer.error("Illicit event")
     }
-    return true;
   }
 
 
@@ -72,6 +67,19 @@ export default class Aux {
   }
 
 
+  static getPlayerTokens(): foundryAny[] {
+    const scene = game.canvas.scene;
+
+    const tokens: foundryAny[] = [];
+    for (var token of scene.tokens) {
+      if (token.actor.type === "character" && token.isOwner) {
+        tokens.push(token);
+      }
+    }
+    return tokens;
+  }
+
+
   static getToken(actorID, sceneID = undefined) {
     if (!sceneID) {
       if (!game.canvas.id) return undefined; // This can happen during startup of the game
@@ -85,17 +93,23 @@ export default class Aux {
   }
 
 
-  static getPlayerTokens(): foundryAny[] {
-    const scene = game.canvas.scene;
-
-    const tokens: foundryAny[] = [];
-    for (var token of scene.tokens) {
-      if (token.actor.type === "character" && token.isOwner) {
-        tokens.push(token);
-      }
+  static hasRaceCondDanger(id) {
+    const lastUpdate = game.data[id]
+    if (lastUpdate === undefined || Date.now() - lastUpdate > 350) {
+      // Prevent too frequent updates to avoid race conditions
+      game.data[id] = Date.now();
+      return false;
     }
-    return tokens;
+    return true;
   }
+
+
+  static objectAt(obj, path) {
+    return path.split(".").reduce((a,i) => a[i], obj);
+  }
+
+
+  static sleep(duration: number) { return new Promise(r => setTimeout(r, duration)); }
 
 
   static _language_cost_table(humanSpoken) {
