@@ -7,7 +7,7 @@ export default class StackableData extends DataModelComponent {
     return {
       quantity: new NumberField({ initial: 1, integer: true }),
       value: new NumberField({ initial: 0, integer: true }),
-      weight: new NumberField({ initial: 0, integer: true }),
+      weight: new NumberField({ initial: 0, integer: false }),
     };
   }
 }
