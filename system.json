@@ -14,6 +14,7 @@
     "built/the_edge.js"
   ],
   "styles": [
+    "styles/dialogs.css",
     "styles/root.css",
     "styles/simple.css",
     "styles/ui.css"

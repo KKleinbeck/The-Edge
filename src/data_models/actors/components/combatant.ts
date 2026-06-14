@@ -15,6 +15,7 @@ export default class CombatantData extends DataModelComponent {
   declare strain: STRAIN
   declare wounds: IWound[]
 
+
   static defineSchema() {
     return {
       health: new SchemaField({
@@ -44,11 +45,13 @@ export default class CombatantData extends DataModelComponent {
     };
   }
 
+
   get strideSpeed() {
     const {spd, foc} = this.attributes;
     const status = Math.floor(this.movementSpeed.status);
     return status + Math.min(5 + Math.floor(spd.value / 6  ), Math.floor(foc.value * 0.75));
   }
+
 
   get runSpeed() {
     const {spd, foc} = this.attributes;
@@ -56,11 +59,13 @@ export default class CombatantData extends DataModelComponent {
     return status + Math.min(7 + Math.floor(spd.value / 3  ), Math.floor(foc.value * 1.25));
   }
 
+
   get sprintSpeed() {
     const {spd, foc} = this.attributes;
     const status = Math.floor(2 * this.movementSpeed.status);
     return status + Math.min(8 + Math.floor(spd.value / 1.5), Math.floor(foc.value * 1.75));
   }
+
 
   get strainLevels() {
     return [
@@ -70,6 +75,7 @@ export default class CombatantData extends DataModelComponent {
       {value: Math.floor(0.8 * this.strain.max.value) + this.strain.statusThreshold.status, label: "L4"},
     ]
   }
+
 
   deleteWound(index: number) {
     const update = {
@@ -81,6 +87,22 @@ export default class CombatantData extends DataModelComponent {
     update["system.wounds"] = this.wounds;
     this.parent.update(update);
   }
+
+
+  editWound(index: number, newDetails: Partial<IWound & IWoundDetails>) {
+    const update = {};
+    for (const [key, value] of Object.entries(newDetails)) {
+      if (key === "damage") {
+        update["system.health.value"] = (
+          this.health.value + this.wounds[index].damage - (value as number)
+        );
+      }
+      this.wounds[index][key] = value;
+    }
+    update["system.wounds"] = this.wounds;
+    this.parent.update(update);
+  }
+
 
   async applyDamage(config: IFApplyDamage) {
     const {damageType} = config;
@@ -140,6 +162,7 @@ export default class CombatantData extends DataModelComponent {
     return [protectionLog, damage];
   }
 
+
   async applyFallDamage(height, location) {
     const woundCountGuess = THE_EDGE.fallDamageWoundCount(height);
     const damageDetails = {
@@ -151,6 +174,7 @@ export default class CombatantData extends DataModelComponent {
     await this._applyImpactOrFallDamage("fall", damageDetails)
   }
 
+
   async applyImpactDamage(speed, location) {
     const woundCountGuess = THE_EDGE.impactDamageWoundCount(speed)
     const damageDetails = {
@@ -161,6 +185,7 @@ export default class CombatantData extends DataModelComponent {
 
     await this._applyImpactOrFallDamage("impact", damageDetails)
   }
+
 
   async _applyImpactOrFallDamage(type: "fall" | "impact", details) {
     details.damage = Math.max(
@@ -198,6 +223,7 @@ export default class CombatantData extends DataModelComponent {
     ChatServer.transmitEvent(type, details);
   }
 
+
   async generateNewWound(woundDetails: IWoundDetails) {
     const wound: IWound = {
       status: "treatable",
@@ -208,12 +234,14 @@ export default class CombatantData extends DataModelComponent {
     await this.parent.update({"system.wounds": this.wounds});
   }
 
+
   async applyStrain(strain: number) {
     const newValue = Math.clamp(this.strain.value + strain, 0, this.strain.max.value);
     const change = newValue - this.strain.value;
     await this.parent.update({"system.strain.value": newValue});
     return change;
   }
+
 
   async applyCombatStrain() {
     if (this.health.value <= 0) {
