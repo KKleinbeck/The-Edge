@@ -3,11 +3,6 @@ export const REPLACEMENTS = {
   "slider": "systems/the_edge/templates/generic/slider.hbs",
 }
 
-/**
- * Define a set of template paths to pre-load
- * Pre-loaded templates are compiled and cached for fast access when rendering
- * @return {Promise}
- */
 export const preloadHandlebarsTemplates = async function() {
   // Define template paths to load
   const templatePaths = [
@@ -30,6 +25,7 @@ export const preloadHandlebarsTemplates = async function() {
     "systems/the_edge/templates/actors/character/health.hbs",
     "systems/the_edge/templates/actors/character/health/effects.hbs",
     "systems/the_edge/templates/actors/character/health/effect-list.hbs",
+    "systems/the_edge/templates/actors/character/health/wounds.hbs",
     // Others
     "systems/the_edge/templates/actors/character/items.hbs",
     "systems/the_edge/templates/actors/character/biography.hbs",

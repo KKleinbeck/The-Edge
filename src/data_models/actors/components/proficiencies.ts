@@ -89,7 +89,7 @@ class ProficiencyData extends DataModelComponent {
 
   getProficiencyDiceThresholds(proficiency: string): IDiceThreshold[] {
     const proficiencyData = Object.values(this.proficiencies)
-      .find(profClass => proficiency in profClass)[proficiency]
+      .find(profClass => proficiency in profClass)[proficiency];
 
     const result: IDiceThreshold[] = [];
     proficiencyData.dice.forEach((attr: string) => {

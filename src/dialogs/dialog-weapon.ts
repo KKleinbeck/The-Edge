@@ -1,5 +1,4 @@
 import Aux from "../system/auxilliaries.js";
-import ChatServer from "../system/chat_server.js";
 import NewChatServer from "../system/new_chat_server.js";
 import THE_EDGE from "../system/config-the-edge.js";
 
@@ -136,11 +135,13 @@ export default class DialogWeapon extends Dialog{
     const tempModificator = parseInt(html.find('[name="Modifier"]').val()); 
 
     let range = html.find('[name="RangeSelector"]').val();
-    if (checkData.distance < 2) range = "less_2m";
-    else if (checkData.distance < 20) range = "less_20m";
-    else if (checkData.distance < 200) range = "less_200m";
-    else if (checkData.distance < 1000) range = "less_1km";
-    else range = "more_1km";
+    if (checkData.distance) {
+      if (checkData.distance < 2) range = "less_2m";
+      else if (checkData.distance < 20) range = "less_20m";
+      else if (checkData.distance < 200) range = "less_200m";
+      else if (checkData.distance < 1000) range = "less_1km";
+      else range = "more_1km";
+    }
 
     let size = html.find('[name="SizeSelector"]').val();
     if (checkData.smallestSize) size = checkData.smallestSize;

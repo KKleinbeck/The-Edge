@@ -98,6 +98,19 @@ export default class Aux {
   }
 
 
+  static unloadAmmunition(weapon: Item, actor: Actor): void {
+    const ammu = actor.items.get(weapon.system.ammunitionID);
+    const unloadedCopy = (actor as any).findItem(ammu);
+    if (unloadedCopy) {
+      ammu.delete();
+      unloadedCopy.update({"system.quantity": unloadedCopy.system.quantity + 1});
+    } else {
+      ammu.update({"system.loaded": false});
+    }
+    weapon.update({"system.ammunitionID": ""});
+  }
+
+
   static _language_cost_table(humanSpoken) {
     return humanSpoken ? [200, 400, 1000, 2000, 3200, 3200] : [600, 3000, 6400]
   }
@@ -136,7 +149,7 @@ export default class Aux {
   }
 
 
-  static getSkillCost(skill: Item, mode: "delete" | "decrease" | "increase"): number | undefined {
+  static getSkillCost(skill: Item, mode: "delete" | "decrease" | "increase" | "learn"): number | undefined {
     const level = skill.system.level;
     if (skill.type == "Languageskill") {
       switch (mode) {
@@ -157,12 +170,12 @@ export default class Aux {
 
     // combatskills, skills, medicalskills
     const maxLevel = skill.system.maxLevel;
-    const costs = this.parseCostStr(skill.system.AP, maxLevel);
+    const costs = this.parseCostStr(skill.system.cost, maxLevel);
     if (typeof costs === "undefined") return undefined;
 
     if (costs.length === 1) { // cost is number
       if (mode == "delete") return level * costs[0];
-      else if (mode == "increase" && level == skill.system.maxLevel) return undefined;
+      else if (mode == "increase" && level >= skill.system.maxLevel) return undefined;
       return costs[0];
     }
     if (mode == "delete") return costs.slice(0, level).reduce((a,b) => a+b, 0);

@@ -27,7 +27,8 @@ export class LanguageSkillData extends generateDataModelWithComponents(Descripti
 export class MedicalSkillData extends generateDataModelWithComponents(DescriptionData, SkillTemplateData) {
     static defineSchema() {
         const schema = super.defineSchema();
-        schema.basis = new StringField({ initial: "Medicine" });
+        schema.strainCost = new StringField({ initial: "0" });
+        schema.basis = new StringField({ initial: "medicine" });
         return schema;
     }
 }

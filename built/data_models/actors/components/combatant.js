@@ -66,6 +66,17 @@ export default class CombatantData extends DataModelComponent {
         update["system.wounds"] = this.wounds;
         this.parent.update(update);
     }
+    editWound(index, newDetails) {
+        const update = {};
+        for (const [key, value] of Object.entries(newDetails)) {
+            if (key === "damage") {
+                update["system.health.value"] = (this.health.value + this.wounds[index].damage - value);
+            }
+            this.wounds[index][key] = value;
+        }
+        update["system.wounds"] = this.wounds;
+        this.parent.update(update);
+    }
     async applyDamage(config) {
         const { damageType } = config;
         let { damage } = config;

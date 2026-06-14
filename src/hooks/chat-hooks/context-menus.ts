@@ -88,9 +88,9 @@ function _handleRerollOrChange(contextHtml: HTMLAnchorElement, config: IContextM
       updateProficiencyCheck(chatMsgCls, system, system.details.rolls);
       break;
     case "weapon":
-      rerollDetails.old = system.details.rolls[index].res;
+      rerollDetails.old = system.details.rolls[index].dieResult;
       const newResults = structuredClone(system.details.rolls);
-      newResults[index].res = newRoll;
+      newResults[index].dieResult = newRoll;
       updateWeaponCheck(chatMsgCls, actor, system, newResults, index);
       rerollDetails.check = LocalisationServer.localise("combat", "combat");
       break;
@@ -143,16 +143,19 @@ async function updateProficiencyCheck(chatMsgCls: foundryAny, system: IChatSyste
 function _heroTokenWeaponCheck(chatMsgCls: foundryAny, actor: foundryAny, system: IChatSystem, index: number) {
   const { details } = system;
   const newResults = structuredClone(details.rolls);
-  if (newResults[index].hit) newResults[index].res = 1;
-  else newResults[index].res = details.threshold;
+  if (newResults[index].hit) newResults[index].dieResult = 1;
+  else newResults[index].dieResult = details.threshold;
   updateWeaponCheck(chatMsgCls, actor, system, newResults, index);
 }
 
-async function updateWeaponCheck(chatMsgCls: foundryAny, actor: foundryAny, system: IChatSystem, newResults, index: number) {
+
+async function updateWeaponCheck(
+  chatMsgCls: foundryAny, _actor: foundryAny, system: IChatSystem, newResults: IAttackRoll[], index: number
+): Promise<void> {
   const { details } = system;
-  if ((newResults[index].res <= details.threshold || newResults[index].res == 1) &&
+  if ((newResults[index].dieResult <= details.threshold || newResults[index].dieResult == 1) &&
     // TODO: Refactor once we have a generic crit interface
-    ![20].includes(newResults[index].res)) {
+    ![20].includes(newResults[index].dieResult)) {
     newResults[index].hit = true;
   } else newResults[index].hit = false;
 
@@ -165,10 +168,10 @@ async function updateWeaponCheck(chatMsgCls: foundryAny, actor: foundryAny, syst
   if (details.rolls[index].hit) { // Previous roll was a hit
     if (!newResults[index].hit) details.damage.splice(hitIndex, 1);
     // TODO: Refactor once we have a generic crit interface
-    else if ([1].includes(newResults[index].res) &&
-      ![1].includes(details.rolls[index].res)) {
+    else if ([1].includes(newResults[index].dieResult) &&
+      ![1].includes(details.rolls[index].dieResult)) {
       details.damage[hitIndex] += DiceServer.max(details.damageRoll);
-    } else if (newResults[index].res != 1 && details.rolls[index].res == 1) {
+    } else if (newResults[index].dieResult != 1 && details.rolls[index].dieResult == 1) {
       details.damage[hitIndex] -= DiceServer.max(details.damageRoll);
     }
   } else { // Previous roll wasn't a hit
@@ -179,7 +182,7 @@ async function updateWeaponCheck(chatMsgCls: foundryAny, actor: foundryAny, syst
         ...details.damage.slice(hitIndex)
       ]
     }
-    if (newResults[index].res == 1) {
+    if (newResults[index].dieResult == 1) {
       details.damage[hitIndex] += DiceServer.max(details.damageRoll);
     }
   }

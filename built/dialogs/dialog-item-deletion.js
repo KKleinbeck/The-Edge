@@ -1,5 +1,5 @@
-import LocalisationServer from "../system/localisation_server.js";
 import Aux from "../system/auxilliaries.js";
+import LocalisationServer from "../system/localisation_server.js";
 export default class DialogItemDeletion extends Dialog {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
@@ -24,6 +24,10 @@ export default class DialogItemDeletion extends Dialog {
                             const parent = actor.items.get(item.system.attachments[0].armourId);
                             await Aux.detachFromParent(parent, item._id, item.system.attachmentPoints.max);
                         }
+                    }
+                    else if (item.type == "Weapon") {
+                        if (item.system.ammunitionID)
+                            Aux.unloadAmmunition(item, actor);
                     }
                     item.delete();
                 }

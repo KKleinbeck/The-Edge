@@ -1,3 +1,4 @@
+import Aux from "../system/auxilliaries.js";
 import ChatServer from "../system/chat_server.js";
 
 const { renderTemplate } = foundry.applications.handlebars;
@@ -23,16 +24,11 @@ export default class DialogReload extends Dialog{
         select: {
           label: game.i18n.localize("DIALOG.SELECT"),
           callback: async (html) => {
-            const selectedID = html.find('[name="AmmunitionSelector"]').val();
-            const loadedID = weaponSys.ammunitionID;
+            if (weaponSys.ammunitionID) Aux.unloadAmmunition(checkData.weapon, checkData.actor);
 
+            const selectedID = html.find('[name="AmmunitionSelector"]').val();
             let reloadDuration = weaponSys.reloadDuration;
             for (const ammu of checkData.ammunitionOptions) {
-              if (ammu.id == loadedID) {
-                // If we currently have a mag loaded, we unload it
-                ammu.update({"system.loaded": false});
-                continue;
-              }
               if (ammu.id == selectedID) {
                 // Copy the ammuniation and load the weapon with it
                 const created = await Item.create(ammu, {parent: checkData.actor})
@@ -59,15 +55,7 @@ export default class DialogReload extends Dialog{
         empty: {
           label: game.i18n.localize("DIALOG.EMPTY"),
           callback: async (_html) => {
-            const ammu = checkData.actor.items.get(weaponSys.ammunitionID);
-            const unloadedCopy = checkData.actor.findItem(ammu);
-            if (unloadedCopy) {
-              ammu.delete();
-              unloadedCopy.update({"system.quantity": unloadedCopy.system.quantity + 1});
-            } else {
-              ammu.update({"system.loaded": false});
-            }
-            checkData.weapon.update({"system.ammunitionID": ""})
+            Aux.unloadAmmunition(checkData.weapon, checkData.actor);
           }
         },
       })

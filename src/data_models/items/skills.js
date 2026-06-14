@@ -40,8 +40,9 @@ export class MedicalSkillData extends generateDataModelWithComponents(
   DescriptionData, SkillTemplateData
 ) {
   static defineSchema() {
-    const schema = super.defineSchema()
-    schema.basis = new StringField({ initial: "Medicine" });
+    const schema = super.defineSchema();
+    schema.strainCost = new StringField({ initial: "0" });
+    schema.basis = new StringField({ initial: "medicine" });
     return schema;
   }
 }
