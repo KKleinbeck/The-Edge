@@ -14,6 +14,7 @@
     "built/the_edge.js"
   ],
   "styles": [
+    "styles/dialogs.css",
     "styles/root.css",
     "styles/simple.css",
     "styles/ui.css"
@@ -58,7 +59,7 @@
   "socket": true,
   "primaryTokenAttribute": "health.value",
   "secondaryTokenAttribute": "heartRate.value",
-  "version": "v0.15.4",
+  "version": "v0.15.5",
   "manifest": "https://raw.githubusercontent.com/KKleinbeck/The-Edge/master/system.json",
-  "download": "https://github.com/KKleinbeck/The-Edge/archive/refs/tags/v0.15.4.zip"
+  "download": "https://github.com/KKleinbeck/The-Edge/archive/refs/tags/v0.15.5.zip"
 }

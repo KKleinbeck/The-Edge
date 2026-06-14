@@ -3,7 +3,7 @@
     <div class="title" style="padding-right: 10px;">
       <div class="section-title">{{genName sourceName}}</div>
       {{#if (checkEqual sourceName "effects")}}
-        <div title="{{ itemName 'Create' }}" data-action="effectControl" data-source="{{sourceName}}"
+        <div class="effect-hook" title="{{ itemName 'Create' }}" data-action="effectControl" data-source="{{sourceName}}"
           data-subaction="create" style="gap: 5px; cursor: pointer;">
           {{itemName "New Effect"}}
           <a><i class="fas fa-plus"></i></a>

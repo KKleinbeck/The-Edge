@@ -65,19 +65,19 @@ export default class DialogCombatics extends CheckDialog {
     const sliderValues = this.getSliderValues();
     const threshold: number = this.checkData.threshold + (Object.values(sliderValues).sum() as number);
 
-    const diceResult: number = await Aux.promptInput(
+    const dieResult: number = await Aux.promptInput(
       LocalisationServer.localise("Cheat attack roll", "dialog")
     );
     const diceParameters: IAttackDiceParameters = this.checkData.actor.system.attackDiceParameters;
-    const crit: boolean = diceParameters.critDice.includes(diceResult);
+    const crit: boolean = diceParameters.critDice.includes(dieResult);
     const hit: boolean = crit || (
-      diceResult <= this.checkData.threshold && !diceParameters.critFailDice.includes(diceResult)
+      dieResult <= this.checkData.threshold && !diceParameters.critFailDice.includes(dieResult)
     );
     var damage: number[] = hit ? [await DiceServer.genericRoll(this.checkData.damageRoll)] : [];
     if (crit) damage[0] += DiceServer.max(this.checkData.damageRoll);
 
     var attackRollResult: IAttackRollResult = {
-      damage: damage, failEvent: "", rolls: [{crit, diceResult, hit}],
+      damage: damage, failEvent: "", rolls: [{crit, dieResult, hit}],
     };
 
     this._transmitRoll(threshold, attackRollResult);

@@ -80,9 +80,9 @@ function _handleRerollOrChange(contextHtml, config, newRoll) {
             updateProficiencyCheck(chatMsgCls, system, system.details.rolls);
             break;
         case "weapon":
-            rerollDetails.old = system.details.rolls[index].res;
+            rerollDetails.old = system.details.rolls[index].dieResult;
             const newResults = structuredClone(system.details.rolls);
-            newResults[index].res = newRoll;
+            newResults[index].dieResult = newRoll;
             updateWeaponCheck(chatMsgCls, actor, system, newResults, index);
             rerollDetails.check = LocalisationServer.localise("combat", "combat");
             break;
@@ -130,16 +130,16 @@ function _heroTokenWeaponCheck(chatMsgCls, actor, system, index) {
     const { details } = system;
     const newResults = structuredClone(details.rolls);
     if (newResults[index].hit)
-        newResults[index].res = 1;
+        newResults[index].dieResult = 1;
     else
-        newResults[index].res = details.threshold;
+        newResults[index].dieResult = details.threshold;
     updateWeaponCheck(chatMsgCls, actor, system, newResults, index);
 }
-async function updateWeaponCheck(chatMsgCls, actor, system, newResults, index) {
+async function updateWeaponCheck(chatMsgCls, _actor, system, newResults, index) {
     const { details } = system;
-    if ((newResults[index].res <= details.threshold || newResults[index].res == 1) &&
+    if ((newResults[index].dieResult <= details.threshold || newResults[index].dieResult == 1) &&
         // TODO: Refactor once we have a generic crit interface
-        ![20].includes(newResults[index].res)) {
+        ![20].includes(newResults[index].dieResult)) {
         newResults[index].hit = true;
     }
     else
@@ -154,11 +154,11 @@ async function updateWeaponCheck(chatMsgCls, actor, system, newResults, index) {
         if (!newResults[index].hit)
             details.damage.splice(hitIndex, 1);
         // TODO: Refactor once we have a generic crit interface
-        else if ([1].includes(newResults[index].res) &&
-            ![1].includes(details.rolls[index].res)) {
+        else if ([1].includes(newResults[index].dieResult) &&
+            ![1].includes(details.rolls[index].dieResult)) {
             details.damage[hitIndex] += DiceServer.max(details.damageRoll);
         }
-        else if (newResults[index].res != 1 && details.rolls[index].res == 1) {
+        else if (newResults[index].dieResult != 1 && details.rolls[index].dieResult == 1) {
             details.damage[hitIndex] -= DiceServer.max(details.damageRoll);
         }
     }
@@ -170,7 +170,7 @@ async function updateWeaponCheck(chatMsgCls, actor, system, newResults, index) {
                 ...details.damage.slice(hitIndex)
             ];
         }
-        if (newResults[index].res == 1) {
+        if (newResults[index].dieResult == 1) {
             details.damage[hitIndex] += DiceServer.max(details.damageRoll);
         }
     }

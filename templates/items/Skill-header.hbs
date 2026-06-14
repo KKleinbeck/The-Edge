@@ -8,8 +8,8 @@
   {{#if (checkIn "basis" item.system)}}
     <label for="basis" style="white-space: nowrap; padding-left: 10px;">{{genName "Uses"}}</label>
     <select class="selection-box" name="system.basis" id="basis" style="max-height: 24px; width: fit-content">
-      <option value="Medicine" {{#if (checkEqual "Medicine" item.system.basis)}}selected{{/if}}>{{proficiencyName "Medicine"}}</option>
-      <option value="First Aid" {{#if (checkEqual "First Aid" item.system.basis)}}selected{{/if}}>{{proficiencyName "First Aid"}}</option>
+      <option value="medicine" {{#if (checkEqual "medicine" item.system.basis)}}selected{{/if}}>{{proficiencyName "Medicine"}}</option>
+      <option value="first aid" {{#if (checkEqual "first aid" item.system.basis)}}selected{{/if}}>{{proficiencyName "First Aid"}}</option>
     </select>
   {{/if}}
   </div>

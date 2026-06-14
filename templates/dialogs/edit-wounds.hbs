@@ -1,0 +1,18 @@
+<div class="form-grid">
+  <label for="source">Source</label>
+  <input class="source-hook" type="text" id="source" name="source" value="{{source}}"/>
+
+  <label for="status">Status</label>
+  <select class="status-hook" id="status" name="status">
+    <option value="treatable" {{#if (eq status "treatable")}}selected{{/if}}>Treatable</option>
+    <option value="treated"   {{#if (eq status "treated")}}selected{{/if}}>Treated</option>
+  </select>
+
+  <label for="damage">Damage</label>
+  <input class="damage-hook" type="number" style="text-align: right;" id="damage" name="damage"
+    value="{{damage}}" min="0" step="1"/>
+
+  <label for="bleeding">Bleeding</label>
+  <input class="bleeding-hook" type="number" style="text-align: right;" id="bleeding" name="bleeding"
+    value="{{bleeding}}" min="0" step="1"/>
+</div>

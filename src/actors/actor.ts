@@ -37,7 +37,7 @@ export class TheEdgeActor extends Actor {
     // Skill doesn't exist yet
     if (!this.fulfillsRequirements(newSkill, 1)) return false;
     const ph = this.system.PracticeHours;
-    const cost = Aux.getSkillCost(newSkill, "increase")
+    const cost = Aux.getSkillCost(newSkill, "learn")
     if (typeof cost === "undefined") return false;
 
     if (cost <= ph.max - ph.used) {

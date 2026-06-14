@@ -1,11 +1,12 @@
 import Aux from "../system/auxilliaries.js";
-import DialogRest from "../dialogs/dialog-rest.js";
-import DialogDamage from "../dialogs/dialog-damage.js";
-import DialogReload from "../dialogs/dialog-reload.js";
-import DialogWeapon from "../dialogs/dialog-weapon.js";
 import DialogAttribute from "../dialogs/dialog-attribute.js";
 import DialogCombatics from "../dialogs/dialog-combatics.js";
+import DialogDamage from "../dialogs/dialog-damage.js";
+import DialogEditWounds from "../dialogs/dialog-edit-wounds.js";
 import DialogProficiency from "../dialogs/dialog-proficiency.js";
+import DialogReload from "../dialogs/dialog-reload.js";
+import DialogRest from "../dialogs/dialog-rest.js";
+import DialogWeapon from "../dialogs/dialog-weapon.js";
 import LocalisationServer from "../system/localisation_server.js";
 import THE_EDGE from "../system/config-the-edge.js";
 import { TheEdgeActorSheet } from "./actor-sheet.js";
@@ -136,13 +137,6 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
         context.tabs = this._prepareTabs("primary");
         return context;
     }
-    // async _preparePartContext(partId, context) {
-    //   switch (partId) {
-    //     case "attributes":
-    //       this._prepareAttributeContext(context);
-    //       break
-    //   }
-    // }
     // actions
     static async _onWoundControl(event, target) {
         event.preventDefault();
@@ -153,6 +147,12 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
         switch (target.dataset.subaction) {
             case "delete":
                 this.actor.system.deleteWound(index);
+                break;
+            case "edit":
+                const wound = this.actor.system.wounds[index];
+                const newDetails = await DialogEditWounds.prompt(wound);
+                if (newDetails)
+                    this.actor.system.editWound(index, newDetails);
                 break;
         }
     }

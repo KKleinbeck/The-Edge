@@ -43,45 +43,7 @@
           <div>{{genName "Total Bleeding"}}: {{helpers.bleeding}}</div>
         </div>
       </div>
-      <div style="columns: 2;">
-        {{#each helpers.bodyParts as |boryPart|}}
-          <div style="padding-bottom: 10px; break-inside: avoid-column; min-width: 200px;">
-            <div style="display: flex;">
-              <b>{{genName boryPart}}</b>
-              &emsp;
-              <div style="display: flex; white-space: nowrap; gap: 5px; cursor: pointer;"
-                data-action="applyDamage" data-location={{boryPart}}>
-                <a><i class="fas fa-heart-circle-minus"></i></a>
-              </div>
-            </div>
-            <hr />
-            {{#each ../system/wounds as |wound|}}
-              {{#if (checkInstance boryPart wound.bodyPart)}}
-                <div class="wound-hook" data-index="{{@index}}" style="cursor: pointer; min-width: 200px;">
-                  <div data-action="woundControl" data-subaction="edit">
-                    <div class="item-name" style="font-size: 20; font-weight: 500; margin: 0px;">{{wound.source}}</div>
-                  </div>
-                  <div class="item-controls" style="white-space: no-wrap; padding: 0 0 5px 10px;">
-                    <div style="display: flex; gap: 5px;">
-                      {{combatName wound.damageType}} - {{itemName wound.status}}
-                      <i class="fa-regular {{getWoundIcon wound.status}}" style="font-size: 12px; transform: translateY(2px);"></i>
-                    </div>
-                    <div style="display: flex; justify-content: space-between;">
-                      <div>{{genName "Damage"}} {{wound.damage}}</div>
-                      <div>{{genName "Bleeding"}} {{wound.bleeding}}</div>
-                      <div style="gap: 5px;">
-                        <a title="{{ itemName 'Delete' }}" data-action="woundControl" data-subaction="delete">
-                          <i class="fas fa-trash"></i>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              {{/if}}
-            {{/each}}
-          </div>
-        {{/each}}
-      </div>
+      {{> systems/the_edge/templates/actors/character/health/wounds.hbs}}
     </div>
   </div>
 </section>
