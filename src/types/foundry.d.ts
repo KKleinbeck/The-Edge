@@ -58,15 +58,24 @@ declare class Combat extends FoundryDocument {
   combatants: foundryAny
 }
 
+interface IStrainLogEntry {
+  name: string
+  strainChange: number
+}
 declare class Combatant extends FoundryDocument {
+  constructor(data: foundryAny, options: foundryAny)
+  defineSchema(): Record<string, foundryAny>
   getInitiativeRoll(formula: string): Roll
 
   actor: foundryAny
   initiative: number
   system: {
     baseInitiative: number
+    movementIndex?: number
     strainInitiative?: number
+    strainLog?: IStrainLogEntry[]
   }
+  token: foundryAny
 }
 
 declare class Item extends FoundryDocument {

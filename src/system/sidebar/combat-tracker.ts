@@ -56,8 +56,12 @@ export class TheEdgeCombatTracker extends CombatTracker {
     await super._prepareTrackerContext(context, options);
 
     const currentCombatant = this._getCurrentCombatant();
-    context.combatLog = game.the_edge.combatLog.getContext(currentCombatant);
-    context.combatantName = currentCombatant.name;
+    if (currentCombatant) {
+      // context.combatLog = game.the_edge.combatLog.getContext(currentCombatant);
+      context.combatLog = currentCombatant.context;
+      context.combatantName = currentCombatant.name;
+      context.userIsOwner = currentCombatant.isOwner;
+    }
   }
 
 
@@ -109,16 +113,14 @@ export class TheEdgeCombatTracker extends CombatTracker {
     this.render();
   }
 
-  updateDistance() {
-    const currentCombatant = this._getCurrentCombatant();
-    game.the_edge.combatLog.updateDistance(currentCombatant);
-    this.render();
-  }
+  updateDistance() { this.render(); }
 
 
   changeMovementIndex(newIndex: number) {
-    game.the_edge.combatLog.changeMovementIndex(newIndex);
-    game.the_edge.socketHandler.emit("COMBAT_LOG_CHANGE_MOVEMENT_INDEX", newIndex);
+    const currentCombatant = this._getCurrentCombatant();
+    currentCombatant?.update({"system.movementIndex": newIndex})
+    // game.the_edge.combatLog.changeMovementIndex(newIndex);
+    // game.the_edge.socketHandler.emit("COMBAT_LOG_CHANGE_MOVEMENT_INDEX", newIndex);
     this.render();
   }
 }

@@ -71,6 +71,8 @@
     </div>
   </li>
   {{/each}}
-  {{> systems/the_edge/templates/sidebar/combat/combat_log.hbs combatLog name=combatantName}}
+  {{#if combatLog}}
+  {{> systems/the_edge/templates/sidebar/combat/combat_log.hbs combatLog name=combatantName userIsOwner=userIsOwner}}
+  {{/if}}
 </ol>
 

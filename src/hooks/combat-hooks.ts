@@ -28,7 +28,6 @@ export default function() {
 }
 
 async function _onCombatTurnChange(_combat: foundryAny, prior: CombatHistoryData, _current: CombatHistoryData) {
-  console.log(prior)
   game.the_edge.combatLog.endTurn();
   for (const delay of [50, 100, 150]) {
     // As token's movement History might still update for users

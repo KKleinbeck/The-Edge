@@ -17,7 +17,6 @@ export default function () {
     Hooks.on("combatTurnChange", _onCombatTurnChange);
 }
 async function _onCombatTurnChange(_combat, prior, _current) {
-    console.log(prior);
     game.the_edge.combatLog.endTurn();
     for (const delay of [50, 100, 150]) {
         // As token's movement History might still update for users

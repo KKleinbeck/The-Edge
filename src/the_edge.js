@@ -7,6 +7,7 @@ import setupGameSettings from "./system/settings.js";
 import TheEdgeHotbar from "./applications/hotbar.js";
 
 import CharacterData from "./data_models/actors/character.js";
+import CombatantData from "./data_models/combatants.js";
 import StoreData from "./data_models/actors/store.js";
 
 import AmmunitionData from "./data_models/items/ammunition.js";
@@ -124,6 +125,7 @@ Hooks.once("init", async function() {
   CONFIG.Actor.documentClass = TheEdgeActor;
 
   CONFIG.Combat.documentClass = TheEdgeCombat;
+  CONFIG.Combatant.dataModels = CombatantData;
   CONFIG.Combatant.documentClass = TheEdgeCombatant;
 
   CONFIG.Item.dataModels.Advantage = VantageData;
