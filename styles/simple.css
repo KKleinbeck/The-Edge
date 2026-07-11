@@ -66,7 +66,7 @@ h1, h2, h3, h4 {
   border: none;
 }
 .combat-log {
-  background-color: rgba(42, 80, 122, 0.2);
+  padding: 0 2px 0 2px;
 }
 .combat-log .skill-option {
   background-color: rgba(42, 80, 122, 0.8) !important;

@@ -30,3 +30,13 @@ interface IModifier {
 
 // Helpers
 type WithOptionals<T> = T & Record<string, any>
+
+// Hooks
+type TTheEdgeActions = "reload"
+
+interface ITheEdgeActionPayload {
+  action: TTheEdgeActions
+  actionCost: number
+  strainCost?: number
+  details?: any
+}

@@ -45,7 +45,11 @@ export default class DialogReload extends Dialog{
               name: checkData.actor.name,
               weapon: checkData.weapon.name,
               actions: reloadDuration
-            }})
+            }});
+            Hooks.call("TheEdgeAction",{
+              action: "reload",
+              actionCost: reloadDuration
+            });
           }
         }
       })

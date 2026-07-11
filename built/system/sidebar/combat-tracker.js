@@ -1,10 +1,5 @@
-import CombatLog from "./combat_tracker_combat_log.js";
 const CombatTracker = foundry.applications.sidebar.tabs.CombatTracker;
 export class TheEdgeCombatTracker extends CombatTracker {
-    constructor(options) {
-        super(options);
-        this._combatLog = new CombatLog();
-    }
     static DEFAULT_OPTIONS = {
         ...CombatTracker.DEFAULT_OPTIONS,
         actions: {
@@ -38,8 +33,7 @@ export class TheEdgeCombatTracker extends CombatTracker {
                 combatant.actor?.sheet.render(true);
         }, { passive: true }));
         this.element.querySelector("#movement-options")?.addEventListener("change", ev => {
-            this._combatLog.changeMovementIndex(ev.target.selectedIndex);
-            this.render();
+            this.changeMovementIndex(ev.target.selectedIndex);
         });
     }
     _onCombatantMouseDown(event, target, dedicatedAction = false) {
@@ -51,7 +45,7 @@ export class TheEdgeCombatTracker extends CombatTracker {
     async _prepareTrackerContext(context, options) {
         await super._prepareTrackerContext(context, options);
         const currentCombatant = this._getCurrentCombatant();
-        context.combatLog = this._combatLog.getContext(currentCombatant);
+        context.combatLog = game.the_edge.combatLog.getContext(currentCombatant);
         context.combatantName = currentCombatant.name;
     }
     async _prepareTurnContext(combat, combatant, index) {
@@ -89,13 +83,19 @@ export class TheEdgeCombatTracker extends CombatTracker {
             return this.viewed.combatant;
     }
     // CombatLogWrapper
+    addAction(payload) {
+        game.the_edge.combatLog.addAction(payload);
+        game.the_edge.socketHandler.emit("COMBAT_LOG_ADD_ACTION", payload);
+        this.render();
+    }
     updateDistance() {
         const currentCombatant = this._getCurrentCombatant();
-        this._combatLog.updateDistance(currentCombatant);
+        game.the_edge.combatLog.updateDistance(currentCombatant);
         this.render();
     }
     changeMovementIndex(newIndex) {
-        this._combatLog.changeMovementIndex(newIndex);
+        game.the_edge.combatLog.changeMovementIndex(newIndex);
+        game.the_edge.socketHandler.emit("COMBAT_LOG_CHANGE_MOVEMENT_INDEX", newIndex);
         this.render();
     }
 }

@@ -1,6 +1,6 @@
 import initHooks from "./hooks/init.js";
 import THE_EDGE from "./system/config-the-edge.js";
-import CombatLog from "./applications/combat-log.js";
+import CombatLog from "./system/sidebar/combat-tracker-combat-log.js";
 import DiceServer from "./system/dice_server.js";
 import GrenadePicker from "./applications/grenades-picker.js";
 import setupGameSettings from "./system/settings.js";
@@ -17,7 +17,7 @@ import WeaponData from "./data_models/items/weapon.js";
 import { TheEdgeActor } from "./actors/actor.js";
 import { TheEdgeCombat } from "./documents/Combat.js";
 import { TheEdgeCombatant } from "./documents/Combatant.js";
-import { TheEdgeCombatTracker } from "./system/sidebar/combat_tracker.js";
+import { TheEdgeCombatTracker } from "./system/sidebar/combat-tracker.js";
 import { TheEdgeItem } from "./items/item.js";
 import { SocketHandler } from "./system/socket_handler.js";
 import { TheEdgeItemSheet } from "./items/item-sheet.js";

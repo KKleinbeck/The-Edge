@@ -303,6 +303,9 @@
     "STRAIN - STATUSTHRESHOLD": "Delay strain effects",
     "STRAIN - MAXUSEREDUCTION": "Reduce max strain per roll"
   },
+  "GAME ACTIONS": {
+    "RELOAD": "Reload"
+  },
   "HERO TOKEN": {
     "ATTRIBUTE": "{name} used a hero token to improve an ability check.",
     "GENERIC": "{name} used a hero token.",

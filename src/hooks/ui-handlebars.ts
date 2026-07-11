@@ -12,13 +12,13 @@ export default function() {
   }
 
   Handlebars.registerHelper({
-    progressBarColour: (i, a = undefined) => {
-      if (a in definitions.progressBar) return definitions.progressBar[a][i];
+    progressBarColour: (i: number, a: string | undefined = undefined) => {
+      if ((a as string) in definitions.progressBar) return definitions.progressBar[(a as string)][i];
       return definitions.progressBar.default[i]
     },
     getWoundHTML: (wound, longTooltip = false) => {
       const colour = wound.bleeding > 0 ? "red" : "orange";
-      let icon = undefined;
+      let icon: string = "";
       switch (wound.status) {
         case "treatable":
           icon = "fa-regular fa-droplet";

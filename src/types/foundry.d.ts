@@ -232,3 +232,9 @@ declare class CONFIG {
     initiative: foundryAny
   }
 }
+
+
+// Third Party
+declare class Handlebars {
+  static registerHelper(obj: Record<string, any>)
+}
