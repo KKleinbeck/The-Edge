@@ -304,14 +304,15 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
                 break;
             case "roll":
                 const strainChange = await Aux.parseStrainCostStr(skill, this.actor.system.strainLevel);
-                if (strainChange) {
-                    if (game.combat && this.actor._id == game.combat.combatant.actorId) {
-                        game.the_edge.combatLog.addAction(skill.name, strainChange);
-                    }
-                    else {
-                        const strainChangeActual = await this.actor.system.applyStrain(strainChange);
-                        ChatServer.transmitEvent("Skill Used", { actor: this.actor.name, skill: skill.name, change: strainChangeActual });
-                    }
+                if (game.combat && this.actor._id == game.combat.combatant.actorId) {
+                    const payload = {
+                        action: skill.name, strainCost: strainChange, actionCost: 0
+                    };
+                    Hooks.call("SkillAction", payload);
+                }
+                else {
+                    const strainChangeActual = await this.actor.system.applyStrain(strainChange);
+                    ChatServer.transmitEvent("Skill Used", { actor: this.actor.name, skill: skill.name, change: strainChangeActual });
                 }
                 if (skill.type == "Medicalskill") {
                     DialogProficiency.start({

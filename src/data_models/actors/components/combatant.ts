@@ -243,18 +243,8 @@ export default class CombatantData extends DataModelComponent {
   }
 
 
-  async applyCombatStrain() {
-    if (this.health.value <= 0) {
-      await this.parent.update(
-        {"system.strain.value": Math.min(
-          this.strain.value + THE_EDGE.dying.strainPerBR, this.strain.max.value
-        )}
-      );
-    } else {
-      this.applyStrain(
-        game.the_edge.combatLog.strainLog.reduce((acc: number, entry) => acc + entry.strainChange, 0) +
-        game.the_edge.combatLog.getMovementStrainLog().reduce((acc: number, entry) => acc + entry.strainChange, 0)
-      );
-    }
+  async applyCombatStrain(increment: number) {
+    if (this.health.value <= 0) await this.applyStrain(THE_EDGE.dying.strainPerBR);
+    else this.applyStrain(increment);
   }
 }

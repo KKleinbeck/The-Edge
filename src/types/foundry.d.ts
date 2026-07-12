@@ -55,7 +55,9 @@ interface Actors extends FoundryContainer<Actor> {}
 
 declare class Combat extends FoundryDocument {
   nextRound(): Promise<Combat>
-  combatants: foundryAny
+  nextTurn(): Promise<Combat>
+  combatant: Combatant
+  combatants: FoundryContainer<Combatant>
 }
 
 interface IStrainLogEntry {
@@ -71,9 +73,9 @@ declare class Combatant extends FoundryDocument {
   initiative: number
   system: {
     baseInitiative: number
-    movementIndex?: number
-    strainInitiative?: number
-    strainLog?: IStrainLogEntry[]
+    movementIndex: number
+    strainInitiative: number
+    strainLog: IStrainLogEntry[]
   }
   token: foundryAny
 }
@@ -157,6 +159,7 @@ declare class DialogV2 extends FoundryHandlebarsApplication {
 
 declare class Hooks {
   static on(id: string, callback: Function): boolean;
+  static call(id: string, payload: any)
 }
 
 declare class Roll {

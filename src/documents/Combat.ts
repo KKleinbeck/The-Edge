@@ -1,6 +1,8 @@
+import { TheEdgeCombatant } from "./Combatant";
+
 export class TheEdgeCombat extends Combat {
-  async nextRound(): Promise<TheEdgeCombat> {
-    for (const combatant of this.combatants) combatant.roundReset();
-    return await super.nextRound();
+  async nextTurn(): Promise<TheEdgeCombat> {
+    (this.combatant as TheEdgeCombatant).endOfTurnReset();
+    return await super.nextTurn();
   }
 }

@@ -2,42 +2,20 @@ import LocalisationServer from "../system/localisation_server.js";
 import MovementCalculator from "../system/sidebar/combat-tracker-movement-options.js";
 import THE_EDGE from "../system/config-the-edge.js";
 export class TheEdgeCombatant extends Combatant {
-    constructor(data, options) {
-        super(data, options);
-        if (!("movementIndex" in this.system))
-            this.system.movementIndex = 0;
-        if (!("strainLog" in this.system))
-            this.system.strainLog = [];
-    }
     async update(dataCandidate, operation) {
         const data = { ...dataCandidate }; // Create a copy to prevent mutation
-        // First proper update, needed as the first update comes through `Document.updateDocuments`
-        if (!("baseInitiative" in this.system))
-            data["system.baseInitiative"] = data.initiative ?? this.initiative;
-        // reset everything when we set the initiative manually
-        if ("initiative" in data) {
-            data["system.baseInitiative"] = data.initiative;
+        if ("initiative" in data) { // reset strain initiative when we set the initiative manually
             if (this.system.strainInitiative)
                 this.actor.system.applyStrain(-this.system.strainInitiative);
             data["system.strainInitiative"] = 0;
         }
-        // when we update strainInitiative, update the initiative too
-        if ("system.strainInitiative" in dataCandidate) {
-            const strainDelta = dataCandidate["system.strainInitiative"] - (this.system.strainInitiative ?? 0);
+        if ("system.strainInitiative" in dataCandidate) { // update initiative when we update strainInitiative
+            const strainDelta = dataCandidate["system.strainInitiative"] - this.system.strainInitiative;
             data.initiative = this.initiative + strainDelta;
-            if (!operation?.isRoundReset)
+            if (!operation?.isTurnReset)
                 this.actor.system.applyStrain(strainDelta);
         }
         return super.update(data, operation);
-    }
-    async rollInitiative(formula) {
-        const roll = this.getInitiativeRoll(formula);
-        await roll.evaluate();
-        return this.update({
-            initiative: roll.total,
-            "system.initialInitiative": roll.total,
-            "system.strainInitiative": 0
-        });
     }
     get context() {
         const context = {};
@@ -58,6 +36,19 @@ export class TheEdgeCombatant extends Combatant {
     get distanceTravelled() {
         const movementHistory = this.token.movementHistory;
         return movementHistory.reduce((acc, current) => acc + current.cost, 0);
+    }
+    addAction(payload) {
+        let name = payload.action;
+        if (payload.actionCost > 1)
+            name += ` x ${payload.actionCost}`;
+        this.system.strainLog.push({
+            name: name, strainChange: payload.strainCost ? payload.strainCost : 0
+        });
+        this.update({ "system.strainLog": this.system.strainLog });
+    }
+    undoAction(undoIndex) {
+        this.system.strainLog.splice(undoIndex, 1);
+        this.update({ "system.strainLog": this.system.strainLog });
     }
     getMovementOptions(distance) {
         const actor = this.actor;
@@ -89,11 +80,20 @@ export class TheEdgeCombatant extends Combatant {
         }
         return movementStrainLog;
     }
-    roundReset() {
+    get _totalStrainCost() {
+        const movementOptions = this.getMovementOptions(this.distanceTravelled);
+        const movementStrainCost = movementOptions[this.system.movementIndex].cost;
+        console.log(movementStrainCost);
+        const actionStrainCost = this.system.strainLog.reduce((acc, strainLogEntry) => acc + strainLogEntry.strainChange, 0);
+        console.log(actionStrainCost);
+        return movementStrainCost + actionStrainCost;
+    }
+    endOfTurnReset() {
+        this.actor.system.applyCombatStrain(this._totalStrainCost);
         this.update({
             "system.movementIndex": 0,
             "system.strainInitiative": 0,
             "system.strainLog": []
-        }, { isRoundReset: true });
+        }, { isTurnReset: true });
     }
 }

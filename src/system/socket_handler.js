@@ -11,16 +11,6 @@ export class SocketHandler {
     game.socket.on(this.identifier, ({ type, payload }) => {
       console.log(type, payload)
       switch (type) {
-        case "COMBAT_LOG_ADD_ACTION":
-          this.#addAction(payload);
-          break;
-        case "COMBAT_LOG_CHANGE_MOVEMENT_INDEX":
-          this.#changeMovementIndex(payload);
-          break;
-        case "COMBAT_LOG_UNDO_ACTION":
-          this.#undoAction(payload);
-          break;
-        
         // Grenade related
         case "CREATE_GRENADE_TILE":
           if (game.user.isGM) GrenadePicker.createGrenadeTile(payload);
@@ -51,19 +41,5 @@ export class SocketHandler {
 
   emit(type, payload) {
     return game.socket.emit(this.identifier, { type, payload })
-  }
-
-  #addAction(payload) {
-    game.the_edge.combatLog.addAction(payload);
-    ui.combat.render();
-  }
-
-  #changeMovementIndex(movementIndex) {
-    game.the_edge.combatLog.movementIndex = movementIndex;
-    ui.combat.render();
-  }
-
-  #undoAction(index) {
-    game.the_edge.combatLog.strainLog.splice(index, 1);
   }
 }

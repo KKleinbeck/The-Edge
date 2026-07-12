@@ -9,6 +9,7 @@ export class TheEdgeCombatTracker extends CombatTracker {
       ...CombatTracker.DEFAULT_OPTIONS.actions,
       decreaseStrain: TheEdgeCombatTracker._handleStrain,
       increaseStrain: TheEdgeCombatTracker._handleStrain,
+      undoAction: TheEdgeCombatTracker._undoAction,
       undoMovement: TheEdgeCombatTracker._undoMovement
     }
   }
@@ -57,7 +58,6 @@ export class TheEdgeCombatTracker extends CombatTracker {
 
     const currentCombatant = this._getCurrentCombatant();
     if (currentCombatant) {
-      // context.combatLog = game.the_edge.combatLog.getContext(currentCombatant);
       context.combatLog = currentCombatant.context;
       context.combatantName = currentCombatant.name;
       context.userIsOwner = currentCombatant.isOwner;
@@ -89,6 +89,13 @@ export class TheEdgeCombatTracker extends CombatTracker {
         break;
     }
   }
+  
+
+  static _undoAction(_event: PointerEvent, target: HTMLAnchorElement) {
+    const currentCombatant = this._getCurrentCombatant();
+    const undoIndex = target.dataset.index;
+    if (undoIndex) currentCombatant.undoAction(+undoIndex);
+  }
 
 
   static _undoMovement(_event: PointerEvent, _target: HTMLAnchorElement) {
@@ -102,16 +109,9 @@ export class TheEdgeCombatTracker extends CombatTracker {
 
 
   _getCurrentCombatant(): foundryAny | undefined {
-    if (this.viewed) return this.viewed.combatant;
+    if (game.combat) return game.combat.combatant;
   }
 
-
-  // CombatLogWrapper
-  addAction(payload: ITheEdgeActionPayload) {
-    game.the_edge.combatLog.addAction(payload);
-    game.the_edge.socketHandler.emit("COMBAT_LOG_ADD_ACTION", payload);
-    this.render();
-  }
 
   updateDistance() { this.render(); }
 
@@ -119,8 +119,6 @@ export class TheEdgeCombatTracker extends CombatTracker {
   changeMovementIndex(newIndex: number) {
     const currentCombatant = this._getCurrentCombatant();
     currentCombatant?.update({"system.movementIndex": newIndex})
-    // game.the_edge.combatLog.changeMovementIndex(newIndex);
-    // game.the_edge.socketHandler.emit("COMBAT_LOG_CHANGE_MOVEMENT_INDEX", newIndex);
     this.render();
   }
 }

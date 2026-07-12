@@ -9,45 +9,21 @@ interface IMovementOption {
 }
 
 export class TheEdgeCombatant extends Combatant {
-  constructor (data: foundryAny, options: foundryAny) {
-    super(data, options)
-
-    if (!("movementIndex" in this.system)) this.system.movementIndex = 0;
-    if (!("strainLog" in this.system)) this.system.strainLog = [];
-  }
-
-
   async update(dataCandidate: any, operation?: foundryAny): Promise<Combatant> {
     const data = {...dataCandidate}; // Create a copy to prevent mutation
-    // First proper update, needed as the first update comes through `Document.updateDocuments`
-    if (!("baseInitiative" in this.system)) data["system.baseInitiative"] = data.initiative ?? this.initiative;
 
-    // reset everything when we set the initiative manually
-    if ("initiative" in data) {
-      data["system.baseInitiative"] = data.initiative;
+    if ("initiative" in data) { // reset strain initiative when we set the initiative manually
       if (this.system.strainInitiative) this.actor.system.applyStrain(-this.system.strainInitiative);
       data["system.strainInitiative"] = 0;
     }
     
-    // when we update strainInitiative, update the initiative too
-    if ("system.strainInitiative" in dataCandidate) {
-      const strainDelta = dataCandidate["system.strainInitiative"] - (this.system.strainInitiative ?? 0);
+    if ("system.strainInitiative" in dataCandidate) { // update initiative when we update strainInitiative
+      const strainDelta = dataCandidate["system.strainInitiative"] - this.system.strainInitiative;
       data.initiative = this.initiative + strainDelta;
-      if(!operation?.isRoundReset) this.actor.system.applyStrain(strainDelta);
+      if(!operation?.isTurnReset) this.actor.system.applyStrain(strainDelta);
     }
 
     return super.update(data, operation) as unknown as Combatant;
-  }
-
-
-  async rollInitiative(formula:string): Promise<Combatant> {
-    const roll = this.getInitiativeRoll(formula);
-    await roll.evaluate();
-    return this.update({
-      initiative: roll.total,
-      "system.initialInitiative": roll.total,
-      "system.strainInitiative": 0
-    });
   }
 
 
@@ -82,6 +58,23 @@ export class TheEdgeCombatant extends Combatant {
   }
 
 
+  addAction(payload: ITheEdgeActionPayload) {
+    let name = payload.action;
+    if (payload.actionCost > 1) name += ` x ${payload.actionCost}`;
+
+    this.system.strainLog.push({
+      name: name, strainChange: payload.strainCost ? payload.strainCost : 0
+    });
+    this.update({"system.strainLog": this.system.strainLog});
+  }
+
+
+  undoAction(undoIndex: number) {
+    this.system.strainLog.splice(undoIndex, 1);
+    this.update({"system.strainLog": this.system.strainLog});
+  }
+
+
   getMovementOptions(distance: number): IMovementOption[] {
     const actor = this.actor;
 
@@ -108,7 +101,7 @@ export class TheEdgeCombatant extends Combatant {
     if (!movementOptions.length) return [];
 
     const movementStrainLog: IStrainLogEntry[] = [];
-    for (const patternIndex of movementOptions[this.system.movementIndex as number].pattern) {
+    for (const patternIndex of movementOptions[this.system.movementIndex].pattern) {
       movementStrainLog.push({
         name: LocalisationServer.localise(
           ["Stride", "Run", "Sprint"][patternIndex], "Combat"
@@ -122,14 +115,31 @@ export class TheEdgeCombatant extends Combatant {
   }
 
 
-  roundReset() {
+  get _totalStrainCost(): number {
+    const movementOptions = this.getMovementOptions(this.distanceTravelled);
+    const movementStrainCost = movementOptions[this.system.movementIndex].cost;
+    console.log(movementStrainCost)
+
+    const actionStrainCost = this.system.strainLog.reduce(
+      (acc: number, strainLogEntry: IStrainLogEntry) => acc + strainLogEntry.strainChange,
+      0
+    );
+    console.log(actionStrainCost)
+
+    return movementStrainCost + actionStrainCost;
+  }
+
+
+  endOfTurnReset() {
+    this.actor.system.applyCombatStrain(this._totalStrainCost);
+
     this.update(
       {
         "system.movementIndex": 0,
         "system.strainInitiative": 0,
         "system.strainLog": []
       },
-      {isRoundReset: true}
+      {isTurnReset: true}
     );
   }
 }
