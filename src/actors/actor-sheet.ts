@@ -133,11 +133,6 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
 
           case "grenade":
             NotificationServer.notify("Grenade use tipp")
-            // ChatServer.transmitEvent("grenade sheet based", {
-            //   actorId: this.actor?.id, tokenId: this.token?.id, grenade: item,
-            //   details: item.system.subtypes.grenade
-            // })
-            // item.useOne();
             break;
           
           default:
@@ -348,25 +343,19 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
         );
         break;
       case "roll":
-        const strainChange = await Aux.parseStrainCostStr(skill, this.actor.system.strainLevel);
-        if (game.combat && this.actor._id == game.combat.combatant.actorId) {
-          const payload: ITheEdgeActionPayload = {
-            action: skill.name, strainCost: strainChange, actionCost: 0
-          }
-          Hooks.call("SkillAction", payload);
-        } else {
-          const strainChangeActual = await this.actor.system.applyStrain(strainChange);
-          ChatServer.transmitEvent("Skill Used",
-            {actor: this.actor.name, skill: skill.name, change: strainChangeActual}
-          );
-        }
-        
         if (skill.type == "Medicalskill") {
           DialogProficiency.start({
             actor: this.actor, actorId: this.actor.id, proficiency: skill.system.basis,
             tokenId: this.token?.id, sceneId: game.user.viewedScene
           })
+        } else {
+          const strainChange = await Aux.parseStrainCostStr(skill, this.actor.system.strainLevel);
+          const payload: ITheEdgeActionPayload = {
+            action: skill.name, actionType: "skill", actor: this.actor, strainCost: strainChange, actionCost: 0
+          }
+          Hooks.call("TheEdgeAction", payload);
         }
+        
         break;
     }
   }
@@ -572,4 +561,3 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
     return this.actor.findItem(item);
   }
 }
-

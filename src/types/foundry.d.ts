@@ -47,6 +47,7 @@ declare class Actor extends FoundryDocument {
     attributes: ATTRIBUTES
     AdvantagePoints: {used: number, max: number}
     PracticeHours: foundryAny
+    applyStrain(change: number): Promise<number>
     onUpdate(data: any): void
   }
 }

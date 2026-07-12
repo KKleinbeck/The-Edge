@@ -50,7 +50,7 @@ export default class ChatServer {
         break;
       
       case "RELOAD":
-        html = await renderTemplate("systems/the_edge/templates/chat/reload.html", details);
+        html = await renderTemplate("systems/the_edge/templates/chat/reload.hbs", details);
         break;
       
       case "SHORT REST":

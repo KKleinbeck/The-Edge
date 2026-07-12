@@ -1,4 +1,5 @@
 import Aux from "../system/auxilliaries.js";
+import ChatServer from "../system/chat_server.js";
 import LocalisationServer from "../system/localisation_server.js";
 import NotificationServer from "../system/notifications.js";
 import THE_EDGE from "../system/config-the-edge.js";
@@ -209,6 +210,23 @@ export class TheEdgeActor extends Actor {
     if (vantage.type == "Advantage") this.update({"system.AdvantagePoints.used": AP.used - itemAP});
     else this.update({"system.AdvantagePoints.max": AP.max - itemAP});
     vantage.delete();
+  }
+
+
+  async handleOutOfCombatAction(payload: ITheEdgeActionPayload) {
+    switch (payload.actionType) {
+      case "reload":
+        ChatServer.transmitEvent("Reload", {details: {
+          name: this.name, weapon: payload.details.weapon, actions: payload.actionCost
+        }});
+        break;
+      
+      case "skill":
+        const strainChangeActual = await this.system.applyStrain(payload.strainCost ?? 0);
+        ChatServer.transmitEvent("Skill Used",
+          {actor: this.name, skill: payload.action, change: strainChangeActual}
+        );
+    }
   }
 
 

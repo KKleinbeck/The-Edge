@@ -113,11 +113,6 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
                         break;
                     case "grenade":
                         NotificationServer.notify("Grenade use tipp");
-                        // ChatServer.transmitEvent("grenade sheet based", {
-                        //   actorId: this.actor?.id, tokenId: this.token?.id, grenade: item,
-                        //   details: item.system.subtypes.grenade
-                        // })
-                        // item.useOne();
                         break;
                     default:
                         const existingCopies = this.actor.system.findEffectsByName(item.name);
@@ -303,22 +298,18 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
                 ChatServer.transmitEvent("Post Skill", { name: skill.name, type: skill.type, description: skill.system.description });
                 break;
             case "roll":
-                const strainChange = await Aux.parseStrainCostStr(skill, this.actor.system.strainLevel);
-                if (game.combat && this.actor._id == game.combat.combatant.actorId) {
-                    const payload = {
-                        action: skill.name, strainCost: strainChange, actionCost: 0
-                    };
-                    Hooks.call("SkillAction", payload);
-                }
-                else {
-                    const strainChangeActual = await this.actor.system.applyStrain(strainChange);
-                    ChatServer.transmitEvent("Skill Used", { actor: this.actor.name, skill: skill.name, change: strainChangeActual });
-                }
                 if (skill.type == "Medicalskill") {
                     DialogProficiency.start({
                         actor: this.actor, actorId: this.actor.id, proficiency: skill.system.basis,
                         tokenId: this.token?.id, sceneId: game.user.viewedScene
                     });
+                }
+                else {
+                    const strainChange = await Aux.parseStrainCostStr(skill, this.actor.system.strainLevel);
+                    const payload = {
+                        action: skill.name, actionType: "skill", actor: this.actor, strainCost: strainChange, actionCost: 0
+                    };
+                    Hooks.call("TheEdgeAction", payload);
                 }
                 break;
         }

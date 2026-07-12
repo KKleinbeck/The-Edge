@@ -1,5 +1,4 @@
 import Aux from "../system/auxilliaries.js";
-import ChatServer from "../system/chat_server.js";
 
 const { renderTemplate } = foundry.applications.handlebars;
 
@@ -40,15 +39,13 @@ export default class DialogReload extends Dialog{
                 ammu.useOne()
               }
             }
-            
-            ChatServer.transmitEvent("Reload", {details: {
-              name: checkData.actor.name,
-              weapon: checkData.weapon.name,
-              actions: reloadDuration
-            }});
-            Hooks.call("TheEdgeAction",{
+
+            Hooks.call("TheEdgeAction", {
               action: "reload",
-              actionCost: reloadDuration
+              actionType: "reload",
+              actor: checkData.actor,
+              actionCost: reloadDuration,
+              details: {weapon: checkData.weapon.name}
             });
           }
         }
