@@ -59,7 +59,7 @@ export class TheEdgeCombatant extends Combatant {
 
 
   addAction(payload: ITheEdgeActionPayload) {
-    let name = payload.action;
+    let name = payload.action ?? LocalisationServer.localise(payload.actionType, "Game Actions");
     if (payload.actionCost > 1) name += ` x ${payload.actionCost}`;
 
     this.system.strainLog.push({

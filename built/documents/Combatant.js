@@ -38,7 +38,7 @@ export class TheEdgeCombatant extends Combatant {
         return movementHistory.reduce((acc, current) => acc + current.cost, 0);
     }
     addAction(payload) {
-        let name = payload.action;
+        let name = payload.action ?? LocalisationServer.localise(payload.actionType, "Game Actions");
         if (payload.actionCost > 1)
             name += ` x ${payload.actionCost}`;
         this.system.strainLog.push({

@@ -76,7 +76,7 @@ export default class DialogCombatics extends CheckDialog {
     var damage: number[] = hit ? [await DiceServer.genericRoll(this.checkData.damageRoll)] : [];
     if (crit) damage[0] += DiceServer.max(this.checkData.damageRoll);
 
-    var attackRollResult: IAttackRollResult = {
+    const attackRollResult: IAttackRollResult = {
       damage: damage, failEvent: "", rolls: [{crit, dieResult, hit}],
     };
 
@@ -115,6 +115,14 @@ export default class DialogCombatics extends CheckDialog {
     NewChatServer.transmitEvent(
       "WEAPON CHECK", details, config
     );
+
+    const payload: ITheEdgeActionPayload = {
+      actionType: "combatics",
+      actor: this.checkData.actor,
+      actionCost: 1,
+      strainCost: this.promptResult.strain,
+    }
+    Hooks.call("TheEdgeAction", payload);
   }
 
   // Helpers for rendering

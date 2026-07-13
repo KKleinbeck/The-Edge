@@ -236,6 +236,9 @@ export default class CombatantData extends DataModelComponent {
 
 
   async applyStrain(strain: number) {
+    // Strain is ownly applied during the end of turn
+    if (game.combat && game.combat.combatant.actor.id == this.parent.id) return 0;
+
     const newValue = Math.clamp(this.strain.value + strain, 0, this.strain.max.value);
     const change = newValue - this.strain.value;
     await this.parent.update({"system.strain.value": newValue});

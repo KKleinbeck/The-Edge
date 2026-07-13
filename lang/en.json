@@ -304,7 +304,12 @@
     "STRAIN - MAXUSEREDUCTION": "Reduce max strain per roll"
   },
   "GAME ACTIONS": {
-    "RELOAD": "Reload"
+    "ATTRIBUTE CHECK": "Attribute Check",
+    "COMBATICS": "Combatics",
+    "PROFICIENCY CHECK": "Proficiency Check",
+    "RELOAD": "Reload",
+    "WEAPON CHECK": "Attack Roll",
+    "WEAPON CHECK AIMED": "Aimed Attack Roll"
   },
   "HERO TOKEN": {
     "ATTRIBUTE": "{name} used a hero token to improve an ability check.",

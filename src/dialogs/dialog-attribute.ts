@@ -73,6 +73,14 @@ export default class DialogAttribute extends CheckDialog {
     const attributePromptResult: IAttributePromptResult = foundry.utils.mergeObject(
       checkData, promptResult);
     checkData.actor.system.rollAttributeCheck(attributePromptResult);
+
+    const payload: ITheEdgeActionPayload = {
+      actionType: "attribute check",
+      actor: checkData.actor,
+      actionCost: 0,
+      strainCost: promptResult.strain,
+    }
+    Hooks.call("TheEdgeAction", payload);
   }
 
   static cheatCallback(dialog: DialogAttribute, checkData) {
