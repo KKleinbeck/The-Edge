@@ -222,9 +222,8 @@ export class TheEdgeActor extends Actor {
         break;
       
       case "skill":
-        const strainChangeActual = await this.system.applyStrain(payload.strainCost ?? 0);
         ChatServer.transmitEvent("Skill Used",
-          {actor: this.name, skill: payload.action, change: strainChangeActual}
+          {actor: this.name, skill: payload.action, change: payload.strainCost}
         );
     }
   }

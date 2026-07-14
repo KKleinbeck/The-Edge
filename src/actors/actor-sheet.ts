@@ -349,7 +349,8 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
             tokenId: this.token?.id, sceneId: game.user.viewedScene
           })
         } else {
-          const strainChange = await Aux.parseStrainCostStr(skill, this.actor.system.strainLevel);
+          let strainChange = await Aux.parseStrainCostStr(skill, this.actor.system.strainLevel);
+          strainChange = await this.actor.system.applyStrain(strainChange);
           const payload: ITheEdgeActionPayload = {
             action: skill.name, actionType: "skill", actor: this.actor, strainCost: strainChange, actionCost: 0
           }

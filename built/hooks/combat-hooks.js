@@ -6,6 +6,7 @@ async function _onCombatTurnChange(_combat, _prior, _current) {
         // As token's movement History might still update for users
         // delay here and then try to redraw at different intervals
         await new Promise(resolve => setTimeout(resolve, delay));
-        ui.combat.render();
+        // ui.combat.render();
     }
+    return true;
 }

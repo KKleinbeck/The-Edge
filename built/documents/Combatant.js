@@ -25,12 +25,10 @@ export class TheEdgeCombatant extends Combatant {
         context.movementIndex = this.system.movementIndex;
         context.movements = this.getMovementStrainLog(context.movementOptions);
         context.strainNow = this.actor.system.strain.value;
-        context.strainThen = (context.strainNow +
-            (context.movements?.reduce((acc, movement) => acc + movement.strainChange, 0) ?? 0) +
-            (context.strainLog?.reduce((acc, entry) => acc + entry.strainChange, 0) ?? 0));
+        context.strainThen = context.strainNow + this._momentStrainCost;
         context.levelNow = this.actor.system.strainLevel;
         context.levelThen = this.actor.system.strainLevels
-            .map(x => x.value).findIndex(x => x > context.strainThen);
+            .map((x) => x.value).findIndex((x) => x > context.strainThen);
         return context;
     }
     get distanceTravelled() {
@@ -80,17 +78,14 @@ export class TheEdgeCombatant extends Combatant {
         }
         return movementStrainLog;
     }
-    get _totalStrainCost() {
+    get _momentStrainCost() {
         const movementOptions = this.getMovementOptions(this.distanceTravelled);
         const movementStrainCost = movementOptions[this.system.movementIndex].cost;
-        console.log(movementStrainCost);
-        const actionStrainCost = this.system.strainLog.reduce((acc, strainLogEntry) => acc + strainLogEntry.strainChange, 0);
-        console.log(actionStrainCost);
-        return movementStrainCost + actionStrainCost;
+        return movementStrainCost;
     }
-    endOfTurnReset() {
-        this.actor.system.applyCombatStrain(this._totalStrainCost);
-        this.update({
+    async endOfTurnReset() {
+        this.actor.system.applyCombatStrain(this._momentStrainCost);
+        await this.update({
             "system.movementIndex": 0,
             "system.strainInitiative": 0,
             "system.strainLog": []

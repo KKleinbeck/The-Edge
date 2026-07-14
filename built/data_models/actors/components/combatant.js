@@ -172,18 +172,15 @@ export default class CombatantData extends DataModelComponent {
         await this.parent.update({ "system.wounds": this.wounds });
     }
     async applyStrain(strain) {
-        // Strain is ownly applied during the end of turn
-        if (game.combat && game.combat.combatant.actor.id == this.parent.id)
-            return 0;
         const newValue = Math.clamp(this.strain.value + strain, 0, this.strain.max.value);
         const change = newValue - this.strain.value;
         await this.parent.update({ "system.strain.value": newValue });
         return change;
     }
-    async applyCombatStrain(increment) {
+    async applyCombatStrain(strain) {
         if (this.health.value <= 0)
             await this.applyStrain(THE_EDGE.dying.strainPerBR);
         else
-            this.applyStrain(increment);
+            await this.applyStrain(strain);
     }
 }

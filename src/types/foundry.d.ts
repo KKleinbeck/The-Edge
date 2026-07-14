@@ -59,6 +59,7 @@ declare class Combat extends FoundryDocument {
   nextTurn(): Promise<Combat>
   combatant: Combatant
   combatants: FoundryContainer<Combatant>
+  nextCombatant: Combatant
 }
 
 interface IStrainLogEntry {
