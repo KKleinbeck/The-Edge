@@ -79,6 +79,7 @@
     "WHISPER": "Whisper"
   },
   "COMBAT": {
+    "ACTION LOG": "Action Log",
     "COMBAT": "Combat",
     "COMBAT LOG": "Combat Log",
 
@@ -191,12 +192,6 @@
     "ATTACHMENT SIZE": "Attachment size",
 
     "STRUCTURE POINTS": "Structure Points",
-    
-    "COMBAT ACTIONS": "Combat actions",
-    "FIRST ACTION": "First action",
-    "SECOND ACTION": "Second action",
-    "THIRD ACTION": "Third action",
-    "FOURTH ACTION": "Fourth action",
 
     "STRAIN LEVEL": "Strain level",
     "NO ACTION": "No action",

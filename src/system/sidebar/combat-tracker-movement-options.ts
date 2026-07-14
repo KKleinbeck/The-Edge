@@ -1,17 +1,11 @@
-interface IMovementOption {
-  actions: number;
-  pattern: number[];
-  cost: number;
-}
-
 export default class MovementCalculator {
   static determineBestPattern(actions: number, distance: number, speeds: number[], costs: number[]): IMovementOption {
     const initialPattern = MovementCalculator.getFirstGuessForPattern(
       actions, distance, speeds, costs
     );
 
-    const [cost, pattern] = MovementCalculator._getBestPatternRecursive(distance, initialPattern, speeds, costs);
-    return { actions, pattern, cost };
+    const [strainCost, pattern] = MovementCalculator._getBestPatternRecursive(distance, initialPattern, speeds, costs);
+    return { actions, pattern, strainCost };
   }
 
 

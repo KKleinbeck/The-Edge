@@ -19,7 +19,7 @@
       {{#if (checkNotEmpty movementOptions)}}
       {{#each movementOptions as |option|}}
       <option value="@index" {{#if (checkEqual @index ../movementIndex)}}selected{{/if}}>
-        {{genName "Actions"}} {{option.actions}} (+{{option.cost}} {{genName "Strain"}})
+        {{genName "Actions"}} {{option.actions}} (+{{option.strainCost}} {{genName "Strain"}})
       </option>
       {{/each}}
       {{/if}}
@@ -32,8 +32,8 @@
   {{!-- Action Log  --}}
   <div style="display: table; padding-bottom: 5px;">
     <div style="display: table-row;">
-      <div style="display: table-cell;"><h5 style="margin: 0">{{genName 'Actions'}}</h5></div>
-      <div style="display: table-cell; text-align: right; width: 100%;"><b>{{genName 'Strain'}}</b></div>
+      <div style="display: table-cell;"><h5 style="margin: 0; white-space: nowrap;">{{combatName 'Action Log'}}</h5></div>
+      <div style="display: table-cell; text-align: right; width: 100%;"><b>{{genName 'Actions'}}</b></div>
       <div style="display: table-cell; min-width: 17px;"></div>
     </div>
 
@@ -41,32 +41,21 @@
     {{#each movements as |movement|}}
     <div style="display: table-row; white-space: nowrap;">
       <div style="display: table-cell;">{{movement.name}}</div>
-      <div style="display: table-cell; text-align: right;">{{movement.strainChange}}</div>
+      <div style="display: table-cell; text-align: right;">{{movement.actionCost}}</div>
     </div>
     {{/each}}
     {{/if}}
 
-    {{#if (checkNotEmpty strainLog)}}
-      {{#each strainLog as |entry|}}
-        <div style="display: table-row; white-space: nowrap;">
-          <div style="display: table-cell;">{{entry.name}}</div>
-          <div style="display: table-cell; text-align: right;"></div>
-          {{#if ../userIsOwner}}
-          <div style="display: table-cell; text-align: right;">
-            <a data-action="undoAction" data-index="{{@index}}"><i class="fa-solid fa-xmark" title="{{genName 'Remove'}}"></i></a>
-          </div>
-          {{/if}}
+    {{#each actionLog as |entry|}}
+      <div style="display: table-row; white-space: nowrap;">
+        <div style="display: table-cell;">{{entry.name}}</div>
+        <div style="display: table-cell; text-align: right;">{{entry.actionCost}}</div>
+        {{#if ../userIsOwner}}
+        <div style="display: table-cell; text-align: right;">
+          <a data-action="undoAction" data-index="{{@index}}"><i class="fa-solid fa-xmark" title="{{genName 'Remove'}}"></i></a>
         </div>
-      {{/each}}
-    {{/if}}
+        {{/if}}
+      </div>
+    {{/each}}
   </div>
-  {{#unless (checkEqual strainNow strainThen)}}
-  <div style="display: flex; justify-content: space-around; padding-bottom: 10px;">
-    <div>
-      {{strainNow}} ({{genName "Level"}} {{levelNow}})
-      <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
-      {{strainThen}} ({{genName "Level"}} {{levelThen}})
-    </div>
-  </div>
-  {{/unless}}
 </div>

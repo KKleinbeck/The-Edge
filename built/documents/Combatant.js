@@ -19,16 +19,11 @@ export class TheEdgeCombatant extends Combatant {
     }
     get context() {
         const context = {};
-        context.strainLog = this.system.strainLog;
+        context.actionLog = this.system.actionLog;
         context.distance = this.distanceTravelled;
         context.movementOptions = this.getMovementOptions(context.distance);
         context.movementIndex = this.system.movementIndex;
-        context.movements = this.getMovementStrainLog(context.movementOptions);
-        context.strainNow = this.actor.system.strain.value;
-        context.strainThen = context.strainNow + this._momentStrainCost;
-        context.levelNow = this.actor.system.strainLevel;
-        context.levelThen = this.actor.system.strainLevels
-            .map((x) => x.value).findIndex((x) => x > context.strainThen);
+        context.movements = this.getMovementActionLog(context.movementOptions);
         return context;
     }
     get distanceTravelled() {
@@ -37,16 +32,14 @@ export class TheEdgeCombatant extends Combatant {
     }
     addAction(payload) {
         let name = payload.action ?? LocalisationServer.localise(payload.actionType, "Game Actions");
-        if (payload.actionCost > 1)
-            name += ` x ${payload.actionCost}`;
-        this.system.strainLog.push({
-            name: name, strainChange: payload.strainCost ? payload.strainCost : 0
+        this.system.actionLog.push({
+            name: name, actionCost: payload.actionCost ? payload.actionCost : 0
         });
-        this.update({ "system.strainLog": this.system.strainLog });
+        this.update({ "system.actionLog": this.system.actionLog });
     }
     undoAction(undoIndex) {
-        this.system.strainLog.splice(undoIndex, 1);
-        this.update({ "system.strainLog": this.system.strainLog });
+        this.system.actionLog.splice(undoIndex, 1);
+        this.update({ "system.actionLog": this.system.actionLog });
     }
     getMovementOptions(distance) {
         const actor = this.actor;
@@ -64,23 +57,28 @@ export class TheEdgeCombatant extends Combatant {
         }
         return patterns;
     }
-    getMovementStrainLog(movementOptions) {
+    getMovementActionLog(movementOptions) {
         if (!movementOptions.length)
             return [];
-        const movementStrainLog = [];
+        const patternCount = {};
         for (const patternIndex of movementOptions[this.system.movementIndex].pattern) {
-            movementStrainLog.push({
+            if (patternIndex in patternCount)
+                patternCount[patternIndex] += 1;
+            else
+                patternCount[patternIndex] = 1;
+        }
+        const movementActionLog = [];
+        for (const [patternIndex, count] of Object.entries(patternCount)) {
+            movementActionLog.push({
                 name: LocalisationServer.localise(["Stride", "Run", "Sprint"][patternIndex], "Combat"),
-                strainChange: [
-                    THE_EDGE.strainCost.striding, THE_EDGE.strainCost.running, THE_EDGE.strainCost.sprinting
-                ][patternIndex]
+                actionCost: count
             });
         }
-        return movementStrainLog;
+        return movementActionLog;
     }
     get _momentStrainCost() {
         const movementOptions = this.getMovementOptions(this.distanceTravelled);
-        const movementStrainCost = movementOptions[this.system.movementIndex].cost;
+        const movementStrainCost = movementOptions[this.system.movementIndex].strainCost;
         return movementStrainCost;
     }
     async endOfTurnReset() {
@@ -88,7 +86,7 @@ export class TheEdgeCombatant extends Combatant {
         await this.update({
             "system.movementIndex": 0,
             "system.strainInitiative": 0,
-            "system.strainLog": []
+            "system.actionLog": []
         }, { isTurnReset: true });
     }
 }

@@ -62,10 +62,17 @@ declare class Combat extends FoundryDocument {
   nextCombatant: Combatant
 }
 
-interface IStrainLogEntry {
+interface IActionLogEntry {
   name: string
-  strainChange: number
+  actionCost: number
 }
+
+interface IMovementOption {
+  actions: number
+  pattern: number[]
+  strainCost: number
+}
+
 declare class Combatant extends FoundryDocument {
   constructor(data: foundryAny, options: foundryAny)
   defineSchema(): Record<string, foundryAny>
@@ -77,7 +84,7 @@ declare class Combatant extends FoundryDocument {
     baseInitiative: number
     movementIndex: number
     strainInitiative: number
-    strainLog: IStrainLogEntry[]
+    actionLog: IActionLogEntry[]
   }
   token: foundryAny
 }

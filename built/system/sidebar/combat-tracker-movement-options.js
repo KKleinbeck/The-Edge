@@ -1,8 +1,8 @@
 export default class MovementCalculator {
     static determineBestPattern(actions, distance, speeds, costs) {
         const initialPattern = MovementCalculator.getFirstGuessForPattern(actions, distance, speeds, costs);
-        const [cost, pattern] = MovementCalculator._getBestPatternRecursive(distance, initialPattern, speeds, costs);
-        return { actions, pattern, cost };
+        const [strainCost, pattern] = MovementCalculator._getBestPatternRecursive(distance, initialPattern, speeds, costs);
+        return { actions, pattern, strainCost };
     }
     static getFirstGuessForPattern(actions, distance, speeds, costs) {
         const distanceMissingFromStride = distance - speeds[0] * actions;

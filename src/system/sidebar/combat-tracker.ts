@@ -93,8 +93,10 @@ export class TheEdgeCombatTracker extends CombatTracker {
 
   static _undoAction(_event: PointerEvent, target: HTMLAnchorElement) {
     const currentCombatant = this._getCurrentCombatant();
-    const undoIndex = target.dataset.index;
-    if (undoIndex) currentCombatant.undoAction(+undoIndex);
+    if ("index" in target.dataset) {
+      const undoIndex = (target.dataset.index as string | number);
+      currentCombatant.undoAction(+undoIndex);
+    }
   }
 
 

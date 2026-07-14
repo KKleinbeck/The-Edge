@@ -2,12 +2,6 @@ import LocalisationServer from "../system/localisation_server.js"
 import MovementCalculator from "../system/sidebar/combat-tracker-movement-options.js"
 import THE_EDGE from "../system/config-the-edge.js"
 
-interface IMovementOption {
-  actions: number
-  pattern: number[]
-  cost: number
-}
-
 export class TheEdgeCombatant extends Combatant {
   async update(dataCandidate: any, operation?: foundryAny): Promise<Combatant> {
     const data = {...dataCandidate}; // Create a copy to prevent mutation
@@ -29,18 +23,12 @@ export class TheEdgeCombatant extends Combatant {
 
   get context(): Record<string, any> {
     const context: Record<string, any> = {};
-    context.strainLog = this.system.strainLog;
+    context.actionLog = this.system.actionLog;
     
     context.distance = this.distanceTravelled;
     context.movementOptions = this.getMovementOptions(context.distance);
     context.movementIndex = this.system.movementIndex;
-    context.movements = this.getMovementStrainLog(context.movementOptions);
-
-    context.strainNow = this.actor.system.strain.value;
-    context.strainThen = context.strainNow + this._momentStrainCost;
-    context.levelNow = this.actor.system.strainLevel;
-    context.levelThen = this.actor.system.strainLevels
-      .map((x: Record<"value", number>) => x.value).findIndex((x: number) => x > context.strainThen);
+    context.movements = this.getMovementActionLog(context.movementOptions);
 
     return context;
   }
@@ -56,18 +44,17 @@ export class TheEdgeCombatant extends Combatant {
 
   addAction(payload: ITheEdgeActionPayload) {
     let name = payload.action ?? LocalisationServer.localise(payload.actionType, "Game Actions");
-    if (payload.actionCost > 1) name += ` x ${payload.actionCost}`;
 
-    this.system.strainLog.push({
-      name: name, strainChange: payload.strainCost ? payload.strainCost : 0
+    this.system.actionLog.push({
+      name: name, actionCost: payload.actionCost ? payload.actionCost : 0
     });
-    this.update({"system.strainLog": this.system.strainLog});
+    this.update({"system.actionLog": this.system.actionLog});
   }
 
 
   undoAction(undoIndex: number) {
-    this.system.strainLog.splice(undoIndex, 1);
-    this.update({"system.strainLog": this.system.strainLog});
+    this.system.actionLog.splice(undoIndex, 1);
+    this.update({"system.actionLog": this.system.actionLog});
   }
 
 
@@ -93,27 +80,29 @@ export class TheEdgeCombatant extends Combatant {
   }
 
   
-  getMovementStrainLog(movementOptions: IMovementOption[]): IStrainLogEntry[] {
+  getMovementActionLog(movementOptions: IMovementOption[]): IActionLogEntry[] {
     if (!movementOptions.length) return [];
 
-    const movementStrainLog: IStrainLogEntry[] = [];
+    const patternCount: Record<number, number> = {};
     for (const patternIndex of movementOptions[this.system.movementIndex].pattern) {
-      movementStrainLog.push({
-        name: LocalisationServer.localise(
-          ["Stride", "Run", "Sprint"][patternIndex], "Combat"
-        ),
-        strainChange: [
-          THE_EDGE.strainCost.striding, THE_EDGE.strainCost.running, THE_EDGE.strainCost.sprinting
-        ][patternIndex]
+      if (patternIndex in patternCount) patternCount[patternIndex] += 1;
+      else patternCount[patternIndex] = 1;
+    }
+
+    const movementActionLog: IActionLogEntry[] = [];
+    for (const [patternIndex, count] of Object.entries(patternCount)) {
+      movementActionLog.push({
+        name: LocalisationServer.localise(["Stride", "Run", "Sprint"][patternIndex], "Combat"),
+        actionCost: count
       });
     }
-    return movementStrainLog;
+    return movementActionLog;
   }
 
 
   get _momentStrainCost(): number {
     const movementOptions = this.getMovementOptions(this.distanceTravelled);
-    const movementStrainCost = movementOptions[this.system.movementIndex].cost;
+    const movementStrainCost = movementOptions[this.system.movementIndex].strainCost;
 
     return movementStrainCost;
   }
@@ -126,7 +115,7 @@ export class TheEdgeCombatant extends Combatant {
       {
         "system.movementIndex": 0,
         "system.strainInitiative": 0,
-        "system.strainLog": []
+        "system.actionLog": []
       },
       {isTurnReset: true}
     );
