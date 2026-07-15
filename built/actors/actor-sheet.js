@@ -73,8 +73,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
             case "toggle-equip":
                 if (item.type == "Armour") {
                     if (item.system.structurePoints <= 0) {
-                        let msg = LocalisationServer.parsedLocalisation("EquipBroken", "Notifications");
-                        ui.notifications.notify(msg);
+                        NotificationServer.notify("EquipBroken");
                         return undefined;
                     }
                     if (item.system.layer == "Outer") {
@@ -88,8 +87,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
                         else {
                             const attachableArmour = this._findAttachableArmour(item);
                             if (attachableArmour.length == 0) {
-                                let msg = LocalisationServer.localise("No attachable armour", "Notifications");
-                                ui.notifications.notify(msg);
+                                NotificationServer.notify("No attachable armour");
                                 break;
                             }
                             DialogArmourAttachment.start({ actor: this.actor, tokenId: this.token?.id, shellId: item.id, attachable: attachableArmour });
