@@ -3,7 +3,7 @@ export default function () {
     Hooks.on("TheEdgeAction", _onTheEdgeAction);
 }
 function _onTheEdgeAction(payload) {
-    if (game.combat) {
+    if (game.combat && game.combat.combatant.actorId == payload.actor.id) {
         game.combat.combatant.addAction(payload);
     }
     else {

@@ -7,7 +7,6 @@ export class SocketHandler {
     }
     registerSocketHandlers() {
         game.socket.on(this.identifier, ({ type, payload }) => {
-            console.log(type, payload);
             switch (type) {
                 // Grenade related
                 case "CREATE_GRENADE_TILE":
