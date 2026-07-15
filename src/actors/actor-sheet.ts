@@ -115,8 +115,16 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
             }
           }
         }
-        await item.system.toggleEquipped();
+        const equippedFlag = await item.system.toggleEquipped();
         await this.actor.update({});
+
+        const payload: ITheEdgeActionPayload = {
+          actionType: equippedFlag ? "equip" : "unequip",
+          actionCost: 1,
+          actor: this.actor,
+          details: {itemName: item.name}
+        }
+        Hooks.call("TheEdgeAction", payload);
         break;
       case "consume":
         switch (item.system.current_type) {

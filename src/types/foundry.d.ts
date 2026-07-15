@@ -235,6 +235,7 @@ interface IFoundry {
   data: {
     fields: {
       ArrayField: foundryAny
+      BooleanField: foundryAny
       NumberField: foundryAny
       ObjectField: foundryAny
       SchemaField: foundryAny

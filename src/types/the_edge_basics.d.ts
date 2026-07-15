@@ -32,14 +32,14 @@ interface IModifier {
 type WithOptionals<T> = T & Record<string, any>
 
 // Hooks
-type TTheEdgeActionType = "attribute check" | "combatics" | "proficiency check" | "reload" | "skill" |
-  "weapon check" | "weapon check aimed"
+type TTheEdgeActionType = "attribute check" | "combatics" | "equip" | "proficiency check" | "reload" | "skill" |
+  "unequip" | "weapon check" | "weapon check aimed"
 
 interface ITheEdgeActionPayload {
   action?: string
+  actionCost: number
   actionType: TTheEdgeActionType
   actor: Actor
-  actionCost: number
   strainCost?: number
   details?: any
 }

@@ -44,6 +44,7 @@ export class TheEdgeCombatant extends Combatant {
 
   addAction(payload: ITheEdgeActionPayload) {
     let name = payload.action ?? LocalisationServer.localise(payload.actionType, "Game Actions");
+    if (["equip", "unequip"].includes(payload.actionType)) name += " " + payload.details.itemName;
 
     this.system.actionLog.push({
       name: name, actionCost: payload.actionCost ? payload.actionCost : 0
