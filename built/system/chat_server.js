@@ -38,7 +38,7 @@ export default class ChatServer {
                 html = await renderTemplate("systems/the_edge/templates/chat/grenade-context-based.html", details);
                 break;
             case "RELOAD":
-                html = await renderTemplate("systems/the_edge/templates/chat/reload.html", details);
+                html = await renderTemplate("systems/the_edge/templates/chat/reload.hbs", details);
                 break;
             case "SHORT REST":
             case "LONG REST":

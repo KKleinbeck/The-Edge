@@ -47,6 +47,7 @@ declare class Actor extends FoundryDocument {
     attributes: ATTRIBUTES
     AdvantagePoints: {used: number, max: number}
     PracticeHours: foundryAny
+    applyStrain(change: number): Promise<number>
     onUpdate(data: any): void
   }
 }
@@ -55,18 +56,37 @@ interface Actors extends FoundryContainer<Actor> {}
 
 declare class Combat extends FoundryDocument {
   nextRound(): Promise<Combat>
-  combatants: foundryAny
+  nextTurn(): Promise<Combat>
+  combatant: Combatant
+  combatants: FoundryContainer<Combatant>
+  nextCombatant: Combatant
+}
+
+interface IActionLogEntry {
+  name: string
+  actionCost: number
+}
+
+interface IMovementOption {
+  actions: number
+  pattern: number[]
+  strainCost: number
 }
 
 declare class Combatant extends FoundryDocument {
+  constructor(data: foundryAny, options: foundryAny)
+  defineSchema(): Record<string, foundryAny>
   getInitiativeRoll(formula: string): Roll
 
   actor: foundryAny
   initiative: number
   system: {
     baseInitiative: number
-    strainInitiative?: number
+    movementIndex: number
+    strainInitiative: number
+    actionLog: IActionLogEntry[]
   }
+  token: foundryAny
 }
 
 declare class Item extends FoundryDocument {
@@ -148,6 +168,7 @@ declare class DialogV2 extends FoundryHandlebarsApplication {
 
 declare class Hooks {
   static on(id: string, callback: Function): boolean;
+  static call(id: string, payload: any)
 }
 
 declare class Roll {
@@ -214,6 +235,7 @@ interface IFoundry {
   data: {
     fields: {
       ArrayField: foundryAny
+      BooleanField: foundryAny
       NumberField: foundryAny
       ObjectField: foundryAny
       SchemaField: foundryAny
@@ -231,4 +253,10 @@ declare class CONFIG {
   static Combat: {
     initiative: foundryAny
   }
+}
+
+
+// Third Party
+declare class Handlebars {
+  static registerHelper(obj: Record<string, any>)
 }

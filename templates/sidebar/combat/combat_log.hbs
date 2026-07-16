@@ -1,0 +1,61 @@
+<div class="combat-log">
+  <hr />
+  <h4 style="margin-top: 0; text-align: center;">{{name}} {{combatName "Combat log"}}</h4>
+
+  {{!-- Movement options --}}
+  <div style="padding-bottom: 10px;">
+    <h5 style="margin-top: 0">{{genName "Movement"}}</h5>
+    <div style="display: flex; justify-content: space-between; align-items: end;">
+      <div>
+        <div class="output" style="width: 54px; height: 24px;">{{round distance 1}}m</div>
+        {{#if userIsOwner}}
+        <a data-action="undoMovement"><i class="fa-solid fa-rotate-left"></i></a>
+        {{/if}}
+      </div>
+
+    {{#if userIsOwner}}
+    {{#if (checkNotEmpty movementOptions)}}
+    <select style="max-width: 200px; max-height: 24px;" id="movement-options">
+      {{#if (checkNotEmpty movementOptions)}}
+      {{#each movementOptions as |option|}}
+      <option value="@index" {{#if (checkEqual @index ../movementIndex)}}selected{{/if}}>
+        {{genName "Actions"}} {{option.actions}} (+{{option.strainCost}} {{genName "Strain"}})
+      </option>
+      {{/each}}
+      {{/if}}
+    </select>
+    {{/if}}
+    {{/if}}
+    </div>
+  </div>
+
+  {{!-- Action Log  --}}
+  <div style="display: table; padding-bottom: 5px;">
+    <div style="display: table-row;">
+      <div style="display: table-cell;"><h5 style="margin: 0; white-space: nowrap;">{{combatName 'Action Log'}}</h5></div>
+      <div style="display: table-cell; text-align: right; width: 100%;"><b>{{genName 'Actions'}}</b></div>
+      <div style="display: table-cell; min-width: 17px;"></div>
+    </div>
+
+    {{#if (checkNotEmpty movements)}}
+    {{#each movements as |movement|}}
+    <div style="display: table-row; white-space: nowrap;">
+      <div style="display: table-cell;">{{movement.name}}</div>
+      <div style="display: table-cell; text-align: right;">{{movement.actionCost}}</div>
+    </div>
+    {{/each}}
+    {{/if}}
+
+    {{#each actionLog as |entry|}}
+      <div style="display: table-row; white-space: nowrap;">
+        <div style="display: table-cell;">{{entry.name}}</div>
+        <div style="display: table-cell; text-align: right;">{{entry.actionCost}}</div>
+        {{#if ../userIsOwner}}
+        <div style="display: table-cell; text-align: right;">
+          <a data-action="undoAction" data-index="{{@index}}"><i class="fa-solid fa-xmark" title="{{genName 'Remove'}}"></i></a>
+        </div>
+        {{/if}}
+      </div>
+    {{/each}}
+  </div>
+</div>

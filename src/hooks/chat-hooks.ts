@@ -1,7 +1,6 @@
 import Aux from "../system/auxilliaries.js";
 import attachContextMenus from "./chat-hooks/context-menus.js";
 import executeChatCommands from "./chat-hooks/chat-commands.js";
-import LocalisationServer from "../system/localisation_server.js";
 import NotificationServer from "../system/notifications.js";
 
 import { applyDamage, applyGrenadeDamage, rollProficiencyCheck } from "./chat-hooks/event-listeners.js";

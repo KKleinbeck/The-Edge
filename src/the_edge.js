@@ -1,6 +1,5 @@
 import initHooks from "./hooks/init.js";
 import THE_EDGE from "./system/config-the-edge.js"
-import CombatLog from "./applications/combat-log.js";
 import DiceServer from "./system/dice_server.js";
 import GrenadePicker from "./applications/grenades-picker.js";
 import setupGameSettings from "./system/settings.js";
@@ -8,6 +7,8 @@ import TheEdgeHotbar from "./applications/hotbar.js";
 
 import CharacterData from "./data_models/actors/character.js";
 import StoreData from "./data_models/actors/store.js";
+
+import CombatantBaseData from "./data_models/combatants/base.js";
 
 import AmmunitionData from "./data_models/items/ammunition.js";
 import ArmourData from "./data_models/items/armour.js";
@@ -20,7 +21,7 @@ import WeaponData from "./data_models/items/weapon.js";
 import { TheEdgeActor } from "./actors/actor.js";
 import { TheEdgeCombat } from "./documents/Combat.js";
 import { TheEdgeCombatant } from "./documents/Combatant.js";
-import { TheEdgeCombatTracker } from "./system/sidebar/combat_tracker.js";
+import { TheEdgeCombatTracker } from "./system/sidebar/combat-tracker.js";
 import { TheEdgeItem } from "./items/item.js";
 import { SocketHandler } from "./system/socket_handler.js";
 import { TheEdgeItemSheet } from "./items/item-sheet.js";
@@ -113,7 +114,6 @@ Hooks.once("init", async function() {
 
   game.the_edge = {
     config: THE_EDGE,
-    combatLog: new CombatLog(),
     diceServer: new DiceServer(),
     socketHandler: new SocketHandler()
   };
@@ -124,6 +124,7 @@ Hooks.once("init", async function() {
   CONFIG.Actor.documentClass = TheEdgeActor;
 
   CONFIG.Combat.documentClass = TheEdgeCombat;
+  CONFIG.Combatant.dataModels.base = CombatantBaseData;
   CONFIG.Combatant.documentClass = TheEdgeCombatant;
 
   CONFIG.Item.dataModels.Advantage = VantageData;

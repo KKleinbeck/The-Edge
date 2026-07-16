@@ -54,6 +54,8 @@ export const preloadHandlebarsTemplates = async function () {
         "systems/the_edge/templates/applications/hotbar/item.hbs",
         "systems/the_edge/templates/applications/hotbar/proficiency.hbs",
         "systems/the_edge/templates/applications/hotbar/weapon.hbs",
+        // Sidebar
+        "systems/the_edge/templates/sidebar/combat/combat_log.hbs",
         // Generic templates
         "systems/the_edge/templates/generic/counter-token.hbs",
         "systems/the_edge/templates/generic/effect-modifiers.hbs",

@@ -91,8 +91,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
       case "toggle-equip":
         if (item.type == "Armour") {
           if (item.system.structurePoints <= 0) {
-            let msg = LocalisationServer.parsedLocalisation("EquipBroken", "Notifications")
-            ui.notifications.notify(msg)
+            NotificationServer.notify("EquipBroken");
             return undefined;
           }
           
@@ -106,8 +105,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
             } else {
               const attachableArmour = this._findAttachableArmour(item);
               if (attachableArmour.length == 0) {
-                let msg = LocalisationServer.localise("No attachable armour", "Notifications")
-                ui.notifications.notify(msg)
+                NotificationServer.notify("No attachable armour");
                 break;
               }
               DialogArmourAttachment.start(
@@ -117,8 +115,16 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
             }
           }
         }
-        await item.system.toggleEquipped();
+        const equippedFlag = await item.system.toggleEquipped();
         await this.actor.update({});
+
+        const payload: ITheEdgeActionPayload = {
+          actionType: equippedFlag ? "equip" : "unequip",
+          actionCost: 1,
+          actor: this.actor,
+          details: {itemName: item.name}
+        }
+        Hooks.call("TheEdgeAction", payload);
         break;
       case "consume":
         switch (item.system.current_type) {
@@ -133,11 +139,6 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
 
           case "grenade":
             NotificationServer.notify("Grenade use tipp")
-            // ChatServer.transmitEvent("grenade sheet based", {
-            //   actorId: this.actor?.id, tokenId: this.token?.id, grenade: item,
-            //   details: item.system.subtypes.grenade
-            // })
-            // item.useOne();
             break;
           
           default:
@@ -348,24 +349,20 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
         );
         break;
       case "roll":
-        const strainChange = await Aux.parseStrainCostStr(skill, this.actor.system.strainLevel);
-        if (strainChange) {
-          if (game.combat && this.actor._id == game.combat.combatant.actorId) {
-            game.the_edge.combatLog.addAction(skill.name, strainChange);
-          } else {
-            const strainChangeActual = await this.actor.system.applyStrain(strainChange);
-            ChatServer.transmitEvent("Skill Used",
-              {actor: this.actor.name, skill: skill.name, change: strainChangeActual}
-            );
-          }
-        }
-        
         if (skill.type == "Medicalskill") {
           DialogProficiency.start({
             actor: this.actor, actorId: this.actor.id, proficiency: skill.system.basis,
             tokenId: this.token?.id, sceneId: game.user.viewedScene
           })
+        } else {
+          let strainChange = await Aux.parseStrainCostStr(skill, this.actor.system.strainLevel);
+          strainChange = await this.actor.system.applyStrain(strainChange);
+          const payload: ITheEdgeActionPayload = {
+            action: skill.name, actionType: "skill", actor: this.actor, strainCost: strainChange, actionCost: 0
+          }
+          Hooks.call("TheEdgeAction", payload);
         }
+        
         break;
     }
   }
@@ -571,4 +568,3 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
     return this.actor.findItem(item);
   }
 }
-

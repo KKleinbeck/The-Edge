@@ -1,7 +1,7 @@
 export class TheEdgeCombat extends Combat {
-    async nextRound() {
-        for (const combatant of this.combatants)
-            combatant.roundReset();
-        return await super.nextRound();
+    async nextTurn() {
+        await this.combatant.endOfTurnReset();
+        await this.combatant.token.clearMovementHistory();
+        return await super.nextTurn();
     }
 }

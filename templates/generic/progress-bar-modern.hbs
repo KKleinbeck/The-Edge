@@ -40,27 +40,27 @@
       opacity="1.0" />
 
     <!-- Progress group -->
-    {{#if value}}
-      <g clip-path="url(#clip-bar)">
-        <!-- Actual progress fill -->
-        <rect x="0" y="0" width="{{mul (div value max) 100}}" height="16"
-          fill="url(#progressGradient{{fillId}})"
-          class="progress-fill-animation" />
+    <g clip-path="url(#clip-bar)">
+      <!-- Actual progress fill -->
+      {{#if value}}
+      <rect x="0" y="0" width="{{mul (div value max) 100}}" height="16"
+        fill="url(#progressGradient{{fillId}})"
+        class="progress-fill-animation" />
 
-        <!-- Moving glow -->
-        <rect x="-120" y="0" width="{{mul (div value max) 100}}" height="16"
-          fill="url(#glowGradient)"
-          class="glow" />
-    
-        {{!-- Segements --}}
-        {{#if (checkNotEmpty segments)}}
-          {{#each segments as |segment|}}
-            <line x1="{{mul (div segment.value ../max) 100}}" y1="0"
-              x2="{{mul (div segment.value ../max) 100}}" y2="20" stroke="#BBB" stroke-width="1.5" />
-          {{/each}}
-        {{/if}}
-      </g>
-    {{/if}}
+      <!-- Moving glow -->
+      <rect x="-120" y="0" width="{{mul (div value max) 100}}" height="16"
+        fill="url(#glowGradient)"
+        class="glow" />
+      {{/if}}
+  
+      {{!-- Segements --}}
+      {{#if (checkNotEmpty segments)}}
+        {{#each segments as |segment|}}
+          <line x1="{{mul (div segment.value ../max) 100}}" y1="0"
+            x2="{{mul (div segment.value ../max) 100}}" y2="20" stroke="#BBB" stroke-width="1.5" />
+        {{/each}}
+      {{/if}}
+    </g>
 
     {{!-- Segements --}}
     {{#if (checkNotEmpty segments)}}

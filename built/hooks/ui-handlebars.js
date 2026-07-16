@@ -17,7 +17,7 @@ export default function () {
         },
         getWoundHTML: (wound, longTooltip = false) => {
             const colour = wound.bleeding > 0 ? "red" : "orange";
-            let icon = undefined;
+            let icon = "";
             switch (wound.status) {
                 case "treatable":
                     icon = "fa-regular fa-droplet";

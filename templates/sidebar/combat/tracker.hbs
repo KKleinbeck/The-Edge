@@ -1,4 +1,4 @@
-<ol class="combat-tracker plain">
+<ol class="combat-tracker plain the_edge">
   {{#each turns}}
   <li class="combatant {{ css }}" data-combatant-id="{{ id }}" data-action="activateCombatant">
     {{!-- Image --}}
@@ -71,5 +71,8 @@
     </div>
   </li>
   {{/each}}
+  {{#if combatLog}}
+  {{> systems/the_edge/templates/sidebar/combat/combat_log.hbs combatLog name=combatantName userIsOwner=userIsOwner}}
+  {{/if}}
 </ol>
 
