@@ -75,6 +75,13 @@ export default class DialogProficiency extends CheckDialog {
             promptResult.strain = 0;
         const proficiencyPromptResult = foundry.utils.mergeObject(checkData, promptResult);
         checkData.actor.system.rollProficiencyCheck(proficiencyPromptResult, onSubmitCallback);
+        const payload = {
+            actionType: "proficiency check",
+            actor: checkData.actor,
+            actionCost: 0,
+            strainCost: promptResult.strain,
+        };
+        Hooks.call("TheEdgeAction", payload);
     }
     static cheatCallback(dialog, checkData, onSubmitCallback) {
         console.log("not implemented yet");

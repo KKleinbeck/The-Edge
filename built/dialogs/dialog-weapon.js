@@ -47,6 +47,7 @@ export default class DialogWeapon extends Dialog {
                         vantage: modificators.vantage
                     };
                     const attackRollResult = await checkData.actor.system.rollAttackCheck(prompt);
+                    DialogWeapon._dispatchHook(checkData, modificators);
                     const ammuDamage = checkData.ammunition.system.damage;
                     attackRollResult.damage.forEach((_e, i) => { attackRollResult.damage[i] += ammuDamage.bonus; });
                     foundry.utils.mergeObject(checkData, {
@@ -155,5 +156,13 @@ export default class DialogWeapon extends Dialog {
             coverModifier: THE_EDGE.cover[cover],
             fireModeModifier: checkData.fireModes[fireModeIndex],
         };
+    }
+    static _dispatchHook(checkData, modificators) {
+        const payload = {
+            actionType: modificators.precision == "aimed" ? "weapon check aimed" : "weapon check",
+            actor: checkData.actor,
+            actionCost: modificators.precision == "aimed" ? 2 : 1,
+        };
+        Hooks.call("TheEdgeAction", payload);
     }
 }
