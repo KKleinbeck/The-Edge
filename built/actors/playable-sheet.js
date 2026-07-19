@@ -99,7 +99,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
             context[type] = entries;
         });
         context.effectIsExpanded = this.effectIsExpanded;
-        const equippedArmour = this.actor.itemTypes["Armour"]?.filter(a => a.system.equipped && a.system.layer == "Inner");
+        const equippedArmour = this.actor.itemTypes["Armour"]?.filter((a) => a.system.equipped && a.system.layer == "Inner");
         const armourProtection = { "value": 0, "original": 0 };
         for (const armour of equippedArmour) {
             armourProtection.value += armour.system.structurePoints;
@@ -109,7 +109,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
                 armourProtection.original += attachment.shell.system.structurePointsOriginal;
             }
         }
-        const equippedWeapons = this.actor.itemTypes["Weapon"]?.filter(a => a.system.equipped);
+        const equippedWeapons = this.actor.itemTypes["Weapon"]?.filter((a) => a.system.equipped);
         const weight = this.actor.itemWeight;
         context.helpers = {
             armourProtection: armourProtection,
