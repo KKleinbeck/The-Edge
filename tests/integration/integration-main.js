@@ -1,11 +1,9 @@
 import ApiHandler from "../api-handler.js"
 import { assert, TestRegistry } from "../test-registry.js"
 
-// @ts-check
- 
 /** @param {ApiHandler} apiHandler */
 export default function registerIntegrationTests(apiHandler) {
-  async function restApiIsOnline() {
+  async function strainAfterCombatMovement() {
     const actor = await apiHandler.actorCreate({name: "Test Combat Actor", systemPreset: "10s"});
     const token = await actor.createToken(true);
 
@@ -22,5 +20,5 @@ export default function registerIntegrationTests(apiHandler) {
 
     assert(document.system.strain.value == 9)
   }
-  TestRegistry.registerTest(restApiIsOnline, "Combat Movement Strain", "integration");
+  TestRegistry.registerTest(strainAfterCombatMovement, "Combat Movement Strain", "integration");
 }

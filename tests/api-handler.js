@@ -33,7 +33,7 @@ export default class ApiHandler {
   /** @param {Record<string, any>} options */
   /** @return {Actor} */
   async actorCreate(options = {}) {
-    const {name, systemPreset} = options;
+    const {name, systemPreset, systemPayload = {}} = options;
 
     const response = await fetch(this.url + "/create", {
       method: 'POST',
@@ -46,7 +46,7 @@ export default class ApiHandler {
         "data": {
           "name": name ?? "TestActor",
           "type": "character",
-          "system": Actor.getSystemPreset(systemPreset)
+          "system": {...Actor.getSystemPreset(systemPreset), ...systemPayload}
         }
       })
     });
@@ -162,6 +162,22 @@ export default class ApiHandler {
     });
     const result = await response.json();
     return new Encounter(this, result.encounterId);
+  }
+
+
+  /** @param {string} command */
+  /** @return {Record<string, any>} */
+  async runCommand(command) {
+    const response = await fetch(this.url + "/execute-js", {
+      method: 'POST',
+      headers: {
+        'x-api-key': this.apiKey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({"script": command})
+    });
+    const result = await response.json();
+    return result.result;
   }
 
 
@@ -288,6 +304,14 @@ class Actor {
       }
     }
     return {};
+  }
+
+
+  /** @return {Record<string, any>} */
+  async updateData() {
+    const result = await this.handler.actorGetDocument(this.uuid);
+    this.data = result;
+    return result;
   }
 }
 

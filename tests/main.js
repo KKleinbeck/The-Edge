@@ -2,6 +2,7 @@ import ApiHandler from "./api-handler.js";
 import { TestRegistry } from "./test-registry.js"
 
 import registerSmokeTests from "./smoke/smoke-main.js";
+import registerUnitTests from "./unit/unit-main.js";
 import registerIntegrationTests from "./integration/integration-main.js";
 
 const args = {};
@@ -28,10 +29,26 @@ async function main() {
   // Setup Stage
   const apiHandler = new ApiHandler(args.url, args.apiKey);
   registerSmokeTests(apiHandler);
+  registerUnitTests(apiHandler);
   registerIntegrationTests(apiHandler);
 
   // Test Stage
   await TestRegistry.runTests();
+
+  // const actor = await apiHandler.actorCreate();
+  // const command = `const actor = game.actors.get("${actor.data._id}");` +
+  //   `await actor.system.changeCoreValue("system.attributes.end.advances", 20);` + 
+  //   `await actor.system.changeCoreValue("system.attributes.spd.advances", 10);` + 
+  //   `await actor.system.changeCoreValue("system.attributes.foc.advances", 10);` +
+  //   `console.log(actor.system.health.max.value);` +
+  //   `return {maxHealth: actor.system.health.max.value, ` +
+  //   `  usedPracticeHours: actor.system.PracticeHours.used, ` +
+  //   `  strideSpeed: actor.system.strideSpeed};`;
+  // const newSystem = await apiHandler.runCommand(command);
+  // console.log(newSystem)
+  // console.log(THE_EDGE.attrCost(2))
+
+  // await actor.delete();
 }
 
 main();

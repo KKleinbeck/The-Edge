@@ -1,8 +1,8 @@
-import test, { describe } from "node:test";
-
 const _registry = {
   "smoke": [], "unit": [], "integration": []
 }
+
+const _messageQueue = [];
 
 
 export function assert(condition, message) {
@@ -24,15 +24,20 @@ export class TestRegistry {
     _registry[classification].push({function: testFunction, label: testLabel})
   }
 
+
+  /** @param {any} msg */
+  static queueMessage(msg) {_messageQueue.push(msg);}
+
   
   /** @param {string[]} testClasses */
   static async runTests(testClasses) {
+    _messageQueue.splice(0, _messageQueue.length); // Empty the queue
+
     if (testClasses === undefined) testClasses = Object.keys(_registry);
     else this._validateTestClasses(testClasses);
 
     // Execute Tests
     console.log("\n" + "━".repeat(39), "   RUNNING  TESTS   ", "━".repeat(39), "\n\n\n");
-    // console.log("\n" + "_".repeat(100));
 
     const testLog = this._getInitialTestLog(testClasses);
     for (const testClass of testClasses) {
@@ -52,6 +57,7 @@ export class TestRegistry {
     }
     this._renderTestLog(testLog);
     this._showFailures(testLog);
+    for (const msg of _messageQueue) console.log(msg);
   }
 
 
@@ -82,7 +88,7 @@ export class TestRegistry {
       let descriptor = `  Running '${testClass} - ${label}'`;
       if (status) {
         const color = status == "Passed" ? GREEN : RED;
-        descriptor += leftPad(color + status + RESET, 100 - descriptor.length);
+        descriptor += color + leftPad(status, 100 - descriptor.length) + RESET;
       } else descriptor += " ...";
       return descriptor
     }
@@ -107,14 +113,12 @@ export class TestRegistry {
         headerLine += "  " + leftPad(log.completed, totalTests) + " / " + totalTests + "   "
       }
       headerLine += "   |   "
-      headerLineLength += 15 + 2*totalTests;
+      headerLineLength += 15 + 2*(`${totalTests}`.length);
     }
     headerLine = headerLine.substr(0, headerLine.length - 7);
     headerLineLength -= 7;
     const missingHeaderWidth = 100 - headerLineLength;
-    headerLine = "_".repeat(Math.ceil(missingHeaderWidth / 2) - 3) +
-      `  ${headerLine}  ` +
-      "_".repeat(Math.floor(missingHeaderWidth / 2) - 3);
+    headerLine = "_".repeat(Math.ceil(missingHeaderWidth / 2) - 2) + `  ${headerLine}  ` + "_".repeat(Math.floor(missingHeaderWidth / 2) - 2);
 
 
 

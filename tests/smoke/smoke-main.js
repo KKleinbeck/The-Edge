@@ -1,7 +1,5 @@
 import ApiHandler from "../api-handler.js"
 import { assert, TestRegistry } from "../test-registry.js"
-
-// @ts-check
  
 /** @param {ApiHandler} apiHandler */
 export default function registerSmokeTests(apiHandler) {
