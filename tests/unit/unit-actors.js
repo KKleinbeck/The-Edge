@@ -13,7 +13,7 @@ function accumulate(func, to, from = 0) {
 
 /** @param {ApiHandler} apiHandler */
 export default function registerUnitTestsForActors(apiHandler) {
-  async function levelingActor() {
+  async function actorLevelingAttributes() {
     const actor = await apiHandler.actorCreate();
 
     const samples = [1, 2, 3, 5, 7, 10, 12, 5, 2];
@@ -31,7 +31,7 @@ export default function registerUnitTestsForActors(apiHandler) {
 
     for (let i = 0; i < samples.length; i++) assert(actualCosts[i] == expectedCosts[i]);
   }
-  TestRegistry.registerTest(levelingActor, "Actor Leveling Attributes", "unit");
+  TestRegistry.registerTest(actorLevelingAttributes, "Actor Leveling Attributes", "unit");
 
 
   async function maxHealth() {
@@ -126,9 +126,109 @@ export default function registerUnitTestsForActors(apiHandler) {
   }
   TestRegistry.registerTest(actorCombatics, "Actor Combatics Level", "unit");
 
-  // Todo Apply Strain
-  // Proficiency Leveling
-  // Strain Levels
+
+  async function actorMaxStrain() {
+    const actor = await apiHandler.actorCreate();
+
+    const samples = [ {strain: 0, end: 0}, {strain: 0, end: 5}, {strain: 5, end: 0}, {strain: 5, end: 5} ];
+    const expectedResults = [100, 105, 110, 115];
+    const actualResults = [];
+
+    for (const sample of samples) {
+      const command = `const actor = game.actors.get("${actor.data._id}");` +
+        `await actor.system.changeCoreValue("system.attributes.end.advances", ${sample.end});` + 
+        `await actor.system.changeCoreValue("system.strain.max.advances", ${sample.strain});` + 
+        `return actor.system.strain.max.value;`;
+      const result = await apiHandler.runCommand(command);
+      actualResults.push(result);
+    }
+
+    await actor.delete();
+
+    for (let i = 0; i < samples.length; i++) assert(actualResults[i] == expectedResults[i]);
+  }
+  TestRegistry.registerTest(actorMaxStrain, "Actor Leveling Max Strain", "unit");
+
+
+  async function actorApplyStrain() {
+    const samples = [ 0, 25, 50, 100, 200 ];
+    const expectedResults = [
+      {strainChange:   0, strainLevel: 0}, {strainChange:  25, strainLevel: 1}, {strainChange: 50, strainLevel: 2},
+      {strainChange: 100, strainLevel: 4}, {strainChange: 100, strainLevel: 4},
+    ];
+    const actualResults = [];
+
+    for (const sample of samples) {
+      const actor = await apiHandler.actorCreate();
+
+      const command = `const actor = game.actors.get("${actor.data._id}");` +
+        `const strainChange = await actor.system.applyStrain(${sample});` + 
+        `return { strainChange, strainLevel: actor.system.strainLevel };`;
+      const result = await apiHandler.runCommand(command);
+      actualResults.push(result);
+
+      await actor.delete();
+    }
+
+    for (let i = 0; i < samples.length; i++) {
+      assert(actualResults[i].strainChange == expectedResults[i].strainChange);
+      assert(actualResults[i].strainLevel  == expectedResults[i].strainLevel);
+    }
+  }
+  TestRegistry.registerTest(actorApplyStrain, "Actor Apply Strain", "unit");
+
+
+  async function actorApplyStrainRepeated() {
+    const samples = [ 15, 15, 15, 15, 15 ];
+    const expectedResults = [
+      {strainChange: 15, strainLevel: 0, value: 15}, {strainChange: 15, strainLevel: 1, value: 30},
+      {strainChange: 15, strainLevel: 2, value: 45}, {strainChange: 15, strainLevel: 3, value: 60},
+      {strainChange: 15, strainLevel: 3, value: 75},
+    ];
+    const actualResults = [];
+
+    const actor = await apiHandler.actorCreate();
+
+    for (const sample of samples) {
+      const command = `const actor = game.actors.get("${actor.data._id}");` +
+        `const strainChange = await actor.system.applyStrain(${sample});` + 
+        `return { strainChange, strainLevel: actor.system.strainLevel, value: actor.system.strain.value };`;
+      const result = await apiHandler.runCommand(command);
+      actualResults.push(result);
+    }
+
+    await actor.delete();
+
+    for (let i = 0; i < samples.length; i++) {
+      assert(actualResults[i].strainChange == expectedResults[i].strainChange);
+      assert(actualResults[i].strainLevel  == expectedResults[i].strainLevel);
+      assert(actualResults[i].value        == expectedResults[i].value);
+    }
+  }
+  TestRegistry.registerTest(actorApplyStrainRepeated, "Actor Apply Strain Repeated", "unit");
+
+
+  async function actorLevelingProficiencies() {
+    const samples = [ 2, 4, 6, 8 ];
+    const expectedResults = samples.map(x => accumulate(THE_EDGE.profCost, x));
+    const actualResults = [];
+
+    const actor = await apiHandler.actorCreate();
+
+    for (const sample of samples) {
+      const command = `const actor = game.actors.get("${actor.data._id}");` +
+        `await actor.system.changeCoreValue("system.proficiencies.physical.climbing.advances", ${sample});` + 
+        `return actor.system.PracticeHours.used;`;
+      const result = await apiHandler.runCommand(command);
+      actualResults.push(result);
+    }
+
+    await actor.delete();
+
+    for (let i = 0; i < samples.length; i++) assert(actualResults[i] == expectedResults[i]);
+  }
+  TestRegistry.registerTest(actorLevelingProficiencies, "Actor Leveling Proficiencies", "unit");
+
   // Status Effect Thresholds
   // Weapon proficieny level
 }
