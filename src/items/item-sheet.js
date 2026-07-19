@@ -336,7 +336,7 @@ class ItemSheetArmour extends TheEdgeItemSheet {
   }
 
   async _prepareContext(options) {
-    if (this.item.system.attachments.length) {
+    if (this.item.system.attachments.length && this.item.system.layer == "Inner") {
       this.constructor.TABS.primary.tabs.push({id: "attachments"})
     } else {
       this.constructor.TABS.primary.tabs =
@@ -347,6 +347,7 @@ class ItemSheetArmour extends TheEdgeItemSheet {
     context.types = this._setTypesDict();
     return context;
   }
+
 
   _setTypesDict() {
     const types = {};

@@ -296,7 +296,7 @@ class ItemSheetArmour extends TheEdgeItemSheet {
         },
     };
     async _prepareContext(options) {
-        if (this.item.system.attachments.length) {
+        if (this.item.system.attachments.length && this.item.system.layer == "Inner") {
             this.constructor.TABS.primary.tabs.push({ id: "attachments" });
         }
         else {
