@@ -102,7 +102,7 @@ export default class CombatantData extends DataModelComponent {
     }
     static _determineBleeding(damage, bleedingThreshold) {
         return Math.floor(damage / bleedingThreshold) +
-            +((damage % bleedingThreshold) / bleedingThreshold < Math.random());
+            +((damage % bleedingThreshold) / bleedingThreshold > Math.random());
     }
     async _determineArmourProtection(damage, penetration, damageType, location) {
         const protectionLog = {};

@@ -138,7 +138,7 @@ export default class CombatantData extends DataModelComponent {
 
   static _determineBleeding(damage: number, bleedingThreshold: number): number {
     return Math.floor(damage / bleedingThreshold) +
-      +((damage % bleedingThreshold) / bleedingThreshold < Math.random());
+      +((damage % bleedingThreshold) / bleedingThreshold > Math.random());
   }
 
 
