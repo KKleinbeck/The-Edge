@@ -57,16 +57,16 @@ export default class CombatantData extends DataModelComponent {
             { value: Math.floor(0.8 * this.strain.max.value) + this.strain.statusThreshold.status, label: "L4" },
         ];
     }
-    deleteWound(index) {
+    async deleteWound(index) {
         const update = {
             "system.health.value": Math.min(// Math.min relevant for wound generated while dying
             this.health.value + this.wounds[index].damage, this.health.max.value)
         };
         this.wounds.splice(index, 1);
         update["system.wounds"] = this.wounds;
-        this.parent.update(update);
+        await this.parent.update(update);
     }
-    editWound(index, newDetails) {
+    async editWound(index, newDetails) {
         const update = {};
         for (const [key, value] of Object.entries(newDetails)) {
             if (key === "damage") {
@@ -75,7 +75,7 @@ export default class CombatantData extends DataModelComponent {
             this.wounds[index][key] = value;
         }
         update["system.wounds"] = this.wounds;
-        this.parent.update(update);
+        await this.parent.update(update);
     }
     async applyDamage(config) {
         const { damageType } = config;
@@ -96,7 +96,7 @@ export default class CombatantData extends DataModelComponent {
             await this.parent.update(update);
             const bt = THE_EDGE.bleedingThreshold[damageType];
             woundDetails.bleeding = CombatantData._determineBleeding(damage, bt);
-            await this.generateNewWound(woundDetails);
+            await this._generateNewWound(woundDetails);
         }
         return protectionLog;
     }
@@ -152,7 +152,7 @@ export default class CombatantData extends DataModelComponent {
                 damageType: type,
                 source: LocalisationServer.localise(`${type} damage title`) + " " + details.description
             };
-            await this.generateNewWound(woundDetails);
+            await this._generateNewWound(woundDetails);
             damageRemaining -= Math.ceil(nextDamage);
             if (damageRemaining <= 0)
                 break;
@@ -162,7 +162,7 @@ export default class CombatantData extends DataModelComponent {
         details.actor = this.parent.name;
         ChatServer.transmitEvent(type, details);
     }
-    async generateNewWound(woundDetails) {
+    async _generateNewWound(woundDetails) {
         const wound = {
             status: "treatable",
             type: Aux.pickFromOdds(THE_EDGE.wound_odds(woundDetails)),

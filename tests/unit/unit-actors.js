@@ -105,6 +105,37 @@ export default function registerUnitTestsForActors(apiHandler) {
   TestRegistry.registerTest(actorApplyDamage, "Actor Apply Damage", "unit");
 
 
+  async function actorApplyDamageDying() {
+    const samples = [
+      {crit: false, damage: 100, damageType: "energy", name: "Weapon", penetration: 0},
+      {crit: false, damage: 110, damageType: "energy", name: "Weapon", penetration: 0},
+      {crit: false, damage: 120, damageType: "energy", name: "Weapon", penetration: 0},
+    ];
+    const expectedResults = [
+      {health: 0, strain: 0}, {health: 0, strain: 10}, {health: 0, strain: 20},
+    ];
+    const actualResults = [];
+
+    for (const sample of samples) {
+      const actor = await apiHandler.actorCreate();
+
+      const command = `const actor = game.actors.get("${actor.data._id}");` +
+        `await actor.system.applyDamage(${JSON.stringify(sample)});` + 
+        `return {health: actor.system.health.value, strain: actor.system.strain.value};`;
+      const result = await apiHandler.runCommand(command);
+      actualResults.push(result);
+
+      await actor.delete();
+    }
+
+    for (let i = 0; i < samples.length; i++) {
+      assert(actualResults[i].health == expectedResults[i].health);
+      assert(actualResults[i].strain == expectedResults[i].strain);
+    }
+  }
+  TestRegistry.registerTest(actorApplyDamageDying, "Actor Apply Damage when Dying", "unit");
+
+
   async function actorApplyStrainRepeated() {
     const samples = [ 15, 15, 15, 15, 15 ];
     const expectedResults = [
@@ -326,7 +357,28 @@ export default function registerUnitTestsForActors(apiHandler) {
   }
   TestRegistry.registerTest(actorWeaponProficiencyLevel, "Actor Weapon Proficiency Level", "unit");
 
+
+  async function actorWoundEdit() {
+    const wound = {crit: false, damage: 20, damageType: "energy", name: "Weapon", penetration: 0};
+    const change = {damage: 10};
+
+    const actor = await apiHandler.actorCreate();
+
+    const command = `const actor = game.actors.get("${actor.data._id}");` +
+      `await actor.system.applyDamage(${JSON.stringify(wound)});` + 
+      `await actor.system.editWound(0, ${JSON.stringify(change)});` +
+      `const woundDamage = actor.system.wounds[0].damage;` +
+      `const healthFinal = actor.system.health.value;` +
+      `return {woundDamage, healthFinal};`;
+    const actualResult = await apiHandler.runCommand(command);
+
+    await actor.delete();
+
+    assert(actualResult.woundDamage == 10);
+    assert(actualResult.healthFinal == 90);
+  }
+  TestRegistry.registerTest(actorWoundEdit, "Actor Edit Wound", "unit");
+
+
   // Status Effect Thresholds
-  // Wounds
-  // Apply Damage
 }
