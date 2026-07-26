@@ -1,6 +1,6 @@
 import GrenadePicker from "../applications/grenades-picker.js";
 
-export default function registerCustomHooks() {
+export default function grenadePickerHooks() {
   Hooks.on("ready", function() {
     _setupGrenadePicker();
 
@@ -12,8 +12,6 @@ export default function registerCustomHooks() {
   Hooks.on("renderTokenHUD", function(_tokenHUG) { _preventGrenadePick() });
 
   Hooks.on("closeBasePlaceableHUD", function(_tokenHUD) { _preventGrenadePick() });
-
-  Hooks.on("onModifierEvent", _onModifierEvent);
 }
 
 
@@ -63,14 +61,3 @@ function _setupGrenadePicker() {
 
 
 function _preventGrenadePick() { game.the_edge.tokenClickTime = Date.now(); }
-
-
-function _onModifierEvent(field: TEventNames, details: Record<string, any>): boolean {
-  switch (field) {
-    case "rollAttackCheck-Prior":
-    case "rollAttackCheck-Posterior":
-      details.actor.effectHooks(field, details)
-      break;
-  }
-  return true;
-}

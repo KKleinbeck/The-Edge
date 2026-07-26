@@ -1,7 +1,9 @@
 import ChatServer from "../system/chat_server.js";
 
 export default function() {
-  Hooks.on("TheEdgeAction", _onTheEdgeAction)
+  Hooks.on("TheEdgeAction", _onTheEdgeAction);
+
+  Hooks.on("onModifierEvent", _onModifierEvent);
 }
 
 function _onTheEdgeAction(payload: ITheEdgeActionPayload) {
@@ -26,4 +28,15 @@ async function handleOutOfCombatAction(payload: ITheEdgeActionPayload) {
         {actor: payload.actor.name, skill: payload.action, change: payload.strainCost}
       );
   }
+}
+
+
+function _onModifierEvent(field: TEventNames, details: Record<string, any>): boolean {
+  switch (field) {
+    case "rollAttackCheck-Prior":
+    case "rollAttackCheck-Posterior":
+      details.actor.effectHooks(field, details)
+      break;
+  }
+  return true;
 }

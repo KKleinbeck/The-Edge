@@ -29,8 +29,6 @@ import { preloadHandlebarsTemplates } from "./templates.js";
 import { TheEdgeToken, TheEdgeTokenDocument } from "./documents/token.js";
 import { TheEdgeStoreSheet } from "./actors/store-sheet.js";
 
-import registerCustomHooks from "./system/hooks.js";
-
 Hooks.once("init", async function() {
   console.log(`Initializing the Galaxy`);
   // Useful helpers
@@ -108,8 +106,6 @@ Hooks.once("init", async function() {
   // Preload template partials
   await preloadHandlebarsTemplates();
 });
-
-registerCustomHooks();
 
 initHooks();
 

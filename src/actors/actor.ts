@@ -271,6 +271,7 @@ export class TheEdgeActor extends Actor {
     });
   }
 
+
   effectHooks(field: string, details: Record<string, any>) {
     const effects = foundry.utils.mergeObject(
       this.getItemEffects(true), this.getSkillEffects(true)
