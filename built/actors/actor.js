@@ -234,15 +234,15 @@ export class TheEdgeActor extends Actor {
     }
     effectHooks(field, details) {
         const effects = foundry.utils.mergeObject(this.getItemEffects(true), this.getSkillEffects(true));
-        console.log("Before", details.diceServerConfig.critDice);
+        console.log("Before", field, details.prompt.critDice);
         for (const effect of effects) {
             for (const modifier of effect.modifiers) {
                 if (modifier.field === field) {
-                    Aux.evalOnEventWith(modifier.value, details);
+                    Aux.evalOnEventWith(modifier.value, details, effect.id);
                 }
             }
         }
-        console.log("After", details.diceServerConfig.critDice);
+        console.log("After", field, details.prompt.critDice);
         return effects;
     }
     attachOuterArmour(armourId, shellId, tokenId) {

@@ -103,7 +103,7 @@ export default class DiceServer {
     }
   }
 
-  static async attackCheck(config: IDiceServerAttackConfig): Promise<IAttackRollResult> {
+  static async attackCheck(config: IAttackRollPrompt): Promise<IAttackRollResult> {
     let [roll, netOutcome] = await this._attackRoll(config);
 
     if (config.vantage == "Advantage") {
@@ -117,7 +117,7 @@ export default class DiceServer {
     return DiceServer.attackOutcome(roll, config);
   }
 
-  static async _attackRoll(config: IDiceServerAttackConfig): Promise<[IAttackRoll[], number]> {
+  static async _attackRoll(config: IAttackRollPrompt): Promise<[IAttackRoll[], number]> {
     const rolls: IAttackRoll[] = []
     let netOutcome: number = 0;
     for (let i = 0; i < config.nRolls; ++i) {
@@ -132,7 +132,7 @@ export default class DiceServer {
   }
 
   static async attackOutcome(
-    rolls: IAttackRoll[], config: IDiceServerAttackConfig
+    rolls: IAttackRoll[], config: IAttackRollPrompt
   ): Promise<IAttackRollResult> {
     let damage: number[] = [];
     for (let i = 0; i < config.nRolls; ++i) {

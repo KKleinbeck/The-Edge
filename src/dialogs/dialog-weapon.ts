@@ -56,7 +56,8 @@ export default class DialogWeapon extends Dialog{
             damageRoll: modificators.fireModeModifier.damage, // Add ammu modifier here
             nRolls: dices,
             threshold: modificators.threshold,
-            vantage: modificators.vantage
+            vantage: modificators.vantage,
+            ...THE_EDGE.combatConfig.attackDiceParameters(checkData.actor)
           }
           const attackRollResult: IAttackRollResult = await checkData.actor.system.rollAttackCheck(prompt);
           DialogWeapon._dispatchHook(checkData, modificators);
@@ -68,7 +69,6 @@ export default class DialogWeapon extends Dialog{
             damageRoll: modificators.fireModeModifier.damage + (ammuDamage.bonus > 0 ? ` + ${ammuDamage.bonus}` : ""),
             ...attackRollResult
           })
-          console.log(checkData)
 
           // Apply the damage
           for (const id of checkData.targetIds) {
@@ -104,6 +104,7 @@ export default class DialogWeapon extends Dialog{
     }).render(true)
   }
 
+
   static getDistance(aggressor, targetIds, sceneId) {
     const scene = game.scenes.get(sceneId);
     if (scene === undefined) return undefined;
@@ -116,6 +117,7 @@ export default class DialogWeapon extends Dialog{
     const distances = targets.map(target => factor * Aux.tokenDistance(aggressor, target));
     return Math.max(...distances)
   }
+
 
   static getSmallestSize(targetIds, sceneId) {
     // get the scene
@@ -131,6 +133,7 @@ export default class DialogWeapon extends Dialog{
     // @ts-expect-error
     return Object.entries(THE_EDGE.sizes).find(([_, value]) => value > smallest)[0];
   }
+
 
   static parseSheet(html, checkData) {
     const precision =  html.find('[name="PrecisionSelector"]').val();

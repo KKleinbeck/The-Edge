@@ -255,6 +255,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       return undefined;
     }
 
+    // TODO: This ougth to be a getter on weapon
     let damageType = ""
     if (weapon.system.isElemental) {
       damageType = "Elemental"
@@ -277,6 +278,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
         }
       }
     }
+    // TODO: leave out the fine grained BS, and send just the weapon
     DialogWeapon.start({
       name: weapon.name, actor: actor, actorId: actor.id, token: token,
       tokenId: token?.id, sceneId: sceneId,

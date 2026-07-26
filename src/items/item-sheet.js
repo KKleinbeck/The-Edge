@@ -287,7 +287,6 @@ class ItemSheetAmmunition extends RangeChartSelectorMixin(TheEdgeItemSheet) {
         );
         break;
     }
-    console.log("Shit")
     await this.item.update({[`system.${iconType}`]: value}, {render: false});
   }
 

@@ -16,6 +16,7 @@ export default class DialogCombatics extends CheckDialog {
     this.checkData = checkData;
   }
 
+  
   static async start(checkData: IAttackRollQuery) {
     const template = "systems/the_edge/templates/dialogs/basic-rolls.hbs";
     const handToHandLevel: number = checkData.actor.system.weapons.general["Hand-to-Hand combat"].value;
@@ -61,6 +62,7 @@ export default class DialogCombatics extends CheckDialog {
     }).render({ force: true });
   }
 
+
   async cheatCallback(): Promise<void> {
     const sliderValues = this.getSliderValues();
     const threshold: number = this.checkData.threshold + (Object.values(sliderValues).sum() as number);
@@ -83,18 +85,21 @@ export default class DialogCombatics extends CheckDialog {
     this._transmitRoll(threshold, attackRollResult);
   }
 
+
   async attackCallback(): Promise<void> {
     const promptResult: IRollPromptResult = this.promptResult;
     const threshold: number = this.checkData.threshold + promptResult.modifier + promptResult.strain;
     
     const prompt: IAttackRollPrompt = {
-      threshold, nRolls: 1, vantage: this.vantage, damageRoll: this.checkData.damageRoll
+      threshold, nRolls: 1, vantage: this.vantage, damageRoll: this.checkData.damageRoll,
+      ...THE_EDGE.combatConfig.attackDiceParameters(this.checkData.actor)
     }
     const attackRollResult: IAttackRollResult = await this.checkData.actor.system.rollAttackCheck(prompt);
     this.checkData.actor.system.applyStrain(promptResult.strain);
 
     this._transmitRoll(threshold, attackRollResult);
   }
+
 
   _transmitRoll(threshold: number, attackRollResult: IAttackRollResult) {
     const config: IChatServerConfig = {

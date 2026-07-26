@@ -48,20 +48,10 @@ export default class WeaponData extends DataModelComponent {
         }
         return level;
     }
-    get attackDiceParameters() {
-        return {
-            critDice: [1],
-            critFailDice: [20],
-            critFailCheckThreshold: Math.floor((this.weapons.general["General weapon proficiency"].value) / 2),
-        };
-    }
     async rollAttackCheck(prompt) {
-        const diceServerConfig = {
-            ...this.attackDiceParameters, ...prompt
-        };
-        Hooks.call("onModifierEvent", "rollAttackCheck-Prior", { actor: this.parent, diceServerConfig, prompt });
-        const attackOutcome = await DiceServer.attackCheck(diceServerConfig);
-        Hooks.call("onModifierEvent", "rollAttackCheck-Posterior", { actor: this.parent, attackOutcome, diceServerConfig, prompt });
+        Hooks.call("onModifierEvent", "rollAttackCheck-Prior", { actor: this.parent, prompt });
+        const attackOutcome = await DiceServer.attackCheck(prompt);
+        Hooks.call("onModifierEvent", "rollAttackCheck-Posterior", { actor: this.parent, attackOutcome, prompt });
         return attackOutcome;
     }
 }

@@ -12,14 +12,14 @@ export default class Aux {
   }
 
 
-  static evalOnEventWith(definition: string, details: Record<string, any>): undefined {
-    const onEvent = new Function("details", `
+  static evalOnEventWith(definition: string, details: Record<string, any>, id: string): undefined {
+    const onEvent = new Function("details, id", `
       ${definition};
-      return onEvent(details);
+      return onEvent(details, id);
     `);
 
     try {
-      onEvent(details);
+      onEvent(details, id);
     } catch {
       NotificationServer.error("Illicit event")
     }

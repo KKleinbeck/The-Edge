@@ -9,13 +9,13 @@ export default class Aux {
             return value;
         return `${value.toFixed(digits)}&nbsp;%`;
     }
-    static evalOnEventWith(definition, details) {
-        const onEvent = new Function("details", `
+    static evalOnEventWith(definition, details, id) {
+        const onEvent = new Function("details, id", `
       ${definition};
-      return onEvent(details);
+      return onEvent(details, id);
     `);
         try {
-            onEvent(details);
+            onEvent(details, id);
         }
         catch {
             NotificationServer.error("Illicit event");

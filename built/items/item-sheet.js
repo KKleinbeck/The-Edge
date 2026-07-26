@@ -255,7 +255,6 @@ class ItemSheetAmmunition extends RangeChartSelectorMixin(TheEdgeItemSheet) {
                 this.updateIcons(iconType, this._setSubtypesDict(), THE_EDGE.ammunitionSubtypes.includes(value) ? "" : value);
                 break;
         }
-        console.log("Shit");
         await this.item.update({ [`system.${iconType}`]: value }, { render: false });
     }
     async _renderDetails() {

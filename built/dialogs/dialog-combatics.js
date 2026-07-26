@@ -68,7 +68,8 @@ export default class DialogCombatics extends CheckDialog {
         const promptResult = this.promptResult;
         const threshold = this.checkData.threshold + promptResult.modifier + promptResult.strain;
         const prompt = {
-            threshold, nRolls: 1, vantage: this.vantage, damageRoll: this.checkData.damageRoll
+            threshold, nRolls: 1, vantage: this.vantage, damageRoll: this.checkData.damageRoll,
+            ...THE_EDGE.combatConfig.attackDiceParameters(this.checkData.actor)
         };
         const attackRollResult = await this.checkData.actor.system.rollAttackCheck(prompt);
         this.checkData.actor.system.applyStrain(promptResult.strain);

@@ -81,7 +81,13 @@ interface IAttackRollResult {
   failEvent: string
 }
 
-interface IAttackRollPrompt {
+interface IAttackDiceParameters {
+  critDice: number[]
+  critFailDice: number[]
+  critFailCheckThreshold: number
+}
+
+interface IAttackRollPrompt extends IAttackDiceParameters {
   damageRoll: string
   nRolls: number
   threshold: number
@@ -95,11 +101,3 @@ interface IAttackRollQuery extends _IRollMeta {
   threshold: number
   token: foundryAny
 }
-
-interface IAttackDiceParameters {
-  critDice: number[]
-  critFailDice: number[]
-  critFailCheckThreshold: number
-}
-
-interface IDiceServerAttackConfig extends IAttackRollPrompt, IAttackDiceParameters {}

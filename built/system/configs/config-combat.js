@@ -9,5 +9,12 @@ export const COMBAT_CONFIG = {
     ],
     handToHandMaxStrain: (handToHandLevel, strainMaxUseReduction) => {
         return Math.floor(handToHandLevel / 2.5 + strainMaxUseReduction);
+    },
+    attackDiceParameters(actor) {
+        return {
+            critDice: [1],
+            critFailDice: [20],
+            critFailCheckThreshold: Math.floor((actor.system.weapons.general["General weapon proficiency"].value) / 2),
+        };
     }
 };

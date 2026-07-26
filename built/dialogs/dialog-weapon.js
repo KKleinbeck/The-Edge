@@ -44,7 +44,8 @@ export default class DialogWeapon extends Dialog {
                         damageRoll: modificators.fireModeModifier.damage, // Add ammu modifier here
                         nRolls: dices,
                         threshold: modificators.threshold,
-                        vantage: modificators.vantage
+                        vantage: modificators.vantage,
+                        ...THE_EDGE.combatConfig.attackDiceParameters(checkData.actor)
                     };
                     const attackRollResult = await checkData.actor.system.rollAttackCheck(prompt);
                     DialogWeapon._dispatchHook(checkData, modificators);
@@ -55,7 +56,6 @@ export default class DialogWeapon extends Dialog {
                         damageRoll: modificators.fireModeModifier.damage + (ammuDamage.bonus > 0 ? ` + ${ammuDamage.bonus}` : ""),
                         ...attackRollResult
                     });
-                    console.log(checkData);
                     // Apply the damage
                     for (const id of checkData.targetIds) {
                         checkData["targetId"] = id;
