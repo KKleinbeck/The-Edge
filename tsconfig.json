@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
-    "outDir": "./built",
     "allowJs": true,
     "noImplicitAny": false,
+    "outDir": "./built",
+    "rootDir": "./src",
     "target": "esnext",
     "types": ["jquery"],
   },
-  "include": ["./src/**/*"]
+  "include": ["./src"]
 }

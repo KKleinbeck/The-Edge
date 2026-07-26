@@ -11,3 +11,6 @@ node_modules/
 package-lock.json
 
 worldbuilding.lock
+
+# CI/CD
+tests/.env

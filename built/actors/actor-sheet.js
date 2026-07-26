@@ -72,7 +72,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
                 break;
             case "toggle-equip":
                 if (item.type == "Armour") {
-                    if (item.system.structurePoints <= 0) {
+                    if (item.system.structurePoints <= 0 && item.system.structurePointsOriginal > 0) {
                         NotificationServer.notify("EquipBroken");
                         return undefined;
                     }

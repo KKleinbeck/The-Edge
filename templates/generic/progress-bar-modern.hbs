@@ -1,5 +1,5 @@
 <div class="progress-wrapper">
-  <svg viewBox="-2 {{#if max}}-8{{else}}-4{{/if}} 102 {{#if (or (checkNotEmpty segments) nameEditable)}}28{{else}}24{{/if}}"
+  <svg viewBox="-2 {{#if max includeZero=true}}-8{{else}}-4{{/if}} 102 {{#if (or (checkNotEmpty segments) nameEditable)}}28{{else}}24{{/if}}"
     style="overflow: visible"
     xmlns="http://www.w3.org/2000/svg"> {{!-- Extra padding for strokes --}}
     <defs>
@@ -98,7 +98,7 @@
       <text x="0" y="17.5" fill="white" font-size="8">{{name}}</text>
     {{/if}}
 
-    {{#if max}}
+    {{#if max includeZero=true}}
       <foreignObject x="0" y="-8" width="100" height="14" overflow="visible">
         <div style="display: flex; justify-content: end; align-items: top;
           transform: scale({{defaultTo textScale 1.0}}); transform-origin: bottom right;">

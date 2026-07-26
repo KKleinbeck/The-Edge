@@ -1,0 +1,15 @@
+{
+  "name": "the_edge_tests",
+  "version": "1.0.0",
+  "description": "Testing framework for the system The Edge",
+  "type": "module",
+  "browserslist": [
+    "last 3 versions"
+  ],
+  "author": "",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {}
+}
+

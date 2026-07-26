@@ -82,7 +82,13 @@ export default function() {
     log: (a) => console.log(a),
     add: (a, b) => { return +a + +b; },
     sub: (a, b) => { return a - b; },
-    div: (a, b) => { if (b == 0) return undefined; return a / b; },
+    div: (a, b) => {
+      if (b == 0) {
+        if (a == 0) return 0;
+        return undefined;
+      }
+      return a / b;
+    },
     mul: (a, b) => { return a * b; },
     and: (a, b) => { return a && b; },
     or: (a, b) => { return a || b; },

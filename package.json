@@ -1,6 +1,5 @@
 {
   "name": "the_edge",
-  "version": "1.0.0",
   "description": "Compiler for the system The Edge",
   "scripts": {
     "css": "gulp css",
