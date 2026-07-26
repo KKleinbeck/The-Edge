@@ -1,5 +1,7 @@
 import { generateDataModelWithComponents } from "../abstracts.js";
 
+import THE_EDGE from "../../system/config-the-edge.js";
+
 import DescriptionData from "./components/description.js";
 import EquipableData from "./components/equipable.js";
 import NonstackableData from "./components/nonstackable.js";
@@ -10,7 +12,7 @@ export default class WeaponData extends generateDataModelWithComponents(
   DescriptionData, EquipableData, NonstackableData
 ) {
   static defineSchema() {
-    const schema = super.defineSchema()
+    const schema: Record<string, any> = super.defineSchema();
     schema.type = new StringField({ initial: "Pulse Rifle" });
     schema.isElemental = new BooleanField({ initial: false });
     schema.multipleTargets = new BooleanField({ initial: false });
@@ -38,5 +40,13 @@ export default class WeaponData extends generateDataModelWithComponents(
     schema.ammunitionType = new StringField({ initial: "small" });
     schema.ammunitionID = new StringField({ initial: "" });
     return schema;
+  }
+
+  get damageType(): TDamageTypes {
+    if (this.isElemental) return "elemental";
+    if (Object.keys(THE_EDGE.characterSchema.weapons.energy).includes(this.type)) {
+      return "energy";
+    }
+    return "kinetic";
   }
 }

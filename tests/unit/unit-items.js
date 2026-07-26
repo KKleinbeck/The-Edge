@@ -362,6 +362,25 @@ export default function registerUnitTestsForItems(apiHandler) {
   TestRegistry.registerTest(weaponModifyFiringModes, "Weapon Modify Firing Modes", "unit");
 
 
+  async function weaponDamageType() {
+    const item = await apiHandler.itemCreate({type: "Weapon"});
+    const command = `const item = game.items.get("${item.data._id}");` +
+      `const damageType0 = item.system.damageType;` +
+      `await item.update({"system.type": "LMGs"});` +
+      `const damageType1 = item.system.damageType;` +
+      `await item.update({"system.isElemental": true});` +
+      `const damageType2 = item.system.damageType;` +
+      `return {damageType0, damageType1, damageType2};`
+    const result = await apiHandler.runCommand(command);
+    await item.delete();
+
+    assert(result.damageType0 == "energy");
+    assert(result.damageType1 == "kinetic");
+    assert(result.damageType2 == "elemental");
+  }
+  TestRegistry.registerTest(weaponDamageType, "Weapon Damage Type", "unit");
+
+
   // item-sheet: Consumables, Skill, Weapon getModifiers with mock target
   // item-sheet: Consumables, Skill, Weapon updateModifiers
 }

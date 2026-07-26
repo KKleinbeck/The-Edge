@@ -49,6 +49,7 @@ export default class WeaponData extends DataModelComponent {
         return level;
     }
     async rollAttackCheck(prompt) {
+        // TODO: prompt needs to hold at least the weapons id
         Hooks.call("onModifierEvent", "rollAttackCheck-Prior", { actor: this.parent, prompt });
         const attackOutcome = await DiceServer.attackCheck(prompt);
         Hooks.call("onModifierEvent", "rollAttackCheck-Posterior", { actor: this.parent, attackOutcome, prompt });

@@ -218,39 +218,29 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
             ui.notifications.notify(msg);
             return undefined;
         }
-        // TODO: This ougth to be a getter on weapon
-        let damageType = "";
-        if (weapon.system.isElemental) {
-            damageType = "Elemental";
-        }
-        else if (Object.keys(THE_EDGE.characterSchema.weapons.energy).includes(weapon.system.type)) {
-            damageType = "energy";
-        }
-        else
-            damageType = "kinetic";
-        const activeEffects = [
-            ...this.actor.system.effects,
-            ...this.actor.getItemEffects(true),
-            ...this.actor.getSkillEffects(true),
-            ...this.actor.system.statusEffects,
-        ];
-        const effects = [];
-        for (const effect of activeEffects) {
-            for (const modifier of effect.modifiers) {
-                if (modifier.group != "weapons")
-                    continue;
-                if (modifier.field == "all" || modifier.field == damageType || modifier.field == weapon.system.type) {
-                    effects.push({ name: effect.name, value: modifier.value });
-                }
-            }
-        }
+        // const activeEffects = [
+        //   ...this.actor.system.effects,
+        //   ...this.actor.getItemEffects(true),
+        //   ...this.actor.getSkillEffects(true),
+        //   ...this.actor.system.statusEffects,
+        // ];
+        // const effects: IEffectOverview[] = [];
+        // for (const effect of activeEffects) {
+        //   for (const modifier of effect.modifiers) {
+        //     if (modifier.group != "weapons") continue;
+        //     if (modifier.field == "all" || modifier.field == weapon.system.damageType || modifier.field == weapon.system.type) {
+        //       effects.push({name: effect.name, value: modifier.value})
+        //     }
+        //   }
+        // }
         // TODO: leave out the fine grained BS, and send just the weapon
         DialogWeapon.start({
             name: weapon.name, actor: actor, actorId: actor.id, token: token,
             tokenId: token?.id, sceneId: sceneId,
             ammunition: actor.items.get(weapon.system.ammunitionID),
-            threshold: threshold, effects: effects,
-            damageType: damageType,
+            threshold: threshold,
+            // effects: effects,
+            damageType: weapon.system.damageType,
             rangeChart: weapon.system.rangeChart,
             fireModes: weapon.system.fireModes,
             targetIds: targetIds
