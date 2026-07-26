@@ -13,7 +13,7 @@ function accumulate(func, to, from = 0) {
 
 /** @param {ApiHandler} apiHandler */
 export default function registerUnitTestsForActors(apiHandler) {
-  async function actoAlterMaxHealth() {
+  async function actorAlterMaxHealth() {
     const actor = await apiHandler.actorCreate();
 
     const samples = [
@@ -35,7 +35,7 @@ export default function registerUnitTestsForActors(apiHandler) {
 
     for (let i = 0; i < samples.length; i++) assert(actualMaxHealth[i] == expectedMaxHealth[i]);
   }
-  TestRegistry.registerTest(actoAlterMaxHealth, "Actor Max Health", "unit");
+  TestRegistry.registerTest(actorAlterMaxHealth, "Actor Max Health", "unit");
 
 
   async function actorApplyStrain() {

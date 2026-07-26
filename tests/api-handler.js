@@ -15,6 +15,7 @@ export default class ApiHandler {
     this.apiKey = apiKey;
 
     this._actors = {};
+    this._items = {};
     this._tokens = {};
   }
 
@@ -22,9 +23,7 @@ export default class ApiHandler {
   async requestClients() {
     const response = await fetch(this.url + "/clients", {
       method: 'GET',
-      headers: {
-        'x-api-key': this.apiKey
-      }
+      headers: { 'x-api-key': this.apiKey }
     });
     return await response.json();
   }
@@ -68,9 +67,7 @@ export default class ApiHandler {
 
     const response = await fetch(url, {
       method: 'DELETE',
-      headers: {
-        'x-api-key': this.apiKey
-      }
+      headers: { 'x-api-key': this.apiKey }
     });
     const result = await response.json();
     
@@ -162,6 +159,53 @@ export default class ApiHandler {
     });
     const result = await response.json();
     return new Encounter(this, result.encounterId);
+  }
+
+
+  /** @param {Record<string, any>} options */
+  /** @return {Item} */
+  async itemCreate(options = {}) {
+    const {name, type, systemPreset, systemPayload = {}} = options;
+
+    const response = await fetch(this.url + "/create", {
+      method: 'POST',
+      headers: {
+        'x-api-key': this.apiKey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        "entityType": "Item",
+        "data": {
+          "name": name ?? "TestItem",
+          "type": type ?? "Ammunition",
+          "system": {...Actor.getSystemPreset(systemPreset), ...systemPayload}
+        }
+      })
+    });
+    const result = await response.json();
+    const item = new Item(this, result.entity, result.uuid);
+    this._items[result.uuid] = item;
+    return item;
+  }
+
+
+  /** @param {string | Item} item */
+  async itemDelete(item) {
+    item = this._getFromCollection(this._items, item);
+
+    const path = '/delete';
+    const params = {uuid: uuid(item)};
+    const queryString = new URLSearchParams(params).toString();
+    const url = `${this.url}${path}?${queryString}`;
+
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: { 'x-api-key': this.apiKey }
+    });
+    const result = await response.json();
+    
+    if (result.success) delete this._items[uuid(item)];
+    return result;
   }
 
 
@@ -315,6 +359,26 @@ class Actor {
   }
 }
 
+
+class Item {
+  /** @param {ApiHandler} handler */
+  /** @param {Record<string, any>} data */
+  /** @param {sting} uuid */
+  constructor(handler, data, uuid) {
+    this.handler = handler;
+    this.data = data;
+    this.uuid = uuid;
+  }
+
+
+  /** @param {boolean} actorLink */
+  async createToken(actorLink = false) {
+    return await this.handler.tokenCreate(this, actorLink);
+  }
+
+
+  async delete() { return await this.handler.itemDelete(this); }
+}
 
 
 class Encounter {

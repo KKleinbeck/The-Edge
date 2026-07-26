@@ -19,7 +19,7 @@ export default function IconSelectorMixin(BaseApplication) {
             const value = target.dataset.value;
             this.onIconSelected(iconType, value);
         }
-        onIconSelected(iconType, value) { }
+        async onIconSelected(iconType, value) { }
         updateIcons(iconType, details, dynamicValue = "") {
             const iconButtons = this.element.querySelectorAll(`[data-icon-type="${iconType}"]`);
             for (const iconButton of iconButtons) {
@@ -28,7 +28,7 @@ export default function IconSelectorMixin(BaseApplication) {
                     iconButton.classList.add("icon-selector-selected");
                 }
                 else if (iconButton.tagName === "INPUT") {
-                    const dynamicSelection = !Object.values(details).reduce((acc, val) => acc = acc | val.selected, false); // No static element is selected
+                    const dynamicSelection = !Object.values(details).reduce((acc, val) => acc = acc || val.selected, false); // No static element is selected
                     if (dynamicSelection)
                         iconButton.classList.add("icon-selector-selected");
                     iconButton.value = dynamicValue;

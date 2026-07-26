@@ -1,4 +1,4 @@
-RestApiKey=c355464bfce8df4165422badb8f2921d58b438590888e6e7bf7142ed1b6578d8
+RestApiKey=$(grep '^RestApiKey=' .env | cut -d '=' -f2-)
 RestApiURL=http://localhost:3010
 
 dockerStatus=$(systemctl is-active docker)
@@ -16,4 +16,4 @@ fi
 curl -s -X GET $RestApiURL/clients -H "x-api-key: $RestApiKey" > /dev/null || exit 2
 
 echo "System seems to be online. Starting Tests..."
-node main.js --rest-api-url $RestApiURL --rest-api-key $RestApiKey
+node main.mjs --rest-api-url $RestApiURL --rest-api-key $RestApiKey

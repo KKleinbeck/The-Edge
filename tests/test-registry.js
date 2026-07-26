@@ -82,7 +82,7 @@ export class TestRegistry {
   static _renderTestLog(testLog, currentTestClass, currentTestLabel) {
     function leftPad(arg, width, pad = " ") {
       const str = `${arg}`;
-      return pad.repeat(Math.max(0, width - arg.length)) + str;
+      return pad.repeat(Math.max(0, width - str.length)) + str;
     }
     function renderTestInstance(testClass, label, status) {
       let descriptor = `  Running '${testClass} - ${label}'`;
@@ -105,20 +105,23 @@ export class TestRegistry {
       headerLine += testClass + " " + RESET;
       headerLineLength += testClass.length + 1;
 
-      const totalTests = _registry[testClass].length;
+      const totalTests = `${_registry[testClass].length}`;
+      const totalTestsStr = `${totalTests}`;
       const log = testLog[testClass];
       if (log.completed == totalTests) {
-        headerLine += GREEN + leftPad(log.passed.length, totalTests) + " ✓" + RESET + " - " + RED + leftPad(log.failed.length, totalTests)  + " ✖ " + RESET;
+        headerLine += GREEN + leftPad(log.passed.length, totalTestsStr.length) + " ✓" + RESET +
+          " - " + RED + leftPad(log.failed.length, totalTestsStr.length)  + " ✖ " + RESET;
       } else {
-        headerLine += "  " + leftPad(log.completed, totalTests) + " / " + totalTests + "   "
+        headerLine += "  " + leftPad(log.completed, totalTestsStr.length) + " / " + totalTests + "   "
       }
       headerLine += "   |   "
-      headerLineLength += 15 + 2*(`${totalTests}`.length);
+      headerLineLength += 15 + 2*(totalTestsStr.length);
     }
     headerLine = headerLine.substr(0, headerLine.length - 7);
     headerLineLength -= 7;
     const missingHeaderWidth = 100 - headerLineLength;
-    headerLine = "_".repeat(Math.ceil(missingHeaderWidth / 2) - 2) + `  ${headerLine}  ` + "_".repeat(Math.floor(missingHeaderWidth / 2) - 2);
+    headerLine = "_".repeat(Math.ceil(missingHeaderWidth / 2) - 2) +
+      `  ${headerLine}  ` + "_".repeat(Math.floor(missingHeaderWidth / 2) - 2);
 
 
 

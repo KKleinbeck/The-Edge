@@ -34,21 +34,6 @@ async function main() {
 
   // Test Stage
   await TestRegistry.runTests();
-
-  // const actor = await apiHandler.actorCreate();
-  // const command = `const actor = game.actors.get("${actor.data._id}");` +
-  //   `await actor.system.changeCoreValue("system.attributes.end.advances", 20);` + 
-  //   `await actor.system.changeCoreValue("system.attributes.spd.advances", 10);` + 
-  //   `await actor.system.changeCoreValue("system.attributes.foc.advances", 10);` +
-  //   `console.log(actor.system.health.max.value);` +
-  //   `return {maxHealth: actor.system.health.max.value, ` +
-  //   `  usedPracticeHours: actor.system.PracticeHours.used, ` +
-  //   `  strideSpeed: actor.system.strideSpeed};`;
-  // const newSystem = await apiHandler.runCommand(command);
-  // console.log(newSystem)
-  // console.log(THE_EDGE.attrCost(2))
-
-  // await actor.delete();
 }
 
 main();

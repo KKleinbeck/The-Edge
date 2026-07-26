@@ -1,3 +1,7 @@
+interface IIconSelected {
+  selected: boolean
+}
+
 export default function IconSelectorMixin(BaseApplication) {
   class IconSelector extends BaseApplication {
     static DEFAULT_OPTIONS = {
@@ -22,9 +26,9 @@ export default function IconSelectorMixin(BaseApplication) {
       this.onIconSelected(iconType, value);
     }
 
-    onIconSelected(iconType, value) {}
+    async onIconSelected(iconType, value) {}
 
-    updateIcons(iconType, details, dynamicValue = "") {
+    updateIcons(iconType: string, details: Record<string, IIconSelected>, dynamicValue: string = "") {
       const iconButtons = this.element.querySelectorAll(
         `[data-icon-type="${iconType}"]`
       );
@@ -35,7 +39,7 @@ export default function IconSelectorMixin(BaseApplication) {
         }
         else if (iconButton.tagName === "INPUT") {
           const dynamicSelection = !Object.values(details).reduce(
-            (acc, val) => acc = acc | val.selected, false
+            (acc: boolean, val: IIconSelected) => acc = acc || val.selected, false
           ); // No static element is selected
           if (dynamicSelection) iconButton.classList.add("icon-selector-selected");
           iconButton.value = dynamicValue;

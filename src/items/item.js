@@ -41,6 +41,6 @@ export class TheEdgeItem extends Item {
   async useOne() {
     if (this.system.quantity > 1) {
       await this.update({"system.quantity": this.system.quantity - 1});
-    } else this.delete();
+    } else await this.delete();
   }
 }

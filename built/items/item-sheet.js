@@ -243,7 +243,7 @@ class ItemSheetAmmunition extends RangeChartSelectorMixin(TheEdgeItemSheet) {
         }
         return subtypes;
     }
-    onIconSelected(iconType, value) {
+    async onIconSelected(iconType, value) {
         switch (iconType) {
             case "type":
                 this.item.system.type = value;
@@ -255,7 +255,8 @@ class ItemSheetAmmunition extends RangeChartSelectorMixin(TheEdgeItemSheet) {
                 this.updateIcons(iconType, this._setSubtypesDict(), THE_EDGE.ammunitionSubtypes.includes(value) ? "" : value);
                 break;
         }
-        this.item.update({ [`system.${iconType}`]: value }, { render: false });
+        console.log("Shit");
+        await this.item.update({ [`system.${iconType}`]: value }, { render: false });
     }
     async _renderDetails() {
         const template = "systems/the_edge/templates/items/Ammunition-details-content.hbs";
@@ -319,14 +320,14 @@ class ItemSheetArmour extends TheEdgeItemSheet {
         }
         return types;
     }
-    onIconSelected(iconType, value) {
+    async onIconSelected(iconType, value) {
         switch (iconType) {
             case "bodyPart":
                 this.item.system.bodyPart = value;
                 this.updateIcons(iconType, this._setTypesDict());
                 break;
         }
-        this.item.update({ "system": structuredClone(this.item.system) }, { render: false });
+        await this.item.update({ "system": structuredClone(this.item.system) }, { render: false });
     }
     _fetchAttachment(target) {
         const dataElement = target.parentElement;
@@ -428,12 +429,12 @@ class ItemSheetSkill extends TheEdgeItemSheet {
         this.element.querySelectorAll(".max-level")?.forEach(x => x.addEventListener("change", ev => this._onMaxLevelChange(ev)));
         this.element.querySelectorAll(".effect-level-modify")?.forEach(x => x.addEventListener("change", ev => this._onLevelModify(ev)));
     }
-    _onMaxLevelChange(ev) {
+    async _onMaxLevelChange(ev) {
         const maxLevel = ev.target.value;
         const eff = this.item.system.effects;
         const req = this.item.system.requirements;
         if (eff.length >= maxLevel) {
-            this.item.update({
+            await this.item.update({
                 "system.maxLevel": maxLevel, "system.effects": eff.slice(0, maxLevel),
                 "system.requirements": req.slice(0, maxLevel)
             });
@@ -443,7 +444,7 @@ class ItemSheetSkill extends TheEdgeItemSheet {
                 eff.push([]);
                 req.push([]);
             }
-            this.item.update({
+            await this.item.update({
                 "system.maxLevel": maxLevel, "system.effects": eff,
                 "system.requirements": req
             });
@@ -696,12 +697,12 @@ class ItemSheetWeapon extends RangeChartSelectorMixin(TheEdgeItemSheet) {
         }
         return ammunitionTypes;
     }
-    onIconSelected(iconType, value) {
+    async onIconSelected(iconType, value) {
         switch (iconType) {
             case "ammunitionType":
                 this.item.system.ammunitionType = value;
                 this.updateIcons(iconType, this._setAmmunitionTypesDict(), THE_EDGE.ammunitionSubtypes.includes(value) ? "" : value);
-                this.item.update({ "system.ammunitionType": value }, { render: false });
+                await this.item.update({ "system.ammunitionType": value }, { render: false });
                 break;
         }
     }
@@ -716,7 +717,7 @@ class ItemSheetWeapon extends RangeChartSelectorMixin(TheEdgeItemSheet) {
         fireModes.splice(index, 1);
         this.item.update({ "system.fireModes": fireModes });
     }
-    _onModeModify(event) {
+    async _onModeModify(event) {
         const target = event.target;
         const index = +target.dataset.index;
         const field = target.dataset.field;
@@ -731,6 +732,6 @@ class ItemSheetWeapon extends RangeChartSelectorMixin(TheEdgeItemSheet) {
         else {
             fireModes[+index][field] = +target.value;
         }
-        this.item.update({ "system.fireModes": fireModes });
+        await this.item.update({ "system.fireModes": fireModes });
     }
 }

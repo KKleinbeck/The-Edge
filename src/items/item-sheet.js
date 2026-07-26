@@ -271,7 +271,7 @@ class ItemSheetAmmunition extends RangeChartSelectorMixin(TheEdgeItemSheet) {
     return subtypes;
   }
   
-  onIconSelected(iconType, value) {
+  async onIconSelected(iconType, value) {
     switch (iconType) {
       case "type":
         this.item.system.type = value;
@@ -287,7 +287,8 @@ class ItemSheetAmmunition extends RangeChartSelectorMixin(TheEdgeItemSheet) {
         );
         break;
     }
-    this.item.update({[`system.${iconType}`]: value}, {render: false});
+    console.log("Shit")
+    await this.item.update({[`system.${iconType}`]: value}, {render: false});
   }
 
   async _renderDetails() {
@@ -352,7 +353,7 @@ class ItemSheetArmour extends TheEdgeItemSheet {
   _setTypesDict() {
     const types = {};
     for (const type of Object.keys(THE_EDGE.cover_map)) {
-      types[type] =  {
+      types[type] = {
         icon: `systems/the_edge/icons/armour/${type.toLowerCase()}.png`,
         selected: type==this.item.system.bodyPart
       }
@@ -360,14 +361,14 @@ class ItemSheetArmour extends TheEdgeItemSheet {
     return types;
   }
   
-  onIconSelected(iconType, value) {
+  async onIconSelected(iconType, value) {
     switch (iconType) {
       case "bodyPart":
         this.item.system.bodyPart = value;
         this.updateIcons(iconType, this._setTypesDict());
         break;
     }
-    this.item.update({"system": structuredClone(this.item.system)}, {render: false});
+    await this.item.update({"system": structuredClone(this.item.system)}, {render: false});
   }
 
   _fetchAttachment(target) {
@@ -488,12 +489,12 @@ class ItemSheetSkill extends TheEdgeItemSheet {
     )
   }
 
-  _onMaxLevelChange(ev) {
+  async _onMaxLevelChange(ev) {
     const maxLevel = ev.target.value;
     const eff = this.item.system.effects;
     const req = this.item.system.requirements;
     if (eff.length >= maxLevel) {
-      this.item.update({
+      await this.item.update({
         "system.maxLevel": maxLevel, "system.effects": eff.slice(0, maxLevel),
         "system.requirements": req.slice(0, maxLevel)
       })
@@ -502,7 +503,7 @@ class ItemSheetSkill extends TheEdgeItemSheet {
         eff.push([])
         req.push([])
       }
-      this.item.update({
+      await this.item.update({
         "system.maxLevel": maxLevel, "system.effects": eff,
         "system.requirements": req
       });
@@ -785,7 +786,7 @@ class ItemSheetWeapon extends RangeChartSelectorMixin(TheEdgeItemSheet) {
     return ammunitionTypes;
   }
 
-  onIconSelected(iconType, value) {
+  async onIconSelected(iconType, value) {
     switch (iconType) {
       case "ammunitionType":
         this.item.system.ammunitionType = value;
@@ -793,7 +794,7 @@ class ItemSheetWeapon extends RangeChartSelectorMixin(TheEdgeItemSheet) {
           iconType, this._setAmmunitionTypesDict(),
           THE_EDGE.ammunitionSubtypes.includes(value) ? "" : value
         );
-        this.item.update({"system.ammunitionType": value}, {render: false})
+        await this.item.update({"system.ammunitionType": value}, {render: false})
         break;
     }
   }
@@ -814,7 +815,7 @@ class ItemSheetWeapon extends RangeChartSelectorMixin(TheEdgeItemSheet) {
     this.item.update({"system.fireModes": fireModes})
   }
 
-  _onModeModify(event) {
+  async _onModeModify(event) {
     const target = event.target;
     const index = +target.dataset.index;
 
@@ -828,6 +829,6 @@ class ItemSheetWeapon extends RangeChartSelectorMixin(TheEdgeItemSheet) {
     } else {
       fireModes[+index][field] = +target.value;
     }
-    this.item.update({"system.fireModes": fireModes})
+    await this.item.update({"system.fireModes": fireModes})
   }
 }
