@@ -39,6 +39,6 @@ export class TheEdgeItem extends Item {
             await this.update({ "system.quantity": this.system.quantity - 1 });
         }
         else
-            this.delete();
+            await this.delete();
     }
 }
