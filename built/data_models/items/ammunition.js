@@ -33,7 +33,7 @@ export default class AmmunitionData extends generateDataModelWithComponents(Desc
             })
         });
         schema.damage = new SchemaField({
-            bonus: new NumberField({ initial: 0, integer: true }),
+            bonus: new StringField({ initial: "0", validate: AmmunitionData._bonusDamageValidator }),
             penetration: new NumberField({ initial: 0, integer: true })
         });
         schema.rangeChart = new SchemaField({
@@ -44,5 +44,8 @@ export default class AmmunitionData extends generateDataModelWithComponents(Desc
             more_1km: new ArrayField(new NumberField(), { initial: [0, 0] })
         });
         return schema;
+    }
+    static _bonusDamageValidator(value, _options) {
+        return Roll.validate(value);
     }
 }

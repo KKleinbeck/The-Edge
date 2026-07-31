@@ -205,8 +205,8 @@ export default class CharacterData extends CharacterDataParent {
     const attr_mod = Math.floor( (
       this.attributes[weapon.leadAttr1.name].value - weapon.leadAttr1.value +
       this.attributes[weapon.leadAttr2.name].value - weapon.leadAttr2.value
-    ) / 4)
+    ) / 4);
 
-    return Math.max(level + attr_mod, 0)
+    return Math.max(level + attr_mod, 0);
   }
 }

@@ -7,9 +7,7 @@ export const COMBAT_CONFIG = {
     {name: "Broken grip", frequency: 5}, {name: "Barrel misaligned", frequency: 5},
     {name: "Barrel damaged", frequency: 2}, {name: "Catastrophic failure", frequency: 1}
   ] as ICritFailEvent[],
-  handToHandMaxStrain: (handToHandLevel: number, strainMaxUseReduction: number) => {
-    return Math.floor(handToHandLevel / 2.5 + strainMaxUseReduction);
-  },
+
   attackDiceParameters(actor): IAttackDiceParameters {
     return {
       critDice: [1],
@@ -18,5 +16,13 @@ export const COMBAT_CONFIG = {
         actor.system.weapons.general["General weapon proficiency"].value) / 2
       ),
     };
+  },
+
+  handToHandMaxStrain: (handToHandLevel: number, strainMaxUseReduction: number) => {
+    return Math.floor(handToHandLevel / 2.5 + strainMaxUseReduction);
+  },
+
+  weaponAttackActionCost: (precision: "aimed" | "unaimed"): number => {
+    return precision == "aimed" ? 2 : 1;
   }
 }

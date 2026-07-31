@@ -7,9 +7,19 @@ type TBodyPartCoarse = "Torso" | "Head" | "Legs" | "Arms"
 
 type TCoordinate = [number, number]
 
+type TCover = "no cover" | "half cover" | "three quarters" | "full cover"
+
+type TDistance = ("less_2m" | "less_20m" | "less_200m" | "less_1km" | "more_1km")
+
 type TEventNames = (
   "rollAttackCheck-Prior" | "rollAttackCheck-Posterior"
 )
+
+type TMovement = "stationary" | "moderate" | "fast" | "erradic"
+
+type TPrecision = "aimed" | "unaimed"
+
+type TSize = "tiny" | "small" | "normal" | "large" | "giant"
 
 type TWeapon = (
   "Blaster Pistols" | "Pulse Rifle" | "SABs" | "Blaster Shockguns" | "Blaster Snipers" |

@@ -9,7 +9,7 @@ export default class AmmunitionData extends generateDataModelWithComponents(
   DescriptionData, StackableData
 ) {
   static defineSchema() {
-    const schema = super.defineSchema();
+    const schema: Record<string, any> = super.defineSchema();
     schema.loaded = new BooleanField({ initial: false });
     schema.capacity = new SchemaField({
       max: new NumberField({ initial: 30, integer: true, positive: true }),
@@ -38,7 +38,7 @@ export default class AmmunitionData extends generateDataModelWithComponents(
       })
     });
     schema.damage = new SchemaField({
-      bonus: new NumberField({ initial: 0, integer: true }),
+      bonus: new StringField({ initial: "0", validate: AmmunitionData._bonusDamageValidator }),
       penetration: new NumberField({ initial: 0, integer: true })
     });
     schema.rangeChart = new SchemaField({
@@ -50,5 +50,10 @@ export default class AmmunitionData extends generateDataModelWithComponents(
     });
 
     return schema;
+  }
+
+
+  static _bonusDamageValidator(value: string, _options: Record<string, any>): boolean {
+    return Roll.validate(value);
   }
 }

@@ -125,7 +125,8 @@ export default class NewChatServer {
         break;
       
       case "WEAPON CHECK":
-        html = await renderTemplate("systems/the_edge/templates/chat/weapon_check.hbs", details);
+        html = await renderTemplate(
+          "systems/the_edge/templates/chat/weapon-check.hbs", details as IDetailsWeaponCheck);
         break;
     }
     const chatData: Partial<ChatMessageData> = this.createChatData(html, config);

@@ -110,13 +110,17 @@ export default class DialogCombatics extends CheckDialog {
       }
     }
     const details: IDetailsWeaponCheck = {
-      ...this.checkData,
-      ...attackRollResult,
-      ...this.promptResult,
-      damageType: "HandToHand",
+      attackRollResult,
+      attackRollQuery: this.checkData,
       isMelee: true,
-      threshold: threshold,
+      specifics: {
+        damageType: "HandToHand",
+        modifier: this.promptResult.modifier,
+        strain: this.promptResult.strain
+      },
+      vantage: this.promptResult.vantage,
     };
+    details.attackRollQuery.threshold = threshold;
     NewChatServer.transmitEvent(
       "WEAPON CHECK", details, config
     );

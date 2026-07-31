@@ -9,6 +9,7 @@ import DialogReload from "../dialogs/dialog-reload.js";
 import DialogRest from "../dialogs/dialog-rest.js";
 import DialogWeapon from "../dialogs/dialog-weapon.js";
 import LocalisationServer from "../system/localisation_server.js";
+import NotificationServer from "../system/notifications.js";
 
 import THE_EDGE from "../system/config-the-edge.js";
 import { TheEdgeActorSheet } from "./actor-sheet.js";
@@ -203,38 +204,37 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     })
   }
 
+
   static async rollProficiency(_event, target) {
     DialogProficiency.start({
       actor: this.actor, actorId: this.actor.id, proficiency: target.dataset.proficiency,
       tokenId: this.token?.id, sceneId: game.user.viewedScene
     })
   }
+
   
   static async rollAttack(_event, target) {
     const actor = this.actor;
     const token = this.token || Aux.getToken(actor.id);
     if (token === null) {
-        const msg = LocalisationServer.localise("No Token", "Notifications")
-        ui.notifications.notify(msg)
+      NotificationServer.notify("No Token");
       return undefined;
     }
-    const targetIds: string[] = Array.from(game.user.targets.map(x => x.id));  //targets is set
+
+    const targetIds: string[] = Array.from(game.user.targets.map(x => x.id));
     const sceneId = game.user.viewedScene; // TODO: Needed?
     const weaponID = target.closest(".weapon-id")?.dataset.weaponId ||
       target.dataset.weaponId;
     const weapon = this.actor.items.get(weaponID);
-    const threshold = weaponID ? actor.system.getWeaponPlOfWeapon(weaponID) : actor.system.combaticsPL;
 
     if (!weaponID || weapon.system.type === "Hand-to-Hand combat") {
       if (targetIds.length > 1) {
-        const msg = LocalisationServer.parsedLocalisation(
-          "Too many targets", "Notifications", {weapon: "hand to hand", max: 1}
-        )
-        ui.notifications.notify(msg)
+        NotificationServer.notify("Too many targets", {weapon: "hand to hand", max: 1});
         return undefined;
       }
       const damageRoll = weaponID ? weapon.system.fireModes[0].damage : actor.system.combaticsDamage;
       const name = weaponID ? weapon.name : LocalisationServer.localise("Hand to Hand combat", "combat");
+      const threshold = actor.system.combaticsPL;
       DialogCombatics.start({
         actor, actorId: actor.id, token, sceneId, targetId: targetIds[0] || undefined, name, threshold, damageRoll
       });
@@ -242,46 +242,34 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     }
 
     if (targetIds.length > 1 && !(weapon.system.multipleTargets)) {
-      const msg = LocalisationServer.parsedLocalisation(
-        "Too many targets", "Notifications", {weapon: weapon.name, max: 1}
-      )
-      ui.notifications.notify(msg)
+      NotificationServer.notify("Too many targets", {weapon: weapon.name, max: 1});
       return undefined;
     }
 
     if (weapon.system.ammunitionID === "") {
-      let msg = LocalisationServer.localise("Ammu missing", "Notifications")
-      ui.notifications.notify(msg)
+      NotificationServer.notify("Ammu missing");
       return undefined;
     }
     
-    // const activeEffects = [
-    //   ...this.actor.system.effects,
-    //   ...this.actor.getItemEffects(true),
-    //   ...this.actor.getSkillEffects(true),
-    //   ...this.actor.system.statusEffects,
-    // ];
-    // const effects: IEffectOverview[] = [];
-    // for (const effect of activeEffects) {
-    //   for (const modifier of effect.modifiers) {
-    //     if (modifier.group != "weapons") continue;
-    //     if (modifier.field == "all" || modifier.field == weapon.system.damageType || modifier.field == weapon.system.type) {
-    //       effects.push({name: effect.name, value: modifier.value})
-    //     }
-    //   }
-    // }
+    const activeEffects = [
+      ...this.actor.system.effects,
+      ...this.actor.getItemEffects(true),
+      ...this.actor.getSkillEffects(true),
+      ...this.actor.system.statusEffects,
+    ];
+    const effects: IEffectOverview[] = [];
+    for (const effect of activeEffects) {
+      for (const modifier of effect.modifiers) {
+        if (modifier.group != "weapons") continue;
+        if (modifier.field == "all" || modifier.field == weapon.system.damageType || modifier.field == weapon.system.type) {
+          effects.push({name: effect.name, value: modifier.value})
+        }
+      }
+    }
 
-    // TODO: leave out the fine grained BS, and send just the weapon
     DialogWeapon.start({
-      name: weapon.name, actor: actor, actorId: actor.id, token: token,
-      tokenId: token?.id, sceneId: sceneId,
-      ammunition: actor.items.get(weapon.system.ammunitionID),
-      threshold: threshold,
-      // effects: effects,
-      damageType: weapon.system.damageType,
-      rangeChart: weapon.system.rangeChart,
-      fireModes: weapon.system.fireModes,
-      targetIds: targetIds
+      actor: actor, token: token, sceneId: sceneId, weapon: weapon,
+      targetIds: targetIds, effects: effects,
     })
   }
 

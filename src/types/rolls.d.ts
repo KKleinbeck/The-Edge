@@ -101,3 +101,22 @@ interface IAttackRollQuery extends _IRollMeta {
   threshold: number
   token: foundryAny
 }
+
+interface IAttackWeaponLabels {
+  cover: TCover,
+  movement: TMovement,
+  fireMode: string,
+  precision: TPrecision,
+  range: TDistance,
+  size: TSize,
+}
+
+interface IAttackWeaponModifiers {
+  coverModifier: number,
+  movementModifier: number,
+  fireModeModifier: number,
+  rangeModifer: number,
+  sizeModifier: number,
+  tempModifier: number,
+  weaponProfLevel: number
+}

@@ -90,7 +90,7 @@ export default class NewChatServer {
                 html = await renderTemplate("systems/the_edge/templates/chat/skill_used.hbs", details);
                 break;
             case "WEAPON CHECK":
-                html = await renderTemplate("systems/the_edge/templates/chat/weapon_check.hbs", details);
+                html = await renderTemplate("systems/the_edge/templates/chat/weapon-check.hbs", details);
                 break;
         }
         const chatData = this.createChatData(html, config);

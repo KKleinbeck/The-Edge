@@ -43,14 +43,23 @@ interface IProficiencyRollMessage extends IRollResult, IRollPromptResult {
   titleDetails?: string
 }
 
-interface IDetailsWeaponCheck extends IAttackRollQuery, IAttackRollResult {
-  damageType: TDamageTypes
+interface IDetailsWeaponCheck {
+  attackRollResult: IAttackRollResult
+  attackRollQuery: IAttackRollQuery
   isMelee: boolean
-  modifier: number
-  name: string
-  precision?: string
-  strain?: number
+  specifics: IDetailsWeaponCheckForMelee | IDetailsWeaponCheckForRanged
   vantage: TVantage
+}
+
+interface IDetailsWeaponCheckForMelee {
+  damageType?: TDamageTypes
+  modifier: number
+  strain: number,
+}
+
+interface IDetailsWeaponCheckForRanged {
+  labels: IAttackWeaponLabels
+  modifiers: IAttackWeaponModifiers
 }
 
 // Hooks

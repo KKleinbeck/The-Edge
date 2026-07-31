@@ -48,7 +48,9 @@ declare class Actor extends FoundryDocument {
     AdvantagePoints: {used: number, max: number}
     PracticeHours: foundryAny
     applyStrain(change: number): Promise<number>
+    getWeaponPlOfWeapon(weaponId: string): number
     onUpdate(data: any): void
+    rollAttackCheck(prompt: IAttackRollPrompt): Promise<IAttackRollResult>
   }
 }
 
@@ -100,6 +102,7 @@ declare class TokenDocument {
 
   getBarAttribute(barName: string, options: {alternative?: string}): foundryAny
   actor: Actor
+  id: string
 }
 
 // Hooks

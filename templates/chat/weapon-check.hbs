@@ -1,0 +1,73 @@
+<h3>
+  {{#unless isMelee}}
+    {{combatName specifics.labels.precision}} {{genName "shot"}} - 
+  {{/unless}}
+  {{attackRollQuery.name}}
+  </h3>
+<div class="centered-row">
+  <b>{{genName "Check"}}: </b>
+  {{#each attackRollResult.rolls as |roll|}}
+    <a class="attr-d20-chat {{#if roll.hit}}d20-cha{{else}}d20-end{{/if}} rerollable"
+      data-index={{@index}} data-type="weapon" {{#if ../targetId}}data-target-id={{../targetId}}{{/if}}>
+      <span class="d20-overlay" style="font-size: 14px;"
+        data-tooltip="{{#if roll.hit}}Hit{{else}}Miss{{/if}} - {{genName 'threshold'}}: {{../threshold}}">
+        {{roll.dieResult}}
+      </span>
+    </a>
+  {{/each}}
+</div>
+<div class="centered-row">
+  <b>{{genName "Damage"}}: </b>
+  <div class="damage-list">
+    {{#if (checkEqual attackRollResult.damage.length 0)}}
+      <a class="attr-d20-chat no-damage-box">
+        <span class="d20-overlay-weapon">{{genName "No Hit"}}</span>
+      </a>
+    {{else}}
+      {{> systems/the_edge/templates/chat/meta-damage.hbs damage=attackRollResult.damage}}
+    {{/if}}
+  </div>
+</div>
+<div class="apply-damage" style="min-height: 0px;">
+  {{#unless (checkEqual attackRollResult.damage.length 0)}}
+    {{> systems/the_edge/templates/chat/meta-apply-damage.hbs}}
+  {{/unless}}
+</div>
+<hr>
+{{#if (checkEqual vantage "Nothing")}}
+{{else}}
+<div class="centered-row">
+  <b>{{genName "with"}} {{genName vantage}}</b>
+</div>
+{{/if}}
+<div class="centered-row">
+  <b>{{genName "Modificators"}}: </b>
+  <span>{{#if isMelee}}{{specifics.modifier}}{{else}}{{specifics.modifiers.tempModifier}}{{/if}}</span>
+</div>
+{{#if isMelee}}
+  <div class="centered-row">
+    <b>{{genName "Strain"}}: </b>
+    <span>{{specifics.strain}}</span>
+  </div>
+{{else}}
+  <div class="centered-row">
+    <b>{{combatName "Range"}}: </b>
+    <span>{{combatName specifics.labels.range}} ({{specifics.modifiers.rangeModifier}} PL)</span>
+  </div>
+  <div class="centered-row">
+    <b>{{combatName "size"}}: </b>
+    <span>{{combatName specifics.labels.size}} ({{specifics.modifiers.sizeModifier}} PL)</span>
+  </div>
+  <div class="centered-row">
+    <b>{{combatName "movement"}}: </b>
+    <span>{{combatName specifics.labels.movement}} ({{specifics.modifiers.movementModifier}} PL)</span>
+  </div>
+  <div class="centered-row">
+    <b>{{combatName "cover"}}: </b>
+    <span>{{combatName specifics.labels.cover}} ({{specifics.modifiers.coverModifier}} PL)</span>
+  </div>
+  <div class="centered-row">
+    <b>{{combatName "fire selection"}}: </b>
+    <span>{{specifics.labels.fireMode}} ({{specifics.modifiers.fireModeModifier}} PL)</span>
+  </div>
+{{/if}}

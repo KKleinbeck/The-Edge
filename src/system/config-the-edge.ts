@@ -1,7 +1,7 @@
 import { COMBAT_CONFIG } from "./configs/config-combat.js";
 import { EFFECTS } from "./configs/effects.js";
 import { STATUS_EFFECTS } from "./configs/status-effects.js";
-const THE_EDGE = {
+const THE_EDGE: Record<string, any> = {
   effectMap: EFFECTS.effectMap,
   dynamicModifiers: EFFECTS.dynamicModifiers,
   isDynamicModifier: EFFECTS.isDynamicModifier,
@@ -21,8 +21,8 @@ THE_EDGE.sizes = {tiny: 30, small: 130, normal: 250, large: 500, giant: Infinity
 THE_EDGE.sizeModifiers = {"normal": [0, 0], "tiny": [-8, -4], "small": [-4, -2],  "large": [2, 4], "giant": [4, 8]}
 THE_EDGE.ammunitionSubtypes = ["small", "large"]
 THE_EDGE.sizeFreeThrow = {"tiny": 0.3, "small": 1, "normal": 1.5,  "large": 3, "giant": 10} 
-THE_EDGE.movements = {"stationary": [0, 0], "moderate": [-1, -1], "fast": [-2, -2], "erradic": [-4, -4]}
-THE_EDGE.cover = {"no cover": 0, "half cover": -2, "three quarters": -4, "full cover": -20}
+THE_EDGE.movementModifiers = {"stationary": [0, 0], "moderate": [-1, -1], "fast": [-2, -2], "erradic": [-4, -4]}
+THE_EDGE.coverModifiers = {"no cover": 0, "half cover": -2, "three quarters": -4, "full cover": -20}
 THE_EDGE.consumables_subtypes = ["Food", "Grenade", "SkinPack", "FleshPack", "Drugs", "Generic"]
 THE_EDGE.wounds_pixel_coords = {
   "female": {
@@ -56,7 +56,7 @@ THE_EDGE.combat_damage_types = [
 THE_EDGE.bleedingThreshold = {
   "energy": 25, "kinetic": 10, "elemental": 50, "fall": 15, "impact": 15, "HandToHand": 25
 }
-THE_EDGE.wound_odds = ({damage, damageType} = {}) => {
+THE_EDGE.wound_odds = ({damage, damageType}: Record<string, any> = {}) => {
   switch (damageType) {
     case "energy":
       return {"abrasion": 10, "light burn": damage, "strong burn": Math.max(0, Math.ceil(damage*(damage - 10)/10))};
