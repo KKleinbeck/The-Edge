@@ -99,16 +99,6 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
         context.equippedWeapons, this.weaponSelectedIndex, this.nItemsShown
       );
     }
-    context.equippedWeapons.forEach(weapon => {
-      weapon.ammunitionStatus = `(${LocalisationServer.localise("Empty", "Dialog")})`;
-      if (weapon.system.ammunitionID) {
-        const ammunition = context.actor.items.get(weapon.system.ammunitionID);
-        if (!ammunition) return;
-        const ammunitionMax = ammunition.system.capacity.max;
-        const ammunitionValue = ammunition.system.capacity.value;
-        weapon.ammunitionStatus = `(${ammunitionValue} / ${ammunitionMax})`;
-      }
-    })
 
     const dynamicFields = ["item", "health"];
     if (context.actor?.system.counters.length) { dynamicFields.push("counter"); }
@@ -194,7 +184,8 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
         const ammunitionValue = ammunition.system.capacity.value;
         weapon.ammunitionStatus = `(${ammunitionValue} / ${ammunitionMax})`;
       } else {
-        weapon.ammunitionStatus = `(${LocalisationServer.localise("Empty", "Dialog")})`;
+        weapon.ammunitionStatus = weapon.system.type === "Hand-to-Hand combat" ? "" :
+          `(${LocalisationServer.localise("Empty", "Dialog")})`;
       }
     })
 
