@@ -43,7 +43,7 @@ export default class DialogWeapon extends DialogV2 {
   static async start(checkData: IDialogWeaponData): Promise<DialogV2 | null> {
     const checkDataExtended = DialogWeapon._extendCheckData(checkData);
     const config = {
-      position: { width: 300, height: 380 },
+      position: { width: 320, height: 380 },
       window: { title: checkData.weapon.name + " " + LocalisationServer.localise("Check") },
       content: await DialogWeapon._setupContent(checkDataExtended),
       buttons: [
@@ -71,7 +71,7 @@ export default class DialogWeapon extends DialogV2 {
 
   static async _setupContent(checkData: IDialogWeaponDataExtended): Promise<string> { 
 
-    const template = "systems/the_edge/templates/dialogs/weapon-new.hbs";
+    const template = "systems/the_edge/templates/dialogs/weapon.hbs";
     return await renderTemplate(template, checkData);
   }
 

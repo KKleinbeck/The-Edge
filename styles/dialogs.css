@@ -9,12 +9,15 @@
   --font-secondary-color: #ccc;
   --color-text-light-highlight: #FFF;
 }
-.form-grid {
+.dialog-form-grid {
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: center;
   gap: 10px 12px;
 }
-.form-grid label {
+.dialog-form-grid label {
   white-space: nowrap;
+}
+.dialog-modifier-table > tbody > tr > td:last-child {
+  padding-right: 0;
 }

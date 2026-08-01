@@ -1,9 +1,9 @@
-<div class="the_edge">
+<div class="dialog-form-grid">
   <div class="check-dialog-box" style="gap: 0px;">
     {{#if (checkEqual targetIds.length 0)}}
-      <div class="title" style="width: 100%; padding-bottom: 0px;"><div class="section-title">{{combatName "Missing Target"}}</div></div>
+    <div class="title" style="width: 100%; padding-bottom: 0px;"><div class="section-title">{{combatName "Missing Target"}}</div></div>
     {{/if}}
-    <table>
+    <table class="dialog-modifier-table">
       <tr>
         <td>
           <div class="dialog-modifier">
@@ -26,7 +26,7 @@
           </td>
           <td>
             <select class="advantage-box" name="RangeSelector">
-              {{#each rangeChart as |boni range|}}
+              {{#each weapon.system.rangeChart as |boni range|}}
                 <option value="{{range}}">{{genRange range}} ({{getEntry boni 0}} / {{getEntry boni 1}})</option>
               {{/each}}
             </select>
@@ -46,24 +46,24 @@
         </tr>
       {{else}}
         {{#if distance}}
-          <tr>
-            <td>
-              {{genName "Distance"}}:
-            </td>
-            <td>
-              {{round distance 1}} m {{getRangeModifier rangeChart distance}}
-            </td>
-          </tr>
+        <tr>
+          <td>
+            {{genName "Distance"}}:
+          </td>
+          <td>
+            {{round distance 1}} m {{getRangeModifier weapon.system.rangeChart distance}}
+          </td>
+        </tr>
         {{/if}}
         {{#if smallestSize}}
-          <tr>
-            <td>
-              {{genName "Size"}}:
-            </td>
-            <td>
-              {{combatName smallestSize}} {{getSizeModifier smallestSize}}
-            </td>
-          </tr>
+        <tr>
+          <td>
+            {{genName "Size"}}:
+          </td>
+          <td>
+            {{combatName smallestSize}} {{getSizeModifier smallestSize}}
+          </td>
+        </tr>
         {{/if}}
       {{/if}}
       <tr>
@@ -72,7 +72,7 @@
         </td>
         <td>
           <select class="advantage-box" name="MovementSelector">
-            {{#each movements as |mali movement|}}
+            {{#each movementModifiers as |mali movement|}}
               <option value="{{movement}}">{{combatName movement}} ({{getEntry mali 0}} / {{getEntry mali 1}})</option>
             {{/each}}
           </select>
@@ -84,7 +84,7 @@
         </td>
         <td>
           <select class="advantage-box" name="CoverSelector">
-            {{#each cover as |mali cover|}}
+            {{#each coverModifiers as |mali cover|}}
               <option value="{{cover}}">{{combatName cover}} ({{mali}})</option>
             {{/each}}
           </select>
@@ -95,17 +95,17 @@
           {{combatName "Fire Selection"}}:
         </td>
         <td>
-          {{#if (checkEqual (length fireModes) 1)}}
-            {{#each fireModes as |fireMode|}}
-              {{fireMode.name}} ({{getEntry fireMode.precisionPenalty 0}} / {{getEntry fireMode.precisionPenalty 1}})
+        {{#if (checkEqual (length weapon.system.fireModes) 1)}}
+          {{#each weapon.system.fireModes as |fireMode|}}
+            {{fireMode.name}} ({{getEntry fireMode.precisionPenalty 0}} / {{getEntry fireMode.precisionPenalty 1}})
+          {{/each}}
+        {{else}}
+          <select class="advantage-box" name="FireSelector">
+            {{#each weapon.system.fireModes as |fireMode|}}
+              <option value="{{fireMode.name}}">{{fireMode.name}} ({{getEntry fireMode.precisionPenalty 0}} / {{getEntry fireMode.precisionPenalty 1}})</option>
             {{/each}}
-          {{else}}
-            <select class="advantage-box" name="FireSelector">
-              {{#each fireModes as |fireMode|}}
-                <option value="{{fireMode.name}}">{{fireMode.name}} ({{getEntry fireMode.precisionPenalty 0}} / {{getEntry fireMode.precisionPenalty 1}})</option>
-              {{/each}}
-            </select>
-          {{/if}}
+          </select>
+        {{/if}}
         </td>
       </tr>
       <tr>
