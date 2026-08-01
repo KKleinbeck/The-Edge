@@ -45,6 +45,11 @@ declare class Actor extends FoundryDocument {
   itemTypes: Record<string, Items>
   system: {
     attributes: ATTRIBUTES
+    weapons: {
+      energy: IWeaponsEnergy
+      general: IWeaponsGeneral
+      kinetic: IWeaponsKinetic
+    }
     AdvantagePoints: {used: number, max: number}
     PracticeHours: foundryAny
     applyStrain(change: number): Promise<number>

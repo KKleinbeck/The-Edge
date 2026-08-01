@@ -15,7 +15,7 @@ export default class DialogCombatics extends CheckDialog {
         const handToHandLevel = checkData.actor.system.weapons.general["Hand-to-Hand combat"].value;
         const strainMaxUseReduction = checkData.actor.system.strain.maxUseReduction.status;
         const html = await renderTemplate(template, {
-            chance: Aux.asChance(Aux.attackSuccessChance(checkData.threshold, checkData.actor.system.attackDiceParameters), true, 0),
+            chance: Aux.asChance(Aux.attackSuccessChance(checkData.threshold, THE_EDGE.combatConfig.attackDiceParameters(checkData.actor)), true, 0),
             maxStrain: THE_EDGE.combatConfig.handToHandMaxStrain(handToHandLevel, strainMaxUseReduction),
             strainHintType: "Combatics strain"
         });
@@ -53,7 +53,7 @@ export default class DialogCombatics extends CheckDialog {
         const sliderValues = this.getSliderValues();
         const threshold = this.checkData.threshold + Object.values(sliderValues).sum();
         const dieResult = await Aux.promptInput(LocalisationServer.localise("Cheat attack roll", "dialog"));
-        const diceParameters = this.checkData.actor.system.attackDiceParameters;
+        const diceParameters = THE_EDGE.combatConfig.attackDiceParameters(this.checkData.actor);
         const crit = diceParameters.critDice.includes(dieResult);
         const hit = crit || (dieResult <= this.checkData.threshold && !diceParameters.critFailDice.includes(dieResult));
         var damage = hit ? [await DiceServer.genericRoll(this.checkData.damageRoll)] : [];
@@ -113,7 +113,7 @@ export default class DialogCombatics extends CheckDialog {
         const chanceElement = this.element.querySelector(".chance-hook");
         if (!chanceElement)
             return;
-        var chance = Aux.attackSuccessChance(threshold, this.checkData.actor.system.attackDiceParameters);
+        var chance = Aux.attackSuccessChance(threshold, THE_EDGE.combatConfig.attackDiceParameters(this.checkData.actor));
         if (this.vantage == "Advantage")
             chance = 1 - (1 - chance) ** 2;
         else if (this.vantage == "Disadvantage")

@@ -8,7 +8,7 @@ export const COMBAT_CONFIG = {
     {name: "Barrel damaged", frequency: 2}, {name: "Catastrophic failure", frequency: 1}
   ] as ICritFailEvent[],
 
-  attackDiceParameters(actor): IAttackDiceParameters {
+  attackDiceParameters(actor: Actor): IAttackDiceParameters {
     return {
       critDice: [1],
       critFailDice: [20],

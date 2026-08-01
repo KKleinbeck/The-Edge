@@ -23,7 +23,7 @@ export default class DialogCombatics extends CheckDialog {
     const strainMaxUseReduction = checkData.actor.system.strain.maxUseReduction.status;
     const html = await renderTemplate(template, {
       chance: Aux.asChance(Aux.attackSuccessChance(
-        checkData.threshold, checkData.actor.system.attackDiceParameters
+        checkData.threshold, THE_EDGE.combatConfig.attackDiceParameters(checkData.actor)
       ), true, 0),
       maxStrain: THE_EDGE.combatConfig.handToHandMaxStrain(handToHandLevel, strainMaxUseReduction),
       strainHintType: "Combatics strain"
@@ -70,7 +70,7 @@ export default class DialogCombatics extends CheckDialog {
     const dieResult: number = await Aux.promptInput(
       LocalisationServer.localise("Cheat attack roll", "dialog")
     );
-    const diceParameters: IAttackDiceParameters = this.checkData.actor.system.attackDiceParameters;
+    const diceParameters: IAttackDiceParameters = THE_EDGE.combatConfig.attackDiceParameters(this.checkData.actor);
     const crit: boolean = diceParameters.critDice.includes(dieResult);
     const hit: boolean = crit || (
       dieResult <= this.checkData.threshold && !diceParameters.critFailDice.includes(dieResult)
@@ -145,7 +145,7 @@ export default class DialogCombatics extends CheckDialog {
     const chanceElement = this.element.querySelector(".chance-hook");
     if (!chanceElement) return;
 
-    var chance = Aux.attackSuccessChance(threshold, this.checkData.actor.system.attackDiceParameters);
+    var chance = Aux.attackSuccessChance(threshold, THE_EDGE.combatConfig.attackDiceParameters(this.checkData.actor));
     if (this.vantage == "Advantage") chance = 1 - (1 - chance)**2;
     else if (this.vantage == "Disadvantage") chance = chance**2;
     chanceElement.innerHTML = Aux.asChance(chance, true, 0) as string;
