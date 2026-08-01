@@ -34,18 +34,6 @@
     <div>{{combatName "Reload duration"}}</div>
   </div>
 </div>
-<h5 style="margin: 12px 0 8px 0;">{{genName "available for"}}</h5>
-<div style="display: grid; grid-template-columns: auto auto; padding: 0 10px 0 10px;">
-{{#each item.system.whitelist as |candidates type|}}
-  {{#if (checkEqual type ../item.system.type)}}
-    {{#each candidates as |val weapon|}}
-      {{#if val}}
-        <b>{{combatName weapon}}</b>
-      {{/if}}
-    {{/each}}
-  {{/if}}
-{{/each}}
-</div>
 <h5 style="margin: 12px 0 8px 0;">{{combatName "Range Chart"}}:</h5>
 <div class="replace-hook" data-replace-by="range-chart"></div>
 {{#if (checkNotEmpty item.system.description)}}

@@ -240,11 +240,9 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
         const weaponID = target.closest(".weapon-id").dataset.weaponId;
         const weapon = this.actor.items.get(weaponID);
         const ammunitionOptions = this.actor.itemTypes["Ammunition"].filter(x => {
-            const isWhitelisted = (x.system.whitelist[x.system.type][weapon.system.type] ||
-                weapon.system.type === "Recoilless Rifles");
             const subtypeMatches = (x.system.subtype == weapon.system.ammunitionType);
             const isNotLoaded = !x.system.loaded;
-            return isWhitelisted && subtypeMatches && isNotLoaded;
+            return subtypeMatches && isNotLoaded;
         });
         await DialogReload.start({
             weaponID: weaponID,
