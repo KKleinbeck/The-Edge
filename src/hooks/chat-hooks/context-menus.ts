@@ -88,8 +88,9 @@ function _handleRerollOrChange(contextHtml: HTMLAnchorElement, config: IContextM
       updateProficiencyCheck(chatMsgCls, system, system.details.rolls);
       break;
     case "weapon":
-      rerollDetails.old = system.details.rolls[index].dieResult;
-      const newResults = structuredClone(system.details.rolls);
+      const details = system.details as IDetailsWeaponCheck;
+      rerollDetails.old = details.attackRollResult.rolls[index].dieResult;
+      const newResults = structuredClone(details.attackRollResult.rolls);
       newResults[index].dieResult = newRoll;
       updateWeaponCheck(chatMsgCls, actor, system, newResults, index);
       rerollDetails.check = LocalisationServer.localise("combat", "combat");
@@ -141,10 +142,10 @@ async function updateProficiencyCheck(chatMsgCls: foundryAny, system: IChatSyste
 }
 
 function _heroTokenWeaponCheck(chatMsgCls: foundryAny, actor: foundryAny, system: IChatSystem, index: number) {
-  const { details } = system;
-  const newResults = structuredClone(details.rolls);
+  const details = system.details as IDetailsWeaponCheck;
+  const newResults = structuredClone(details.attackRollResult.rolls);
   if (newResults[index].hit) newResults[index].dieResult = 1;
-  else newResults[index].dieResult = details.threshold;
+  else newResults[index].dieResult = details.attackRollQuery.threshold;
   updateWeaponCheck(chatMsgCls, actor, system, newResults, index);
 }
 
@@ -152,8 +153,8 @@ function _heroTokenWeaponCheck(chatMsgCls: foundryAny, actor: foundryAny, system
 async function updateWeaponCheck(
   chatMsgCls: foundryAny, _actor: foundryAny, system: IChatSystem, newResults: IAttackRoll[], index: number
 ): Promise<void> {
-  const { details } = system;
-  if ((newResults[index].dieResult <= details.threshold || newResults[index].dieResult == 1) &&
+  const details = system.details as IDetailsWeaponCheck;
+  if ((newResults[index].dieResult <= details.attackRollQuery.threshold || newResults[index].dieResult == 1) &&
     // TODO: Refactor once we have a generic crit interface
     ![20].includes(newResults[index].dieResult)) {
     newResults[index].hit = true;
@@ -162,34 +163,34 @@ async function updateWeaponCheck(
   // Which hit was modified?
   let hitIndex = 0;
   for (let i = 0; i < index; ++i) {
-    if (details.rolls[i].hit) hitIndex += 1;
+    if (details.attackRollResult.rolls[i].hit) hitIndex += 1;
   }
 
-  if (details.rolls[index].hit) { // Previous roll was a hit
-    if (!newResults[index].hit) details.damage.splice(hitIndex, 1);
+  if (details.attackRollResult.rolls[index].hit) { // Previous roll was a hit
+    if (!newResults[index].hit) details.attackRollResult.damage.splice(hitIndex, 1);
     // TODO: Refactor once we have a generic crit interface
     else if ([1].includes(newResults[index].dieResult) &&
-      ![1].includes(details.rolls[index].dieResult)) {
-      details.damage[hitIndex] += DiceServer.max(details.damageRoll);
-    } else if (newResults[index].dieResult != 1 && details.rolls[index].dieResult == 1) {
-      details.damage[hitIndex] -= DiceServer.max(details.damageRoll);
+      ![1].includes(details.attackRollResult.rolls[index].dieResult)) {
+      details.attackRollResult.damage[hitIndex] += DiceServer.max(details.attackRollQuery.damageRoll);
+    } else if (newResults[index].dieResult != 1 && details.attackRollResult.rolls[index].dieResult == 1) {
+      details.attackRollResult.damage[hitIndex] -= DiceServer.max(details.attackRollQuery.damageRoll);
     }
   } else { // Previous roll wasn't a hit
     if (newResults[index].hit) {
-      details.damage = [
-        ...details.damage.slice(0, hitIndex),
-        await DiceServer.genericRoll(details.damageRoll),
-        ...details.damage.slice(hitIndex)
+      details.attackRollResult.damage = [
+        ...details.attackRollResult.damage.slice(0, hitIndex),
+        await DiceServer.genericRoll(details.attackRollQuery.damageRoll),
+        ...details.attackRollResult.damage.slice(hitIndex)
       ]
     }
     if (newResults[index].dieResult == 1) {
-      details.damage[hitIndex] += DiceServer.max(details.damageRoll);
+      details.attackRollResult.damage[hitIndex] += DiceServer.max(details.attackRollQuery.damageRoll);
     }
   }
 
-  details.rolls = newResults;
+  details.attackRollResult.rolls = newResults;
   const newContent = await renderTemplate(
-    "systems/the_edge/templates/chat/weapon_check.hbs", details);
+    "systems/the_edge/templates/chat/weapon-check.hbs", details);
   updateChatMessage(chatMsgCls, newContent, system);
 }
 

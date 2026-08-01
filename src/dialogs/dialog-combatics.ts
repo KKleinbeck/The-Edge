@@ -112,9 +112,9 @@ export default class DialogCombatics extends CheckDialog {
     const details: IDetailsWeaponCheck = {
       attackRollResult,
       attackRollQuery: this.checkData,
+      damageType: "HandToHand",
       isMelee: true,
       specifics: {
-        damageType: "HandToHand",
         modifier: this.promptResult.modifier,
         strain: this.promptResult.strain
       },

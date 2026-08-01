@@ -47,10 +47,10 @@ function rollIsReady(id, target) {
 ;
 export async function applyDamage(_event, sys, html) {
     const details = sys.details; // TODO Type
-    if (details.targetId) {
+    if (details.attackRollQuery.targetId) {
         const scene = game.scenes.get(sys.config.speaker.scene);
-        const target = scene.tokens.get(details.targetId)?.actor;
-        const protectionLog = await _applyDamage(target, details.damage, details.penetration === undefined ? 0 : details.penetration, details.rolls.map(x => x.crit), details.damageType, details.name);
+        const target = scene.tokens.get(details.attackRollQuery.targetId)?.actor;
+        const protectionLog = await _applyDamage(target, details.attackRollResult.damage, "penetration" in details.specifics ? details.specifics.penetration : 0, details.attackRollResult.rolls.map(x => x.crit), details.damageType, details.attackRollQuery.name);
         if (Object.keys(protectionLog).length != 0) {
             const template = "systems/the_edge/templates/chat/meta-protection-log.html";
             const protectionHtml = await renderTemplate(template, { protection: protectionLog });

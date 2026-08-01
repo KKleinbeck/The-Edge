@@ -11,8 +11,6 @@ export default class DialogWeapon extends DialogV2 {
     }
     static async start(checkData) {
         const checkDataExtended = DialogWeapon._extendCheckData(checkData);
-        // actor.system.getWeaponPlOfWeapon(weaponID)
-        // ammunition: actor.items.get(weapon.system.ammunitionID),
         const config = {
             position: { width: 300, height: 380 },
             window: { title: checkData.weapon.name + " " + LocalisationServer.localise("Check") },
@@ -156,7 +154,7 @@ export default class DialogWeapon extends DialogV2 {
         }
         ;
         for (const id of checkData.targetIds) {
-            checkData["targetId"] = id;
+            details.attackRollQuery.targetId = id;
             NewChatServer.transmitEvent("WEAPON CHECK", details, chatServerConfig);
         }
         // if (rollResult.failEvent) {
@@ -195,10 +193,12 @@ export default class DialogWeapon extends DialogV2 {
         return {
             attackRollQuery,
             attackRollResult: rollDamageOutcome.attackRollResult,
+            damageType: checkData.weapon.system.damageType,
             isMelee: false,
             specifics: {
                 labels: parseResult.labels,
                 modifiers: parseResult.modifiers,
+                penetration: rollDamageOutcome.penetration
             },
             vantage: parseResult.vantage
         };

@@ -10,7 +10,7 @@
     <a class="attr-d20-chat {{#if roll.hit}}d20-cha{{else}}d20-end{{/if}} rerollable"
       data-index={{@index}} data-type="weapon" {{#if ../targetId}}data-target-id={{../targetId}}{{/if}}>
       <span class="d20-overlay" style="font-size: 14px;"
-        data-tooltip="{{#if roll.hit}}Hit{{else}}Miss{{/if}} - {{genName 'threshold'}}: {{../threshold}}">
+        data-tooltip="{{#if roll.hit}}Hit{{else}}Miss{{/if}} - {{genName 'threshold'}}: {{../attackRollQuery.threshold}}">
         {{roll.dieResult}}
       </span>
     </a>
@@ -24,7 +24,10 @@
         <span class="d20-overlay-weapon">{{genName "No Hit"}}</span>
       </a>
     {{else}}
-      {{> systems/the_edge/templates/chat/meta-damage.hbs damage=attackRollResult.damage}}
+      {{> systems/the_edge/templates/chat/meta-damage.hbs
+        damage=attackRollResult.damage
+        damageRoll=attackRollQuery.damageRoll
+      }}
     {{/if}}
   </div>
 </div>

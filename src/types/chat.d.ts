@@ -46,13 +46,13 @@ interface IProficiencyRollMessage extends IRollResult, IRollPromptResult {
 interface IDetailsWeaponCheck {
   attackRollResult: IAttackRollResult
   attackRollQuery: IAttackRollQuery
+  damageType: TDamageTypes
   isMelee: boolean
   specifics: IDetailsWeaponCheckForMelee | IDetailsWeaponCheckForRanged
   vantage: TVantage
 }
 
 interface IDetailsWeaponCheckForMelee {
-  damageType?: TDamageTypes
   modifier: number
   strain: number,
 }
@@ -60,6 +60,7 @@ interface IDetailsWeaponCheckForMelee {
 interface IDetailsWeaponCheckForRanged {
   labels: IAttackWeaponLabels
   modifiers: IAttackWeaponModifiers
+  penetration: number
 }
 
 // Hooks

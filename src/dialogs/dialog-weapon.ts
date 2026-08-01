@@ -42,8 +42,6 @@ export default class DialogWeapon extends DialogV2 {
 
   static async start(checkData: IDialogWeaponData): Promise<DialogV2 | null> {
     const checkDataExtended = DialogWeapon._extendCheckData(checkData);
-    // actor.system.getWeaponPlOfWeapon(weaponID)
-      // ammunition: actor.items.get(weapon.system.ammunitionID),
     const config = {
       position: { width: 300, height: 380 },
       window: { title: checkData.weapon.name + " " + LocalisationServer.localise("Check") },
@@ -234,7 +232,7 @@ export default class DialogWeapon extends DialogV2 {
       checkData, parseResult, rollDamageOutcome);
     if (checkData.targetIds.length == 0) { NewChatServer.transmitEvent("WEAPON CHECK", details, chatServerConfig) };
     for (const id of checkData.targetIds) {
-      checkData["targetId"] = id;
+      details.attackRollQuery.targetId = id;
       NewChatServer.transmitEvent("WEAPON CHECK", details, chatServerConfig);
     }
     // if (rollResult.failEvent) {
@@ -267,7 +265,7 @@ export default class DialogWeapon extends DialogV2 {
 
 
   static _generateWeaponCheckData(
-    checkData: IDialogWeaponDataExtended, parseResult: _IParseResult, rollDamageOutcome: _IRollDamageOutcome
+    checkData: IDialogWeaponDataExtended, parseResult: _IParseResult, rollDamageOutcome: _IRollDamageOutcome,
   ): IDetailsWeaponCheck {
     const attackRollQuery: IAttackRollQuery = {
       actor: checkData.actor,
@@ -282,10 +280,12 @@ export default class DialogWeapon extends DialogV2 {
     return {
       attackRollQuery,
       attackRollResult: rollDamageOutcome.attackRollResult,
+      damageType: checkData.weapon.system.damageType,
       isMelee: false,
       specifics: {
         labels: parseResult.labels,
         modifiers: parseResult.modifiers,
+        penetration: rollDamageOutcome.penetration
       },
       vantage: parseResult.vantage
     }
