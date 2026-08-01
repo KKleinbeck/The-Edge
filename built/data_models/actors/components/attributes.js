@@ -48,7 +48,9 @@ export default class AttributeData extends DataModelComponent {
             threshold: this.attributes[promptResult.attribute].value,
             vantage: promptResult.vantage
         };
+        Hooks.call("onModifierEvent", "rollAttributeCheck-Prior", { actor: this.parent, promptResult });
         const rollResult = await DiceServer.attributeCheck(diceServerConfig);
+        Hooks.call("onModifierEvent", "rollAttributeCheck-Posterior", { actor: this.parent, promptResult, rollResult });
         this.applyStrain(promptResult.strain);
         if (transmit) {
             const details = {

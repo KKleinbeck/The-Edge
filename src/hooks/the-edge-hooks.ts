@@ -33,8 +33,7 @@ async function handleOutOfCombatAction(payload: ITheEdgeActionPayload) {
 
 function _onModifierEvent(field: TEventNames, details: Record<string, any>): boolean {
   switch (field) {
-    case "rollAttackCheck-Prior":
-    case "rollAttackCheck-Posterior":
+    default:
       details.actor.effectHooks(field, details)
       break;
   }

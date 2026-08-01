@@ -53,8 +53,8 @@ export default class DialogAttribute extends CheckDialog {
             }
         }).render(true);
     }
-    static rollCallback(dialog, checkData, roll) {
-        const sliderValues = dialog.getSliderValues();
+    static async rollCallback(dialog, checkData, roll) {
+        dialog.getSliderValues();
         const vantageElement = dialog.element.querySelector(".vantage-hook");
         if (!(vantageElement instanceof HTMLSelectElement)) {
             ui.notifications.error("VantageElement is not of type HTMLSelectElement");
@@ -63,7 +63,7 @@ export default class DialogAttribute extends CheckDialog {
         const promptResult = { roll, ...dialog.promptResult };
         checkData.attribute = checkData.attribute.toLowerCase();
         const attributePromptResult = foundry.utils.mergeObject(checkData, promptResult);
-        checkData.actor.system.rollAttributeCheck(attributePromptResult);
+        await checkData.actor.system.rollAttributeCheck(attributePromptResult);
         const payload = {
             actionType: "attribute check",
             actor: checkData.actor,

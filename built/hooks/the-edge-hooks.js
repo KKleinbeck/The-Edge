@@ -24,8 +24,7 @@ async function handleOutOfCombatAction(payload) {
 }
 function _onModifierEvent(field, details) {
     switch (field) {
-        case "rollAttackCheck-Prior":
-        case "rollAttackCheck-Posterior":
+        default:
             details.actor.effectHooks(field, details);
             break;
     }

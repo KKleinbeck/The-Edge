@@ -127,7 +127,12 @@ class ProficiencyData extends DataModelComponent {
       vantage: promptResult.vantage
     }
 
+    Hooks.call("onModifierEvent", "rollProficiencyCheck-Prior", {actor: this.parent, promptResult});
     const rollResult: IRollResult = await DiceServer.proficiencyCheck(diceServerConfig);
+    Hooks.call(
+      "onModifierEvent", "rollProficiencyCheck-Posterior",
+      {actor: this.parent, promptResult, rollResult}
+    );
     this.applyStrain(promptResult.strain);
 
     const rollDetails: IProficiencyRollMessage = {

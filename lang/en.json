@@ -298,6 +298,10 @@
     "STRAIN - STATUSTHRESHOLD": "Delay strain effects",
     "STRAIN - MAXUSEREDUCTION": "Reduce max strain per roll",
 
+    "ROLLATTRIBUTECHECK-PRIOR": "Before attribute roll",
+    "ROLLATTRIBUTECHECK-POSTERIOR": "After attribute roll",
+    "ROLLPROFICIENCYCHECK-PRIOR": "Before proficiency roll",
+    "ROLLPROFICIENCYCHECK-POSTERIOR": "After proficiency roll",
     "ROLLATTACKCHECK-PRIOR": "Before attack roll",
     "ROLLATTACKCHECK-POSTERIOR": "After attack roll"
   },

@@ -87,7 +87,7 @@ export default class DialogProficiency extends CheckDialog {
     
     const proficiencyPromptResult: IProficiencyPromptResult = foundry.utils.mergeObject(
       checkData, promptResult);
-    checkData.actor.system.rollProficiencyCheck(proficiencyPromptResult, onSubmitCallback);
+    await checkData.actor.system.rollProficiencyCheck(proficiencyPromptResult, onSubmitCallback);
 
     const payload: ITheEdgeActionPayload = {
       actionType: "proficiency check",

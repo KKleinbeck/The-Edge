@@ -59,8 +59,8 @@ export default class DialogAttribute extends CheckDialog {
     }).render(true)
   }
 
-  static rollCallback(dialog: DialogAttribute, checkData: IAttributeRollQuery, roll: rollType) {
-    const sliderValues = dialog.getSliderValues();
+  static async rollCallback(dialog: DialogAttribute, checkData: IAttributeRollQuery, roll: rollType) {
+    dialog.getSliderValues();
 
     const vantageElement = dialog.element.querySelector(".vantage-hook");
     if (!(vantageElement instanceof HTMLSelectElement)) {
@@ -72,7 +72,7 @@ export default class DialogAttribute extends CheckDialog {
     checkData.attribute = checkData.attribute.toLowerCase();
     const attributePromptResult: IAttributePromptResult = foundry.utils.mergeObject(
       checkData, promptResult);
-    checkData.actor.system.rollAttributeCheck(attributePromptResult);
+    await checkData.actor.system.rollAttributeCheck(attributePromptResult);
 
     const payload: ITheEdgeActionPayload = {
       actionType: "attribute check",

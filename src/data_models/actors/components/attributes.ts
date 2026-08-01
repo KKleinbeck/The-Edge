@@ -59,7 +59,11 @@ export default class AttributeData extends DataModelComponent {
       vantage: promptResult.vantage
     }
 
+    Hooks.call("onModifierEvent", "rollAttributeCheck-Prior", {actor: this.parent, promptResult});
     const rollResult: IRollResult = await DiceServer.attributeCheck(diceServerConfig);
+    Hooks.call(
+      "onModifierEvent", "rollAttributeCheck-Posterior", {actor: this.parent, promptResult, rollResult}
+    );
     this.applyStrain(promptResult.strain);
 
     if (transmit) {
