@@ -122,7 +122,7 @@ export default class DiceServer {
     let netOutcome: number = 0;
     for (let i = 0; i < config.nRolls; ++i) {
       const dieResult = await this.genericRoll("1d20");
-      const crit = config.critDice.includes(dieResult);
+      const crit = config.critDice.includes(dieResult) && dieResult <= config.threshold;
       const hit = dieResult <= config.threshold && !(config.critFailDice.includes(dieResult));
       rolls.push({crit, dieResult, hit});
 
