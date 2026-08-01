@@ -235,11 +235,14 @@ export default class DialogWeapon extends DialogV2 {
       details.attackRollQuery.targetId = id;
       NewChatServer.transmitEvent("WEAPON CHECK", details, chatServerConfig);
     }
-    // if (rollResult.failEvent) {
-    //   NewChatServer.transmitEvent(
-    //     "CRIT FAIL EVENT", {event: rollResult.failEvent, check: "Combat check"}, chatServerConfig
-    //   )
-    // }
+
+    if (rollDamageOutcome.attackRollResult.failEvent) {
+      NewChatServer.transmitEvent(
+        "CRIT FAIL EVENT",
+        {event: rollDamageOutcome.attackRollResult.failEvent, check: "Combat check"},
+        chatServerConfig
+      )
+    }
   }
 
 

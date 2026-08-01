@@ -118,7 +118,7 @@ export default class DiceServer {
   }
 
   static async _attackRoll(config: IAttackRollPrompt): Promise<[IAttackRoll[], number]> {
-    const rolls: IAttackRoll[] = []
+    const rolls: IAttackRoll[] = [];
     let netOutcome: number = 0;
     for (let i = 0; i < config.nRolls; ++i) {
       const dieResult = await this.genericRoll("1d20");
