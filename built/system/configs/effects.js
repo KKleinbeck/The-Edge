@@ -25,17 +25,23 @@ export const EFFECTS = {
         switch (field) {
             case "rollAttackCheck-Posterior":
                 return header + "function onEvent(details, id) {\n" +
-                    "  console.log(details, id)\n" +
-                    "  // details.actor = ...\n" +
-                    "  // details.attackOutcome = ...\n" +
-                    "  // details.diceServerConfig = ...\n" +
-                    "  // details.prompt = ...\n}";
+                    "  // Prevents triggering on other weapons\n" +
+                    "  if (details.weaponId === id) {\n" +
+                    "    console.log(details)\n" +
+                    "    // details.actor = ...\n" +
+                    "    // details.attackOutcome = ...\n" +
+                    "    // details.diceServerConfig = ...\n" +
+                    "    // details.prompt = ...\n" +
+                    "  }\n}";
             case "rollAttackCheck-Prior":
                 return header + "function onEvent(details, id) {\n" +
-                    "  console.log(details, id)\n" +
-                    "  // details.actor = ...\n" +
-                    "  // details.diceServerConfig = ...\n" +
-                    "  // details.prompt = ...\n}";
+                    "  // Prevents triggering on other weapons\n" +
+                    "  if (details.weaponId === id) {\n" +
+                    "    console.log(details)\n" +
+                    "    // details.actor = ...\n" +
+                    "    // details.diceServerConfig = ...\n" +
+                    "    // details.prompt = ...\n" +
+                    "  }\n}";
         }
     }
 };

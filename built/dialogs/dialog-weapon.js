@@ -142,8 +142,10 @@ export default class DialogWeapon extends DialogV2 {
             vantage: parseResult.vantage,
             ...THE_EDGE.combatConfig.attackDiceParameters(checkData.actor)
         };
+        Hooks.call("onModifierEvent", "rollAttackCheck-Prior", { actor: checkData.actor, prompt, weaponId: checkData.weapon.id });
         const attackRollResult = await checkData.actor.system.rollAttackCheck(prompt);
-        DialogWeapon._dispatchHook(checkData, parseResult);
+        DialogWeapon._dispatchActionHook(checkData, parseResult);
+        Hooks.call("onModifierEvent", "rollAttackCheck-Posterior", { actor: checkData.actor, attackRollResult, prompt, weaponId: checkData.weapon.id });
         return { penetration: ammunition.system.penetration, prompt, attackRollResult };
     }
     static async _onRollApplyDamageAndPost(checkData, parseResult, rollDamageOutcome) {
@@ -161,7 +163,7 @@ export default class DialogWeapon extends DialogV2 {
             NewChatServer.transmitEvent("CRIT FAIL EVENT", { event: rollDamageOutcome.attackRollResult.failEvent, check: "Combat check" }, chatServerConfig);
         }
     }
-    static _dispatchHook(checkData, parseResult) {
+    static _dispatchActionHook(checkData, parseResult) {
         const payload = {
             actionType: parseResult.labels.precision == "aimed" ? "weapon check aimed" : "weapon check",
             actionCost: THE_EDGE.combatConfig.weaponAttackActionCost(parseResult.labels.precision),

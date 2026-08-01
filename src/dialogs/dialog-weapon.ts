@@ -216,8 +216,16 @@ export default class DialogWeapon extends DialogV2 {
       vantage: parseResult.vantage,
       ...THE_EDGE.combatConfig.attackDiceParameters(checkData.actor)
     }
+
+    Hooks.call(
+      "onModifierEvent", "rollAttackCheck-Prior", {actor: checkData.actor, prompt, weaponId: checkData.weapon.id}
+    );
     const attackRollResult: IAttackRollResult = await checkData.actor.system.rollAttackCheck(prompt);
-    DialogWeapon._dispatchHook(checkData, parseResult);
+    DialogWeapon._dispatchActionHook(checkData, parseResult);
+    Hooks.call(
+      "onModifierEvent", "rollAttackCheck-Posterior",
+      {actor: checkData.actor, attackRollResult, prompt, weaponId: checkData.weapon.id}
+    );
 
     return { penetration: ammunition.system.penetration, prompt, attackRollResult };
   }
@@ -246,7 +254,7 @@ export default class DialogWeapon extends DialogV2 {
   }
 
 
-  static _dispatchHook(checkData: IDialogWeaponDataExtended, parseResult: _IParseResult) {
+  static _dispatchActionHook(checkData: IDialogWeaponDataExtended, parseResult: _IParseResult) {
     const payload: ITheEdgeActionPayload = {
       actionType: parseResult.labels.precision =="aimed" ? "weapon check aimed" : "weapon check",
       actionCost: THE_EDGE.combatConfig.weaponAttackActionCost(parseResult.labels.precision),
