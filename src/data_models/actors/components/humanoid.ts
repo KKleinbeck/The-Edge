@@ -1,9 +1,12 @@
 import { DataModelComponent } from "../../abstracts.js";
-import ChatServer from "../../../system/chat_server.js";
+import NewChatServer from "../../../system/new_chat_server.js";
 
-const { NumberField, SchemaField, StringField } = foundry.data.fields;
+const { NumberField, StringField } = foundry.data.fields;
 
 export default class HumanoidData extends DataModelComponent {
+  declare wounds: any[]
+  declare health: HEALTH
+
   static defineSchema() {
     return {
       age: new NumberField({ initial: 21, integer: true, min: 0, required: true }),
@@ -15,24 +18,26 @@ export default class HumanoidData extends DataModelComponent {
   }
 
   // Rest related
-  shortRest() {this._rest("1d3 % 2", "1d3-1", "short rest")}
-  longRest() {this._rest("2d3kh", "2d6 / 2", "long rest")}
+  shortRest() {this._rest({coagulationDice: "1d3 % 2", healingDice: "1d3-1", type: "short rest"})}
+  longRest() {this._rest({coagulationDice: "2d3kh", healingDice: "2d6 / 2", type: "long rest"})}
 
-  async _rest(coagulationDice, healingDice, type) {
+  async _rest(restDescription: IRestDescription) {
+    Hooks.call("onModifierEvent", "onRest", {actor: this.parent, restDescription})
+
     let accHealing = 0;
     let accCoagulation = 0;
 
-    const newWounds = [];
+    const newWounds: any[] = [];
     for (const wound of this.wounds) {
       if (wound.bleeding > 0) {
-        const coagulationRoll = await new Roll(coagulationDice).evaluate()
+        const coagulationRoll = await new Roll(restDescription.coagulationDice).evaluate()
         const coagulation = Math.floor(coagulationRoll.total);
         accCoagulation += Math.min(coagulation, wound.bleeding);
         if (wound.damage == 0 && wound.bleeding <= coagulation) continue;
 
         wound.bleeding = Math.max(wound.bleeding - coagulation, 0);
       } else {
-        const healingRoll = await new Roll(healingDice).evaluate();
+        const healingRoll = await new Roll(restDescription.healingDice).evaluate();
         const healing = Math.floor(healingRoll.total);
         accHealing += Math.min(healing, wound.damage);
         if (wound.damage <= healing) continue;
@@ -46,8 +51,10 @@ export default class HumanoidData extends DataModelComponent {
       "system.health.value": Math.min(this.health.max.value, this.health.value + accHealing),
       "system.wounds": newWounds
     });
-    ChatServer.transmitEvent(
-      type, {healing: accHealing, coagulation: accCoagulation}
+    NewChatServer.transmitEvent(
+      restDescription.type.toUpperCase() as ChatId,
+      {healing: accHealing, coagulation: accCoagulation},
+      {speaker: {actor: this.parent.id}}
     )
   }
 }

@@ -83,7 +83,7 @@ export default function EffectModifierMixin(BaseApplication) {
         static async _editDynamicModifier(_event, target) {
             const index = target.dataset.index;
             // @ts-expect-error 2339 we know we are called with a correct `this`
-            const { modifiers, context } = this.getModifiers();
+            const { modifiers, context } = this.getModifiers(target);
             const currentModifier = modifiers[index];
             const newValue = await DialogDynamicModifier.prompt(currentModifier.value);
             if (newValue === null)

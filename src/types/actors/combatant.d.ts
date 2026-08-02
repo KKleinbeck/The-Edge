@@ -6,3 +6,9 @@ interface IFApplyDamage {
   name: string
   penetration: number
 }
+
+interface IRestDescription {
+  coagulationDice: string
+  healingDice: string
+  type: "short rest" | "long rest"
+}
