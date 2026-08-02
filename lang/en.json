@@ -306,6 +306,7 @@
     "ROLLMELEECHECK-POSTERIOR": "After melee roll",
     "ROLLPROFICIENCYCHECK-PRIOR": "Before proficiency roll",
     "ROLLPROFICIENCYCHECK-POSTERIOR": "After proficiency roll",
+    "ONRECEIVEDAMAGE": "On receive damage",
     "ONREST": "On rest"
   },
   "GAME ACTIONS": {

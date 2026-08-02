@@ -16,7 +16,7 @@ type TEventNames = (
   "rollAttributeCheck-Prior" | "rollAttributeCheck-Posterior" |
   "rollMeleeCheck-Prior" | "rollMeleeCheck-Posterior" |
   "rollProficiencyCheck-Prior" | "rollProficiencyCheck-Posterior" |
-  "onRest"
+  "onReceiveDamage" | "onRest"
 )
 
 type TMovement = "stationary" | "moderate" | "fast" | "erradic"

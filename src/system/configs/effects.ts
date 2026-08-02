@@ -3,7 +3,7 @@ export const EVENT_NAMES = [
   "rollAttributeCheck-Prior", "rollAttributeCheck-Posterior",
   "rollMeleeCheck-Prior", "rollMeleeCheck-Posterior",
   "rollProficiencyCheck-Prior", "rollProficiencyCheck-Posterior",
-  "onRest"
+  "onReceiveDamage", "onRest"
 ] as const satisfies TEventNames[];
 
 export const EFFECTS = {
@@ -17,7 +17,7 @@ export const EFFECTS = {
 
   dynamicModifiers: (type: string): TEventNames[] | void => {
     const attributes: Partial<TEventNames>[] = ["rollAttributeCheck-Prior", "rollAttributeCheck-Posterior"];
-    const general: Partial<TEventNames>[] = ["onRest", "rollAttributeCheck-Posterior"];
+    const general: Partial<TEventNames>[] = ["onReceiveDamage", "onRest"];
     const proficiency: Partial<TEventNames>[] = ["rollProficiencyCheck-Prior", "rollProficiencyCheck-Posterior"];
     const weapon: Partial<TEventNames>[] = [
       "rollMeleeCheck-Prior", "rollMeleeCheck-Posterior", "rollAttackCheck-Prior", "rollAttackCheck-Posterior"
@@ -81,6 +81,13 @@ export const EFFECTS = {
           "    // Handle weapon-less attacks\n" +
           "    console.log(details)\n" +
           "  }\n}";
+
+      case "onReceiveDamage":
+        return header + "function onEvent(details, id) {\n" +
+          "  console.log(details)\n" +
+          "  // details.actor = ... \n" +
+          "  // details.damageConfig = ... \n" +
+          "}";
 
       case "onRest":
         return header + "function onEvent(details, id) {\n" +

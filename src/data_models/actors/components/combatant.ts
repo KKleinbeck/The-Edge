@@ -104,16 +104,18 @@ export default class CombatantData extends DataModelComponent {
   }
 
 
-  async applyDamage(config: IFApplyDamage) {
-    const {damageType} = config;
-    let {damage} = config;
-    const woundDetails: Partial<IWoundDetails> = {source: config.name, damageType: damageType};
+  async applyDamage(damageConfig: IFApplyDamage) {
+    Hooks.call("onModifierEvent", "onReceiveDamage", {actor: this.parent, damageConfig})
+
+    const {damageType} = damageConfig;
+    let {damage} = damageConfig;
+    const woundDetails: Partial<IWoundDetails> = {source: damageConfig.name, damageType: damageType};
     [woundDetails.bodyPart, woundDetails.coordinates] = Aux.generateWoundLocation(
-      config.crit, this.sex, config.givenLocation);
+      damageConfig.crit, this.sex, damageConfig.givenLocation);
 
     let protectionLog = {};
     [protectionLog, damage] = await this._determineArmourProtection(
-      damage, config.penetration, damageType, woundDetails.bodyPart
+      damage, damageConfig.penetration, damageType, woundDetails.bodyPart
     );
     woundDetails.damage = damage;
 

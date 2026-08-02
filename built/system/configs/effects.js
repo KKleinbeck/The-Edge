@@ -3,7 +3,7 @@ export const EVENT_NAMES = [
     "rollAttributeCheck-Prior", "rollAttributeCheck-Posterior",
     "rollMeleeCheck-Prior", "rollMeleeCheck-Posterior",
     "rollProficiencyCheck-Prior", "rollProficiencyCheck-Posterior",
-    "onRest"
+    "onReceiveDamage", "onRest"
 ];
 export const EFFECTS = {
     effectMap: {
@@ -14,7 +14,7 @@ export const EFFECTS = {
     },
     dynamicModifiers: (type) => {
         const attributes = ["rollAttributeCheck-Prior", "rollAttributeCheck-Posterior"];
-        const general = ["onRest", "rollAttributeCheck-Posterior"];
+        const general = ["onReceiveDamage", "onRest"];
         const proficiency = ["rollProficiencyCheck-Prior", "rollProficiencyCheck-Posterior"];
         const weapon = [
             "rollMeleeCheck-Prior", "rollMeleeCheck-Posterior", "rollAttackCheck-Prior", "rollAttackCheck-Posterior"
@@ -70,6 +70,12 @@ export const EFFECTS = {
                     "    // Handle weapon-less attacks\n" +
                     "    console.log(details)\n" +
                     "  }\n}";
+            case "onReceiveDamage":
+                return header + "function onEvent(details, id) {\n" +
+                    "  console.log(details)\n" +
+                    "  // details.actor = ... \n" +
+                    "  // details.damageConfig = ... \n" +
+                    "}";
             case "onRest":
                 return header + "function onEvent(details, id) {\n" +
                     "  console.log(details)\n" +
