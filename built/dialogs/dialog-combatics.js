@@ -6,11 +6,13 @@ import LocalisationServer from "../system/localisation_server.js";
 import THE_EDGE from "../system/config-the-edge.js";
 const { renderTemplate } = foundry.applications.handlebars;
 export default class DialogCombatics extends CheckDialog {
-    constructor(checkData, options) {
+    constructor(checkData, weaponId, options) {
         super(options);
         this.checkData = checkData;
+        this.weaponId = weaponId;
     }
-    static async start(checkData) {
+    static async start(checkData, weaponId) {
+        console.log(weaponId);
         const template = "systems/the_edge/templates/dialogs/basic-rolls.hbs";
         const handToHandLevel = checkData.actor.system.weapons.general["Hand-to-Hand combat"].value;
         const strainMaxUseReduction = checkData.actor.system.strain.maxUseReduction.status;
@@ -35,7 +37,7 @@ export default class DialogCombatics extends CheckDialog {
                 label: LocalisationServer.localise("Cheat", "Dialog"),
             });
         }
-        return new DialogCombatics(checkData, {
+        return new DialogCombatics(checkData, weaponId, {
             window: { title: checkData.name + " " + game.i18n.localize("CHECK") },
             content: content,
             buttons: buttons,
@@ -71,7 +73,9 @@ export default class DialogCombatics extends CheckDialog {
             threshold, nRolls: 1, vantage: this.vantage, damageRoll: this.checkData.damageRoll,
             ...THE_EDGE.combatConfig.attackDiceParameters(this.checkData.actor)
         };
+        Hooks.call("onModifierEvent", "rollMeleeCheck-Prior", { actor: this.checkData.actor, prompt, weaponId: this.weaponId });
         const attackRollResult = await this.checkData.actor.system.rollAttackCheck(prompt);
+        Hooks.call("onModifierEvent", "rollMeleeCheck-Posterior", { actor: this.checkData.actor, prompt, attackRollResult, weaponId: this.weaponId });
         this.checkData.actor.system.applyStrain(promptResult.strain);
         this._transmitRoll(threshold, attackRollResult);
     }

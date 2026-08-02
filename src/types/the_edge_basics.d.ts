@@ -12,9 +12,10 @@ type TCover = "no cover" | "half cover" | "three quarters" | "full cover"
 type TDistance = ("less_2m" | "less_20m" | "less_200m" | "less_1km" | "more_1km")
 
 type TEventNames = (
+  "rollAttackCheck-Prior" | "rollAttackCheck-Posterior" |
   "rollAttributeCheck-Prior" | "rollAttributeCheck-Posterior" |
-  "rollProficiencyCheck-Prior" | "rollProficiencyCheck-Posterior" |
-  "rollAttackCheck-Prior" | "rollAttackCheck-Posterior"
+  "rollMeleeCheck-Prior" | "rollMeleeCheck-Posterior" |
+  "rollProficiencyCheck-Prior" | "rollProficiencyCheck-Posterior"
 )
 
 type TMovement = "stationary" | "moderate" | "fast" | "erradic"

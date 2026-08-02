@@ -223,21 +223,22 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
 
     const targetIds: string[] = Array.from(game.user.targets.map(x => x.id));
     const sceneId = game.user.viewedScene; // TODO: Needed?
-    const weaponID = target.closest(".weapon-id")?.dataset.weaponId ||
+    const weaponId = target.closest(".weapon-id")?.dataset.weaponId ||
       target.dataset.weaponId;
-    const weapon = this.actor.items.get(weaponID);
+    const weapon = this.actor.items.get(weaponId);
 
-    if (!weaponID || weapon.system.type === "Hand-to-Hand combat") {
+    if (!weaponId || weapon.system.type === "Hand-to-Hand combat") {
       if (targetIds.length > 1) {
         NotificationServer.notify("Too many targets", {weapon: "hand to hand", max: 1});
         return undefined;
       }
-      const damageRoll = weaponID ? weapon.system.fireModes[0].damage : actor.system.combaticsDamage;
-      const name = weaponID ? weapon.name : LocalisationServer.localise("Hand to Hand combat", "combat");
+      const damageRoll = weaponId ? weapon.system.fireModes[0].damage : actor.system.combaticsDamage;
+      const name = weaponId ? weapon.name : LocalisationServer.localise("Hand to Hand combat", "combat");
       const threshold = actor.system.combaticsPL;
-      DialogCombatics.start({
-        actor, actorId: actor.id, token, sceneId, targetId: targetIds[0] || undefined, name, threshold, damageRoll
-      });
+      DialogCombatics.start(
+        {actor, actorId: actor.id, token, sceneId, targetId: targetIds[0] || undefined, name, threshold, damageRoll},
+        weaponId ?? "UnarmedStrike"
+      );
       return undefined;
     }
 
@@ -274,8 +275,8 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   }
 
   static async reload(_event, target) {
-    const weaponID = target.closest(".weapon-id").dataset.weaponId;
-    const weapon = this.actor.items.get(weaponID);
+    const weaponId = target.closest(".weapon-id").dataset.weaponId;
+    const weapon = this.actor.items.get(weaponId);
     const ammunitionOptions = this.actor.itemTypes["Ammunition"].filter(x => {
       const subtypeMatches = (x.system.subtype == weapon.system.ammunitionType);
       const isNotLoaded = !x.system.loaded;
@@ -283,7 +284,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     });
 
     await DialogReload.start({
-      weaponID: weaponID,
+      weaponId: weaponId,
       actor: this.actor,
       weapon: weapon,
       ammunitionOptions: ammunitionOptions

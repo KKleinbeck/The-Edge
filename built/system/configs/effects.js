@@ -1,7 +1,8 @@
 export const EVENT_NAMES = [
+    "rollAttackCheck-Prior", "rollAttackCheck-Posterior",
     "rollAttributeCheck-Prior", "rollAttributeCheck-Posterior",
+    "rollMeleeCheck-Prior", "rollMeleeCheck-Posterior",
     "rollProficiencyCheck-Prior", "rollProficiencyCheck-Posterior",
-    "rollAttackCheck-Prior", "rollAttackCheck-Posterior"
 ];
 export const EFFECTS = {
     effectMap: {
@@ -13,7 +14,9 @@ export const EFFECTS = {
     dynamicModifiers: (type) => {
         const general = ["rollAttributeCheck-Prior", "rollAttributeCheck-Posterior"];
         const proficiency = ["rollProficiencyCheck-Prior", "rollProficiencyCheck-Posterior"];
-        const weapon = ["rollAttackCheck-Prior", "rollAttackCheck-Posterior"];
+        const weapon = [
+            "rollMeleeCheck-Prior", "rollMeleeCheck-Posterior", "rollAttackCheck-Prior", "rollAttackCheck-Posterior"
+        ];
         switch (type) {
             case "Skill":
             case "Weapon":
@@ -49,6 +52,19 @@ export const EFFECTS = {
                     (field.includes("Posterior") ? "    // details.attackOutcome = ...\n" : "") +
                     "    // details.diceServerConfig = ...\n" +
                     "    // details.prompt = ...\n" +
+                    "  }\n}";
+            case "rollMeleeCheck-Posterior":
+            case "rollMeleeCheck-Prior":
+                return header + "function onEvent(details, id) {\n" +
+                    "  // Prevents triggering on other weapons\n" +
+                    "  if (details.weaponId === id) {\n" +
+                    "    console.log(details)\n" +
+                    "    // details.actor = ...\n" +
+                    (field.includes("Posterior") ? "    // details.attackRollResult = ...\n" : "") +
+                    "    // details.prompt = ...\n" +
+                    `  } else if (details.weaponId === "UnarmedStrike") {\n` +
+                    "    // Handle weapon-less attacks\n" +
+                    "    console.log(details)\n" +
                     "  }\n}";
         }
     }

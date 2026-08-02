@@ -10,14 +10,17 @@ const { renderTemplate } = foundry.applications.handlebars;
 export default class DialogCombatics extends CheckDialog {
   declare checkData: IAttackRollQuery
   declare vantage: TVantage
+  declare weaponId: string
 
-  constructor (checkData: IAttackRollQuery, options: foundryAny) {
+  constructor (checkData: IAttackRollQuery, weaponId: string, options: foundryAny) {
     super(options);
     this.checkData = checkData;
+    this.weaponId = weaponId;
   }
 
   
-  static async start(checkData: IAttackRollQuery) {
+  static async start(checkData: IAttackRollQuery, weaponId: string) {
+    console.log(weaponId)
     const template = "systems/the_edge/templates/dialogs/basic-rolls.hbs";
     const handToHandLevel: number = checkData.actor.system.weapons.general["Hand-to-Hand combat"].value;
     const strainMaxUseReduction = checkData.actor.system.strain.maxUseReduction.status;
@@ -46,7 +49,7 @@ export default class DialogCombatics extends CheckDialog {
       })
     }
 
-    return new DialogCombatics(checkData, {
+    return new DialogCombatics(checkData, weaponId ,{
       window: { title: checkData.name + " " + game.i18n.localize("CHECK") },
       content: content,
       buttons: buttons,
@@ -94,7 +97,16 @@ export default class DialogCombatics extends CheckDialog {
       threshold, nRolls: 1, vantage: this.vantage, damageRoll: this.checkData.damageRoll,
       ...THE_EDGE.combatConfig.attackDiceParameters(this.checkData.actor)
     }
+
+    Hooks.call(
+      "onModifierEvent", "rollMeleeCheck-Prior", {actor: this.checkData.actor, prompt, weaponId: this.weaponId}
+    );
     const attackRollResult: IAttackRollResult = await this.checkData.actor.system.rollAttackCheck(prompt);
+    Hooks.call(
+      "onModifierEvent", "rollMeleeCheck-Posterior",
+      {actor: this.checkData.actor, prompt, attackRollResult, weaponId: this.weaponId}
+    );
+
     this.checkData.actor.system.applyStrain(promptResult.strain);
 
     this._transmitRoll(threshold, attackRollResult);

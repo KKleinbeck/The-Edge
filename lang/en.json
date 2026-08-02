@@ -298,12 +298,14 @@
     "STRAIN - STATUSTHRESHOLD": "Delay strain effects",
     "STRAIN - MAXUSEREDUCTION": "Reduce max strain per roll",
 
+    "ROLLATTACKCHECK-PRIOR": "Before attack roll",
+    "ROLLATTACKCHECK-POSTERIOR": "After attack roll",
     "ROLLATTRIBUTECHECK-PRIOR": "Before attribute roll",
     "ROLLATTRIBUTECHECK-POSTERIOR": "After attribute roll",
+    "ROLLMELEECHECK-PRIOR": "Before melee roll",
+    "ROLLMELEECHECK-POSTERIOR": "After melee roll",
     "ROLLPROFICIENCYCHECK-PRIOR": "Before proficiency roll",
-    "ROLLPROFICIENCYCHECK-POSTERIOR": "After proficiency roll",
-    "ROLLATTACKCHECK-PRIOR": "Before attack roll",
-    "ROLLATTACKCHECK-POSTERIOR": "After attack roll"
+    "ROLLPROFICIENCYCHECK-POSTERIOR": "After proficiency roll"
   },
   "GAME ACTIONS": {
     "ATTRIBUTE CHECK": "Attribute Check",
