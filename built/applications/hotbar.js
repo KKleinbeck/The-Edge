@@ -138,10 +138,10 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
             }
             else if (item.system.subtype = "drugs") {
                 item.tooltip = item.name;
-                for (const effect of item.system.effect) {
+                for (const modifier of Aux.filterToGenericModifiers(item.system.modifiers)) {
                     item.tooltip += " \u2014 ";
-                    item.tooltip += LocalisationServer.effectLocalisation(effect.field, effect.group);
-                    item.tooltip += (effect.value > 0) ? " +" + effect.value : " " + effect.value;
+                    item.tooltip += LocalisationServer.effectLocalisation(modifier.field, modifier.group);
+                    item.tooltip += (modifier.value > 0) ? " +" + modifier.value : " " + modifier.value;
                 }
                 item.displayName = item.system.quantity + "x " + item.name;
                 context.consumables.push(item);

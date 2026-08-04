@@ -307,7 +307,8 @@
     "ROLLPROFICIENCYCHECK-PRIOR": "Before proficiency roll",
     "ROLLPROFICIENCYCHECK-POSTERIOR": "After proficiency roll",
     "ONRECEIVEDAMAGE": "On receive damage",
-    "ONREST": "On rest"
+    "ONREST": "On rest",
+    "ONUSE": "On use"
   },
   "GAME ACTIONS": {
     "ATTRIBUTE CHECK": "Attribute Check",

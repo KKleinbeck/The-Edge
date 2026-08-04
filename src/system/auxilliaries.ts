@@ -26,7 +26,12 @@ export default class Aux {
   }
 
 
-  static getActor(actorID, tokenID, sceneID = undefined) {
+  static filterToGenericModifiers(modifiers: IModifier[]): IModifier[] {
+    return modifiers.filter(x => x.group !== "dynamicModifiers");
+  }
+
+
+  static getActor(actorID: string, tokenID: string, sceneID: string | undefined = undefined): Actor | undefined {
     let actor = undefined;
     if (tokenID) {
       if (!sceneID) {

@@ -21,6 +21,9 @@ export default class Aux {
             NotificationServer.error("Illicit event");
         }
     }
+    static filterToGenericModifiers(modifiers) {
+        return modifiers.filter(x => x.group !== "dynamicModifiers");
+    }
     static getActor(actorID, tokenID, sceneID = undefined) {
         let actor = undefined;
         if (tokenID) {

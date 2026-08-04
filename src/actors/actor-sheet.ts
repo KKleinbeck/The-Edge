@@ -127,6 +127,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
         Hooks.call("TheEdgeAction", payload);
         break;
       case "consume":
+        Hooks.call("onModifierEvent", "onUse", {actor: this.actor, itemId: item.id});
         switch (item.system.current_type) {
           case "medicine":
             const wounds = this.actor.system.wounds;
@@ -148,9 +149,10 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
               return
             }
 
-            const hasEffect = item.system.effect.length > 0;
+            const genericModifiers = Aux.filterToGenericModifiers(item.system.effect);
+            const hasEffect = genericModifiers.length > 0;
             if (hasEffect) {
-              this.actor.system.createNewEffect(item.name, item.system.effect);
+              this.actor.system.createNewEffect(item.name, genericModifiers);
             }
             const strainRoll = await new Roll(item.system.subtypes.food.strainReduction).evaluate();
             const strainChange = await this.actor.system.applyStrain(-strainRoll.total);
@@ -323,8 +325,8 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
 
     // Obtain event data
     const skillElement = target.closest(".skill");
-    const skillID = skillElement?.dataset.itemId;
-    const skill = this.actor.items.get(skillID);
+    const skillId = skillElement?.dataset.itemId;
+    const skill = this.actor.items.get(skillId);
 
     // Handle different actions
     switch ( target.dataset.subaction ) {
@@ -332,23 +334,24 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
         if (skill.type == "Advantage" || skill.type == "Disadvantage") {
           return this.actor.addOrCreateVantage(skill);
         }
-        return this.actor.skillLevelIncrease(skillID);
+        return this.actor.skillLevelIncrease(skillId);
       case "decrease":
         if (skill.type == "Advantage" || skill.type == "Disadvantage") {
           return this.actor.decrementVantage(skill);
         }
-        return this.actor.skillLevelDecrease(skillID);
+        return this.actor.skillLevelDecrease(skillId);
       case "delete":
         if (skill.type == "Advantage" || skill.type == "Disadvantage") {
           return this.actor.deleteVantage(skill);
         }
-        return this.actor.deleteSkill(skillID);
+        return this.actor.deleteSkill(skillId);
       case "post":
         ChatServer.transmitEvent("Post Skill",
           {name: skill.name, type: skill.type, description: skill.system.description}
         );
         break;
       case "roll":
+        Hooks.call("onModifierEvent", "onUse", {actor: this.actor, itemId: skillId});
         if (skill.type == "Medicalskill") {
           DialogProficiency.start({
             actor: this.actor, actorId: this.actor.id, proficiency: skill.system.basis,

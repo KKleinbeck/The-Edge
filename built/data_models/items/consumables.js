@@ -42,4 +42,5 @@ export default class ConsumablesData extends generateDataModelWithComponents(Des
         schema.effect = new ArrayField(new ObjectField(), { initial: [] });
         return schema;
     }
+    get modifiers() { return this.effect; }
 }

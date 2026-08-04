@@ -3,7 +3,7 @@ export const EVENT_NAMES = [
     "rollAttributeCheck-Prior", "rollAttributeCheck-Posterior",
     "rollMeleeCheck-Prior", "rollMeleeCheck-Posterior",
     "rollProficiencyCheck-Prior", "rollProficiencyCheck-Posterior",
-    "onReceiveDamage", "onRest"
+    "onReceiveDamage", "onRest", "onUse"
 ];
 export const EFFECTS = {
     effectMap: {
@@ -21,8 +21,11 @@ export const EFFECTS = {
         ];
         switch (type) {
             case "Armour":
-            case "Skill":
                 return [...attributes, ...general, ...proficiency, ...weapon];
+            case "Consumables":
+                return ["onUse"];
+            case "Skill":
+                return [...attributes, ...general, ...proficiency, ...weapon, "onUse"];
             case "Weapon":
                 return [...attributes, ...proficiency, ...weapon];
         }
@@ -81,6 +84,11 @@ export const EFFECTS = {
                     "  console.log(details)\n" +
                     "  // details.actor = ... \n" +
                     "  // details.restDescription = ... \n" +
+                    "}";
+            case "onUse":
+                return header + "function onEvent(details, id) {\n" +
+                    "  console.log(details)\n" +
+                    "  // details.actor = ... \n" +
                     "}";
         }
     }

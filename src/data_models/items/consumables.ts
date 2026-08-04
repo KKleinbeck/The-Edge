@@ -9,7 +9,7 @@ export default class ConsumablesData extends generateDataModelWithComponents(
   DescriptionData, StackableData
 ) {
   static defineSchema() {
-    const schema = super.defineSchema();
+    const schema: Record<string, any> = super.defineSchema();
     schema.current_type = new StringField({ initial: "food" });
     schema.subtypes = new SchemaField({
       medicine: new SchemaField({
@@ -48,4 +48,6 @@ export default class ConsumablesData extends generateDataModelWithComponents(
 
     return schema;
   }
+
+  get modifiers(): IModifier[] { return this.effect; }
 }

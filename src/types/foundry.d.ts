@@ -97,6 +97,8 @@ declare class Combatant extends FoundryDocument {
 }
 
 declare class Item extends FoundryDocument {
+  static create(data: foundryAny, options: foundryAny): foundryAny
+  getFlag(a: string, b: string)
   system: foundryAny
 }
 

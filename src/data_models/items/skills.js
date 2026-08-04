@@ -3,7 +3,7 @@ import { generateDataModelWithComponents } from "../abstracts.js";
 import DescriptionData from "./components/description.js";
 import SkillTemplateData from "./components/skill.js";
 
-const { BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
+const { BooleanField, NumberField, StringField } = foundry.data.fields;
 
 export class SkillData extends generateDataModelWithComponents(
   DescriptionData, SkillTemplateData

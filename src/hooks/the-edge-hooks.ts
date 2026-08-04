@@ -1,3 +1,4 @@
+import Aux from "../system/auxilliaries.js";
 import ChatServer from "../system/chat_server.js";
 
 export default function() {
@@ -33,6 +34,11 @@ async function handleOutOfCombatAction(payload: ITheEdgeActionPayload) {
 
 function _onModifierEvent(field: TEventNames, details: Record<string, any>): boolean {
   switch (field) {
+    case "onUse":
+      const item = details.actor.items.get(details.itemId);
+      item.effectHooks(field, details);
+      break;
+    
     default:
       details.actor.effectHooks(field, details)
       break;
