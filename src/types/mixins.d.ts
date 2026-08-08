@@ -23,6 +23,16 @@ interface IModifiersAndContext {
 }
 
 // ----------------------------------------
+// Icon Selector
+declare class IconSelector {
+  updateIcons(iconType: string, details: Record<string, IIconSelected>, dynamicValue: string)
+}
+
+interface IIconSelected {
+  selected: boolean
+}
+
+// ----------------------------------------
 // Range Chart Selector
 declare class RangeChartSelector {
   static _selectRange(event: Event, target: Element)

@@ -384,7 +384,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
     })
   }
 
-  static onCounterControl(event, target) {
+  static onCounterControl(event: Event, target) {
     event.preventDefault();
 
     // Obtain event data
@@ -431,15 +431,15 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
 
   // Specific listeners
   _onRender(context, options) {
-    super._onRender(context, options)
+    super._onRender(context, options);
+
+    if (ui.hotbar.token?.actor?.id == this.actor.id) {
+      ui.hotbar.render(true);
+    }
 
     const counterNames = this.element.querySelectorAll(".counter-name");
     for (const counter of counterNames) {
       counter.addEventListener("change", (ev) => this._onCounterChange(ev, "name"))
-    }
-
-    if (ui.hotbar.token?.actor?.id == this.actor.id) {
-      ui.hotbar.render(true);
     }
     
     const progressBarInputs = this.element.querySelectorAll(".counter-input");

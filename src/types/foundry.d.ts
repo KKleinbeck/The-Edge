@@ -108,10 +108,12 @@ declare class Combatant extends FoundryDocument {
 }
 
 declare class Item extends FoundryDocument {
+  img: string
+  isOwner: boolean
+  system: foundryAny
+
   static create(data: foundryAny, options: foundryAny): foundryAny
   getFlag(a: string, b: string)
-  img: string
-  system: foundryAny
 }
 
 interface Items extends FoundryContainer<Item> {}
@@ -150,7 +152,7 @@ declare class ActorSheetV2 {
 
 declare class ItemSheetV2 {
   constructor(args: foundryAny)
-  public document: foundryAny
+  public document: Item
   public item: Item
 
   protected _attachFrameListeners(): void // Check whether this is ever called

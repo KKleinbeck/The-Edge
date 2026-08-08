@@ -12,8 +12,12 @@ export default function RangeChartSelectorMixin<T extends intype>(BaseApplicatio
       actions: { selectRange: RangeChartSelector._selectRange }
     }
 
-    static async _selectRange(_event, target) {
+    static async _selectRange(_event: Event, target: HTMLElement) {
       const dataset = target.dataset;
+      if (typeof dataset.label === "undefined") return;
+      if (typeof dataset.modifier === "undefined") return;
+      if (typeof dataset.index === "undefined") return;
+
       const rangeAccuracy = this.item.system.rangeChart[dataset.label];
       
       const modifier = +dataset.modifier;
@@ -27,7 +31,7 @@ export default function RangeChartSelectorMixin<T extends intype>(BaseApplicatio
       const update = {};
       update[field] = rangeAccuracy;
       await this.item.update(update, {render: false});
-      this._renderRangeChart()
+      RangeChartSelector._renderRangeChart.call(this);
     }
 
     static async _renderRangeChart() {

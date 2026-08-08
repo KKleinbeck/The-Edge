@@ -4,8 +4,12 @@
   data-tab="effects"
   style="overflow-y: auto; overflow-x: hidden"
 >
-  <div class="counter-hook">
-    {{> systems/the_edge/templates/items/meta-counters.hbs title=(genName "Counters")}}
+  <div class="counter-group-hook">
+    {{> systems/the_edge/templates/items/meta-counters.hbs
+      counters=item.system.counters
+      nColumns=2
+      title=(genName "Counters")
+    }}
   </div>
 
   <hr />

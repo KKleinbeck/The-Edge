@@ -1,117 +1,114 @@
-import DialogDynamicModifier from "../dialogs/dialog-dynamic-modifier.js";
-import THE_EDGE from "../system/config-the-edge.js";
+import LocalisationServer from "../system/localisation_server.js";
 const { renderTemplate } = foundry.applications.handlebars;
 export default function CounterMixin(BaseApplication) {
     return class CounterHandler extends BaseApplication {
         static DEFAULT_OPTIONS = {
             actions: {
-                createCounter: CounterHandler._createCounter,
-                deleteCounter: CounterHandler._deleteCounter,
-                // editDynamicModifier: CounterHandler._editDynamicModifier
+                counterControl: CounterHandler._onCounterControl,
             }
         };
-        // Interface functions - need to be overwritten
-        getModifiers(_target) {
-            return { modifiers: [], context: {} };
+        // Interface functions - can be overwritten
+        getCounters(_context = {}) { return this.document.system.counters; }
+        async updateCounters(counters, context = {}) {
+            await this.document.update({ "system.counters": counters }, { render: false });
+            this.onUpdateCounters(counters, context);
         }
-        async updateModifiers(_modifiers, _context) { }
         ;
+        onUpdateCounters(_counters, _context) { }
+        // Public interface - do not override
+        attachCounterEffectListeners(element = undefined) {
+            if (!element)
+                element = this.element;
+            const counterNameElements = element.querySelectorAll(".counter-name-hook");
+            for (const counter of counterNameElements) {
+                counter.addEventListener("change", (ev) => this._onCounterChange(ev, "name"));
+            }
+            const progressBarInputs = element.querySelectorAll(".counter-input-hook");
+            for (const input of progressBarInputs) {
+                input.addEventListener("change", (ev) => {
+                    if (!(ev.target instanceof HTMLElement))
+                        return;
+                    const subtype = ev.target.dataset.subtype;
+                    if (subtype != "value" && subtype != "max")
+                        return;
+                    this._onCounterChange(ev, subtype);
+                });
+            }
+        }
         // Private interface
         _onRender(context, options) {
             super._onRender(context, options);
-            this.attachEffectListeners();
+            this.attachCounterEffectListeners();
         }
-        static _createCounter(_event, target) {
+        static async _onCounterControl(_event, target) {
+            const counterElement = target.closest(".counter-hook");
             // @ts-expect-error
-            console.log(this.item.system);
-            // @ts-expect-error 2339 as the method is defined as static
-            const { modifiers, context } = this.getModifiers(target);
-            // modifiers.push({group: "attributes", field: "end", value: 0});
-            // this.updateModifiers(modifiers, context);
-            // this.redrawModifiers(target, modifiers, context);
+            const index = +counterElement?.dataset.index;
+            const counters = this.getCounters();
+            switch (target.dataset.subaction) {
+                case "create-counter":
+                    counters.push({
+                        name: LocalisationServer.localise("New Counter", "item"),
+                        value: 1, max: 1
+                    });
+                    break;
+                case "delete":
+                    counters.splice(index, 1);
+                    break;
+                case "increase-counter":
+                    counters[index].max += 1;
+                    break;
+                case "decrease-counter":
+                    if (counters[index].max == 1)
+                        return;
+                    counters[index].max -= 1;
+                    counters[index].value = Math.min(counters[index].value, counters[index].max);
+                    break;
+                case "deplete-counter":
+                    counters[index].value = 0;
+                    break;
+                case "use":
+                    // @ts-expect-error
+                    const level = 1 + +target.dataset.level;
+                    counters[index].value = (counters[index].value < level) ? level : level - 1;
+                    break;
+            }
+            const context = this._getContext(target);
+            await this.updateCounters(counters, context);
         }
-        _modifyEffect(event) {
-            if (!(event.currentTarget instanceof HTMLInputElement) &&
-                !(event.currentTarget instanceof HTMLSelectElement))
+        async _onCounterChange(event, changeType) {
+            const target = event.target;
+            if (!(target instanceof HTMLInputElement))
                 return;
-            if (event.currentTarget.dataset.index === undefined)
+            const counterElement = target.closest(".counter-hook");
+            if (!(counterElement instanceof HTMLDivElement))
                 return;
-            event.stopPropagation();
-            const change = this._getModifierData(event.currentTarget);
-            const { modifiers, context } = this.getModifiers(event.currentTarget);
-            const index = event.currentTarget.dataset.index;
-            for (const [key, value] of Object.entries(change)) {
-                if (key === undefined)
-                    continue;
-                modifiers[index][key] = value;
-            }
-            if (modifiers[index].group !== "dynamicModifiers" && typeof modifiers[index].value === "string") {
-                modifiers[index].value = 0;
-            }
-            this.updateModifiers(modifiers, context);
-            this.redrawModifiers(event.currentTarget, modifiers, context);
-        }
-        _getModifierData(target) {
-            if (target.dataset.entry === undefined) {
-                throw new Error(`Input element does not define dataset 'entry'.\nDataset: ${target.dataset}`);
-            }
-            ;
-            const entry = target.dataset.entry;
-            const result = {};
-            result[entry] = entry == "value" ? parseInt(target.value) : target.value;
-            if (entry == "group") { // Also set a sensible name if the group changes
-                result.field = this.definedEffects[target.value][0];
-                if (result[entry] === "dynamicModifiers") {
-                    result.value = THE_EDGE.dynamicModifierDefaults(result.field);
-                }
-            }
-            if (entry == "field" && THE_EDGE.isDynamicModifier(result[entry])) {
-                result.value = THE_EDGE.dynamicModifierDefaults(result.field);
-            }
-            return result;
-        }
-        static _deleteCounter(_event, target) {
-            // @ts-expect-error 2339 as the method is defined as static
-            const { modifiers, context } = this.getModifiers(target);
-            const index = target.dataset.index;
-            modifiers.splice(index, 1);
-            // @ts-expect-error 2339
-            this.updateModifiers(modifiers, context);
-            // @ts-expect-error 2339
-            this.redrawModifiers(target, modifiers, context);
-        }
-        static async _editDynamicModifier(_event, target) {
-            const index = target.dataset.index;
-            // @ts-expect-error 2339 we know we are called with a correct `this`
-            const { modifiers, context } = this.getModifiers(target);
-            const currentModifier = modifiers[index];
-            const newValue = await DialogDynamicModifier.prompt(currentModifier.value);
-            if (newValue === null)
-                return; // Dialog was dismissed
-            currentModifier.value = newValue;
-            // @ts-expect-error 2339
-            this.updateModifiers(modifiers, context);
-        }
-        async redrawModifiers(target, modifiers, context) {
-            const template = "systems/the_edge/templates/generic/effect-modifiers.hbs";
-            const html = await renderTemplate(template, {
-                modifiers: modifiers,
-                definedEffects: this.definedEffects,
-                interactive: true,
-                ...context
-            });
-            const newContent = document.createElement("div"); // Trick to strip outer class of html-string
-            newContent.innerHTML = html;
-            const modifiersElement = target.closest(".effect-modifiers-hook");
-            if (modifiersElement === null)
+            if (typeof counterElement.dataset.index == "undefined")
                 return;
-            modifiersElement.innerHTML = newContent.innerHTML;
-            modifiersElement.querySelectorAll(".modifier-hook")?.forEach((x, _key, _parent) => {
-                x.addEventListener("change", ev => this._modifyEffect(ev));
-            });
+            const index = +counterElement.dataset.index;
+            const counters = this.getCounters();
+            switch (changeType) {
+                case "value":
+                    if (typeof target.dataset.max == "undefined")
+                        return;
+                    counters[index].value = Math.min(+target.value, +target.dataset.max);
+                    break;
+                case "max":
+                    counters[index].max = +target.value;
+                    counters[index].value = Math.min(counters[index].value, +target.value);
+                    break;
+                case "name":
+                    counters[index].name = target.value;
+                    break;
+            }
+            const context = this._getContext(target);
+            this.updateCounters(counters, context);
         }
-        attachEffectListeners() {
-            this.element.querySelectorAll(".modifier-hook")?.forEach((x) => x.addEventListener("change", ev => this._modifyEffect(ev)));
+        _getContext(target) {
+            const contextElement = target.closest(".counter-context-hook");
+            if (!(contextElement instanceof HTMLElement) || typeof contextElement.dataset == "undefined")
+                return {};
+            return contextElement.dataset;
         }
     };
 }

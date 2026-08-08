@@ -7,6 +7,12 @@ export default function RangeChartSelectorMixin(BaseApplication) {
         };
         static async _selectRange(_event, target) {
             const dataset = target.dataset;
+            if (typeof dataset.label === "undefined")
+                return;
+            if (typeof dataset.modifier === "undefined")
+                return;
+            if (typeof dataset.index === "undefined")
+                return;
             const rangeAccuracy = this.item.system.rangeChart[dataset.label];
             const modifier = +dataset.modifier;
             if (modifier >= 11 || modifier <= -11) {
@@ -20,7 +26,7 @@ export default function RangeChartSelectorMixin(BaseApplication) {
             const update = {};
             update[field] = rangeAccuracy;
             await this.item.update(update, { render: false });
-            this._renderRangeChart();
+            RangeChartSelector._renderRangeChart.call(this);
         }
         static async _renderRangeChart() {
             const template = "systems/the_edge/templates/generic/range-chart.hbs";

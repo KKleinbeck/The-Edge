@@ -1,9 +1,6 @@
-interface IIconSelected {
-  selected: boolean
-}
-
 type intype = Constructor<HandlebarsApplication>;
-export default function IconSelectorMixin<T extends intype>(BaseApplication: T): T {
+type outtype<T> = T & Constructor<IconSelector>;
+export default function IconSelectorMixin<T extends intype>(BaseApplication: T): outtype<T> {
   return class IconSelector extends BaseApplication {
     static DEFAULT_OPTIONS = {
       actions: {

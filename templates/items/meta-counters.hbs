@@ -1,17 +1,31 @@
-<div style="display: flex; justify-content: space-between; padding-bottom: 2px;">
-  <div style="white-space: nowrap;">{{title}}</div>
-  <a title="{{ itemName 'Create' }}" data-action="createCounter"
-    style="display: flex; width: 100%; justify-content: end; align-items: end; gap: 10px; padding-bottom: 7px;">
-    {{ itemName "Add" }}<i class="fas fa-plus"></i>
-  </a>
-</div>
-{{#each counters as |counter|}}
-  <div style="display: flex; gap: 5px; align-items: end;">
-    <input class="counter-hook" data-index="{{@index}}" type="text" data-entry="name"
-      value="{{counter.name}}" style="text-align: right;"/>
-    
-    <a data-action="deleteModifier" data-index="{{@index}}" title="{{ itemName 'delete' }}">
-      <i class="fas fa-trash"></i>
+{{!-- 
+Interface:
+- counters: The counters to display
+- nColumns (optional): Number of columns
+- title (optional): Displayed text on the top row
+ --}}
+{{#define nColumns=(or nColumns 1)}}
+<div class="counter-context-hook" data-title="{{title}}" data-n-columns="{{nColumns}}">
+  <div style="display: flex; justify-content: space-between; padding-bottom: 2px;">
+    <div style="white-space: nowrap;">{{title}}</div>
+    <a title="{{ itemName 'Create' }}" data-action="counterControl" data-subaction="create-counter"
+      style="display: flex; width: 100%; justify-content: end; align-items: end; gap: 10px; padding-bottom: 7px;">
+      {{ itemName "Add" }}<i class="fas fa-plus"></i>
     </a>
   </div>
-{{/each}}
+  <div style="display: grid; grid-template-columns: repeat({{nColumns}}, 1fr); gap: 5px;">
+    {{#each counters as |counter|}}
+      <div class="counter-hook" data-index="{{@index}}">
+        {{> systems/the_edge/templates/generic/progress-bar-modern.hbs
+          value=counter.value
+          max=counter.max
+          maxEditable=true
+          name=counter.name
+          nameEditable=true
+          valueEditable=true
+        }}
+      </div>
+    {{/each}}
+  </div>
+</div>
+{{/define}}

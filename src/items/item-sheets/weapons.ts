@@ -5,8 +5,11 @@ import THE_EDGE from "../../system/config-the-edge.js";
 
 import { TheEdgeItemSheet } from "../item-sheet.js";
 
+const { renderTemplate } = foundry.applications.handlebars;
+
 export default class ItemSheetWeapon extends CounterMixin(RangeChartSelectorMixin(TheEdgeItemSheet)) {
   declare static item: foundryAny
+  declare tabGroups: foundryAny
 
   static DEFAULT_OPTIONS = {...TheEdgeItemSheet.DEFAULT_OPTIONS,
     actions: {
@@ -40,19 +43,19 @@ export default class ItemSheetWeapon extends CounterMixin(RangeChartSelectorMixi
 
   async render(options={}, _options={}): Promise<ItemSheetV2> {
     // Disable details for hand-to-hand combat
-    // if (this.item.system.type != "Hand-to-Hand combat") {
-    //   // @ts-expect-error
-    //   this.constructor.TABS.primary.tabs = [
-    //     {id: "details"}, {id: "effects"}, {id: "description"},
-    //   ];
-    //   this.tabGroups.primary = "details";
-    // } else {
-    //   // @ts-expect-error
-    //   this.constructor.TABS.primary.tabs = [
-    //     {id: "effects"}, {id: "description"},
-    //   ];
-    //   this.tabGroups.primary = "description";
-    // }
+    if (this.item.system.type != "Hand-to-Hand combat") {
+      // @ts-expect-error
+      this.constructor.TABS.primary.tabs = [
+        {id: "details"}, {id: "effects"}, {id: "description"},
+      ];
+      this.tabGroups.primary = "details";
+    } else {
+      // @ts-expect-error
+      this.constructor.TABS.primary.tabs = [
+        {id: "effects"}, {id: "description"},
+      ];
+      this.tabGroups.primary = "description";
+    }
     return super.render(options, _options);
   }
 
@@ -96,16 +99,16 @@ export default class ItemSheetWeapon extends CounterMixin(RangeChartSelectorMixi
   }
 
   async onIconSelected(iconType, value) {
-    // switch (iconType) {
-    //   case "ammunitionType":
-    //     this.item.system.ammunitionType = value;
-    //     this.updateIcons(
-    //       iconType, this._setAmmunitionTypesDict(),
-    //       THE_EDGE.ammunitionSubtypes.includes(value) ? "" : value
-    //     );
-    //     await this.item.update({"system.ammunitionType": value}, {render: false})
-    //     break;
-    // }
+    switch (iconType) {
+      case "ammunitionType":
+        this.item.system.ammunitionType = value;
+        this.updateIcons(
+          iconType, this._setAmmunitionTypesDict(),
+          THE_EDGE.ammunitionSubtypes.includes(value) ? "" : value
+        );
+        await this.item.update({"system.ammunitionType": value}, {render: false})
+        break;
+    }
   }
 
   static _addFiringMode(_event, _target) {
@@ -139,5 +142,26 @@ export default class ItemSheetWeapon extends CounterMixin(RangeChartSelectorMixi
       fireModes[+index][field] = +target.value;
     }
     await this.item.update({"system.fireModes": fireModes})
+  }
+
+
+  async onUpdateCounters(counters: ICounter[], context: DOMStringMap): Promise<void> {
+    await this.redrawCounters(counters, context);
+  }
+
+
+  async redrawCounters(counters: ICounter[], context: DOMStringMap): Promise<void> {
+    const template = "systems/the_edge/templates/items/meta-counters.hbs";
+    const html = await renderTemplate(template, { counters: counters, ...context });
+
+    // const newContent = document.createElement("div"); // Trick to strip outer class of html-string
+    // newContent.innerHTML = html;
+
+
+    const counterGroupElement = this.element.querySelector(".counter-group-hook");
+    if (counterGroupElement === null) return;
+
+    counterGroupElement.innerHTML = html;
+    this.attachCounterEffectListeners(counterGroupElement);
   }
 }
