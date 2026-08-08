@@ -44,6 +44,8 @@ export const preloadHandlebarsTemplates = async function() {
     // Item templates
     "systems/the_edge/templates/items/Ammunition-details-content.hbs",
     "systems/the_edge/templates/items/Grenade-effects-content.hbs",
+    "systems/the_edge/templates/items/meta-counters.hbs",
+    "systems/the_edge/templates/items/meta-effects.hbs",
 
     // Chat templates
     "systems/the_edge/templates/chat/items/meta-effects.hbs",

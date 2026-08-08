@@ -1,7 +1,7 @@
 import Aux from "../system/auxilliaries.js";
 const { renderTemplate } = foundry.applications.handlebars;
 export default function RangeChartSelectorMixin(BaseApplication) {
-    class RangeChartSelector extends BaseApplication {
+    return class RangeChartSelector extends BaseApplication {
         static DEFAULT_OPTIONS = {
             actions: { selectRange: RangeChartSelector._selectRange }
         };
@@ -22,12 +22,14 @@ export default function RangeChartSelectorMixin(BaseApplication) {
             await this.item.update(update, { render: false });
             this._renderRangeChart();
         }
-        async _renderRangeChart() {
+        static async _renderRangeChart() {
             const template = "systems/the_edge/templates/generic/range-chart.hbs";
             const html = await renderTemplate(template, { rangeChart: this.item.system.rangeChart });
+            // @ts-expect-error
             const rangeChartHTML = this.element.querySelector(".range-chart");
+            if (!(rangeChartHTML instanceof Element))
+                return;
             rangeChartHTML.outerHTML = html;
         }
-    }
-    return RangeChartSelector;
+    };
 }

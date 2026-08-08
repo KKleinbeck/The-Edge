@@ -4,17 +4,17 @@ import THE_EDGE from "../system/config-the-edge.js";
 const { renderTemplate } = foundry.applications.handlebars;
 
 type intype = Constructor<HandlebarsApplication>;
-type outtype<T> = T & Constructor<EffectModifier> & EffectModifierStatics;
-export default function EffectModifierMixin<T extends intype>(BaseApplication: T): outtype<T> {
-  return class EffectModifier extends BaseApplication {
+type outtype<T> = T & Constructor<EffectModifier>;
+export default function CounterMixin<T extends intype>(BaseApplication: T): outtype<T> {
+  return class CounterHandler extends BaseApplication {
     declare definedEffects: Record<string, string[]>
 
 
     static DEFAULT_OPTIONS = {
       actions: {
-        createModifier: EffectModifier._createModifier,
-        deleteModifier: EffectModifier._deleteModifier,
-        editDynamicModifier: EffectModifier._editDynamicModifier
+        createCounter: CounterHandler._createCounter,
+        deleteCounter: CounterHandler._deleteCounter,
+        // editDynamicModifier: CounterHandler._editDynamicModifier
       }
     }
 
@@ -34,14 +34,14 @@ export default function EffectModifierMixin<T extends intype>(BaseApplication: T
     }
 
 
-    static _createModifier(_event: Event, target: Element): void {
+    static _createCounter(_event: Event, target: Element): void {
+      // @ts-expect-error
+      console.log(this.item.system)
       // @ts-expect-error 2339 as the method is defined as static
       const {modifiers, context} = this.getModifiers(target);
-      modifiers.push({group: "attributes", field: "end", value: 0});
-      // @ts-expect-error 2339
-      this.updateModifiers(modifiers, context);
-      // @ts-expect-error 2339
-      this.redrawModifiers(target, modifiers, context);
+      // modifiers.push({group: "attributes", field: "end", value: 0});
+      // this.updateModifiers(modifiers, context);
+      // this.redrawModifiers(target, modifiers, context);
     }
 
 
@@ -89,7 +89,7 @@ export default function EffectModifierMixin<T extends intype>(BaseApplication: T
     }
 
 
-    static _deleteModifier(_event: Event, target: HTMLElement): void {
+    static _deleteCounter(_event: Event, target: HTMLElement): void {
       // @ts-expect-error 2339 as the method is defined as static
       const {modifiers, context} = this.getModifiers(target);
       const index = target.dataset.index;

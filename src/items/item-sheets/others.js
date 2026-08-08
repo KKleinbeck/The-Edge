@@ -1,225 +1,11 @@
-import THE_EDGE from "../system/config-the-edge.js";
-import EffectModifierMixin from "../mixins/effect-modifier-mixin.js";
-import IconSelectorMixin from "../mixins/icon-selector-mixin.js";
-import RangeChartSelectorMixin from "../mixins/range-chart-selector-mixin.js";
-import Aux from "../system/auxilliaries.js";
-import LocalisationServer from "../system/localisation_server.js";
+import Aux from "../../system/auxilliaries.js";
+import RangeChartSelectorMixin from "../../mixins/range-chart-selector-mixin.js";
+import LocalisationServer from "../../system/localisation_server.js";
+import THE_EDGE from "../../system/config-the-edge.js";
 
-const { HandlebarsApplicationMixin } = foundry.applications.api
-const { ItemSheetV2 } = foundry.applications.sheets;
-const { renderTemplate } = foundry.applications.handlebars;
+import { TheEdgeItemSheet } from "../item-sheet.js";
 
-export class TheEdgeItemSheet extends EffectModifierMixin(IconSelectorMixin(HandlebarsApplicationMixin(ItemSheetV2))) {
-  constructor (options) {
-    super(options);
-    this.headerWidth = 0;
-    this.headerHeight = 0;
-
-    this.definedEffects = structuredClone(THE_EDGE.definedEffects);
-    const dynamicModifiers = THE_EDGE.dynamicModifiers(this.item.type);
-    if (dynamicModifiers) this.definedEffects.dynamicModifiers = dynamicModifiers;
-  }
-
-  static DEFAULT_OPTIONS = {
-    position: {
-      width: 390,
-      height: 480,
-    },
-    form: {
-      submitOnChange: true,
-    },
-    classes: ["the_edge", "item-sheet"],
-    actions: {
-      createModifier: TheEdgeItemSheet._createModifier,
-      deleteModifier: TheEdgeItemSheet._deleteModifier,
-    },
-  }
-
-  static PARTS = {
-    form: {
-      template: "templates/sheets/item-sheet.html"
-    },
-    tabs: {
-      template: "templates/generic/tab-navigation.hbs"
-    },
-    description: {
-      template: "systems/the_edge/templates/items/meta-description.hbs"
-    }
-  }
-
-  static TABS = {
-    primary: {
-      tabs: [
-        {id: "description"},
-      ],
-      labelPrefix: "TABS",
-      initial: "description",
-    }
-  }
-  
-  static setupSheets() {
-    foundry.documents.collections.Items.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
-    foundry.documents.collections.Items.registerSheet("the_edge", TheEdgeItemSheet, { makeDefault: true });
-    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetAmmunition, { makeDefault: true, types: ["Ammunition"] });
-    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetArmour, { makeDefault: true, types: ["Armour"] });
-    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetConsumables, { makeDefault: true, types: ["Consumables"] });
-    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetGear, { makeDefault: true, types: ["Gear"] });
-    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetLanguage, { makeDefault: true, types: ["Languageskill"] });
-    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetSkill, { makeDefault: true, types: ["Skill", "Combatskill", "Medicalskill"] });
-    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetVantage, { makeDefault: true, types: ["Advantage", "Disadvantage"] });
-    foundry.documents.collections.Items.registerSheet("the_edge", ItemSheetWeapon, { makeDefault: true, types: ["Weapon"] });
-
-    foundry.documents.collections.Items.unregisterSheet("the_edge", TheEdgeItemSheet, {
-      types: [
-        "Advantage", "Ammunition", "Armour", "Combatskill", "Consumables",
-        "Disadvantage", "Gear", "Languageskill", "Medicalskill", "Skill", "Weapon"
-      ]
-    });
-  }
-
-  get title () { return this.item.name; }
-
-  async _dynamicHeader(width, height) {
-    const lineLength = 0.3 * height;
-    const path = `
-      M0 ${height} V${lineLength} L${lineLength} 0
-      H${0.382*width - 0.5*lineLength} L${0.382*width + 0.5*lineLength} ${lineLength}
-      H${width} V${height}
-    `
-    const template = "systems/the_edge/templates/items/layout-header.hbs";
-    const html = await renderTemplate(
-      template, {
-        width: width, height: height, path: path,
-        name: this.item.name, imgPath: this.item.img
-      }
-    );
-    return html
-  }
-
-  async _dynamicFooter(width, height) {
-    const lineLength = 0.5 * height;
-    const path = `
-      M0 0 H${0.32*width - 0.5*lineLength} L${0.32*width + 0.5*lineLength} ${lineLength}
-      H${width - lineLength} L${width} 0
-    `
-    const template = "systems/the_edge/templates/items/layout-footer.hbs";
-    const html = await renderTemplate(
-      template, {
-          width: width, pathHeight: lineLength, path: path,
-          content: this._footerContent()
-        }
-      );
-    return html;
-  }
-
-  _footerContent() {
-    let content = "";
-    if (this.item.system.weight !== undefined) {
-      content += `
-        <div class="item-footer-content-entry">
-          <input class="item-footer-input" type="number" name="system.weight" value="${this.item.system.weight}" data-dtype="Number"/>
-          kg
-        </div>
-      `
-    }
-    if (this.item.system.value !== undefined) {
-      content += `
-        <div class="item-footer-content-entry" style="margin-right: 10px;">
-          <input class="item-footer-input" type="number" name="system.value" value="${this.item.system.value}" data-dtype="Number"/>
-          <img src="systems/the_edge/icons/credits_white.png" style="height: 16px;"/>
-        </div>
-      `
-    }
-    return content;
-  }
-
-  async _renderFrame(options) {
-    const frame = await super._renderFrame(options);
-    // Add image to header and modify to custom class
-    const headers = frame.getElementsByClassName("window-header");
-    if (headers.length) {
-      headers[0].classList.add("item-header");
-    }
-    // Make title dynamic
-    const titles = frame.getElementsByClassName("window-title");
-    if (titles.length) { titles[0].outerHTML = await this._dynamicHeader(0, 0); }
-    // Make footer
-    const footer = document.createElement("div");
-    footer.classList.add("item-footer");
-    frame.appendChild(footer);
-    footer.outerHTML = await this._dynamicFooter(this.headerWidth, this.headerHeight);
-    return frame;
-  }
-  
-  _attachFrameListeners() {
-    super._attachFrameListeners();
-    this._attachAdditionalFrameListeners();
-  }
-
-  _attachAdditionalFrameListeners() {}
-
-  async minimize() {
-    super.minimize();
-    const headers = this.element.getElementsByClassName("item-header-frame-tag");
-    if (headers.length) {
-      headers[0].outerHTML = `
-        <div class="item-header-frame-tag" style="display: flex; gap: 10px; width: 100%; align-items: center;">
-          <img class="item-header-img-minimised" src="${this.item.img}"/>
-          ${this.item.name}
-        </div>
-      `
-    }
-    const footers = this.element.getElementsByClassName("item-footer");
-    if (footers.length) { footers[0].innerHTML = "";}
-  }
-
-  async maximize() {
-    super.maximize();
-    const headers = this.element.getElementsByClassName("item-header-frame-tag");
-    if (headers.length) {
-      const header = headers[0];
-      this.headerWidth = Math.max(header.offsetWidth, this.headerWidth);
-      this.headerHeight = Math.max(header.offsetHeight, this.headerHeight);
-      header.outerHTML = await this._dynamicHeader(this.headerWidth, this.headerHeight);
-    }
-    const footers = this.element.getElementsByClassName("item-footer");
-    if (footers.length) {
-      const footer = footers[0];
-      footer.outerHTML = await this._dynamicFooter(this.headerWidth, this.headerHeight);
-    }
-    this._attachAdditionalFrameListeners();
-  }
-
-  async _prepareContext(options) {
-    const context = await super._prepareContext(options);
-    context.item = this.item;
-    context.descriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-      context.item.system.description, {
-        secrets: this.document.isOwner,
-        async: true
-      }
-    );
-    context.gmDescriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-      context.item.system.gmDescription, {
-        secrets: this.document.isOwner,
-        async: true
-      }
-    );
-    context.userIsGM = game.user.isGM;
-    context.definedEffects = this.definedEffects;
-    return context;
-  }
-
-  getModifiers(_target) {
-    return {modifiers: this.item.system.effect, context: {}};
-  }
-
-  async updateModifiers(modifiers, _context) {
-    await this.item.update({"system.effect": modifiers}, {render: false});
-  };
-}
-
-class ItemSheetAmmunition extends RangeChartSelectorMixin(TheEdgeItemSheet) {
+export class ItemSheetAmmunition extends RangeChartSelectorMixin(TheEdgeItemSheet) {
   static PARTS = {...TheEdgeItemSheet.PARTS,
     form: {
       template: `systems/the_edge/templates/items/Ammunition-header.hbs`
@@ -301,7 +87,7 @@ class ItemSheetAmmunition extends RangeChartSelectorMixin(TheEdgeItemSheet) {
   }
 }
 
-class ItemSheetArmour extends TheEdgeItemSheet {
+export class ItemSheetArmour extends TheEdgeItemSheet {
   static DEFAULT_OPTIONS = {...TheEdgeItemSheet.DEFAULT_OPTIONS,
     actions: {
       ...TheEdgeItemSheet.DEFAULT_OPTIONS.actions,
@@ -394,7 +180,7 @@ class ItemSheetArmour extends TheEdgeItemSheet {
   }
 }
 
-class ItemSheetSkill extends TheEdgeItemSheet {
+export class ItemSheetSkill extends TheEdgeItemSheet {
   static DEFAULT_OPTIONS = {...TheEdgeItemSheet.DEFAULT_OPTIONS,
     actions: {
       ...TheEdgeItemSheet.DEFAULT_OPTIONS.actions,
@@ -510,7 +296,7 @@ class ItemSheetSkill extends TheEdgeItemSheet {
   }
 }
 
-class ItemSheetConsumables extends TheEdgeItemSheet {
+export class ItemSheetConsumables extends TheEdgeItemSheet {
   static DEFAULT_OPTIONS = {...TheEdgeItemSheet.DEFAULT_OPTIONS,
     actions: {...TheEdgeItemSheet.DEFAULT_OPTIONS.actions,
       createGrenadeEffect: ItemSheetConsumables._createGrenadeEffect,
@@ -658,7 +444,7 @@ class ItemSheetConsumables extends TheEdgeItemSheet {
   }
 }
 
-class ItemSheetGear extends TheEdgeItemSheet {
+export class ItemSheetGear extends TheEdgeItemSheet {
   static DEFAULT_OPTIONS = {...TheEdgeItemSheet.DEFAULT_OPTIONS,
     position: { height: 170, },
   }
@@ -676,7 +462,7 @@ class ItemSheetGear extends TheEdgeItemSheet {
   }
 }
 
-class ItemSheetLanguage extends ItemSheetGear { // Inherit Gear as a minimal interface
+export class ItemSheetLanguage extends ItemSheetGear { // Inherit Gear as a minimal interface
   _footerContent() {
     return `
       <div style="display: flex; gap: 5px; align-items: center; white-space: nowrap">
@@ -689,7 +475,7 @@ class ItemSheetLanguage extends ItemSheetGear { // Inherit Gear as a minimal int
   }
 }
 
-class ItemSheetVantage extends ItemSheetGear { // Inherit Gear as a minimal interface
+export class ItemSheetVantage extends ItemSheetGear { // Inherit Gear as a minimal interface
   _footerContent() {
     return `
       <div style="display: flex; gap: 5px; align-items: center; white-space: nowrap">
@@ -702,132 +488,5 @@ class ItemSheetVantage extends ItemSheetGear { // Inherit Gear as a minimal inte
         <input class="item-footer-input" type="number" name="system.maxLevel" value="${this.item.system.maxLevel}" data-dtype="Number"/>
         ${LocalisationServer.localise("Level")}
       </div>`;
-  }
-}
-
-class ItemSheetWeapon extends RangeChartSelectorMixin(TheEdgeItemSheet) {
-  static DEFAULT_OPTIONS = {...TheEdgeItemSheet.DEFAULT_OPTIONS,
-    actions: {
-      ...TheEdgeItemSheet.DEFAULT_OPTIONS.actions,
-      addFiringMode: ItemSheetWeapon._addFiringMode,
-      deleteFiringMode: ItemSheetWeapon._deleteFiringMode,
-    }
-  }
-  
-  static PARTS = {...TheEdgeItemSheet.PARTS,
-    form: {
-      template: `systems/the_edge/templates/items/Weapon-header.hbs`
-    },
-    effects: {
-      template: "systems/the_edge/templates/items/meta-effects.hbs"
-    }, 
-    details: {
-      template: "systems/the_edge/templates/items/Weapon-details.hbs"
-    },
-  }
-
-  static TABS = {
-    primary: {
-      tabs: [
-        {id: "details"}, {id: "effects"}, {id: "description"},
-      ],
-      labelPrefix: "TABS",
-      initial: "details",
-    }
-  }
-
-  async render(options={}, _options={}) {
-    // Disable details for hand-to-hand combat
-    if (this.item.system.type != "Hand-to-Hand combat") {
-      this.constructor.TABS.primary.tabs = [
-        {id: "details"}, {id: "effects"}, {id: "description"},
-      ];
-      this.tabGroups.primary = "details";
-    } else {
-      this.constructor.TABS.primary.tabs = [
-        {id: "effects"}, {id: "description"},
-      ];
-      this.tabGroups.primary = "description";
-    }
-    super.render(options, _options);
-  }
-
-  async _prepareContext(options) {
-    const context = await super._prepareContext(options);
-    context.helpers = {
-      attributes: THE_EDGE.characterSchema.attributes,
-      weapon_types: Object.keys(THE_EDGE.coreValueMap.weapons).filter(x => !x.includes("General"))
-    };
-    context.ammunitionTypes = this._setAmmunitionTypesDict();
-    context.ammunitionTypeIsArbitrary = !THE_EDGE.ammunitionSubtypes.includes(
-      this.item.system.ammunitionType
-    );
-    context.dynamicSubtype = context.ammunitionTypeIsArbitrary ?
-      this.item.system.ammunitionType : "";
-    return context;
-  }
-
-  _onRender(context, options) {
-    super._onRender(context, options);
-    this.element.querySelectorAll(".firing-mode-modify").forEach(x =>
-      x.addEventListener("change", ev => this._onModeModify(ev))
-    );
-  }
-
-  _setAmmunitionTypesDict() {
-    const ammunitionTypes = {};
-    for (const type of THE_EDGE.ammunitionSubtypes) {
-      ammunitionTypes[type] = {
-        icon: `systems/the_edge/icons/ammunition/${type}.png`,
-        selected: type == this.item.system.ammunitionType
-      }
-    }
-    return ammunitionTypes;
-  }
-
-  async onIconSelected(iconType, value) {
-    switch (iconType) {
-      case "ammunitionType":
-        this.item.system.ammunitionType = value;
-        this.updateIcons(
-          iconType, this._setAmmunitionTypesDict(),
-          THE_EDGE.ammunitionSubtypes.includes(value) ? "" : value
-        );
-        await this.item.update({"system.ammunitionType": value}, {render: false})
-        break;
-    }
-  }
-
-  static _addFiringMode(_event, _target) {
-    const fireModes = this.item.system.fireModes;
-    fireModes.push(
-      {name: "", damage: "1d20", dices: 1, cost: 1, precisionPenalty: [0, 0]}
-    )
-    this.item.update({"system.fireModes": fireModes})
-  }
-
-  static _deleteFiringMode(_event, target) {
-    const index = target.dataset.index;
-
-    const fireModes = this.item.system.fireModes;
-    fireModes.splice(index, 1);
-    this.item.update({"system.fireModes": fireModes})
-  }
-
-  async _onModeModify(event) {
-    const target = event.target;
-    const index = +target.dataset.index;
-
-    const field = target.dataset.field;
-    const fireModes = this.item.system.fireModes;
-    if (field.includes("precisionPenalty")) {
-      const penaltyIndex = +field.slice(-1);
-      fireModes[+index].precisionPenalty[penaltyIndex] = +target.value;
-    } else if (field === "name" || field === "damage") {
-      fireModes[+index][field] = target.value;
-    } else {
-      fireModes[+index][field] = +target.value;
-    }
-    await this.item.update({"system.fireModes": fireModes})
   }
 }

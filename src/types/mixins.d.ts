@@ -5,6 +5,11 @@ declare class EffectModifier {
   updateModifiers(modifiers: IModifier[], context: EffectModifierMixinContext): Promise<void>;
 }
 
+interface EffectModifierStatics {
+  _createModifier(event: Event, target: Element): void
+  _deleteModifier(event: Event, target: Element): void
+}
+
 interface IEffectOverview {
   name: string,
   value: number | string
@@ -15,6 +20,12 @@ type EffectModifierMixinContext = any
 interface IModifiersAndContext {
   modifiers: IModifier[]
   context: EffectModifierMixinContext
+}
+
+// ----------------------------------------
+// Range Chart Selector
+declare class RangeChartSelector {
+  static _selectRange(event: Event, target: Element)
 }
 
 // ----------------------------------------

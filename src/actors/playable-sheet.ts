@@ -12,10 +12,13 @@ import LocalisationServer from "../system/localisation_server.js";
 import NotificationServer from "../system/notifications.js";
 
 import THE_EDGE from "../system/config-the-edge.js";
+import { TheEdgeActor } from "./actor.js";
 import { TheEdgeActorSheet } from "./actor-sheet.js";
 
-// @ts-expect-error
 export class TheEdgePlayableSheet extends TheEdgeActorSheet {
+  declare actor: TheEdgeActor
+  declare static actor: TheEdgeActor
+  declare static token: TokenDocument
   declare definedEffects: Record<string, string[]>
 
   constructor(...args: ConstructorParameters<typeof TheEdgeActorSheet>) {
@@ -30,6 +33,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
 
   static DEFAULT_OPTIONS = {...TheEdgeActorSheet.DEFAULT_OPTIONS,
     actions: {
+      ...TheEdgeActorSheet.DEFAULT_OPTIONS.actions,
       // Hero Token
       heroTokenUsed: TheEdgePlayableSheet.useHeroToken,
       heroTokenRegen: TheEdgePlayableSheet.regenerateHeroToken,
@@ -175,7 +179,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
         break;
       
       case "edit":
-        const wound: IWoundDetails & IWound = this.actor.system.wounds[index];
+        const wound: IWound = this.actor.system.wounds[index];
         const newDetails = await DialogEditWounds.prompt(wound);
         if (newDetails) this.actor.system.editWound(index, newDetails);
         break;

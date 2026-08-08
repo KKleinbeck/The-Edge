@@ -1,0 +1,20 @@
+<section
+  class="tab {{tabs.effects.cssClass}}"
+  data-group="primary"
+  data-tab="effects"
+  style="overflow-y: auto; overflow-x: hidden"
+>
+  <div class="counter-hook">
+    {{> systems/the_edge/templates/items/meta-counters.hbs title=(genName "Counters")}}
+  </div>
+
+  <hr />
+  <div class="effect-modifiers-hook">
+    {{> systems/the_edge/templates/generic/effect-modifiers.hbs
+      modifiers=item.system.effect
+      definedEffects=definedEffects
+      interactive=true
+      title=(genName "Modifiers")
+    }}
+  </div>
+</section>

@@ -10,6 +10,12 @@ interface ATTRIBUTES {
   int: foundryAny
 }
 
+interface ICounter {
+  name: string
+  value: number
+  max: number
+}
+
 interface GENERAL_MODIFIERS {
   painThreshold: foundryAny
   overloadThreshold: foundryAny

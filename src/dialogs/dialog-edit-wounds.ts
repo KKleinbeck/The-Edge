@@ -13,7 +13,7 @@ export default class DialogEditWounds extends DialogV2{
 
 
   static async prompt(
-    wound: IWoundDetails & IWound, config: Record<string, any> = {}
+    wound: IWound, config: Record<string, any> = {}
   ): Promise<Partial<IWoundDetails> | null> {
     config.content = await DialogEditWounds._setupContent(wound);
     config.ok = DialogEditWounds._setupCallback();
@@ -23,7 +23,7 @@ export default class DialogEditWounds extends DialogV2{
   }
 
 
-  static async _setupContent(wound: IWoundDetails & IWound): Promise<string> { 
+  static async _setupContent(wound: IWound): Promise<string> { 
     const template = "systems/the_edge/templates/dialogs/edit-wounds.hbs";
     return await renderTemplate(template, wound);
   }

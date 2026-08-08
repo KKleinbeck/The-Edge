@@ -19,11 +19,11 @@ import { TheEdgeCombatant } from "./documents/Combatant.js";
 import { TheEdgeCombatTracker } from "./system/sidebar/combat-tracker.js";
 import { TheEdgeItem } from "./items/item.js";
 import { SocketHandler } from "./system/socket_handler.js";
-import { TheEdgeItemSheet } from "./items/item-sheet.js";
 import { TheEdgePlayableSheet } from "./actors/playable-sheet.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
 import { TheEdgeToken, TheEdgeTokenDocument } from "./documents/token.js";
 import { TheEdgeStoreSheet } from "./actors/store-sheet.js";
+import setupItemSheets from "./items/item-sheets/setup.js";
 Hooks.once("init", async function () {
     console.log(`Initializing the Galaxy`);
     // Useful helpers
@@ -65,7 +65,7 @@ Hooks.once("init", async function () {
     actorSheets.forEach(({ sheetClass, types, makeDefault }) => {
         foundry.documents.collections.Actors.registerSheet('the_edge', sheetClass, { types, makeDefault });
     });
-    TheEdgeItemSheet.setupSheets();
+    setupItemSheets();
     // Alter the combat tracker
     CONFIG.ui.combat = TheEdgeCombatTracker;
     // Alter the default chat system

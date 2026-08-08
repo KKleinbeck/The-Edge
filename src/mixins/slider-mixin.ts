@@ -1,6 +1,6 @@
 const { renderTemplate } = foundry.applications.handlebars;
 
-type intype = Constructor<FoundryHandlebarsApplication>;
+type intype = Constructor<HandlebarsApplication>;
 type outtype<T> = T & Constructor<SliderInstance> &  SliderStatic;
 export default function SliderMixin<T extends intype>(BaseApplication: T): outtype<T> {
   class SliderMixinClass extends BaseApplication {
