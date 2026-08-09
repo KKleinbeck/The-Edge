@@ -90,7 +90,7 @@
             data-action="counterControl" data-subaction="delete" style="line-height: 8px;">
             <i class="fas fa-trash" style="font-size: 8px;"></i>
           </a>
-          <input xmlns="http://www.w3.org/1999/xhtml" class="svg-progress-input svg-progress-name counter-name-hook {{inputClass}}"
+          <input xmlns="http://www.w3.org/1999/xhtml" class="svg-progress-input svg-progress-name counter-name-hook"
             type="text" name="{{nameDataPath}}" value="{{name}}" data-subtype="name" />
         </div>
       </foreignObject>
@@ -103,14 +103,14 @@
         <div style="display: flex; justify-content: end; align-items: top;
           transform: scale({{defaultTo textScale 1.0}}); transform-origin: bottom right;">
             {{#if valueEditable}}
-              <input xmlns="http://www.w3.org/1999/xhtml" class="svg-progress-input counter-input-hook {{inputClass}}"
+              <input xmlns="http://www.w3.org/1999/xhtml" class="svg-progress-input counter-input-hook"
                 type="number" name="{{valueDataPath}}" value="{{value}}" data-subtype="value" data-max={{max}} />
             {{else}}
               <div class="svg-div-text">{{value}}</div>
             {{/if}}
             <div class="svg-div-text">&nbsp;/&nbsp;</div>
             {{#if maxEditable}}
-              <input xmlns="http://www.w3.org/1999/xhtml" class="svg-progress-input counter-input-hook {{inputClass}}"
+              <input xmlns="http://www.w3.org/1999/xhtml" class="svg-progress-input counter-input-hook"
                 type="number" name="{{maxDataPath}}" value="{{max}}" data-subtype="max" />
             {{else}}
               <div class="svg-div-text">{{max}}</div>

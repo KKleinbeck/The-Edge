@@ -1,7 +1,4 @@
 import LocalisationServer from "../system/localisation_server.js";
-import THE_EDGE from "../system/config-the-edge.js";
-
-const { renderTemplate } = foundry.applications.handlebars;
 
 type intype = Constructor<HandlebarsApplication>;
 type outtype<T> = T & Constructor<any>;
@@ -19,9 +16,8 @@ export default function CounterMixin<T extends intype>(BaseApplication: T): outt
 
     // Interface functions - can be overwritten
     getCounters(_context: DOMStringMap = {}): ICounter[] { return this.document.system.counters; }
-    async updateCounters(counters: ICounter[], context: DOMStringMap = {}): Promise<void> {
+    async updateCounters(counters: ICounter[], _context: DOMStringMap = {}): Promise<void> {
       await this.document.update({"system.counters": counters}, {render: false});
-      this.onUpdateCounters(counters, context);
     };
     onUpdateCounters(_counters: ICounter[], _context: DOMStringMap) {}
 
@@ -48,8 +44,14 @@ export default function CounterMixin<T extends intype>(BaseApplication: T): outt
 
 
     // Private interface
+    async _updateCounters(counters: ICounter[], context: DOMStringMap = {}): Promise<void> {
+      await this.updateCounters(counters, context);
+      this.onUpdateCounters(counters, context);
+    }
+
+
     _onRender(context: foundryAny, options: foundryAny): void {
-      super._onRender(context, options)
+      super._onRender(context, options);
       this.attachCounterEffectListeners();
     }
 
@@ -95,7 +97,7 @@ export default function CounterMixin<T extends intype>(BaseApplication: T): outt
           break;
       }
       const context = this._getContext(target);
-      await this.updateCounters(counters, context);
+      await this._updateCounters(counters, context);
     }
 
 
@@ -125,7 +127,7 @@ export default function CounterMixin<T extends intype>(BaseApplication: T): outt
       }
 
       const context = this._getContext(target);
-      this.updateCounters(counters, context);
+      this._updateCounters(counters, context);
     }
 
 

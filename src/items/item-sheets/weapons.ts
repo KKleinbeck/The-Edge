@@ -154,10 +154,6 @@ export default class ItemSheetWeapon extends CounterMixin(RangeChartSelectorMixi
     const template = "systems/the_edge/templates/items/meta-counters.hbs";
     const html = await renderTemplate(template, { counters: counters, ...context });
 
-    // const newContent = document.createElement("div"); // Trick to strip outer class of html-string
-    // newContent.innerHTML = html;
-
-
     const counterGroupElement = this.element.querySelector(".counter-group-hook");
     if (counterGroupElement === null) return;
 

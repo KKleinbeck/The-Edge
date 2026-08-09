@@ -1,5 +1,6 @@
 import Aux from "../system/auxilliaries.js";
 import ChatServer from "../system/chat_server.js";
+import CounterMixin from "../mixins/counter-mixin.js";
 import DialogArmourAttachment from "../dialogs/dialog-attachOuterArmour.js";
 import DialogItemDeletion from "../dialogs/dialog-item-deletion.js";
 import DialogMedicine from "../dialogs/dialog-medicine.js";
@@ -9,7 +10,8 @@ import LocalisationServer from "../system/localisation_server.js";
 import NotificationServer from "../system/notifications.js";
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
-export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplicationMixin(ActorSheetV2)) {
+const { renderTemplate } = foundry.applications.handlebars;
+export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(HandlebarsApplicationMixin(ActorSheetV2))) {
     effectIsExpanded = {};
     constructor(...args) {
         super(...args);
@@ -30,7 +32,6 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
             itemControl: TheEdgeActorSheet._onItemControl,
             effectControl: TheEdgeActorSheet._onEffectControl,
             skillControl: TheEdgeActorSheet._onSkillControl,
-            counterControl: TheEdgeActorSheet.onCounterControl,
         },
     };
     get title() { return this.actor.name; }
@@ -340,59 +341,26 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
             return false;
         });
     }
-    static onCounterControl(event, target) {
-        event.preventDefault();
-        // Obtain event data
-        const counterElement = target.closest(".counter");
-        const index = +counterElement?.dataset.index;
-        // Handle different actions
-        const counters = this.actor.system.counters || [];
-        switch (target.dataset.subaction) {
-            case "create-counter":
-                counters.push({
-                    name: LocalisationServer.localise("New Counter", "item"),
-                    value: 1, max: 1
-                });
-                break;
-            case "delete":
-                counters.splice(index, 1);
-                break;
-            case "increase-counter":
-                counters[index].max += 1;
-                break;
-            case "decrease-counter":
-                if (counters[index].max == 1)
-                    return;
-                counters[index].max -= 1;
-                counters[index].value = Math.min(counters[index].value, counters[index].max);
-                break;
-            case "deplete-counter":
-                counters[index].value = 0;
-                break;
-            case "use":
-                const level = 1 + +target.dataset.level;
-                counters[index].value = (counters[index].value < level) ? level : level - 1;
-                break;
-        }
-        this.actor.update({ "system.counters": counters });
+    // Mixin Related code
+    async updateCounters(counters, context = {}) {
+        await this.document.update({ "system.counters": counters }, { render: false });
+    }
+    ;
+    async onUpdateCounters(_counters, context) {
+        await this.redrawActorCounters(context);
+    }
+    async redrawActorCounters(context) {
+        const template = "systems/the_edge/templates/actors/character/biography/counters.hbs";
+        const html = await renderTemplate(template, { ...context, counters: this.actor.system.counters });
+        const actorCounterElement = this.element.querySelector(".actor-counters-group-hook");
+        actorCounterElement.innerHTML = html;
+        this.attachCounterEffectListeners(actorCounterElement);
     }
     // Specific listeners
     _onRender(context, options) {
         super._onRender(context, options);
         if (ui.hotbar.token?.actor?.id == this.actor.id) {
             ui.hotbar.render(true);
-        }
-        const counterNames = this.element.querySelectorAll(".counter-name");
-        for (const counter of counterNames) {
-            counter.addEventListener("change", (ev) => this._onCounterChange(ev, "name"));
-        }
-        const progressBarInputs = this.element.querySelectorAll(".counter-input");
-        for (const input of progressBarInputs) {
-            input.addEventListener("change", (ev) => {
-                if (!(ev.target instanceof HTMLElement))
-                    return;
-                this._onCounterChange(ev, ev.target.dataset.subtype);
-            });
         }
         const effectNames = this.element.querySelectorAll(".effect-name-hook");
         for (const effectName of effectNames) {
@@ -429,25 +397,6 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
         const width = span.offsetWidth + 20;
         document.body.removeChild(span);
         input.style.width = `${width}px`;
-    }
-    async _onCounterChange(event, changeId) {
-        const target = event.target;
-        const counterElement = target.closest(".counter");
-        const index = +counterElement?.dataset.index;
-        const counters = this.actor.system.counters || [];
-        switch (changeId) {
-            case "value":
-                counters[index].value = Math.min(+target.value, +target.dataset.max);
-                break;
-            case "max":
-                counters[index].max = +target.value;
-                counters[index].value = Math.min(counters[index].value, +target.value);
-                break;
-            case "name":
-                counters[index].name = target.value;
-                break;
-        }
-        this.actor.update({ "system.counters": counters });
     }
     async _onItemQuantiyChange(ev) {
         const target = ev.target;

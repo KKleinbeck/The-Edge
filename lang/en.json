@@ -337,6 +337,7 @@
     "CREATE COUNTER": "Create Counter",
     "DELETE": "Delete Item",
     "DELETE COUNTER": "Delete Counter",
+    "ITEM COUNTERS": "Item Counters",
     "NEW": "New Item",
     "NEW COUNTER": "New Counter",
     "NEW EFFECT": "New Effect",

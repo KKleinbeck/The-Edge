@@ -1,11 +1,12 @@
 {{!-- 
 Interface:
 - counters: The counters to display
-- nColumns (optional): Number of columns
-- title (optional): Displayed text on the top row
+- editable (default = false): Whether counter name, value and max are editable
+- nColumns (default = 1): Number of columns
+- title (default = ""): Displayed text on the top row
  --}}
-{{#define nColumns=(or nColumns 1)}}
-<div class="counter-context-hook" data-title="{{title}}" data-n-columns="{{nColumns}}">
+{{#define nColumns=(or nColumns 1) editable=(or editable false)}}
+<div class="counter-context-hook" data-title="{{title}}" data-n-columns="{{nColumns}}" data-editable="{{editable}}">
   <div style="display: flex; justify-content: space-between; padding-bottom: 2px;">
     <div style="white-space: nowrap;">{{title}}</div>
     <a title="{{ itemName 'Create' }}" data-action="counterControl" data-subaction="create-counter"
@@ -17,12 +18,12 @@ Interface:
     {{#each counters as |counter|}}
       <div class="counter-hook" data-index="{{@index}}">
         {{> systems/the_edge/templates/generic/progress-bar-modern.hbs
-          value=counter.value
           max=counter.max
-          maxEditable=true
+          maxEditable=../editable
           name=counter.name
-          nameEditable=true
-          valueEditable=true
+          nameEditable=../editable
+          value=counter.value
+          valueEditable=../editable
         }}
       </div>
     {{/each}}

@@ -1,0 +1,69 @@
+{{!-- Interface
+  - editable (default = false): Whether counters can be edited
+  - title (default = ""): Name of the counter group
+ --}}
+{{#define editable=(or editable false)}}
+<div class="counter-context-hook" data-type="{{type}}" data-editable="{{editable}}">
+  <div class="title" style="padding-right: 10px;">
+    <div class="section-title">{{title}}</div>
+    {{#if editable}}
+      <div title="{{ itemName 'Create Counter' }}" data-action="counterControl" data-subaction="create-counter" style="gap: 5px; cursor: pointer;">
+        {{itemName "New Counter"}}
+        <a><i class="fas fa-plus"></i></a>
+      </div>
+    {{/if}}
+  </div>
+  <div class="counter-list" style="padding: 0px 5px 0px 5px; overflow-y: hidden;" data-type="{{type}}">
+    {{#each counters as |counter|}}
+      <div class="counter-hook" data-index="{{@index}}">
+        {{#if (checkST counter.max 11)}}
+          <div class="counter-box-list" style="max-width: 100%; justify-content: space-between">
+            {{#if ../editable}}
+              <div style="display: flex; align-items: center;">
+                <a data-action="counterControl" data-subaction="decrease-counter"><i class="far fa-circle-minus"></i></a>
+              </div>
+            {{/if}}
+            <div style="display: flex">
+            {{#times counter.max}}
+              {{#if (checkST this counter.value)}}
+                {{> systems/the_edge/templates/generic/counter-token.hbs full=true level=this}}
+              {{else}}
+                {{> systems/the_edge/templates/generic/counter-token.hbs level=this}}
+              {{/if}}
+              {{#if (checkEqual this 4)}}
+                {{#unless (checkST counter.max 6)}}
+                  <div style="width: 5px;"></div> {{!-- Small Gap --}}
+                {{/unless}}
+              {{/if}}
+            {{/times}}
+            </div>
+            {{#if ../editable}}
+              <div style="display: flex; align-items: center;">
+                <a data-action="counterControl" data-subaction="increase-counter"><i class="far fa-circle-plus"></i></a>
+              </div>
+            {{/if}}
+          </div>
+          <div class="counter-title">
+            {{#if ../editable}}
+              <a title="{{ itemName 'Delete Counter' }}" data-action="counterControl" data-subaction="delete">
+                <i class="fas fa-trash"></i>
+              </a>
+              <input class="counter-name-hook" value="{{counter.name}}" style="width: 70%;"/>
+            {{else}}
+              {{counter.name}}
+            {{/if}}
+          </div>
+        {{else}}
+          <div class="counter-box-list" style="max-width: 100%; margin-top: 5px;">
+            {{>
+              systems/the_edge/templates/generic/progress-bar-modern.hbs
+              valueEditable=../editable maxEditable=../editable nameEditable=../editable
+              name=counter.name value=counter.value max=counter.max fillId="counter"
+            }}
+          </div>
+        {{/if}}
+      </div>
+    {{/each}}
+  </div>
+</div>
+{{/define}}

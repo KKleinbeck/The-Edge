@@ -55,7 +55,7 @@ export class TheEdgeActor extends Actor {
   }
 
 
-  fulfillsRequirements(skill: foundryAny, newSkillLevel: number = 0) {
+  fulfillsRequirements(skill: Item, newSkillLevel: number = 0) {
     if (skill.type == "Languageskill") return true;
     const level = skill.system.level - newSkillLevel;
     const requirements = skill.system.requirements[level];
@@ -86,6 +86,22 @@ export class TheEdgeActor extends Actor {
       }
     }
     return true;
+  }
+
+
+  // Returns a map from item.id to their counters
+  get itemCounters(): ICounter[] {
+    const counters: ICounter[] = [];
+
+    for (const item of this.items) {
+      if (!item.system.counters || !item.system.counters.length) continue;
+
+      for (const counter of item.system.counters) {
+        counters.push({name: `${item.name} - ${counter.name}`, value: counter.value, max: counter.max});
+      }
+    }
+
+    return counters;
   }
 
 

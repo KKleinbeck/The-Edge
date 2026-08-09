@@ -1,5 +1,4 @@
 import LocalisationServer from "../system/localisation_server.js";
-const { renderTemplate } = foundry.applications.handlebars;
 export default function CounterMixin(BaseApplication) {
     return class CounterHandler extends BaseApplication {
         static DEFAULT_OPTIONS = {
@@ -9,9 +8,8 @@ export default function CounterMixin(BaseApplication) {
         };
         // Interface functions - can be overwritten
         getCounters(_context = {}) { return this.document.system.counters; }
-        async updateCounters(counters, context = {}) {
+        async updateCounters(counters, _context = {}) {
             await this.document.update({ "system.counters": counters }, { render: false });
-            this.onUpdateCounters(counters, context);
         }
         ;
         onUpdateCounters(_counters, _context) { }
@@ -36,6 +34,10 @@ export default function CounterMixin(BaseApplication) {
             }
         }
         // Private interface
+        async _updateCounters(counters, context = {}) {
+            await this.updateCounters(counters, context);
+            this.onUpdateCounters(counters, context);
+        }
         _onRender(context, options) {
             super._onRender(context, options);
             this.attachCounterEffectListeners();
@@ -74,7 +76,7 @@ export default function CounterMixin(BaseApplication) {
                     break;
             }
             const context = this._getContext(target);
-            await this.updateCounters(counters, context);
+            await this._updateCounters(counters, context);
         }
         async _onCounterChange(event, changeType) {
             const target = event.target;
@@ -102,7 +104,7 @@ export default function CounterMixin(BaseApplication) {
                     break;
             }
             const context = this._getContext(target);
-            this.updateCounters(counters, context);
+            this._updateCounters(counters, context);
         }
         _getContext(target) {
             const contextElement = target.closest(".counter-context-hook");

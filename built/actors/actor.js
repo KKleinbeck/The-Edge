@@ -75,6 +75,18 @@ export class TheEdgeActor extends Actor {
         }
         return true;
     }
+    // Returns a map from item.id to their counters
+    get itemCounters() {
+        const counters = [];
+        for (const item of this.items) {
+            if (!item.system.counters || !item.system.counters.length)
+                continue;
+            for (const counter of item.system.counters) {
+                counters.push({ name: `${item.name} - ${counter.name}`, value: counter.value, max: counter.max });
+            }
+        }
+        return counters;
+    }
     async addOneItem(item) {
         const existingCopy = this.findItem(item);
         if (existingCopy && "quantity" in item.system) {
