@@ -8,7 +8,6 @@ export default class EquipableData extends DataModelComponent {
 
   static defineSchema(): Record<string, foundryAny> {
     return {
-      counters: new ArrayField(new ObjectField(), { initial: [] }),
       equipped: new BooleanField({ initial: false }),
       effect: new ArrayField(new ObjectField(), { initial: [] }),
     };

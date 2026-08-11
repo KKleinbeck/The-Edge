@@ -16,6 +16,11 @@ interface ICounter {
   max: number
 }
 
+interface IEmbeddedSkill {
+  name: string
+  effect: string
+}
+
 interface GENERAL_MODIFIERS {
   painThreshold: foundryAny
   overloadThreshold: foundryAny

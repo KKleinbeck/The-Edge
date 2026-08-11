@@ -4,6 +4,16 @@
   data-tab="effects"
   style="overflow-y: auto; overflow-x: hidden"
 >
+  <div class="embedded-skills-group-hook">
+    {{> systems/the_edge/templates/items/meta-embedded-skills.hbs
+      skills=item.system.embeddedSkills
+      editable=true
+      nColumns=2
+      title=(itemName "Embedded Skills")
+    }}
+  </div>
+
+  <hr />
   <div class="counter-group-hook">
     {{> systems/the_edge/templates/items/meta-counters.hbs
       counters=item.system.counters

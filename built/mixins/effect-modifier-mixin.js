@@ -22,12 +22,9 @@ export default function EffectModifierMixin(BaseApplication) {
             this.attachEffectListeners();
         }
         static _createModifier(_event, target) {
-            // @ts-expect-error 2339 as the method is defined as static
             const { modifiers, context } = this.getModifiers(target);
             modifiers.push({ group: "attributes", field: "end", value: 0 });
-            // @ts-expect-error 2339
             this.updateModifiers(modifiers, context);
-            // @ts-expect-error 2339
             this.redrawModifiers(target, modifiers, context);
         }
         _modifyEffect(event) {
@@ -71,25 +68,22 @@ export default function EffectModifierMixin(BaseApplication) {
             return result;
         }
         static _deleteModifier(_event, target) {
-            // @ts-expect-error 2339 as the method is defined as static
             const { modifiers, context } = this.getModifiers(target);
             const index = target.dataset.index;
+            // @ts-expect-error
             modifiers.splice(index, 1);
-            // @ts-expect-error 2339
             this.updateModifiers(modifiers, context);
-            // @ts-expect-error 2339
             this.redrawModifiers(target, modifiers, context);
         }
         static async _editDynamicModifier(_event, target) {
             const index = target.dataset.index;
-            // @ts-expect-error 2339 we know we are called with a correct `this`
             const { modifiers, context } = this.getModifiers(target);
+            // @ts-expect-error
             const currentModifier = modifiers[index];
             const newValue = await DialogDynamicModifier.prompt(currentModifier.value);
             if (newValue === null)
                 return; // Dialog was dismissed
             currentModifier.value = newValue;
-            // @ts-expect-error 2339
             this.updateModifiers(modifiers, context);
         }
         async redrawModifiers(target, modifiers, context) {

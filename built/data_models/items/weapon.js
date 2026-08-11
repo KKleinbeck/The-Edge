@@ -1,10 +1,11 @@
 import { generateDataModelWithComponents } from "../abstracts.js";
 import THE_EDGE from "../../system/config-the-edge.js";
 import DescriptionData from "./components/description.js";
+import EmbeddedSkillsData from "./components/embedded-skills.js";
 import EquipableData from "./components/equipable.js";
 import NonstackableData from "./components/nonstackable.js";
 const { ArrayField, BooleanField, NumberField, ObjectField, SchemaField, StringField } = foundry.data.fields;
-export default class WeaponData extends generateDataModelWithComponents(DescriptionData, EquipableData, NonstackableData) {
+export default class WeaponData extends generateDataModelWithComponents(DescriptionData, EmbeddedSkillsData, EquipableData, NonstackableData) {
     static defineSchema() {
         const schema = super.defineSchema();
         schema.type = new StringField({ initial: "Pulse Rifle" });

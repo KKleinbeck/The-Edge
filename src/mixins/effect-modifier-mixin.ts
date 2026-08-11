@@ -34,13 +34,10 @@ export default function EffectModifierMixin<T extends intype>(BaseApplication: T
     }
 
 
-    static _createModifier(_event: Event, target: Element): void {
-      // @ts-expect-error 2339 as the method is defined as static
+    static _createModifier(this: EffectModifier, _event: Event, target: Element): void {
       const {modifiers, context} = this.getModifiers(target);
       modifiers.push({group: "attributes", field: "end", value: 0});
-      // @ts-expect-error 2339
       this.updateModifiers(modifiers, context);
-      // @ts-expect-error 2339
       this.redrawModifiers(target, modifiers, context);
     }
 
@@ -89,27 +86,24 @@ export default function EffectModifierMixin<T extends intype>(BaseApplication: T
     }
 
 
-    static _deleteModifier(_event: Event, target: HTMLElement): void {
-      // @ts-expect-error 2339 as the method is defined as static
+    static _deleteModifier(this: EffectModifier, _event: Event, target: HTMLElement): void {
       const {modifiers, context} = this.getModifiers(target);
       const index = target.dataset.index;
+      // @ts-expect-error
       modifiers.splice(index, 1);
-      // @ts-expect-error 2339
       this.updateModifiers(modifiers, context);
-      // @ts-expect-error 2339
       this.redrawModifiers(target, modifiers, context);
     }
 
 
-    static async _editDynamicModifier(_event: Event, target: HTMLElement): Promise<void> {
+    static async _editDynamicModifier(this: EffectModifier, _event: Event, target: HTMLElement): Promise<void> {
       const index = target.dataset.index;
-      // @ts-expect-error 2339 we know we are called with a correct `this`
       const {modifiers, context} = this.getModifiers(target);
+      // @ts-expect-error
       const currentModifier = modifiers[index];
       const newValue = await DialogDynamicModifier.prompt(currentModifier.value);
       if (newValue === null) return; // Dialog was dismissed
       currentModifier.value = newValue;
-      // @ts-expect-error 2339
       this.updateModifiers(modifiers, context);
     }
 

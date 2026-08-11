@@ -3,6 +3,7 @@ const { ArrayField, BooleanField, ObjectField } = foundry.data.fields;
 export default class EquipableData extends DataModelComponent {
     static defineSchema() {
         return {
+            counters: new ArrayField(new ObjectField(), { initial: [] }),
             equipped: new BooleanField({ initial: false }),
             effect: new ArrayField(new ObjectField(), { initial: [] }),
         };

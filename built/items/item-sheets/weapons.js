@@ -1,10 +1,11 @@
 import CounterMixin from "../../mixins/counter-mixin.js";
+import EmbeddedSkillMixin from "../../mixins/embedded-skills-mixin.js";
 import LocalisationServer from "../../system/localisation_server.js";
 import RangeChartSelectorMixin from "../../mixins/range-chart-selector-mixin.js";
 import THE_EDGE from "../../system/config-the-edge.js";
 import { TheEdgeItemSheet } from "../item-sheet.js";
 const { renderTemplate } = foundry.applications.handlebars;
-export default class ItemSheetWeapon extends CounterMixin(RangeChartSelectorMixin(TheEdgeItemSheet)) {
+export default class ItemSheetWeapon extends EmbeddedSkillMixin(CounterMixin(RangeChartSelectorMixin(TheEdgeItemSheet))) {
     static DEFAULT_OPTIONS = { ...TheEdgeItemSheet.DEFAULT_OPTIONS,
         actions: {
             ...TheEdgeItemSheet.DEFAULT_OPTIONS.actions,
@@ -129,5 +130,17 @@ export default class ItemSheetWeapon extends CounterMixin(RangeChartSelectorMixi
             return;
         counterGroupElement.innerHTML = html;
         this.attachCounterEffectListeners(counterGroupElement);
+    }
+    async onUpdateSkills(skills, context) {
+        await this.redrawSkills(skills, context);
+    }
+    async redrawSkills(skills, context) {
+        const template = "systems/the_edge/templates/items/meta-embedded-skills.hbs";
+        const html = await renderTemplate(template, { skills: skills, ...context });
+        const skillsGroupElement = this.element.querySelector(".embedded-skills-group-hook");
+        if (skillsGroupElement === null)
+            return;
+        skillsGroupElement.innerHTML = html;
+        this.attachSkillEffectListeners(skillsGroupElement);
     }
 }
