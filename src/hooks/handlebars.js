@@ -145,10 +145,10 @@ export default function() {
     },
     getRangeModifier: (rangeChart, distance) => {
       if (distance < 2) return `(${rangeChart["less_2m"][0]} / ${rangeChart["less_2m"][1]})`;
-      else if (distance < 20) return `(${rangeChart["less_20m"][0]} / ${rangeChart["less_20m"][1]})`;
-      else if (distance < 200) return `(${rangeChart["less_200m"][0]} / ${rangeChart["less_200m"][1]})`;
-      else if (distance < 1000) return `(${rangeChart["less_1km"][0]} / ${rangeChart["less_1km"][1]})`;
-      return `(${rangeChart["more_1km"][0]} / ${rangeChart["more_1km"][1]})`;
+      else if (distance < 10) return `(${rangeChart["less_10m"][0]} / ${rangeChart["less_10m"][1]})`;
+      else if (distance < 25) return `(${rangeChart["less_25m"][0]} / ${rangeChart["less_25m"][1]})`;
+      else if (distance < 100) return `(${rangeChart["less_100m"][0]} / ${rangeChart["less_100m"][1]})`;
+      return `(${rangeChart["more_100m"][0]} / ${rangeChart["more_100m"][1]})`;
     },
     getSizeModifier: (size) => {
       return `(${THE_EDGE.sizeModifiers[size][0]} / ${THE_EDGE.sizeModifiers[size][1]})`

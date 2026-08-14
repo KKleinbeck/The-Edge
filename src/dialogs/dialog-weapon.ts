@@ -154,10 +154,10 @@ export default class DialogWeapon extends DialogV2 {
   static _onRollGetRange(element: HTMLElement, distance: number | undefined): TDistance {
     if (distance) {
       if (distance < 2) return "less_2m";
-      if (distance < 20) return "less_20m";
-      if (distance < 200) return "less_200m";
-      if (distance < 1000) return "less_1km";
-      return "more_1km";
+      if (distance < 10) return "less_10m";
+      if (distance < 25) return "less_25m";
+      if (distance < 100) return "less_100m";
+      return "more_100m";
     }
 
     return (DialogWeapon._safeGetByName(element, "RangeSelector") as TDistance) ?? "less_2m";

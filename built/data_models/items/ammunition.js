@@ -19,10 +19,10 @@ export default class AmmunitionData extends generateDataModelWithComponents(Desc
         });
         schema.rangeChart = new SchemaField({
             less_2m: new ArrayField(new NumberField(), { initial: [0, 0] }),
-            less_20m: new ArrayField(new NumberField(), { initial: [0, 0] }),
-            less_200m: new ArrayField(new NumberField(), { initial: [0, 0] }),
-            less_1km: new ArrayField(new NumberField(), { initial: [0, 0] }),
-            more_1km: new ArrayField(new NumberField(), { initial: [0, 0] })
+            less_10m: new ArrayField(new NumberField(), { initial: [0, 0] }),
+            less_25m: new ArrayField(new NumberField(), { initial: [0, 0] }),
+            less_100m: new ArrayField(new NumberField(), { initial: [0, 0] }),
+            more_100m: new ArrayField(new NumberField(), { initial: [0, 0] })
         });
         return schema;
     }

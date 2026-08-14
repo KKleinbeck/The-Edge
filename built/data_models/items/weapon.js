@@ -23,10 +23,10 @@ export default class WeaponData extends generateDataModelWithComponents(Descript
         });
         schema.rangeChart = new SchemaField({
             less_2m: new ArrayField(new NumberField({ initial: 0, integer: true }), { initial: [0, 0] }),
-            less_20m: new ArrayField(new NumberField({ initial: 0, integer: true }), { initial: [0, 0] }),
-            less_200m: new ArrayField(new NumberField({ initial: 0, integer: true }), { initial: [0, 0] }),
-            less_1km: new ArrayField(new NumberField({ initial: 0, integer: true }), { initial: [0, 0] }),
-            more_1km: new ArrayField(new NumberField({ initial: 0, integer: true }), { initial: [0, 0] })
+            less_10m: new ArrayField(new NumberField({ initial: 0, integer: true }), { initial: [0, 0] }),
+            less_25m: new ArrayField(new NumberField({ initial: 0, integer: true }), { initial: [0, 0] }),
+            less_100m: new ArrayField(new NumberField({ initial: 0, integer: true }), { initial: [0, 0] }),
+            more_100m: new ArrayField(new NumberField({ initial: 0, integer: true }), { initial: [0, 0] })
         });
         schema.attachments = new ArrayField(new ObjectField(), { initial: [] });
         schema.ammunitionType = new StringField({ initial: "small" });
@@ -40,5 +40,18 @@ export default class WeaponData extends generateDataModelWithComponents(Descript
             return "energy";
         }
         return "kinetic";
+    }
+    // TODO: Remove with v0.17
+    static migrateData(source, _options) {
+        if ("less_1km" in source.rangeChart) {
+            console.log(source);
+            const newRangeChart = {
+                less_10m: source.rangeChart.less_20m,
+                less_25m: source.rangeChart.less_200m,
+                less_100m: source.rangeChart.less_1km,
+                more_100m: source.rangeChart.more_1km
+            };
+        }
+        return super.migrateData(source);
     }
 }

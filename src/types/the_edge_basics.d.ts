@@ -9,7 +9,7 @@ type TCoordinate = [number, number]
 
 type TCover = "no cover" | "half cover" | "three quarters" | "full cover"
 
-type TDistance = ("less_2m" | "less_20m" | "less_200m" | "less_1km" | "more_1km")
+type TDistance = ("less_2m" | "less_10m" | "less_25m" | "less_100m" | "more_100m")
 
 type TEventNames = (
   "rollAttackCheck-Prior" | "rollAttackCheck-Posterior" |
