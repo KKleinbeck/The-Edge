@@ -69,7 +69,7 @@ export async function applyDamage(_event: PointerEvent, sys, html) {
       details.attackRollQuery.name
     );
     if (Object.keys(protectionLog).length != 0) {
-      const template = "systems/the_edge/templates/chat/meta-protection-log.html";
+      const template = "systems/the_edge/templates/chat/meta-protection-log.hbs";
       const protectionHtml = await renderTemplate(template, {protection: protectionLog});
       html.querySelector(".apply-damage").outerHTML = protectionHtml;
     } else await html.querySelector(".apply-damage").remove();
@@ -109,7 +109,7 @@ export async function applyGrenadeDamage(_event: PointerEvent, sys, button) {
 
   // Update the chat message
   if (Object.keys(logs).length != 0) {
-    const template = "systems/the_edge/templates/chat/meta-grenade-damage.html";
+    const template = "systems/the_edge/templates/chat/meta-grenade-damage.hbs";
     const damageHtml = await renderTemplate(template, {logs: logs, grenade: grenadeDetails});
     button.outerHTML = damageHtml;
   } else {

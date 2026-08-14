@@ -1,5 +1,5 @@
 import THE_EDGE from "../system/config-the-edge.js";
-import NewChatServer from "../system/new_chat_server.js";
+import ChatServer from "../system/chat_server.js";
 import DialogProficiency from "../dialogs/dialog-proficiency.js";
 import ProficiencyConfig from "../system/config-proficiencies.js";
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -102,7 +102,7 @@ export default class GrenadePicker extends HandlebarsApplicationMixin(Applicatio
         const rollOutcome = ProficiencyConfig.rollOutcome("throwing", rollDetails.quality);
         foundry.utils.mergeObject(rollDetails, { rollOutcome, titleDetails: chosenGrenade.name });
         const chatServerConfig = { speaker: { scene: canvas.scene.id, token: token.id } };
-        NewChatServer.transmitEvent("PROFICIENCY CHECK", rollDetails, chatServerConfig);
+        ChatServer.transmitEvent("PROFICIENCY CHECK", rollDetails, chatServerConfig);
         const payload = {
             actor: token.actor, rollDetails: rollDetails, tokenPosition: { x: token.x, y: token.y },
             targetPosition: this.targetPosition, grenade: chosenGrenade, sceneId: canvas.scene.id
@@ -134,7 +134,7 @@ export default class GrenadePicker extends HandlebarsApplicationMixin(Applicatio
             grenade, grenadeTileId: grenadeTile.id,
             sceneId: payload.sceneId
         };
-        NewChatServer.transmitEvent("GRENADE CONTEXT BASED", details);
+        ChatServer.transmitEvent("GRENADE CONTEXT BASED", details);
     }
     static _createGrenadePosition(quality, rollOutcome, tokenPosition, targetPosition) {
         const position = { x: 0, y: 0 };

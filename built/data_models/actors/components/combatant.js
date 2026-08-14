@@ -161,7 +161,7 @@ export default class CombatantData extends DataModelComponent {
         // TODO: refactor to use this.applyDamage to handle death correctly
         this.parent.update({ "system.health.value": Math.max(this.health.value - details.damage, 0) });
         details.actor = this.parent.name;
-        ChatServer.transmitEvent(type, details);
+        ChatServer.transmitEvent(type.toUpperCase(), details, this.parent.chatConfig());
     }
     async _generateNewWound(woundDetails) {
         const wound = {

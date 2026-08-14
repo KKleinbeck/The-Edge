@@ -1,6 +1,6 @@
 import Aux from "../system/auxilliaries.js";
 import LocalisationServer from "../system/localisation_server.js";
-import NewChatServer from "../system/new_chat_server.js";
+import ChatServer from "../system/chat_server.js";
 import THE_EDGE from "../system/config-the-edge.js";
 
 const { renderTemplate } = foundry.applications.handlebars;
@@ -188,7 +188,7 @@ export default class DialogWeapon extends DialogV2 {
     const ammunition = checkData.actor.items.get(checkData.weapon.system.ammunitionID);
     const ammuCapa = ammunition.system.capacity;
     if (ammuCapa.value <= 0) {
-      NewChatServer.transmitEvent(
+      ChatServer.transmitEvent(
         "FIRING EMPTY WEAPON", {name: checkData.actor.name},
         DialogWeapon._extractChatServerConfig(checkData)
       );
@@ -238,14 +238,14 @@ export default class DialogWeapon extends DialogV2 {
 
     const details: IDetailsWeaponCheck = DialogWeapon._generateWeaponCheckData(
       checkData, parseResult, rollDamageOutcome);
-    if (checkData.targetIds.length == 0) { NewChatServer.transmitEvent("WEAPON CHECK", details, chatServerConfig) };
+    if (checkData.targetIds.length == 0) { ChatServer.transmitEvent("WEAPON CHECK", details, chatServerConfig) };
     for (const id of checkData.targetIds) {
       details.attackRollQuery.targetId = id;
-      NewChatServer.transmitEvent("WEAPON CHECK", details, chatServerConfig);
+      ChatServer.transmitEvent("WEAPON CHECK", details, chatServerConfig);
     }
 
     if (rollDamageOutcome.attackRollResult.failEvent) {
-      NewChatServer.transmitEvent(
+      ChatServer.transmitEvent(
         "CRIT FAIL EVENT",
         {event: rollDamageOutcome.attackRollResult.failEvent, check: "Combat check"},
         chatServerConfig

@@ -3,7 +3,7 @@ import LocalisationServer from "./localisation_server.js";
 
 const { renderTemplate } = foundry.applications.handlebars;
 
-export default class NewChatServer {
+export default class ChatServer {
   static transmitPlain(msg: string, config?: IChatServerConfig) {
     ChatMessage.create(this.createChatData(`<h2>${msg}</h2>`, config))
   }
@@ -19,13 +19,13 @@ export default class NewChatServer {
       case "CRIT FAIL EVENT":
         text = LocalisationServer.parsedLocalisation(details.event, "Crit Fail Event")
         html = await renderTemplate(
-          "systems/the_edge/templates/chat/crit_failure.html",
+          "systems/the_edge/templates/chat/crit_failure.hbs",
           {check: details.check, text: text}
         );
         break;
       
       case "FALL":
-        html = await renderTemplate("systems/the_edge/templates/chat/fall.html", details);
+        html = await renderTemplate("systems/the_edge/templates/chat/fall.hbs", details);
         break;
       
       case "FIRING EMPTY WEAPON":
@@ -37,32 +37,32 @@ export default class NewChatServer {
         break;
       
       case "GENERIC DAMAGE":
-        html = await renderTemplate("systems/the_edge/templates/chat/generic_damage.html", details);
+        html = await renderTemplate("systems/the_edge/templates/chat/generic_damage.hbs", details);
         break;
       
       case "GRENADE SHEET BASED":
         details.check = "throwing";
-        html = await renderTemplate("systems/the_edge/templates/chat/grenade-sheet-based.html", details);
+        html = await renderTemplate("systems/the_edge/templates/chat/grenade-sheet-based.hbs", details);
         break;
       
       case "GRENADE CONTEXT BASED":
-        html = await renderTemplate("systems/the_edge/templates/chat/grenade-context-based.html", details);
+        html = await renderTemplate("systems/the_edge/templates/chat/grenade-context-based.hbs", details);
         break;
       
       case "HERO TOKEN":
         text = LocalisationServer.parsedLocalisation(details.reason, "Hero Token", details)
         html = await renderTemplate(
-          "systems/the_edge/templates/chat/hero_token.html",
+          "systems/the_edge/templates/chat/hero_token.hbs",
           {name: details.name, text: text}
         );
         break;
       
       case "IMPACT":
-        html = await renderTemplate("systems/the_edge/templates/chat/impact.html", details);
+        html = await renderTemplate("systems/the_edge/templates/chat/impact.hbs", details);
         break;
       
       case "MEDICINE":
-        html = await renderTemplate("systems/the_edge/templates/chat/medicine.html", details);
+        html = await renderTemplate("systems/the_edge/templates/chat/medicine.hbs", details);
         break;
 
       case "POST ITEM":
@@ -97,7 +97,7 @@ export default class NewChatServer {
         break;
       
       case "POST SKILL":
-        html = await renderTemplate("systems/the_edge/templates/chat/skill-description.html", details);
+        html = await renderTemplate("systems/the_edge/templates/chat/skill-description.hbs", details);
         break;
       
       case "PROFICIENCY CHECK":
@@ -105,17 +105,17 @@ export default class NewChatServer {
         break;
 
       case "RELOAD":
-        html = await renderTemplate("systems/the_edge/templates/chat/reload.html", details);
+        html = await renderTemplate("systems/the_edge/templates/chat/reload.hbs", details);
         break;
       
       case "REROLL":
-        html = await renderTemplate("systems/the_edge/templates/chat/reroll-check.html", details);
+        html = await renderTemplate("systems/the_edge/templates/chat/reroll-check.hbs", details);
         break;
       
       case "SHORT REST":
       case "LONG REST":
         html = await renderTemplate(
-          "systems/the_edge/templates/chat/long-or-short-rest.html",
+          "systems/the_edge/templates/chat/long-or-short-rest.hbs",
           foundry.utils.mergeObject(details, {restType: id})
         );
         break;

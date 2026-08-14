@@ -77,7 +77,7 @@ export default class NewChatServer {
                 html = await renderTemplate("systems/the_edge/templates/chat/proficiency_check.hbs", details);
                 break;
             case "RELOAD":
-                html = await renderTemplate("systems/the_edge/templates/chat/reload.html", details);
+                html = await renderTemplate("systems/the_edge/templates/chat/reload.hbs", details);
                 break;
             case "REROLL":
                 html = await renderTemplate("systems/the_edge/templates/chat/reroll-check.html", details);

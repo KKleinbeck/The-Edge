@@ -43,8 +43,7 @@ export default class WeaponData extends generateDataModelWithComponents(Descript
     }
     // TODO: Remove with v0.17
     static migrateData(source, _options) {
-        if ("less_1km" in source.rangeChart) {
-            console.log(source);
+        if ("less_1km" in (source.rangeChart ?? {})) {
             const newRangeChart = {
                 less_10m: source.rangeChart.less_20m,
                 less_25m: source.rangeChart.less_200m,

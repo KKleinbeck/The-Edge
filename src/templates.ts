@@ -55,7 +55,9 @@ export const preloadHandlebarsTemplates = async function() {
     "systems/the_edge/templates/chat/items/meta-effects.hbs",
     "systems/the_edge/templates/chat/meta-damage.hbs",
     "systems/the_edge/templates/chat/meta-apply-damage.hbs",
-    "systems/the_edge/templates/chat/meta-protection-log.html",
+    "systems/the_edge/templates/chat/meta-protection-log.hbs",
+
+    // Dialogs
     "systems/the_edge/templates/dialogs/meta-chat-options.html",
 
     // Hotbar

@@ -1,5 +1,5 @@
 import Aux from "../system/auxilliaries.js";
-import NewChatServer from "../system/new_chat_server.js";
+import ChatServer from "../system/chat_server.js";
 import CheckDialog from "./meta-check-dialog.js";
 import DiceServer from "../system/dice_server.js";
 import LocalisationServer from "../system/localisation_server.js";
@@ -133,7 +133,7 @@ export default class DialogCombatics extends CheckDialog {
       vantage: this.promptResult.vantage,
     };
     details.attackRollQuery.threshold = threshold;
-    NewChatServer.transmitEvent(
+    ChatServer.transmitEvent(
       "WEAPON CHECK", details, config
     );
 

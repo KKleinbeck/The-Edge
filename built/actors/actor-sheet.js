@@ -1,5 +1,5 @@
 import Aux from "../system/auxilliaries.js";
-import NewChatServer from "../system/new_chat_server.js";
+import ChatServer from "../system/chat_server.js";
 import CounterMixin from "../mixins/counter-mixin.js";
 import DialogArmourAttachment from "../dialogs/dialog-attachOuterArmour.js";
 import DialogItemDeletion from "../dialogs/dialog-item-deletion.js";
@@ -60,7 +60,7 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
             case "edit":
                 return item?.sheet.render(true);
             case "post":
-                NewChatServer.transmitEvent("POST ITEM", { item: item }, this._chatConfig());
+                ChatServer.transmitEvent("POST ITEM", { item: item }, this.actor.chatConfig());
                 break;
             case "increase":
                 this.actor.addOrCreateVantage(item);
@@ -137,10 +137,10 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
                         }
                         const strainRoll = await new Roll(item.system.subtypes.food.strainReduction).evaluate();
                         const strainChange = await this.actor.system.applyStrain(-strainRoll.total);
-                        NewChatServer.transmitEvent("FOOD CONSUME", {
+                        ChatServer.transmitEvent("FOOD CONSUME", {
                             details: { actorName: this.actor.name, item: item.name, strainReduction: -strainChange },
                             hasEffects: hasEffect
-                        }, this._chatConfig());
+                        }, this.actor.chatConfig());
                         item.useOne();
                         break;
                 }
@@ -295,7 +295,7 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
         // Handle different actions
         switch (target.dataset.subaction) {
             case "post":
-                NewChatServer.transmitEvent("POST ITEM", { item }, this._chatConfig());
+                ChatServer.transmitEvent("POST ITEM", { item }, this.actor.chatConfig());
                 break;
             case "roll":
                 Aux.evalOnEventWith(skill.effect, { parent: item }, skillId);
@@ -328,7 +328,7 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
                 }
                 return this.actor.deleteSkill(skillId);
             case "post":
-                NewChatServer.transmitEvent("POST SKILL", { name: skill.name, type: skill.type, description: skill.system.description }, this._chatConfig());
+                ChatServer.transmitEvent("POST SKILL", { name: skill.name, type: skill.type, description: skill.system.description }, this.actor.chatConfig());
                 break;
             case "roll":
                 Hooks.call("onModifierEvent", "onUse", { actor: this.actor, itemId: skillId });
@@ -475,13 +475,5 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
     }
     _itemExists(item) {
         return this.actor.findItem(item);
-    }
-    _chatConfig(roll = "public") {
-        return {
-            roll,
-            speaker: {
-                actor: this.actor.id
-            }
-        };
     }
 }

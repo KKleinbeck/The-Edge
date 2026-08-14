@@ -1,5 +1,5 @@
 import Aux from "../../system/auxilliaries.js";
-import NewChatServer from "../../system/new_chat_server.js";
+import ChatServer from "../../system/chat_server.js";
 import DiceServer from "../../system/dice_server.js";
 import LocalisationServer from "../../system/localisation_server.js";
 import ProficiencyConfig from "../../system/config-proficiencies.js";
@@ -88,7 +88,7 @@ function _handleRerollOrChange(contextHtml, config, newRoll) {
             rerollDetails.check = LocalisationServer.localise("combat", "combat");
             break;
     }
-    NewChatServer.transmitEvent("REROLL", rerollDetails);
+    ChatServer.transmitEvent("REROLL", rerollDetails);
 }
 // Helper functions
 function _heroTokenAttributeCheck(chatMsgCls, system) {

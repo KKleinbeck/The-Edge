@@ -52,7 +52,7 @@ export async function applyDamage(_event, sys, html) {
         const target = scene.tokens.get(details.attackRollQuery.targetId)?.actor;
         const protectionLog = await _applyDamage(target, details.attackRollResult.damage, "penetration" in details.specifics ? details.specifics.penetration : 0, details.attackRollResult.rolls.map(x => x.crit), details.damageType, details.attackRollQuery.name);
         if (Object.keys(protectionLog).length != 0) {
-            const template = "systems/the_edge/templates/chat/meta-protection-log.html";
+            const template = "systems/the_edge/templates/chat/meta-protection-log.hbs";
             const protectionHtml = await renderTemplate(template, { protection: protectionLog });
             html.querySelector(".apply-damage").outerHTML = protectionHtml;
         }
@@ -89,7 +89,7 @@ export async function applyGrenadeDamage(_event, sys, button) {
     }
     // Update the chat message
     if (Object.keys(logs).length != 0) {
-        const template = "systems/the_edge/templates/chat/meta-grenade-damage.html";
+        const template = "systems/the_edge/templates/chat/meta-grenade-damage.hbs";
         const damageHtml = await renderTemplate(template, { logs: logs, grenade: grenadeDetails });
         button.outerHTML = damageHtml;
     }

@@ -1,5 +1,5 @@
 import { DataModelComponent } from "../../abstracts.js";
-import NewChatServer from "../../../system/new_chat_server.js";
+import ChatServer from "../../../system/chat_server.js";
 const { NumberField, StringField } = foundry.data.fields;
 export default class HumanoidData extends DataModelComponent {
     static defineSchema() {
@@ -42,6 +42,6 @@ export default class HumanoidData extends DataModelComponent {
             "system.health.value": Math.min(this.health.max.value, this.health.value + accHealing),
             "system.wounds": newWounds
         });
-        NewChatServer.transmitEvent(restDescription.type.toUpperCase(), { healing: accHealing, coagulation: accCoagulation }, { speaker: { actor: this.parent.id } });
+        ChatServer.transmitEvent(restDescription.type.toUpperCase(), { healing: accHealing, coagulation: accCoagulation }, { speaker: { actor: this.parent.id } });
     }
 }

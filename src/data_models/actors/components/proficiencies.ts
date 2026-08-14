@@ -1,4 +1,4 @@
-import NewChatServer from "../../../system/new_chat_server.js";
+import ChatServer from "../../../system/chat_server.js";
 import DiceServer from "../../../system/dice_server.js";
 import ValueSchemaField from "../../Fields/value_schema.js";
 import { DataModelComponent } from "../../abstracts.js";
@@ -157,7 +157,7 @@ class ProficiencyData extends DataModelComponent {
           token: promptResult.tokenId
         }
       }
-      NewChatServer.transmitEvent("PROFICIENCY CHECK", rollDetails, chatConfig);
+      ChatServer.transmitEvent("PROFICIENCY CHECK", rollDetails, chatConfig);
     }
     return rollResult;
   }

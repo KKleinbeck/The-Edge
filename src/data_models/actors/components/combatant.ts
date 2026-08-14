@@ -222,7 +222,7 @@ export default class CombatantData extends DataModelComponent {
     this.parent.update({"system.health.value": Math.max(this.health.value - details.damage, 0)});
 
     details.actor = this.parent.name;
-    ChatServer.transmitEvent(type, details);
+    ChatServer.transmitEvent((type.toUpperCase() as "FALL" | "IMPACT"), details, this.parent.chatConfig());
   }
 
 

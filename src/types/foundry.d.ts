@@ -64,7 +64,9 @@ declare class Actor extends FoundryDocument {
     rollAttackCheck(prompt: IAttackRollPrompt): Promise<IAttackRollResult>
     useHeroToken()
   }
+  token: TokenDocument
   addOrCreateVantage(item: Item)
+  chatConfig(roll?: TRollType): IChatServerConfig
   findItem(item: Item): Item | undefined
   learnSkill(item: Item)
 }
@@ -290,6 +292,7 @@ interface IFoundry {
     fields: {
       ArrayField: foundryAny
       BooleanField: foundryAny
+      HTMLField: foundryAny
       NumberField: foundryAny
       ObjectField: foundryAny
       SchemaField: foundryAny

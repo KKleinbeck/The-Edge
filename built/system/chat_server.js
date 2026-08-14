@@ -2,64 +2,48 @@ import THE_EDGE from "./config-the-edge.js";
 import LocalisationServer from "./localisation_server.js";
 const { renderTemplate } = foundry.applications.handlebars;
 export default class ChatServer {
-    static transmitPlain(msg) {
-        ChatMessage.create(this._chatDataSetup(`<h2>${msg}</h2>`, "roll"));
+    static transmitPlain(msg, config) {
+        ChatMessage.create(this.createChatData(`<h2>${msg}</h2>`, config));
     }
-    static async transmitEvent(id, details, roll = "roll") {
-        let html = undefined;
+    static async transmitEvent(id, details, config = {}) {
+        let html = "";
         let text = undefined;
         switch (id.toUpperCase()) {
-            case "ABILITYCHECK":
-                html = await renderTemplate("systems/the_edge/templates/chat/attribute_check.html", details);
+            case "ATTRIBUTE CHECK":
+                html = await renderTemplate("systems/the_edge/templates/chat/attribute_check.hbs", details);
+                break;
+            case "CRIT FAIL EVENT":
+                text = LocalisationServer.parsedLocalisation(details.event, "Crit Fail Event");
+                html = await renderTemplate("systems/the_edge/templates/chat/crit_failure.hbs", { check: details.check, text: text });
+                break;
+            case "FALL":
+                html = await renderTemplate("systems/the_edge/templates/chat/fall.hbs", details);
                 break;
             case "FIRING EMPTY WEAPON":
                 html = LocalisationServer.parsedLocalisation(id, "Chat", details);
                 break;
-            case "GENERIC DAMAGE":
-                html = await renderTemplate("systems/the_edge/templates/chat/generic_damage.html", details);
-                break;
-            case "PROFICIENCYCHECK":
-                html = await renderTemplate("systems/the_edge/templates/chat/proficiency_check.hbs", details);
-                break;
-            case "WEAPONCHECK":
-                html = await renderTemplate("systems/the_edge/templates/chat/weapon_check.hbs", details);
-                break;
-            case "MEDICINE":
-                html = await renderTemplate("systems/the_edge/templates/chat/medicine.html", details);
-                break;
             case "FOOD CONSUME":
-                html = await renderTemplate("systems/the_edge/templates/chat/food_consume.hbs", details);
+                html = await renderTemplate("systems/the_edge/templates/chat/food_consum.hbs", details);
+                break;
+            case "GENERIC DAMAGE":
+                html = await renderTemplate("systems/the_edge/templates/chat/generic_damage.hbs", details);
                 break;
             case "GRENADE SHEET BASED":
                 details.check = "throwing";
-                html = await renderTemplate("systems/the_edge/templates/chat/grenade-sheet-based.html", details);
+                html = await renderTemplate("systems/the_edge/templates/chat/grenade-sheet-based.hbs", details);
                 break;
             case "GRENADE CONTEXT BASED":
-                html = await renderTemplate("systems/the_edge/templates/chat/grenade-context-based.html", details);
-                break;
-            case "RELOAD":
-                html = await renderTemplate("systems/the_edge/templates/chat/reload.hbs", details);
-                break;
-            case "SHORT REST":
-            case "LONG REST":
-                html = await renderTemplate("systems/the_edge/templates/chat/long-or-short-rest.html", foundry.utils.mergeObject(details, { restType: id }));
-                break;
-            case "SKILL USED":
-                html = await renderTemplate("systems/the_edge/templates/chat/skill_used.hbs", details);
+                html = await renderTemplate("systems/the_edge/templates/chat/grenade-context-based.hbs", details);
                 break;
             case "HERO TOKEN":
                 text = LocalisationServer.parsedLocalisation(details.reason, "Hero Token", details);
-                html = await renderTemplate("systems/the_edge/templates/chat/hero_token.html", { name: details.name, text: text });
-                break;
-            case "FALL":
-                html = await renderTemplate("systems/the_edge/templates/chat/fall.html", details);
+                html = await renderTemplate("systems/the_edge/templates/chat/hero_token.hbs", { name: details.name, text: text });
                 break;
             case "IMPACT":
-                html = await renderTemplate("systems/the_edge/templates/chat/impact.html", details);
+                html = await renderTemplate("systems/the_edge/templates/chat/impact.hbs", details);
                 break;
-            case "CRIT FAIL EVENT":
-                text = LocalisationServer.parsedLocalisation(details.event, "Crit Fail Event");
-                html = await renderTemplate("systems/the_edge/templates/chat/crit_failure.html", { check: details.check, text: text });
+            case "MEDICINE":
+                html = await renderTemplate("systems/the_edge/templates/chat/medicine.hbs", details);
                 break;
             case "POST ITEM":
                 switch (details.item.type) {
@@ -87,45 +71,49 @@ export default class ChatServer {
                 }
                 break;
             case "POST SKILL":
-                html = await renderTemplate("systems/the_edge/templates/chat/skill-description.html", details);
+                html = await renderTemplate("systems/the_edge/templates/chat/skill-description.hbs", details);
+                break;
+            case "PROFICIENCY CHECK":
+                html = await renderTemplate("systems/the_edge/templates/chat/proficiency_check.hbs", details);
+                break;
+            case "RELOAD":
+                html = await renderTemplate("systems/the_edge/templates/chat/reload.hbs", details);
                 break;
             case "REROLL":
-                html = await renderTemplate("systems/the_edge/templates/chat/reroll-check.html", details);
+                html = await renderTemplate("systems/the_edge/templates/chat/reroll-check.hbs", details);
+                break;
+            case "SHORT REST":
+            case "LONG REST":
+                html = await renderTemplate("systems/the_edge/templates/chat/long-or-short-rest.hbs", foundry.utils.mergeObject(details, { restType: id }));
+                break;
+            case "SKILL USED":
+                html = await renderTemplate("systems/the_edge/templates/chat/skill_used.hbs", details);
+                break;
+            case "WEAPON CHECK":
+                html = await renderTemplate("systems/the_edge/templates/chat/weapon-check.hbs", details);
                 break;
         }
-        const chatData = this._chatDataSetup(html, roll, details);
-        chatData.system = details;
+        const chatData = this.createChatData(html, config);
+        chatData.system = { details: details, config: config };
         ChatMessage.create(chatData);
     }
-    static fillInDetails(msg, details) {
-        if (details) {
-            for (const [key, value] of Object.entries(details)) {
-                msg = msg.replace(key, value);
-            }
-        }
-        return msg;
-    }
-    static _chatDataSetup(content, modeOverride, details, forceWhisper, forceWhisperIDs) {
-        let chatData = {
-            user: game.user.id,
-            rollMode: modeOverride || game.settings.get("core", "rollMode"),
+    static createChatData(content, config = {}) {
+        const chatData = {
             content: content,
-            speaker: ChatMessage.getSpeaker({
-                actor: details?.actor,
-                token: canvas.scene.tokens.get(details?.tokenId)
-            })
         };
-        if (["gmroll", "blindroll"].includes(chatData.rollMode))
-            chatData["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
-        if (chatData.rollMode === "blindroll")
-            chatData["blind"] = true;
-        else if (chatData.rollMode === "selfroll")
-            chatData["whisper"] = [game.user];
-        if (forceWhisper) {
-            chatData["whisper"] = ChatMessage.getWhisperRecipients(forceWhisper);
-        }
-        if (forceWhisperIDs) {
-            chatData["whisper"] = forceWhisperIDs;
+        if ("speaker" in config)
+            chatData.speaker = config.speaker;
+        if ("roll" in config) {
+            if (config.roll == "blind") {
+                ChatMessage.applyRollMode(chatData, "blindroll");
+                // TODO this becomes `applyMode` in V14
+            }
+            else if (config.roll == "whisper") {
+                chatData.whisper = [
+                    game.user.id,
+                    ...game.users.filter((x) => x.isGM).map((x) => x.id)
+                ];
+            }
         }
         return chatData;
     }

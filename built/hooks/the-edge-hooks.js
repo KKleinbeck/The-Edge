@@ -14,12 +14,10 @@ function _onTheEdgeAction(payload) {
 async function handleOutOfCombatAction(payload) {
     switch (payload.actionType) {
         case "reload":
-            ChatServer.transmitEvent("Reload", { details: {
-                    name: payload.actor.name, weapon: payload.details.weapon, actions: payload.actionCost
-                } });
+            ChatServer.transmitEvent("RELOAD", { details: { name: payload.actor.name, weapon: payload.details.weapon, actions: payload.actionCost }, }, payload.actor.chatConfig());
             break;
         case "skill":
-            ChatServer.transmitEvent("Skill Used", { actor: payload.actor.name, skill: payload.action, change: payload.strainCost });
+            ChatServer.transmitEvent("SKILL USED", { actor: payload.actor.name, skill: payload.action, change: payload.strainCost }, payload.actor.chatConfig());
     }
 }
 function _onModifierEvent(field, details) {

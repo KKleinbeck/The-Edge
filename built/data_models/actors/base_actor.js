@@ -30,7 +30,7 @@ export default class CharacterBaseData extends DataModelComponent {
     // Hero Token related
     async useHeroToken(reason = "generic") {
         await this.parent.update({ "system.heroToken.available": this.heroToken.available - 1 });
-        ChatServer.transmitEvent("Hero Token", { name: this.parent.name, reason: reason });
+        ChatServer.transmitEvent("HERO TOKEN", { name: this.parent.name, reason: reason }, this.parent.chatConfig());
     }
     async regenerateHeroToken() {
         await this.parent.update({ "system.heroToken.available": this.heroToken.available + 1 });

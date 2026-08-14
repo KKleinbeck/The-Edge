@@ -1,5 +1,5 @@
 import DiceServer from "../system/dice_server.js";
-import NewChatServer from "../system/new_chat_server.js";
+import ChatServer from "../system/chat_server.js";
 
 const { renderTemplate } = foundry.applications.handlebars;
 
@@ -51,7 +51,7 @@ export default class DialogMedicine extends Dialog{
             coagulation: coagulation, coagulationDice: medicine.coagulation,
             actor: checkData.actor.name, medicineName: checkData.medicineItem.name
           };
-          NewChatServer.transmitEvent("MEDICINE", details, {speaker: {actor: checkData.actor.id}});
+          ChatServer.transmitEvent("MEDICINE", details, {speaker: {actor: checkData.actor.id}});
           checkData.medicineItem.useOne();
         }
       },

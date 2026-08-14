@@ -340,4 +340,15 @@ export class TheEdgeActor extends Actor {
       "system.attachmentPoints.used": armour.system.attachmentPoints.used + shell.system.attachmentPoints.max
     });
   }
+
+
+  chatConfig(roll: TRollType = "public"): IChatServerConfig {
+    return {
+      roll,
+      speaker: {
+        actor: this.id,
+        token: this.token?.id
+      }
+    }
+  }
 }

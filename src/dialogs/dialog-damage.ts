@@ -108,10 +108,14 @@ class DialogGenericWound extends Dialog{
           const protectionLog = {};
           for (const [key, value] of Object.entries(partialLog)) protectionLog[key] = [value];
 
-          ChatServer.transmitEvent("Generic damage", {
-            actor: checkData.actor.name, damage: config.damage,
-            type: config.damageType, protection: protectionLog
-          })
+          ChatServer.transmitEvent(
+            "GENERIC DAMAGE",
+            {
+              actor: checkData.actor.name, damage: config.damage,
+              type: config.damageType, protection: protectionLog
+            },
+            checkData.actor.chatConfig()
+          )
         }
       },
       cancel: {label: LocalisationServer.localise("cancel", "dialog")}

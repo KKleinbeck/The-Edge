@@ -4,6 +4,7 @@ import { DataModelComponent } from "../abstracts.js";
 const { ArrayField, HTMLField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
 export default class CharacterBaseData extends DataModelComponent {
+  declare heroToken: {available: number, max: number}
   static defineSchema() {
     return {
       biography: new HTMLField(),
@@ -35,7 +36,9 @@ export default class CharacterBaseData extends DataModelComponent {
   // Hero Token related
   async useHeroToken(reason = "generic") {
     await this.parent.update({"system.heroToken.available": this.heroToken.available - 1});
-    ChatServer.transmitEvent("Hero Token", {name: this.parent.name, reason: reason});
+    ChatServer.transmitEvent(
+      "HERO TOKEN", {name: this.parent.name, reason: reason}, this.parent.chatConfig()
+    );
   }
 
   async regenerateHeroToken() {

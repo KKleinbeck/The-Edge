@@ -285,4 +285,13 @@ export class TheEdgeActor extends Actor {
             "system.attachmentPoints.used": armour.system.attachmentPoints.used + shell.system.attachmentPoints.max
         });
     }
+    chatConfig(roll = "public") {
+        return {
+            roll,
+            speaker: {
+                actor: this.id,
+                token: this.token?.id
+            }
+        };
+    }
 }
