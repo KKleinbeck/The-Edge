@@ -674,7 +674,7 @@ textarea {
  overflow-y: auto;
  width: 100%;
 }
-.sheet-tabs .item {
+.sheet-tabs .item-element {
   padding: 2px 12px 2px 12px !important;
   height: 30px !important;
   line-height: 24px !important;
@@ -920,7 +920,7 @@ textarea {
   justify-content: end;
   padding-bottom: 2px;
 }
-.the_edge .sheet-header-item .skill-header-fields .item {
+.the_edge .sheet-header-item .skill-header-fields .item-element {
   max-height: 22px;
 }
 .the_edge .sheet-header h1.charname {
@@ -982,18 +982,6 @@ textarea {
   border-top: 1px solid #AAA;
   border-bottom: 1px solid #AAA;
 }
-.the_edge .tabs .item {
-  line-height: 40px;
-  font-weight: bold;
-}
-.the_edge .tabs .item.active {
-  text-decoration: underline;
-  text-shadow: none;
-}
-.system-the_edge .tabs .item.active {
-  text-decoration: underline;
-  text-shadow: none;
-}
 .system-the_edge .sheet .tab {
   height: 100%;
   overflow-y: auto;
@@ -1006,14 +994,14 @@ textarea {
   padding: 0;
   overflow-y: hidden;
 }
-.the_edge .item-list .item {
+.the_edge .item-list .item-element {
   min-height: 30px;
   line-height: 24px;
   padding: 3px 0;
   border-bottom: 1px solid #BBB;
   align-items: stretch;
 }
-.the_edge .item-list .item img {
+.the_edge .item-list .item-element img {
   flex: 0 0 24px;
   margin-right: 5px;
 }

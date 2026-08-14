@@ -1,5 +1,5 @@
 import Aux from "../system/auxilliaries.js";
-import ChatServer from "../system/chat_server.js";
+import NewChatServer from "../system/new_chat_server.js";
 import CounterMixin from "../mixins/counter-mixin.js";
 import DialogArmourAttachment from "../dialogs/dialog-attachOuterArmour.js";
 import DialogItemDeletion from "../dialogs/dialog-item-deletion.js";
@@ -31,6 +31,7 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
         actions: {
             itemControl: TheEdgeActorSheet._onItemControl,
             effectControl: TheEdgeActorSheet._onEffectControl,
+            embeddedSkillControl: TheEdgeActorSheet._onEmbeddedSkillControl,
             skillControl: TheEdgeActorSheet._onSkillControl,
         },
     };
@@ -46,8 +47,10 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
     static async _onItemControl(event, target) {
         event.preventDefault();
         // Obtain event data
-        const itemElement = target.closest(".item");
-        const item = this.actor.items.get(itemElement?.dataset.itemId);
+        const itemElement = target.closest(".item-hook");
+        if (!(itemElement instanceof HTMLElement))
+            return;
+        const item = this.actor.items.get(itemElement.dataset.itemId);
         // Handle different actions
         switch (target.dataset.subaction) {
             case "create":
@@ -57,7 +60,7 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
             case "edit":
                 return item?.sheet.render(true);
             case "post":
-                ChatServer.transmitEvent("Post Item", { item: item });
+                NewChatServer.transmitEvent("POST ITEM", { item: item }, this._chatConfig());
                 break;
             case "increase":
                 this.actor.addOrCreateVantage(item);
@@ -134,10 +137,10 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
                         }
                         const strainRoll = await new Roll(item.system.subtypes.food.strainReduction).evaluate();
                         const strainChange = await this.actor.system.applyStrain(-strainRoll.total);
-                        ChatServer.transmitEvent("Food Consume", {
+                        NewChatServer.transmitEvent("FOOD CONSUME", {
                             details: { actorName: this.actor.name, item: item.name, strainReduction: -strainChange },
                             hasEffects: hasEffect
-                        });
+                        }, this._chatConfig());
                         item.useOne();
                         break;
                 }
@@ -279,11 +282,33 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
             content.style.opacity = "0";
         });
     }
+    static async _onEmbeddedSkillControl(event, target) {
+        event.preventDefault();
+        // Obtain event data
+        const skillElement = target.closest(".embedded-skill-hook");
+        if (!(skillElement instanceof HTMLDivElement))
+            return;
+        const itemId = skillElement.dataset.itemId;
+        const item = this.actor.items.get(itemId);
+        const skillId = skillElement.dataset.id ?? "";
+        const skill = item.system.embeddedSkills.find((x) => x.id = skillId);
+        // Handle different actions
+        switch (target.dataset.subaction) {
+            case "post":
+                NewChatServer.transmitEvent("POST ITEM", { item }, this._chatConfig());
+                break;
+            case "roll":
+                Aux.evalOnEventWith(skill.effect, { parent: item }, skillId);
+                break;
+        }
+    }
     static async _onSkillControl(event, target) {
         event.preventDefault();
         // Obtain event data
-        const skillElement = target.closest(".skill");
-        const skillId = skillElement?.dataset.itemId;
+        const skillElement = target.closest(".skill-hook");
+        if (!(skillElement instanceof HTMLDivElement))
+            return;
+        const skillId = skillElement.dataset.itemId;
         const skill = this.actor.items.get(skillId);
         // Handle different actions
         switch (target.dataset.subaction) {
@@ -303,7 +328,7 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
                 }
                 return this.actor.deleteSkill(skillId);
             case "post":
-                ChatServer.transmitEvent("Post Skill", { name: skill.name, type: skill.type, description: skill.system.description });
+                NewChatServer.transmitEvent("POST SKILL", { name: skill.name, type: skill.type, description: skill.system.description }, this._chatConfig());
                 break;
             case "roll":
                 Hooks.call("onModifierEvent", "onUse", { actor: this.actor, itemId: skillId });
@@ -450,5 +475,13 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
     }
     _itemExists(item) {
         return this.actor.findItem(item);
+    }
+    _chatConfig(roll = "public") {
+        return {
+            roll,
+            speaker: {
+                actor: this.actor.id
+            }
+        };
     }
 }

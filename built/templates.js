@@ -9,10 +9,11 @@ export const preloadHandlebarsTemplates = async function () {
         // Generics
         "systems/the_edge/templates/actors/skills.hbs",
         // Attributes
+        "systems/the_edge/templates/actors/character/attributes/conditioning.hbs",
+        "systems/the_edge/templates/actors/character/attributes/embedded-skills.hbs",
+        "systems/the_edge/templates/actors/character/attributes/languages.hbs",
         "systems/the_edge/templates/actors/character/attributes/layout.hbs",
         "systems/the_edge/templates/actors/character/attributes/main_attributes.hbs",
-        "systems/the_edge/templates/actors/character/attributes/languages.hbs",
-        "systems/the_edge/templates/actors/character/attributes/conditioning.hbs",
         "systems/the_edge/templates/actors/character/attributes/progress.hbs",
         // Biography
         "systems/the_edge/templates/actors/character/biography/counters.hbs",

@@ -19,6 +19,8 @@ interface ICounter {
 interface IEmbeddedSkill {
   name: string
   effect: string
+  id: string
+  parentId: string
 }
 
 interface GENERAL_MODIFIERS {

@@ -1,5 +1,5 @@
 import Aux from "../system/auxilliaries.js";
-import ChatServer from "../system/chat_server.js";
+import NewChatServer from "../system/new_chat_server.js";
 import CounterMixin from "../mixins/counter-mixin.js";
 import DialogArmourAttachment from "../dialogs/dialog-attachOuterArmour.js";
 import DialogItemDeletion from "../dialogs/dialog-item-deletion.js";
@@ -14,14 +14,6 @@ const { ActorSheetV2 } = foundry.applications.sheets;
 const { renderTemplate } = foundry.applications.handlebars;
 
 export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(HandlebarsApplicationMixin(ActorSheetV2))) {
-  declare static actor: foundryAny;
-  declare static token: foundryAny;
-  declare static render: foundryAny;
-  declare static effectIsExpanded: foundryAny;
-  declare static collapseItem: foundryAny;
-  declare static expandItem: foundryAny;
-  declare static _findAttachableArmour: foundryAny;
-
   effectIsExpanded: any = {};
 
   constructor(...args: ConstructorParameters<typeof ActorSheetV2>) {
@@ -43,6 +35,7 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
     actions: {
       itemControl: TheEdgeActorSheet._onItemControl,
       effectControl: TheEdgeActorSheet._onEffectControl,
+      embeddedSkillControl: TheEdgeActorSheet._onEmbeddedSkillControl,
       skillControl: TheEdgeActorSheet._onSkillControl,
     },
   }
@@ -58,12 +51,14 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
   }
   
   // Actions
-  static async _onItemControl(event, target) {
+  static async _onItemControl(this: TheEdgeActorSheet, event: Event, target: HTMLElement) {
     event.preventDefault();
 
     // Obtain event data
-    const itemElement = target.closest(".item");
-    const item = this.actor.items.get(itemElement?.dataset.itemId);
+    const itemElement = target.closest(".item-hook");
+    if (!(itemElement instanceof HTMLElement)) return;
+
+    const item = this.actor.items.get(itemElement.dataset.itemId);
 
     // Handle different actions
     switch ( target.dataset.subaction ) {
@@ -77,7 +72,7 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
       case "edit":
         return item?.sheet.render(true);
       case "post":
-        ChatServer.transmitEvent("Post Item", {item: item});
+        NewChatServer.transmitEvent("POST ITEM", {item: item}, this._chatConfig());
         break;
       case "increase":
         this.actor.addOrCreateVantage(item);
@@ -157,10 +152,14 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
             }
             const strainRoll = await new Roll(item.system.subtypes.food.strainReduction).evaluate();
             const strainChange = await this.actor.system.applyStrain(-strainRoll.total);
-            ChatServer.transmitEvent("Food Consume", {
-              details: {actorName: this.actor.name, item: item.name, strainReduction: -strainChange},
-              hasEffects: hasEffect
-            });
+            NewChatServer.transmitEvent(
+              "FOOD CONSUME",
+              {
+                details: {actorName: this.actor.name, item: item.name, strainReduction: -strainChange},
+                hasEffects: hasEffect
+              },
+              this._chatConfig()
+            );
             item.useOne();
             break;
         }
@@ -168,12 +167,13 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
     }
   }
 
-  static async _onEffectControl(event: PointerEvent, target: HTMLElement) {
+  static async _onEffectControl(this: TheEdgeActorSheet, event: Event, target: HTMLElement) {
     event.preventDefault();
 
     // Obtain event data
     const effectElement = target.closest(".effect-hook");
     if (!(effectElement instanceof HTMLElement)) return;
+
     const index = effectElement?.dataset.index || ""; 
     const source = effectElement?.dataset.source || ""; 
 
@@ -320,13 +320,40 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
       content.style.opacity = "0";
     });
   }
-  
-  static async _onSkillControl(event, target) {
+
+
+  static async _onEmbeddedSkillControl(this: TheEdgeActorSheet, event: Event, target: HTMLElement) {
     event.preventDefault();
 
     // Obtain event data
-    const skillElement = target.closest(".skill");
-    const skillId = skillElement?.dataset.itemId;
+    const skillElement = target.closest(".embedded-skill-hook");
+    if (!(skillElement instanceof HTMLDivElement)) return;
+
+    const itemId = skillElement.dataset.itemId;
+    const item = this.actor.items.get(itemId);
+    const skillId = skillElement.dataset.id ?? "";
+    const skill = item.system.embeddedSkills.find((x: IEmbeddedSkill) => x.id = skillId);
+
+    // Handle different actions
+    switch ( target.dataset.subaction ) {
+      case "post":
+        NewChatServer.transmitEvent("POST ITEM", {item}, this._chatConfig());
+        break;
+      case "roll":
+        Aux.evalOnEventWith(skill.effect, {parent: item}, skillId);
+        break;
+    }
+  }
+  
+
+  static async _onSkillControl(this: TheEdgeActorSheet, event: Event, target: HTMLElement) {
+    event.preventDefault();
+
+    // Obtain event data
+    const skillElement = target.closest(".skill-hook");
+    if (!(skillElement instanceof HTMLDivElement)) return;
+
+    const skillId = skillElement.dataset.itemId;
     const skill = this.actor.items.get(skillId);
 
     // Handle different actions
@@ -347,8 +374,10 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
         }
         return this.actor.deleteSkill(skillId);
       case "post":
-        ChatServer.transmitEvent("Post Skill",
-          {name: skill.name, type: skill.type, description: skill.system.description}
+        NewChatServer.transmitEvent(
+          "POST SKILL",
+          {name: skill.name, type: skill.type, description: skill.system.description},
+          this._chatConfig()
         );
         break;
       case "roll":
@@ -513,5 +542,15 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
 
   _itemExists(item) {
     return this.actor.findItem(item);
+  }
+
+
+  _chatConfig(roll: TRollType = "public"): IChatServerConfig {
+    return {
+      roll,
+      speaker: {
+        actor: this.actor.id
+      }
+    }
   }
 }

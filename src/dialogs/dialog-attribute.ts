@@ -59,7 +59,7 @@ export default class DialogAttribute extends CheckDialog {
     }).render(true)
   }
 
-  static async rollCallback(dialog: DialogAttribute, checkData: IAttributeRollQuery, roll: rollType) {
+  static async rollCallback(dialog: DialogAttribute, checkData: IAttributeRollQuery, roll: TRollType) {
     dialog.getSliderValues();
 
     const vantageElement = dialog.element.querySelector(".vantage-hook");

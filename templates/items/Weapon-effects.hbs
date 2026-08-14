@@ -4,12 +4,12 @@
   data-tab="effects"
   style="overflow-y: auto; overflow-x: hidden"
 >
-  <div class="embedded-skills-group-hook">
-    {{> systems/the_edge/templates/items/meta-embedded-skills.hbs
-      skills=item.system.embeddedSkills
-      editable=true
-      nColumns=2
-      title=(itemName "Embedded Skills")
+  <div class="effect-modifiers-hook">
+    {{> systems/the_edge/templates/generic/effect-modifiers.hbs
+      modifiers=item.system.effect
+      definedEffects=definedEffects
+      interactive=true
+      title=(genName "Modifiers")
     }}
   </div>
 
@@ -24,12 +24,12 @@
   </div>
 
   <hr />
-  <div class="effect-modifiers-hook">
-    {{> systems/the_edge/templates/generic/effect-modifiers.hbs
-      modifiers=item.system.effect
-      definedEffects=definedEffects
-      interactive=true
-      title=(genName "Modifiers")
+  <div class="embedded-skills-group-hook">
+    {{> systems/the_edge/templates/items/meta-embedded-skills.hbs
+      skills=item.system.embeddedSkills
+      editable=true
+      nColumns=2
+      title=(itemName "Embedded Skills")
     }}
   </div>
 </section>

@@ -305,6 +305,7 @@ interface IFoundry {
     flattenObject(obj: object, _d?: number): object
     getProperty(a: foundryAny, path: string): foundryAny
     mergeObject<T, U>(a: T, b: U): T & U;
+    randomID(length?: number): string
   };
 }
 

@@ -75,7 +75,6 @@ export class TheEdgeActor extends Actor {
         }
         return true;
     }
-    // Returns a map from item.id to their counters
     get itemCounters() {
         const counters = [];
         for (const item of this.items) {
@@ -86,6 +85,16 @@ export class TheEdgeActor extends Actor {
             }
         }
         return counters;
+    }
+    get embeddedSkills() {
+        const skills = [];
+        for (const item of this.items) {
+            if (!item.system.embeddedSkills || !item.system.counters.length)
+                continue;
+            for (const skill of item.system.embeddedSkills)
+                skills.push(skill);
+        }
+        return skills;
     }
     async addOneItem(item) {
         const existingCopy = this.findItem(item);

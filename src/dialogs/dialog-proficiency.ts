@@ -72,7 +72,7 @@ export default class DialogProficiency extends CheckDialog {
   }
 
   static async rollCallback(
-    dialog: DialogProficiency, checkData: IProficiencyRollQuery, roll: rollType, onSubmitCallback: Function | undefined
+    dialog: DialogProficiency, checkData: IProficiencyRollQuery, roll: TRollType, onSubmitCallback: Function | undefined
   ) {
     const sliderValues = dialog.getSliderValues();
     checkData.proficiency = checkData.proficiency.toLowerCase();

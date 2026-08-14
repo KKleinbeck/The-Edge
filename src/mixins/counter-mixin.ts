@@ -96,7 +96,7 @@ export default function CounterMixin<T extends intype>(BaseApplication: T): outt
           counters[index].value = (counters[index].value < level) ? level : level - 1;
           break;
       }
-      const context = this._getContext(target);
+      const context = this._getCounterContext(target);
       await this._updateCounters(counters, context);
     }
 
@@ -126,12 +126,12 @@ export default function CounterMixin<T extends intype>(BaseApplication: T): outt
           break;
       }
 
-      const context = this._getContext(target);
+      const context = this._getCounterContext(target);
       this._updateCounters(counters, context);
     }
 
 
-    _getContext(target: HTMLElement): DOMStringMap {
+    _getCounterContext(target: HTMLElement): DOMStringMap {
       const contextElement = target.closest(".counter-context-hook");
       if (!(contextElement instanceof HTMLElement) || typeof contextElement.dataset == "undefined") return {};
 

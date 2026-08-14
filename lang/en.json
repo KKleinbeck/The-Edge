@@ -450,6 +450,8 @@
     "MISSING REQUIREMENTS": "Skill has unmatched requirements. Skill {field} has to be at {value} first.",
     "UNMET REQUIREMENTS": "Skill has unmatched requirements. {field} has to be {value}, but is {valueIs}.",
 
+    "ILLICIT EVENT": "Cannot execute the event. Did you define `onEvent`?",
+
     "MAX LEVEL": "{name} is already at it's max level.",
 
     "GAIN": "Gain {gain} PH",
@@ -690,6 +692,7 @@
   "IMPACT SPEED": "Impact speed",
   "ITEMEFFECTS": "Item effects",
   "ITEMS": "Items",
+  "ITEM SKILLS": "Item Skills",
   "LANGUAGE": "Language",
   "LANGUAGES": "Languages",
   "LEFT": "Left",

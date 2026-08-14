@@ -89,7 +89,6 @@ export class TheEdgeActor extends Actor {
   }
 
 
-  // Returns a map from item.id to their counters
   get itemCounters(): ICounter[] {
     const counters: ICounter[] = [];
 
@@ -102,6 +101,19 @@ export class TheEdgeActor extends Actor {
     }
 
     return counters;
+  }
+
+
+  get embeddedSkills(): IEmbeddedSkill[] {
+    const skills: IEmbeddedSkill[] = [];
+
+    for (const item of this.items) {
+      if (!item.system.embeddedSkills || !item.system.counters.length) continue;
+
+      for (const skill of item.system.embeddedSkills) skills.push(skill);
+    }
+
+    return skills;
   }
 
 

@@ -38,7 +38,7 @@ interface IRollPromptResult {
   strain: number
   modifier: number
   vantage: TVantage
-  roll?: rollType
+  roll?: TRollType
 }
 
 interface _IRollMeta {

@@ -1,0 +1,18 @@
+<div class="fixed-page" style="margin-bottom: 5px;">
+  <div class="title" style="margin-bottom: 2px;">
+    <div class="section-title">{{genName "Item Skills"}}</div>
+  </div>
+  <div class="skill-container" style="{{skill-container-style}}">
+    {{#each skills as |skill|}}
+      <div class="skill-box">
+        <div class="item-hook embedded-skill-hook loadout-name" data-item-id="{{skill.parentId}}" data-id="{{skill.parentId}}" data-skill-id="{{skill.id}}">
+          <div data-action="itemControl" data-subaction="edit" style="cursor: pointer;">
+            {{skill.name}}
+          </div>
+          <a title="{{ genName 'use' }}" data-action="embeddedSkillControl" data-subaction="roll"><i class="fal fa-dice-d20"></i></a>
+          <a title="{{ genName 'Post to chat' }}" data-action="embeddedSkillControl" data-subaction="post"><i class="fas fa-message"></i></a>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</div>

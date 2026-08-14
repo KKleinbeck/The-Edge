@@ -41,9 +41,11 @@ export default function EmbeddedSkillMixin(BaseApplication) {
             const skills = this.getSkills();
             skills.push({
                 name: LocalisationServer.localise("New Embedded Skill", "item"),
-                effect: NEW_EFFECT_DEFAULT
+                effect: NEW_EFFECT_DEFAULT,
+                id: foundry.utils.randomID(),
+                parentId: this.document.id
             });
-            const context = this._getContext(target);
+            const context = this._getEmbeddedSkillsContext(target);
             await this._updateSkills(skills, context);
         }
         static async _onSkillControl(_event, target) {
@@ -68,7 +70,7 @@ export default function EmbeddedSkillMixin(BaseApplication) {
                     Aux.evalOnEventWith(skills[index].effect, { parent: this }, this.document.id);
                     break;
             }
-            const context = this._getContext(target);
+            const context = this._getEmbeddedSkillsContext(target);
             await this._updateSkills(skills, context);
         }
         async _onChangeSkillName(event) {
@@ -83,10 +85,10 @@ export default function EmbeddedSkillMixin(BaseApplication) {
             const index = +skillElement.dataset.index;
             const skills = this.getSkills();
             skills[index].name = target.value;
-            const context = this._getContext(target);
+            const context = this._getEmbeddedSkillsContext(target);
             this._updateSkills(skills, context);
         }
-        _getContext(target) {
+        _getEmbeddedSkillsContext(target) {
             const contextElement = target.closest(".embedded-skills-context-hook");
             if (!(contextElement instanceof HTMLElement) || typeof contextElement.dataset == "undefined")
                 return {};

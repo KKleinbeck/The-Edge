@@ -3,7 +3,9 @@
   <tr>
     <td>{{genName modifier.group}}</td>
     <td>{{effectRequirementName modifier.field modifier.group}}</td>
-    <td>{{modifier.value}}</td>
+    {{#unless (checkEqual modifier.group "dynamicModifiers")}}
+      <td>{{modifier.value}}</td>
+    {{/unless}}
   </tr>
 {{/each}}
 </table>

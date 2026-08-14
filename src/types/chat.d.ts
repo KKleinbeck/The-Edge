@@ -1,4 +1,4 @@
-type rollType = "public" | "blind" | "whisper"
+type TRollType = "public" | "blind" | "whisper"
 
 type ChatId = (
   "ATTRIBUTE CHECK" | "CRIT FAIL EVENT" | "FALL" | "FIRING EMPTY WEAPON" |  "FOOD CONSUME" |
@@ -8,7 +8,7 @@ type ChatId = (
 )
 
 interface IChatServerConfig {
-  roll?: rollType
+  roll?: TRollType
   speaker?: ChatSpeakerData
 }
 

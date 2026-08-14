@@ -75,7 +75,7 @@ export default function CounterMixin(BaseApplication) {
                     counters[index].value = (counters[index].value < level) ? level : level - 1;
                     break;
             }
-            const context = this._getContext(target);
+            const context = this._getCounterContext(target);
             await this._updateCounters(counters, context);
         }
         async _onCounterChange(event, changeType) {
@@ -103,10 +103,10 @@ export default function CounterMixin(BaseApplication) {
                     counters[index].name = target.value;
                     break;
             }
-            const context = this._getContext(target);
+            const context = this._getCounterContext(target);
             this._updateCounters(counters, context);
         }
-        _getContext(target) {
+        _getCounterContext(target) {
             const contextElement = target.closest(".counter-context-hook");
             if (!(contextElement instanceof HTMLElement) || typeof contextElement.dataset == "undefined")
                 return {};

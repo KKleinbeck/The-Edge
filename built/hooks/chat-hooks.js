@@ -8,7 +8,7 @@ export default function () {
         return executeChatCommands(message, chatData);
     });
     Hooks.on("createChatMessage", async (data, _options, _userId) => {
-        data.content = await Aux.replacePlaceholderInContent(data.content, data.system.item?.system ?? {});
+        data.content = await Aux.replacePlaceholderInContent(data.content, data.system.item?.system ?? data.system.details?.item?.system ?? {});
     });
     Hooks.on("renderChatMessageHTML", async (chatMsgCls, html, message) => {
         const newContent = await Aux.replacePlaceholderInContent(chatMsgCls.content, chatMsgCls.system.item?.system ?? {});

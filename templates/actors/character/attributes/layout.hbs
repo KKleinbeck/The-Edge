@@ -15,6 +15,9 @@
   </div>
 
   {{> systems/the_edge/templates/actors/skills.hbs name="Skills" skills=Skill}}
+  {{#if (checkNotEmpty actor.embeddedSkills)}}
+    {{> systems/the_edge/templates/actors/character/attributes/embedded-skills.hbs skills=actor.embeddedSkills}}
+  {{/if}}
 
   <div class="columned-page">
     <div class="fixed-page">
