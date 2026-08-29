@@ -56,6 +56,7 @@ declare class Actor extends FoundryDocument {
     PracticeHours: foundryAny
     advanceAttr(name: string, type: string)
     applyStrain(change: number): Promise<number>
+    createNewEffect(name: string, modifiers: IModifier[])
     deleteWound(index: number)
     editWound(index: number, details: Partial<IWoundDetails>)
     getWeaponPlOfWeapon(weaponId: string): number

@@ -34,8 +34,6 @@ async function _onProficiencyCheck(rollDetails: IProficiencyRollMessage, target:
 
   const rollDescription = ProficiencyConfig.rollOutcome(sys.check, rollDetails.quality);
   _addRollDescription(elem, rollDescription);
-
-  // rollFollowUps(elem);
 }
 
 
@@ -90,20 +88,12 @@ export async function applyGrenadeDamage(_event: PointerEvent, sys, button) {
     const factor = scene.grid.distance / scene.grid.size;
     const distance = factor * Math.hypot(token.x - grenadeTile.x, token.y - grenadeTile.y);
     if (distance < maxDistance) {
-      const damage = await DiceServer.genericRoll(
-        grenadeDetails.damage[distance < closeDistance ? 0 : 1]
+      var damageAndProtection = await _handleGrenadeDamage(
+        grenadeDetails.damage[distance < closeDistance ? 0 : 1], token, grenadeDetails.type, sys.details.nameGrenade
       );
-      const partialLog = await _applyDamage(
-        token.actor, [damage], 0, [false], grenadeDetails.type, sys.details.nameGrenade
-      )
+      logs[token.actor.name] = damageAndProtection;
 
-      // Add damage and protection to the log
-      let protection = 0;
-      for (const protectionArray of Object.values(partialLog)) protection += (protectionArray as Array<number>).sum();
-      logs[token.actor.name] = {
-        damage: damage,
-        protection: protection
-      };
+      await _handleGrenadeEffect(grenadeDetails.effects, token, distance < closeDistance, sys.details.nameGrenade);
     }
   }
 
@@ -116,13 +106,70 @@ export async function applyGrenadeDamage(_event: PointerEvent, sys, button) {
     button.outerHTML = LocalisationServer.localise("Harmless explosion", "text");
   }
 
+  // Create smoke if necessary
+  console.log(sys.details, grenadeTile)
+  if (grenadeDetails.effects.smoke.active) {
+    _handleGreandeSmoke(
+      grenadeTile.x + 0.5 * grenadeTile.width, grenadeTile.y + 0.5 * grenadeTile.height,
+      grenadeDetails.blastDistance[1]
+    );
+  }
+
   // Remove the grenade tile
   grenadeTile.delete();
 }
 
 
+async function _handleGrenadeDamage(damageRoll: string, token: TokenDocument, type: TDamageTypes, grenadeName: string) {
+  // Apply Damage
+  const damage = await DiceServer.genericRoll(damageRoll);
+  const partialLog = await _applyDamage(token.actor, [damage], 0, [false], type, grenadeName)
+
+  // Add damage and protection to the log
+  let protection = 0;
+  for (const protectionArray of Object.values(partialLog)) protection += (protectionArray as Array<number>).sum();
+  return {damage, protection};
+}
+
+
+async function _handleGrenadeEffect(effects: Record<string, any>, token: TokenDocument, isClose: boolean, grendeName: string) {
+  if (token.actor.type == "character" && effects.shellshock.active) {
+    const effect = isClose ? effects.shellshock.close : effects.shellshock.far;
+    if (effect.length) {
+      token.actor.system.createNewEffect(grendeName, effect);
+    }
+  }
+}
+
+
+async function _handleGreandeSmoke(xc: number, yc: number, farDistance: number) {
+  const cls = getDocumentClass("Wall");
+  console.log(cls)
+
+  const segments = 24;
+  const phi = 2 * Math.PI / segments;
+  const r = farDistance * canvas.scene.grid.size;
+  for (var i = 0; i < segments; ++i) {
+    const res = await cls.create(
+      {
+        c: [
+          xc + r * Math.cos(phi *  i     ), yc + r * Math.sin(phi *  i),
+          xc + r * Math.cos(phi * (i + 1)), yc + r * Math.sin(phi * (i + 1)),
+        ],
+        move: 0,   // No restriction
+        light: 10, // Limited restriction
+        sight: 10,
+        sound: 10
+      },
+      {parent: canvas.scene}
+    );
+    console.log(res)
+  }
+}
+
+
 async function _applyDamage(
-  target: foundryAny, damage: number[], penetration, crits: boolean[], damageType: TDamageTypes, name: string
+  target: foundryAny, damage: number[], penetration: number, crits: boolean[], damageType: TDamageTypes, name: string
 ) {
   const protectionLog: any = {};
   const partialLogs: any[] = [];

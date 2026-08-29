@@ -28,7 +28,6 @@ async function _onProficiencyCheck(rollDetails, target, sys) {
     }
     const rollDescription = ProficiencyConfig.rollOutcome(sys.check, rollDetails.quality);
     _addRollDescription(elem, rollDescription);
-    // rollFollowUps(elem);
 }
 function _addRollDescription(elem, msg) {
     let rollDescription = elem.parent().find(".roll-description");
@@ -75,16 +74,9 @@ export async function applyGrenadeDamage(_event, sys, button) {
         const factor = scene.grid.distance / scene.grid.size;
         const distance = factor * Math.hypot(token.x - grenadeTile.x, token.y - grenadeTile.y);
         if (distance < maxDistance) {
-            const damage = await DiceServer.genericRoll(grenadeDetails.damage[distance < closeDistance ? 0 : 1]);
-            const partialLog = await _applyDamage(token.actor, [damage], 0, [false], grenadeDetails.type, sys.details.nameGrenade);
-            // Add damage and protection to the log
-            let protection = 0;
-            for (const protectionArray of Object.values(partialLog))
-                protection += protectionArray.sum();
-            logs[token.actor.name] = {
-                damage: damage,
-                protection: protection
-            };
+            var damageAndProtection = await _handleGrenadeDamage(grenadeDetails.damage[distance < closeDistance ? 0 : 1], token, grenadeDetails.type, sys.details.nameGrenade);
+            logs[token.actor.name] = damageAndProtection;
+            await _handleGrenadeEffect(grenadeDetails.effects, token, distance < closeDistance, sys.details.nameGrenade);
         }
     }
     // Update the chat message
@@ -96,8 +88,51 @@ export async function applyGrenadeDamage(_event, sys, button) {
     else {
         button.outerHTML = LocalisationServer.localise("Harmless explosion", "text");
     }
+    // Create smoke if necessary
+    console.log(sys.details, grenadeTile);
+    if (grenadeDetails.effects.smoke.active) {
+        _handleGreandeSmoke(grenadeTile.x + 0.5 * grenadeTile.width, grenadeTile.y + 0.5 * grenadeTile.height, grenadeDetails.blastDistance[1]);
+    }
     // Remove the grenade tile
     grenadeTile.delete();
+}
+async function _handleGrenadeDamage(damageRoll, token, type, grenadeName) {
+    // Apply Damage
+    const damage = await DiceServer.genericRoll(damageRoll);
+    const partialLog = await _applyDamage(token.actor, [damage], 0, [false], type, grenadeName);
+    // Add damage and protection to the log
+    let protection = 0;
+    for (const protectionArray of Object.values(partialLog))
+        protection += protectionArray.sum();
+    return { damage, protection };
+}
+async function _handleGrenadeEffect(effects, token, isClose, grendeName) {
+    if (token.actor.type == "character" && effects.shellshock.active) {
+        const effect = isClose ? effects.shellshock.close : effects.shellshock.far;
+        if (effect.length) {
+            token.actor.system.createNewEffect(grendeName, effect);
+        }
+    }
+}
+async function _handleGreandeSmoke(xc, yc, farDistance) {
+    const cls = getDocumentClass("Wall");
+    console.log(cls);
+    const segments = 24;
+    const phi = 2 * Math.PI / segments;
+    const r = farDistance * canvas.scene.grid.size;
+    for (var i = 0; i < segments; ++i) {
+        const res = await cls.create({
+            c: [
+                xc + r * Math.cos(phi * i), yc + r * Math.sin(phi * i),
+                xc + r * Math.cos(phi * (i + 1)), yc + r * Math.sin(phi * (i + 1)),
+            ],
+            move: 0, // No restriction
+            light: 10, // Limited restriction
+            sight: 10,
+            sound: 10
+        }, { parent: canvas.scene });
+        console.log(res);
+    }
 }
 async function _applyDamage(target, damage, penetration, crits, damageType, name) {
     const protectionLog = {};

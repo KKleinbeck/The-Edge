@@ -5,6 +5,8 @@ import THE_EDGE from "../../system/config-the-edge.js";
 
 import { TheEdgeItemSheet } from "../item-sheet.js";
 
+const { renderTemplate } = foundry.applications.handlebars;
+
 export class ItemSheetAmmunition extends RangeChartSelectorMixin(TheEdgeItemSheet) {
   static PARTS = {...TheEdgeItemSheet.PARTS,
     form: {

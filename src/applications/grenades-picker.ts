@@ -126,14 +126,6 @@ export default class GrenadePicker extends HandlebarsApplicationMixin(Applicatio
     );
     this.close();
     return;
-
-    // const checkData = {
-    //   proficiency: "throwing", modifier: chosenActor.modifier, vantage: "Nothing",
-    //   actor: token.actor, actorId: token.actor.id, tokenId: token.id, sceneId: canvas.scene.id,
-    //   titleDetails: chosenGrenade.name, grenade: chosenGrenade, strain: 0
-    // };
-    const proficiencyRoll = await token.actor.system.rollProficiencyCheck(rollQuery, false);
-    foundry.utils.mergeObject(rollQuery, proficiencyRoll);
   }
 
 

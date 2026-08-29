@@ -487,9 +487,8 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
 
   async _onItemQuantiyChange(ev) {
     const target = ev.target;
-    const itemDetails = target.closest(".item");
+    const itemDetails = target.closest(".item-hook");
     const newQuantity = target.valueAsNumber;
-    // Todo: Prevent negative quantities (do nothing)
     // Todo: Quantity == 0: Deletion dialog
     if (newQuantity && newQuantity > 0) {
       const item = this.actor.items.get(itemDetails.dataset.itemId);
