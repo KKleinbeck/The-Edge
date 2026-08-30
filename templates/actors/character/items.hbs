@@ -6,7 +6,8 @@
   {{#each helpers.itemTypes as |type|}}
     <div class="title">
       <div class="section-title">{{itemName type}}</div>
-      <div title="{{ itemName 'Create' }}" data-action="itemControl" data-subaction="create" data-type="{{type}}" style="gap: 5px; cursor: pointer;">
+      <div class="item-hook" title="{{ itemName 'Create' }}" data-action="itemControl" data-subaction="create"
+        data-type="{{type}}" style="gap: 5px; cursor: pointer;">
         {{itemName "Create"}}
         <a><i class="fas fa-plus"></i></a>
       </div>

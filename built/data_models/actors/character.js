@@ -35,7 +35,7 @@ export default class CharacterData extends CharacterDataParent {
         foundry.utils.mergeObject(preliminaryModifiers, data);
         const systemModification = expandObject(preliminaryModifiers)?.system ?? {};
         const tempDataModel = new this.constructor(this, { parent: this.parent });
-        tempDataModel.updateSource(systemModification);
+        const changes = tempDataModel.updateSource(systemModification, { dryRun: true });
         // Based on the simulated update, get the proper update
         const activeModifiers = tempDataModel._modifiers;
         mergeObject(data, activeModifiers);
@@ -79,26 +79,6 @@ export default class CharacterData extends CharacterDataParent {
         }
         return activeModifiers;
     }
-    // _updateCritDice(effect, critDice) {
-    //   if (effect.name == "crit") {
-    //     const index = critDice[effect.group].critFail.indexOf(effect.value);
-    //     if (index > -1) {
-    //       critDice[effect.group].critFail.splice(index, 1);
-    //       return true;
-    //     }
-    //     critDice[effect.group].crit.push(effect.value)
-    //     return true;
-    //   } else if (effect.name == "critFail") {
-    //     const index = critDice[effect.group].crit.indexOf(effect.value);
-    //     if (index > -1) {
-    //       critDice[effect.group].crit.splice(index, 1);
-    //       return true;
-    //     }
-    //     critDice[effect.group].critFail.push(effect.value)
-    //     return true;
-    //   }
-    //   return false;
-    // }
     // Core Methods
     async advanceAttr(attrName, type) {
         const attrValue = this.attributes[attrName].advances;
