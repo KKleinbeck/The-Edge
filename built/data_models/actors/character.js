@@ -29,13 +29,10 @@ export default class CharacterData extends CharacterDataParent {
     }
     // General Hooks
     onUpdate(data) {
-        // Get a the current set of modifiers, so that status effects have up to date attributes
-        const preliminaryModifiers = this._modifiers;
         // Operate on a copy of this datamodel to simulate data model after the update
-        foundry.utils.mergeObject(preliminaryModifiers, data);
-        const systemModification = expandObject(preliminaryModifiers)?.system ?? {};
-        const tempDataModel = new this.constructor(this, { parent: this.parent });
-        const changes = tempDataModel.updateSource(systemModification, { dryRun: true });
+        const systemModification = expandObject(data)?.system ?? {};
+        mergeObject(systemModification, this);
+        const tempDataModel = new this.constructor(systemModification, { parent: this.parent });
         // Based on the simulated update, get the proper update
         const activeModifiers = tempDataModel._modifiers;
         mergeObject(data, activeModifiers);
