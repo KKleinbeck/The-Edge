@@ -122,7 +122,8 @@ async function _handleGrenadeEffect(effects, token, isClose, grendeName) {
     }
 }
 async function _handleGreandeSmoke(x, y, closeDistance, farDistance) {
-    const light = await canvas.scene.createEmbeddedDocuments("AmbientLight", [{
+    const light = await canvas.scene.createEmbeddedDocuments("AmbientLight", [
+        {
             x,
             y,
             rotation: 0,
@@ -135,9 +136,10 @@ async function _handleGreandeSmoke(x, y, closeDistance, farDistance) {
                 bright: closeDistance,
                 color: "#000000",
                 alpha: 1,
-                luminosity: -1
-            }
-        }]);
+                luminosity: -1,
+            },
+        },
+    ]);
 }
 async function _applyDamage(target, damage, penetration, crits, damageType, name) {
     const protectionLog = {};

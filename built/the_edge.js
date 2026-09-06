@@ -200,6 +200,6 @@ function _setupTextEnrichers() {
             span.classList.add("localized-text");
             span.textContent = LocalisationServer.localise(id, category);
             return span;
-        }
+        },
     });
 }

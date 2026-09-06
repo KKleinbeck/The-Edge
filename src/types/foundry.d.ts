@@ -263,7 +263,7 @@ interface ICanvas {
     };
     id: string;
     tokens: FoundryContainer<foundryAny>;
-    createEmbeddedDocuments(documentType: string, details: object[])
+    createEmbeddedDocuments(documentType: string, details: object[]);
   };
 }
 
@@ -333,8 +333,8 @@ declare class CONFIG {
     initiative: foundryAny;
   };
   static TextEditor: {
-    enrichers: Record<string, any>[]
-  }
+    enrichers: Record<string, any>[];
+  };
 }
 
 // Third Party

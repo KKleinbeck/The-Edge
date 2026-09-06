@@ -198,22 +198,24 @@ async function _handleGreandeSmoke(
   closeDistance: number,
   farDistance: number,
 ) {
-  const light = await canvas.scene.createEmbeddedDocuments("AmbientLight", [{
-    x,
-    y,
-    rotation: 0,
-    walls: true,
-    vision: false,
-    config: {
-      animation: {type: "denseSmoke"},
-      negative: true,
-      dim: farDistance,
-      bright: closeDistance,
-      color: "#000000",
-      alpha: 1,
-      luminosity: -1
-    }
-  }]);
+  const light = await canvas.scene.createEmbeddedDocuments("AmbientLight", [
+    {
+      x,
+      y,
+      rotation: 0,
+      walls: true,
+      vision: false,
+      config: {
+        animation: { type: "denseSmoke" },
+        negative: true,
+        dim: farDistance,
+        bright: closeDistance,
+        color: "#000000",
+        alpha: 1,
+        luminosity: -1,
+      },
+    },
+  ]);
 }
 
 async function _applyDamage(

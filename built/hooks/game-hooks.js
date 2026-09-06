@@ -1,5 +1,4 @@
 export default function () {
-    Hooks.once("TheEdgeAction", _onTheEdgeAction);
+  Hooks.once("TheEdgeAction", _onTheEdgeAction);
 }
-Hooks.once("init", () => {
-});
+Hooks.once("init", () => {});
