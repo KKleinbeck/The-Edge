@@ -1,37 +1,54 @@
 type Constructor<T = {}> = new (...args: any[]) => T;
 
-type attribute = "end" | "str" | "spd" | "crd" | "cha" | "emp" | "foc" | "res" | "int"
+type attribute =
+  "end" | "str" | "spd" | "crd" | "cha" | "emp" | "foc" | "res" | "int";
 
-type TBodyPart = "Torso" | "Head" | "LegsLeft" | "LegsRight" | "ArmsLeft" | "ArmsRight"
-type TBodyPartCoarse = "Torso" | "Head" | "Legs" | "Arms"
+type TBodyPart =
+  "Torso" | "Head" | "LegsLeft" | "LegsRight" | "ArmsLeft" | "ArmsRight";
+type TBodyPartCoarse = "Torso" | "Head" | "Legs" | "Arms";
 
-type TCoordinate = [number, number]
+type TCoordinate = [number, number];
 
-type TCover = "no cover" | "half cover" | "three quarters" | "full cover"
+type TCover = "no cover" | "half cover" | "three quarters" | "full cover";
 
-type TDistance = ("less_2m" | "less_10m" | "less_25m" | "less_100m" | "more_100m")
+type TDistance =
+  "less_2m" | "less_10m" | "less_25m" | "less_100m" | "more_100m";
 
-type TEventNames = (
-  "rollAttackCheck-Prior" | "rollAttackCheck-Posterior" |
-  "rollAttributeCheck-Prior" | "rollAttributeCheck-Posterior" |
-  "rollMeleeCheck-Prior" | "rollMeleeCheck-Posterior" |
-  "rollProficiencyCheck-Prior" | "rollProficiencyCheck-Posterior" |
-  "onReceiveDamage" | "onRest" | "onUse"
-)
+type TEventNames =
+  | "rollAttackCheck-Prior"
+  | "rollAttackCheck-Posterior"
+  | "rollAttributeCheck-Prior"
+  | "rollAttributeCheck-Posterior"
+  | "rollMeleeCheck-Prior"
+  | "rollMeleeCheck-Posterior"
+  | "rollProficiencyCheck-Prior"
+  | "rollProficiencyCheck-Posterior"
+  | "onReceiveDamage"
+  | "onRest"
+  | "onUse";
 
-type TMovement = "stationary" | "moderate" | "fast" | "erradic"
+type TMovement = "stationary" | "moderate" | "fast" | "erradic";
 
-type TPrecision = "aimed" | "unaimed"
+type TPrecision = "aimed" | "unaimed";
 
-type TSize = "tiny" | "small" | "normal" | "large" | "giant"
+type TSize = "tiny" | "small" | "normal" | "large" | "giant";
 
-type TWeapon = (
-  "Blaster Pistols" | "Pulse Rifle" | "SABs" | "Blaster Shockguns" | "Blaster Snipers" |
-  "General weapon proficiency" | "Hand-to-Hand combat" | "Recoilless Rifles" |
-  "Kinetic Pistols" | "Slug Throwers" | "LMGs" | "Shotguns" | "Projectile Snipers"
-)
+type TWeapon =
+  | "Blaster Pistols"
+  | "Pulse Rifle"
+  | "SABs"
+  | "Blaster Shockguns"
+  | "Blaster Snipers"
+  | "General weapon proficiency"
+  | "Hand-to-Hand combat"
+  | "Recoilless Rifles"
+  | "Kinetic Pistols"
+  | "Slug Throwers"
+  | "LMGs"
+  | "Shotguns"
+  | "Projectile Snipers";
 
-type TWeaponType = "energy" | "general" | "kinetic"
+type TWeaponType = "energy" | "general" | "kinetic";
 
 interface Array<T> {
   random(): T;
@@ -41,29 +58,37 @@ interface Array<T> {
 }
 
 interface IEffect {
-  name: string
-  modifiers: IModifier[]
-  active?: boolean
+  name: string;
+  modifiers: IModifier[];
+  active?: boolean;
 }
 
 interface IModifier {
-  group: string
-  field: string
-  value: number | string
+  group: string;
+  field: string;
+  value: number | string;
 }
 
 // Helpers
-type WithOptionals<T> = T & Record<string, any>
+type WithOptionals<T> = T & Record<string, any>;
 
 // Hooks
-type TTheEdgeActionType = "attribute check" | "combatics" | "equip" | "proficiency check" | "reload" | "skill" |
-  "unequip" | "weapon check" | "weapon check aimed"
+type TTheEdgeActionType =
+  | "attribute check"
+  | "combatics"
+  | "equip"
+  | "proficiency check"
+  | "reload"
+  | "skill"
+  | "unequip"
+  | "weapon check"
+  | "weapon check aimed";
 
 interface ITheEdgeActionPayload {
-  action?: string
-  actionCost: number
-  actionType: TTheEdgeActionType
-  actor: Actor
-  strainCost?: number
-  details?: any
+  action?: string;
+  actionCost: number;
+  actionType: TTheEdgeActionType;
+  actor: Actor;
+  strainCost?: number;
+  details?: any;
 }

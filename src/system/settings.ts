@@ -9,7 +9,7 @@ export default function setupGameSettings() {
     scope: "world",
     type: Boolean,
     default: true,
-    config: true
+    config: true,
   });
 
   // Register initiative setting.
@@ -20,7 +20,7 @@ export default function setupGameSettings() {
     type: String,
     default: "1d@spd + 1d@foc + @initiative",
     config: true,
-    onChange: (formula: string) => _simpleUpdateInit(formula, true)
+    onChange: (formula: string) => _simpleUpdateInit(formula, true),
   });
   const initFormula = game.settings.get("the_edge", "initFormula");
   _simpleUpdateInit(initFormula);
@@ -33,43 +33,50 @@ export default function setupGameSettings() {
     hint: "SETTINGS.LICENCES DESCRIPTION",
     icon: "fa-solid fa-bars",
     type: LicenceDialog,
-    restricted: false
+    restricted: false,
   });
 }
 
 function _simpleUpdateInit(formula: string, notify: boolean = false) {
-  if ( game.settings.get("the_edge", "macroShorthand") ) {
+  if (game.settings.get("the_edge", "macroShorthand")) {
     formula = formula.replace(/@([a-zA-Z]+)/g, "@attributes.$1.value");
-    formula = formula.replace("@attributes.initiative.value", "@initiative.status");
+    formula = formula.replace(
+      "@attributes.initiative.value",
+      "@initiative.status",
+    );
   }
 
   const isValid = Roll.validate(formula);
-  if ( !isValid ) {
-    if ( notify ) NotificationServer.notify("Settings.Init Formula Invalid", {formula});
+  if (!isValid) {
+    if (notify)
+      NotificationServer.notify("Settings.Init Formula Invalid", { formula });
     return;
   }
-  if ( notify ) NotificationServer.notify("Settings.Init Formula Updated", {formula});
+  if (notify)
+    NotificationServer.notify("Settings.Init Formula Updated", { formula });
   CONFIG.Combat.initiative.formula = formula;
 }
 
 class LicenceDialog extends foundry.applications.api.DialogV2 {
-  declare static CONTENT: string
-  CONTENT = ""
+  declare static CONTENT: string;
+  CONTENT = "";
 
   constructor() {
     super({
       window: { title: LocalisationServer.localise("licences", "settings") },
-      position: {width: 640, height: 400},
+      position: { width: 640, height: 400 },
       content: LicenceDialog.CONTENT,
-      buttons: [{label: LocalisationServer.localise("close")}]
+      buttons: [{ label: LocalisationServer.localise("close") }],
     });
   }
 
   static async prepareContent() {
-    const licences =  {
-      "Lucius Cipher": await LicenceDialog.readLocalFile("fonts/LicenseLucius.txt"),
-      "Titlillium Web": await LicenceDialog.readLocalFile("fonts/OFL.txt")
-    }
+    const licences = {
+      "Lucius Cipher": await LicenceDialog.readLocalFile(
+        "fonts/LicenseLucius.txt",
+      ),
+      "Titlillium Web": await LicenceDialog.readLocalFile("fonts/OFL.txt"),
+    };
 
     LicenceDialog.CONTENT = `<div style="max-height: 280px; overflow-y: scroll">`;
     for (const [name, licence] of Object.entries(licences)) {

@@ -12,9 +12,9 @@ function ATTR_FIELD() {
 }
 
 export default class AttributeData extends DataModelComponent {
-  declare attributes: ATTRIBUTES
-  declare applyStrain
-  
+  declare attributes: ATTRIBUTES;
+  declare applyStrain;
+
   static defineSchema() {
     return {
       attributes: new SchemaField({
@@ -32,11 +32,12 @@ export default class AttributeData extends DataModelComponent {
   }
 
   get combaticsDamage() {
-    const {crd, str} = this.attributes;
-    return `1d${str.value+crd.value}+${str.value}`;
+    const { crd, str } = this.attributes;
+    return `1d${str.value + crd.value}+${str.value}`;
   }
 
-  get attributeDiceParameters(): IDiceParameters { // Placeholder
+  get attributeDiceParameters(): IDiceParameters {
+    // Placeholder
     return {
       critDice: [1],
       critBonus: 2,
@@ -47,23 +48,32 @@ export default class AttributeData extends DataModelComponent {
       critFailDieMalus: 0,
       critFailEvents: [],
 
-      qualityStep: 2
-    }
+      qualityStep: 2,
+    };
   }
 
-  async rollAttributeCheck(promptResult: IAttributePromptResult, transmit = true): Promise<IRollResult> {
+  async rollAttributeCheck(
+    promptResult: IAttributePromptResult,
+    transmit = true,
+  ): Promise<IRollResult> {
     const diceServerConfig: IDiceServerConfig = {
       ...this.attributeDiceParameters,
       modifier: promptResult.modifier + promptResult.strain,
       threshold: this.attributes[promptResult.attribute].value,
-      vantage: promptResult.vantage
-    }
+      vantage: promptResult.vantage,
+    };
 
-    Hooks.call("onModifierEvent", "rollAttributeCheck-Prior", {actor: this.parent, promptResult});
-    const rollResult: IRollResult = await DiceServer.attributeCheck(diceServerConfig);
-    Hooks.call(
-      "onModifierEvent", "rollAttributeCheck-Posterior", {actor: this.parent, promptResult, rollResult}
-    );
+    Hooks.call("onModifierEvent", "rollAttributeCheck-Prior", {
+      actor: this.parent,
+      promptResult,
+    });
+    const rollResult: IRollResult =
+      await DiceServer.attributeCheck(diceServerConfig);
+    Hooks.call("onModifierEvent", "rollAttributeCheck-Posterior", {
+      actor: this.parent,
+      promptResult,
+      rollResult,
+    });
     this.applyStrain(promptResult.strain);
 
     if (transmit) {
@@ -75,16 +85,16 @@ export default class AttributeData extends DataModelComponent {
         effectiveThreshold: rollResult.effectiveThreshold,
         modifier: promptResult.modifier,
         strain: promptResult.strain,
-        vantage: promptResult.vantage
-      }
+        vantage: promptResult.vantage,
+      };
       const chatConfig: IChatServerConfig = {
         roll: promptResult.roll,
         speaker: {
           actor: promptResult.actorId,
           scene: promptResult.sceneId,
-          token: promptResult.tokenId
-        }
-      }
+          token: promptResult.tokenId,
+        },
+      };
       ChatServer.transmitEvent("ATTRIBUTE CHECK", details, chatConfig);
     }
     return rollResult;

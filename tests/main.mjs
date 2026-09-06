@@ -1,5 +1,5 @@
 import ApiHandler from "./api-handler.js";
-import { TestRegistry } from "./test-registry.js"
+import { TestRegistry } from "./test-registry.js";
 
 import registerSmokeTests from "./smoke/smoke-main.js";
 import registerUnitTests from "./unit/unit-main.js";
@@ -23,7 +23,9 @@ for (let i = 0; i < argv.length; i++) {
 
 async function main() {
   if (!args.url || !args.apiKey) {
-    throw new Error('Usage: node main.js --rest-api-url <ws-url> --rest-api-key <key>');
+    throw new Error(
+      "Usage: node main.js --rest-api-url <ws-url> --rest-api-key <key>",
+    );
   }
 
   // Setup Stage

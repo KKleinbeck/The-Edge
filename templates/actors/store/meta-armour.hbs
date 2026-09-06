@@ -1,40 +1,81 @@
 <div style="display: table;">
   <div style="display: table-row;">
-    <div style="display: table-cell; vertical-align: middle;"><b>{{itemName "Body Part"}}:</b></div>
+    <div style="display: table-cell; vertical-align: middle;"><b>{{itemName
+          "Body Part"
+        }}:</b></div>
     <div class="icon-selector-outer">
-      <a class="icon-selector icon-selector-selected"
-        data-tooltip aria-label="{{itemName system.bodyPart}}">
-        <img src="systems/the_edge/icons/armour/{{toLowerCase system.bodyPart}}.png" style="height: 22px;"/>
+      <a
+        class="icon-selector icon-selector-selected"
+        data-tooltip
+        aria-label="{{itemName system.bodyPart}}"
+      >
+        <img
+          src="systems/the_edge/icons/armour/{{toLowerCase
+            system.bodyPart
+          }}.png"
+          style="height: 22px;"
+        />
       </a>
     </div>
   </div>
 
   <div style="display: table-row;">
-    <div style="display: table-cell;"><b>{{combatName "Structure Points"}}:</b></div>
-    <div style="display: table-cell; padding-left: 10px;">{{system.structurePoints}}</div>
+    <div style="display: table-cell;"><b>{{combatName
+          "Structure Points"
+        }}:</b></div>
+    <div
+      style="display: table-cell; padding-left: 10px;"
+    >{{system.structurePoints}}</div>
   </div>
 
   <div style="display: table-row;">
-    <div style="display: table-cell;"><b>{{combatName "Attachment points"}}:</b></div>
-    <div style="display: table-cell; padding-left: 10px;">{{system.attachmentPoints.max}}</div>
+    <div style="display: table-cell;"><b>{{combatName
+          "Attachment points"
+        }}:</b></div>
+    <div
+      style="display: table-cell; padding-left: 10px;"
+    >{{system.attachmentPoints.max}}</div>
   </div>
 
   <div style="display: table-row;">
     <div style="display: table-cell;"></div>
-    <div style="display: table-cell; padding-left: 10px;">({{combatName system.layer}})</div>
+    <div style="display: table-cell; padding-left: 10px;">({{combatName
+        system.layer
+      }})</div>
   </div>
 </div>
 
 <b>{{combatName "Damage modifiers"}}:</b>
-<div style="display: table; margin-left: auto; margin-right: auto;" title="{{combatName 'absorption'}} / {{combatName 'threshold'}}">
+<div
+  style="display: table; margin-left: auto; margin-right: auto;"
+  title="{{combatName 'absorption'}} / {{combatName 'threshold'}}"
+>
   <div style="display: table-row;">
-    <div style="display: table-cell; padding: 0 5px 0 5px;">{{combatName "Energy"}}</div>
-    <div style="display: table-cell; padding: 0 5px 0 5px;">{{combatName "Kinetic"}}</div>
-    <div style="display: table-cell; padding: 0 5px 0 5px;">{{combatName "Elemental"}}</div>
+    <div style="display: table-cell; padding: 0 5px 0 5px;">{{combatName
+        "Energy"
+      }}</div>
+    <div style="display: table-cell; padding: 0 5px 0 5px;">{{combatName
+        "Kinetic"
+      }}</div>
+    <div style="display: table-cell; padding: 0 5px 0 5px;">{{combatName
+        "Elemental"
+      }}</div>
   </div>
   <div style="display: table-row;">
-    <div style="display: table-cell; text-align: center;">{{system.protection.energy.absorption}} / {{system.protection.energy.threshold}}</div>
-    <div style="display: table-cell; text-align: center;">{{system.protection.kinetic.absorption}} / {{system.protection.kinetic.threshold}}</div>
-    <div style="display: table-cell; text-align: center;">{{system.protection.elemental.absorption}} / {{system.protection.elemental.threshold}}</div>
+    <div
+      style="display: table-cell; text-align: center;"
+    >{{system.protection.energy.absorption}}
+      /
+      {{system.protection.energy.threshold}}</div>
+    <div
+      style="display: table-cell; text-align: center;"
+    >{{system.protection.kinetic.absorption}}
+      /
+      {{system.protection.kinetic.threshold}}</div>
+    <div
+      style="display: table-cell; text-align: center;"
+    >{{system.protection.elemental.absorption}}
+      /
+      {{system.protection.elemental.threshold}}</div>
   </div>
 </div>

@@ -4,53 +4,88 @@ import DescriptionData from "./components/description.js";
 import EmbeddedSkillsData from "./components/embedded-skills.js";
 import EquipableData from "./components/equipable.js";
 import NonstackableData from "./components/nonstackable.js";
-const { ArrayField, BooleanField, NumberField, ObjectField, SchemaField, StringField } = foundry.data.fields;
-export default class WeaponData extends generateDataModelWithComponents(DescriptionData, EmbeddedSkillsData, EquipableData, NonstackableData) {
-    static defineSchema() {
-        const schema = super.defineSchema();
-        schema.type = new StringField({ initial: "Pulse Rifle" });
-        schema.isElemental = new BooleanField({ initial: false });
-        schema.multipleTargets = new BooleanField({ initial: false });
-        schema.fireModes = new ArrayField(new ObjectField(), { initial: [{ name: "Single", damage: "1d20", cost: 1, dices: 1, precisionPenalty: [0, 0] }] });
-        schema.reloadDuration = new NumberField({ initial: 1, integer: true });
-        schema.leadAttr1 = new SchemaField({
-            name: new StringField({ initial: "str" }),
-            value: new NumberField({ initial: 10, integer: true })
-        });
-        schema.leadAttr2 = new SchemaField({
-            name: new StringField({ initial: "str" }),
-            value: new NumberField({ initial: 10, integer: true })
-        });
-        schema.rangeChart = new SchemaField({
-            less_2m: new ArrayField(new NumberField({ initial: 0, integer: true }), { initial: [0, 0] }),
-            less_10m: new ArrayField(new NumberField({ initial: 0, integer: true }), { initial: [0, 0] }),
-            less_25m: new ArrayField(new NumberField({ initial: 0, integer: true }), { initial: [0, 0] }),
-            less_100m: new ArrayField(new NumberField({ initial: 0, integer: true }), { initial: [0, 0] }),
-            more_100m: new ArrayField(new NumberField({ initial: 0, integer: true }), { initial: [0, 0] })
-        });
-        schema.attachments = new ArrayField(new ObjectField(), { initial: [] });
-        schema.ammunitionType = new StringField({ initial: "small" });
-        schema.ammunitionID = new StringField({ initial: "" });
-        return schema;
+const {
+  ArrayField,
+  BooleanField,
+  NumberField,
+  ObjectField,
+  SchemaField,
+  StringField,
+} = foundry.data.fields;
+export default class WeaponData extends generateDataModelWithComponents(
+  DescriptionData,
+  EmbeddedSkillsData,
+  EquipableData,
+  NonstackableData,
+) {
+  static defineSchema() {
+    const schema = super.defineSchema();
+    schema.type = new StringField({ initial: "Pulse Rifle" });
+    schema.isElemental = new BooleanField({ initial: false });
+    schema.multipleTargets = new BooleanField({ initial: false });
+    schema.fireModes = new ArrayField(new ObjectField(), {
+      initial: [
+        {
+          name: "Single",
+          damage: "1d20",
+          cost: 1,
+          dices: 1,
+          precisionPenalty: [0, 0],
+        },
+      ],
+    });
+    schema.reloadDuration = new NumberField({ initial: 1, integer: true });
+    schema.leadAttr1 = new SchemaField({
+      name: new StringField({ initial: "str" }),
+      value: new NumberField({ initial: 10, integer: true }),
+    });
+    schema.leadAttr2 = new SchemaField({
+      name: new StringField({ initial: "str" }),
+      value: new NumberField({ initial: 10, integer: true }),
+    });
+    schema.rangeChart = new SchemaField({
+      less_2m: new ArrayField(new NumberField({ initial: 0, integer: true }), {
+        initial: [0, 0],
+      }),
+      less_10m: new ArrayField(new NumberField({ initial: 0, integer: true }), {
+        initial: [0, 0],
+      }),
+      less_25m: new ArrayField(new NumberField({ initial: 0, integer: true }), {
+        initial: [0, 0],
+      }),
+      less_100m: new ArrayField(
+        new NumberField({ initial: 0, integer: true }),
+        { initial: [0, 0] },
+      ),
+      more_100m: new ArrayField(
+        new NumberField({ initial: 0, integer: true }),
+        { initial: [0, 0] },
+      ),
+    });
+    schema.attachments = new ArrayField(new ObjectField(), { initial: [] });
+    schema.ammunitionType = new StringField({ initial: "small" });
+    schema.ammunitionID = new StringField({ initial: "" });
+    return schema;
+  }
+  get damageType() {
+    if (this.isElemental) return "elemental";
+    if (
+      Object.keys(THE_EDGE.characterSchema.weapons.energy).includes(this.type)
+    ) {
+      return "energy";
     }
-    get damageType() {
-        if (this.isElemental)
-            return "elemental";
-        if (Object.keys(THE_EDGE.characterSchema.weapons.energy).includes(this.type)) {
-            return "energy";
-        }
-        return "kinetic";
+    return "kinetic";
+  }
+  // TODO: Remove with v0.17
+  static migrateData(source, _options) {
+    if ("less_1km" in (source.rangeChart ?? {})) {
+      const newRangeChart = {
+        less_10m: source.rangeChart.less_20m,
+        less_25m: source.rangeChart.less_200m,
+        less_100m: source.rangeChart.less_1km,
+        more_100m: source.rangeChart.more_1km,
+      };
     }
-    // TODO: Remove with v0.17
-    static migrateData(source, _options) {
-        if ("less_1km" in (source.rangeChart ?? {})) {
-            const newRangeChart = {
-                less_10m: source.rangeChart.less_20m,
-                less_25m: source.rangeChart.less_200m,
-                less_100m: source.rangeChart.less_1km,
-                more_100m: source.rangeChart.more_1km
-            };
-        }
-        return super.migrateData(source);
-    }
+    return super.migrateData(source);
+  }
 }

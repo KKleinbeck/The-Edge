@@ -1,9 +1,9 @@
 export const REPLACEMENTS = {
   "range-chart": "systems/the_edge/templates/generic/range-chart.hbs",
-  "slider": "systems/the_edge/templates/generic/slider.hbs",
-}
+  slider: "systems/the_edge/templates/generic/slider.hbs",
+};
 
-export const preloadHandlebarsTemplates = async function() {
+export const preloadHandlebarsTemplates = async function () {
   // Define template paths to load
   const templatePaths = [
     // Actor templates

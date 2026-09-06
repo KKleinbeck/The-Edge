@@ -1,16 +1,18 @@
 :root {
-  --color-ui-main-1: #70D7F2;
-  --color-ui-main-background: #31395A;
-  --color-ui-main-background-1: #2A395A;
-  --color-ui-main-background-2: #2A507A;
+  --color-ui-main-1: #70d7f2;
+  --color-ui-main-background: #31395a;
+  --color-ui-main-background-1: #2a395a;
+  --color-ui-main-background-2: #2a507a;
   --color-ui-secondary: #bd9f09;
-  --color-ui-secondary-1: #F29D70;
+  --color-ui-secondary-1: #f29d70;
   --font-main-color: #e4e7fe;
   --font-secondary-color: #ccc;
-  --color-text-light-highlight: #FFF;
+  --color-text-light-highlight: #fff;
 }
 .box-passive {
   padding: 1px 5px 1px 5px;
   border: 3px solid var(--color-ui-main-background-2);
-  box-shadow: 1px 1px 3px rgba(42, 80, 122, 0.5) inset, 1px 1px 3px rgba(42, 80, 122, 0.5);
+  box-shadow:
+    1px 1px 3px rgba(42, 80, 122, 0.5) inset,
+    1px 1px 3px rgba(42, 80, 122, 0.5);
 }

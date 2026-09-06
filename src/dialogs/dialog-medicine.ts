@@ -3,21 +3,21 @@ import ChatServer from "../system/chat_server.js";
 
 const { renderTemplate } = foundry.applications.handlebars;
 
-export default class DialogMedicine extends Dialog{
+export default class DialogMedicine extends Dialog {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      width: 300
-    })
+      width: 300,
+    });
   }
 
   static async start(checkData: IDialogMedicineData) {
     const medicine = checkData.medicineItem.system.subtypes.medicine;
     const effect = medicine.effect;
     const wounds = checkData.wounds;
-    const hasNoWounds = wounds.filter(x => x.status != "treated").length == 0;
+    const hasNoWounds = wounds.filter((x) => x.status != "treated").length == 0;
 
     const template = "systems/the_edge/templates/dialogs/medicine.hbs";
-    const html = await renderTemplate(template, {wounds, hasNoWounds});
+    const html = await renderTemplate(template, { wounds, hasNoWounds });
     const buttons = {
       select: {
         label: game.i18n.localize("DIALOG.SELECT"),
@@ -28,7 +28,9 @@ export default class DialogMedicine extends Dialog{
           const wound = wounds[index];
           let healing: number = await DiceServer.genericRoll(medicine.healing);
           healing = Math.min(healing, wound.damage);
-          let coagulation: number = await DiceServer.genericRoll(medicine.coagulation);
+          let coagulation: number = await DiceServer.genericRoll(
+            medicine.coagulation,
+          );
           coagulation = Math.min(coagulation, wound.bleeding);
 
           if (healing == wound.damage && coagulation == wound.bleeding) {
@@ -40,31 +42,37 @@ export default class DialogMedicine extends Dialog{
 
             checkData.actor.update({
               "system.health.value": Math.min(
-                checkData.actor.system.health.max.value, checkData.actor.system.health.value + healing
+                checkData.actor.system.health.max.value,
+                checkData.actor.system.health.value + healing,
               ),
-              "system.wounds": wounds
-            })
+              "system.wounds": wounds,
+            });
           }
 
           const details = {
-            healing: healing, healingDice: medicine.healing,
-            coagulation: coagulation, coagulationDice: medicine.coagulation,
-            actor: checkData.actor.name, medicineName: checkData.medicineItem.name
+            healing: healing,
+            healingDice: medicine.healing,
+            coagulation: coagulation,
+            coagulationDice: medicine.coagulation,
+            actor: checkData.actor.name,
+            medicineName: checkData.medicineItem.name,
           };
-          ChatServer.transmitEvent("MEDICINE", details, {speaker: {actor: checkData.actor.id}});
+          ChatServer.transmitEvent("MEDICINE", details, {
+            speaker: { actor: checkData.actor.id },
+          });
           checkData.medicineItem.useOne();
-        }
+        },
       },
       cancel: {
-        label: game.i18n.localize("DIALOG.CANCEL")
-      }
-    }
+        label: game.i18n.localize("DIALOG.CANCEL"),
+      },
+    };
 
     return new DialogMedicine({
       title: game.i18n.localize("Apply Medicine"),
       content: html,
       buttons: buttons,
-      default: "cancel"
-    }).render(true)
+      default: "cancel",
+    }).render(true);
   }
 }

@@ -1,30 +1,33 @@
-import LocalisationServer from "../system/localisation_server.js"
-import MovementCalculator from "../system/sidebar/combat-tracker-movement-options.js"
-import THE_EDGE from "../system/config-the-edge.js"
+import LocalisationServer from "../system/localisation_server.js";
+import MovementCalculator from "../system/sidebar/combat-tracker-movement-options.js";
+import THE_EDGE from "../system/config-the-edge.js";
 
 export class TheEdgeCombatant extends Combatant {
   async update(dataCandidate: any, operation?: foundryAny): Promise<Combatant> {
-    const data = {...dataCandidate}; // Create a copy to prevent mutation
+    const data = { ...dataCandidate }; // Create a copy to prevent mutation
 
-    if ("initiative" in data) { // reset strain initiative when we set the initiative manually
-      if (this.system.strainInitiative) this.actor.system.applyStrain(-this.system.strainInitiative);
+    if ("initiative" in data) {
+      // reset strain initiative when we set the initiative manually
+      if (this.system.strainInitiative)
+        this.actor.system.applyStrain(-this.system.strainInitiative);
       data["system.strainInitiative"] = 0;
     }
-    
-    if ("system.strainInitiative" in dataCandidate) { // update initiative when we update strainInitiative
-      const strainDelta = dataCandidate["system.strainInitiative"] - this.system.strainInitiative;
+
+    if ("system.strainInitiative" in dataCandidate) {
+      // update initiative when we update strainInitiative
+      const strainDelta =
+        dataCandidate["system.strainInitiative"] - this.system.strainInitiative;
       data.initiative = this.initiative + strainDelta;
-      if(!operation?.isTurnReset) this.actor.system.applyStrain(strainDelta);
+      if (!operation?.isTurnReset) this.actor.system.applyStrain(strainDelta);
     }
 
     return super.update(data, operation) as unknown as Combatant;
   }
 
-
   get context(): Record<string, any> {
     const context: Record<string, any> = {};
     context.actionLog = this.system.actionLog;
-    
+
     context.distance = this.distanceTravelled;
     context.movementOptions = this.getMovementOptions(context.distance);
     context.movementIndex = this.system.movementIndex;
@@ -33,40 +36,47 @@ export class TheEdgeCombatant extends Combatant {
     return context;
   }
 
-
   get distanceTravelled(): number {
     const movementHistory = this.token.movementHistory;
     return movementHistory.reduce(
-      (acc: number, current: foundryAny) => acc + current.cost, 0
+      (acc: number, current: foundryAny) => acc + current.cost,
+      0,
     );
   }
 
-
   addAction(payload: ITheEdgeActionPayload) {
-    let name = payload.action ?? LocalisationServer.localise(payload.actionType, "Game Actions");
-    if (["equip", "unequip"].includes(payload.actionType)) name += " " + payload.details.itemName;
+    let name =
+      payload.action ??
+      LocalisationServer.localise(payload.actionType, "Game Actions");
+    if (["equip", "unequip"].includes(payload.actionType))
+      name += " " + payload.details.itemName;
 
     this.system.actionLog.push({
-      name: name, actionCost: payload.actionCost ? payload.actionCost : 0
+      name: name,
+      actionCost: payload.actionCost ? payload.actionCost : 0,
     });
-    this.update({"system.actionLog": this.system.actionLog});
+    this.update({ "system.actionLog": this.system.actionLog });
   }
-
 
   undoAction(undoIndex: number) {
     this.system.actionLog.splice(undoIndex, 1);
-    this.update({"system.actionLog": this.system.actionLog});
+    this.update({ "system.actionLog": this.system.actionLog });
   }
-
 
   getMovementOptions(distance: number): IMovementOption[] {
     const actor = this.actor;
 
-    const speeds = [actor.system.strideSpeed, actor.system.runSpeed, actor.system.sprintSpeed];
+    const speeds = [
+      actor.system.strideSpeed,
+      actor.system.runSpeed,
+      actor.system.sprintSpeed,
+    ];
     if (speeds[2] == 0) return []; // We cannot possibly do anything here
 
     const strainCost = [
-      THE_EDGE.strainCost.striding, THE_EDGE.strainCost.running, THE_EDGE.strainCost.sprinting
+      THE_EDGE.strainCost.striding,
+      THE_EDGE.strainCost.running,
+      THE_EDGE.strainCost.sprinting,
     ];
 
     const minActions = Math.ceil(distance / speeds[2]);
@@ -74,18 +84,25 @@ export class TheEdgeCombatant extends Combatant {
 
     const patterns: IMovementOption[] = [];
     for (let actions = minActions; actions <= maxActions; actions++) {
-      patterns.push(MovementCalculator.determineBestPattern(actions, distance, speeds, strainCost));
+      patterns.push(
+        MovementCalculator.determineBestPattern(
+          actions,
+          distance,
+          speeds,
+          strainCost,
+        ),
+      );
     }
-    
+
     return patterns;
   }
 
-  
   getMovementActionLog(movementOptions: IMovementOption[]): IActionLogEntry[] {
     if (!movementOptions.length) return [];
 
     const patternCount: Record<number, number> = {};
-    for (const patternIndex of movementOptions[this.system.movementIndex].pattern) {
+    for (const patternIndex of movementOptions[this.system.movementIndex]
+      .pattern) {
       if (patternIndex in patternCount) patternCount[patternIndex] += 1;
       else patternCount[patternIndex] = 1;
     }
@@ -93,21 +110,23 @@ export class TheEdgeCombatant extends Combatant {
     const movementActionLog: IActionLogEntry[] = [];
     for (const [patternIndex, count] of Object.entries(patternCount)) {
       movementActionLog.push({
-        name: LocalisationServer.localise(["Stride", "Run", "Sprint"][patternIndex], "Combat"),
-        actionCost: count
+        name: LocalisationServer.localise(
+          ["Stride", "Run", "Sprint"][patternIndex],
+          "Combat",
+        ),
+        actionCost: count,
       });
     }
     return movementActionLog;
   }
 
-
   get _momentStrainCost(): number {
     const movementOptions = this.getMovementOptions(this.distanceTravelled);
-    const movementStrainCost = movementOptions[this.system.movementIndex].strainCost;
+    const movementStrainCost =
+      movementOptions[this.system.movementIndex].strainCost;
 
     return movementStrainCost;
   }
-
 
   async endOfTurnReset() {
     this.actor.system.applyCombatStrain(this._momentStrainCost);
@@ -116,9 +135,9 @@ export class TheEdgeCombatant extends Combatant {
       {
         "system.movementIndex": 0,
         "system.strainInitiative": 0,
-        "system.actionLog": []
+        "system.actionLog": [],
       },
-      {isTurnReset: true}
+      { isTurnReset: true },
     );
   }
 }

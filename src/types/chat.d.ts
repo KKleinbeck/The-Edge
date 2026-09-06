@@ -1,72 +1,88 @@
-type TRollType = "public" | "blind" | "whisper"
+type TRollType = "public" | "blind" | "whisper";
 
-type ChatId = (
-  "ATTRIBUTE CHECK" | "CRIT FAIL EVENT" | "FALL" | "FIRING EMPTY WEAPON" |  "FOOD CONSUME" |
-  "GENERIC DAMAGE" | "GRENADE SHEET BASED" | "GRENADE CONTEXT BASED" | "HERO TOKEN" |
-  "IMPACT" | "MEDICINE" | "POST ITEM" | "POST SKILL" | "PROFICIENCY CHECK" | "RELOAD" |
-  "REROLL" | "SHORT REST" | "LONG REST" | "SKILL USED" | "WEAPON CHECK"
-)
+type ChatId =
+  | "ATTRIBUTE CHECK"
+  | "CRIT FAIL EVENT"
+  | "FALL"
+  | "FIRING EMPTY WEAPON"
+  | "FOOD CONSUME"
+  | "GENERIC DAMAGE"
+  | "GRENADE SHEET BASED"
+  | "GRENADE CONTEXT BASED"
+  | "HERO TOKEN"
+  | "IMPACT"
+  | "MEDICINE"
+  | "POST ITEM"
+  | "POST SKILL"
+  | "PROFICIENCY CHECK"
+  | "RELOAD"
+  | "REROLL"
+  | "SHORT REST"
+  | "LONG REST"
+  | "SKILL USED"
+  | "WEAPON CHECK";
 
 interface IChatServerConfig {
-  roll?: TRollType
-  speaker?: ChatSpeakerData
+  roll?: TRollType;
+  speaker?: ChatSpeakerData;
 }
 
 interface IChatSystem {
-  details: Record<string, any>
-  config: IChatServerConfig
+  details: Record<string, any>;
+  config: IChatServerConfig;
 }
 
 // Specifics
 interface IDiceThreshold {
-  name: string
-  threshold: number
+  name: string;
+  threshold: number;
 }
 
 interface IAttributeRollMessage extends IRollResult, IRollPromptResult {
-  attributeValue: number
-  attribute: string
-  diceServerConfig: IDiceServerConfig
+  attributeValue: number;
+  attribute: string;
+  diceServerConfig: IDiceServerConfig;
 }
 
 interface IProficiencyRollInterpretationBase {
-  description: string
+  description: string;
 }
-type IProficiencyRollInterpretation = WithOptionals<IProficiencyRollInterpretationBase>
+type IProficiencyRollInterpretation =
+  WithOptionals<IProficiencyRollInterpretationBase>;
 
 interface IProficiencyRollMessage extends IRollResult, IRollPromptResult {
-  dice: IDiceThreshold[]
-  proficiency: string
-  strain: number
-  diceServerConfig: IDiceServerConfig
-  interpretation?: IProficiencyRollInterpretation
-  titleDetails?: string
+  dice: IDiceThreshold[];
+  proficiency: string;
+  strain: number;
+  diceServerConfig: IDiceServerConfig;
+  interpretation?: IProficiencyRollInterpretation;
+  titleDetails?: string;
 }
 
 interface IDetailsWeaponCheck {
-  attackRollResult: IAttackRollResult
-  attackRollQuery: IAttackRollQuery
-  damageType: TDamageTypes
-  isMelee: boolean
-  specifics: IDetailsWeaponCheckForMelee | IDetailsWeaponCheckForRanged
-  vantage: TVantage
+  attackRollResult: IAttackRollResult;
+  attackRollQuery: IAttackRollQuery;
+  damageType: TDamageTypes;
+  isMelee: boolean;
+  specifics: IDetailsWeaponCheckForMelee | IDetailsWeaponCheckForRanged;
+  vantage: TVantage;
 }
 
 interface IDetailsWeaponCheckForMelee {
-  modifier: number
-  strain: number,
+  modifier: number;
+  strain: number;
 }
 
 interface IDetailsWeaponCheckForRanged {
-  labels: IAttackWeaponLabels
-  modifiers: IAttackWeaponModifiers
-  penetration: number
+  labels: IAttackWeaponLabels;
+  modifiers: IAttackWeaponModifiers;
+  penetration: number;
 }
 
 // Hooks
 interface IContextMenuHookConfig {
-  actor: foundryAny
-  chatMsgCls: foundryAny
-  html: string
-  system: IChatSystem
+  actor: foundryAny;
+  chatMsgCls: foundryAny;
+  html: string;
+  system: IChatSystem;
 }

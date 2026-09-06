@@ -6,7 +6,7 @@ export default class DescriptionData extends DataModelComponent {
   static defineSchema() {
     return {
       description: new StringField({ initial: "" }),
-      gmDescription: new StringField({ initial: "" })
+      gmDescription: new StringField({ initial: "" }),
     };
   }
 }

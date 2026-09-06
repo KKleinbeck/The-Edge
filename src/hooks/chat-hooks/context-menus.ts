@@ -6,84 +6,126 @@ import ProficiencyConfig from "../../system/config-proficiencies.js";
 
 const { renderTemplate } = foundry.applications.handlebars;
 
-export default async function attachContextMenus(config: IContextMenuHookConfig) {
-  const {actor, html} = config;
-  new foundry.applications.ux.ContextMenu(html, ".rerollable", [
-    {
-      name: LocalisationServer.localise("Use hero token"),
-      classes: "roll-context-menu",
-      icon: "",
-      condition: (contextHtml: HTMLAnchorElement) => {
-        const prevRoll = parseInt((contextHtml.querySelector(".d20-overlay") as HTMLElement).innerText);
-        const type = contextHtml.dataset.type;
-        return actor.system.heroToken.available > 0 && (prevRoll != 1 || type == "proficiency");
+export default async function attachContextMenus(
+  config: IContextMenuHookConfig,
+) {
+  const { actor, html } = config;
+  new foundry.applications.ux.ContextMenu(
+    html,
+    ".rerollable",
+    [
+      {
+        name: LocalisationServer.localise("Use hero token"),
+        classes: "roll-context-menu",
+        icon: "",
+        condition: (contextHtml: HTMLAnchorElement) => {
+          const prevRoll = parseInt(
+            (contextHtml.querySelector(".d20-overlay") as HTMLElement)
+              .innerText,
+          );
+          const type = contextHtml.dataset.type;
+          return (
+            actor.system.heroToken.available > 0 &&
+            (prevRoll != 1 || type == "proficiency")
+          );
+        },
+        callback: (contextHtml: HTMLAnchorElement) =>
+          _heroTokenCallback(contextHtml, config),
       },
-      callback: (contextHtml: HTMLAnchorElement) => _heroTokenCallback(contextHtml, config)
-    },
-    {
-      name: LocalisationServer.localise("Reroll"),
-      classes: "roll-context-menu",
-      icon: "",
-      condition: () => {return true;},
-      callback: (contextHtml: HTMLAnchorElement) => _rerollCallback(contextHtml, config)
-    },
-    {
-      name: LocalisationServer.localise("Change"),
-      classes: "roll-context-menu",
-      icon: "",
-      condition: () => {return game.user.isGM;},
-      callback: (contextHtml: HTMLAnchorElement) => _changeCallback(contextHtml, config)
-    }
-  ], {jQuery: false, fixed: true}) // jQuery Option can be removed with Foundry v14
+      {
+        name: LocalisationServer.localise("Reroll"),
+        classes: "roll-context-menu",
+        icon: "",
+        condition: () => {
+          return true;
+        },
+        callback: (contextHtml: HTMLAnchorElement) =>
+          _rerollCallback(contextHtml, config),
+      },
+      {
+        name: LocalisationServer.localise("Change"),
+        classes: "roll-context-menu",
+        icon: "",
+        condition: () => {
+          return game.user.isGM;
+        },
+        callback: (contextHtml: HTMLAnchorElement) =>
+          _changeCallback(contextHtml, config),
+      },
+    ],
+    { jQuery: false, fixed: true },
+  ); // jQuery Option can be removed with Foundry v14
 }
 
 // Callbacks
-async function _heroTokenCallback(contextHtml: HTMLAnchorElement, config: IContextMenuHookConfig) {
-  const {actor, chatMsgCls, system} = config;
+async function _heroTokenCallback(
+  contextHtml: HTMLAnchorElement,
+  config: IContextMenuHookConfig,
+) {
+  const { actor, chatMsgCls, system } = config;
 
   switch (contextHtml.dataset.type) {
     case "attribute":
-      _heroTokenAttributeCheck(chatMsgCls, system)
+      _heroTokenAttributeCheck(chatMsgCls, system);
       actor.system.useHeroToken("attribute");
       break;
     case "proficiency":
-      _heroTokenProficiencyCheck(chatMsgCls, system)
+      _heroTokenProficiencyCheck(chatMsgCls, system);
       actor.system.useHeroToken("proficiency");
       break;
     case "weapon":
       const index = +contextHtml.dataset.index!;
-      _heroTokenWeaponCheck(chatMsgCls, actor, system, index)
+      _heroTokenWeaponCheck(chatMsgCls, actor, system, index);
       actor.system.useHeroToken("weapon");
       break;
   }
 }
 
-async function _rerollCallback(contextHtml: HTMLAnchorElement, config: IContextMenuHookConfig) {
+async function _rerollCallback(
+  contextHtml: HTMLAnchorElement,
+  config: IContextMenuHookConfig,
+) {
   const newRoll = await DiceServer.genericRoll("1d20");
   _handleRerollOrChange(contextHtml, config, newRoll);
 }
 
-async function _changeCallback(contextHtml: HTMLAnchorElement, config: IContextMenuHookConfig) {
+async function _changeCallback(
+  contextHtml: HTMLAnchorElement,
+  config: IContextMenuHookConfig,
+) {
   const newRoll = await Aux.promptInput("Change dice");
   if (!(newRoll && newRoll >= 1 && newRoll <= 20)) return;
   _handleRerollOrChange(contextHtml, config, newRoll);
 }
 
-function _handleRerollOrChange(contextHtml: HTMLAnchorElement, config: IContextMenuHookConfig, newRoll: number) {
-  const {actor, chatMsgCls, system} = config;
+function _handleRerollOrChange(
+  contextHtml: HTMLAnchorElement,
+  config: IContextMenuHookConfig,
+  newRoll: number,
+) {
+  const { actor, chatMsgCls, system } = config;
 
-  const rerollDetails: Record<string, any> = {name: game.user.name, new: newRoll};
+  const rerollDetails: Record<string, any> = {
+    name: game.user.name,
+    new: newRoll,
+  };
   const index = +(contextHtml.dataset.index || 0);
 
   switch (contextHtml.dataset.type) {
     case "attribute":
       rerollDetails.old = system.details.rolls[0];
       updateAttributeCheck(chatMsgCls, system, newRoll);
-      rerollDetails.check = LocalisationServer.localise(system.details.attribute, "attr");
+      rerollDetails.check = LocalisationServer.localise(
+        system.details.attribute,
+        "attr",
+      );
       break;
     case "proficiency":
       rerollDetails.old = system.details.rolls[index];
-      rerollDetails.check = LocalisationServer.localise(system.details.proficiency, "proficiency");
+      rerollDetails.check = LocalisationServer.localise(
+        system.details.proficiency,
+        "proficiency",
+      );
       system.details.rolls[index] = newRoll;
       updateProficiencyCheck(chatMsgCls, system, system.details.rolls);
       break;
@@ -100,29 +142,46 @@ function _handleRerollOrChange(contextHtml: HTMLAnchorElement, config: IContextM
 }
 
 // Helper functions
-function _heroTokenAttributeCheck (chatMsgCls: foundryAny, system: IChatSystem) {
-  if (system.details.outcome == "Success") updateAttributeCheck(chatMsgCls, system, 1);
-  else updateAttributeCheck(chatMsgCls, system, system.details.effectiveThreshold);
+function _heroTokenAttributeCheck(chatMsgCls: foundryAny, system: IChatSystem) {
+  if (system.details.outcome == "Success")
+    updateAttributeCheck(chatMsgCls, system, 1);
+  else
+    updateAttributeCheck(chatMsgCls, system, system.details.effectiveThreshold);
 }
 
-async function updateAttributeCheck(chatMsgCls: foundryAny, system: IChatSystem, newResult: number) {
+async function updateAttributeCheck(
+  chatMsgCls: foundryAny,
+  system: IChatSystem,
+  newResult: number,
+) {
   const { details } = system;
-  foundry.utils.mergeObject(details, DiceServer.attributeOutcome(newResult, details.diceServerConfig));
+  foundry.utils.mergeObject(
+    details,
+    DiceServer.attributeOutcome(newResult, details.diceServerConfig),
+  );
   const newContent = await renderTemplate(
-    "systems/the_edge/templates/chat/attribute_check.hbs", details);
+    "systems/the_edge/templates/chat/attribute_check.hbs",
+    details,
+  );
   updateChatMessage(chatMsgCls, newContent, system);
 }
 
-function _heroTokenProficiencyCheck(chatMsgCls: foundryAny, system: IChatSystem) {
+function _heroTokenProficiencyCheck(
+  chatMsgCls: foundryAny,
+  system: IChatSystem,
+) {
   const { details } = system;
   if (details.quality < 0) {
     for (let i = 0; i < 4; ++i) {
       details.rolls[i] = Math.min(
-        details.dice[i].threshold + Math.floor((details.modifier + details.strain) / 4), 19
+        details.dice[i].threshold +
+          Math.floor((details.modifier + details.strain) / 4),
+        19,
       );
     }
   } else {
-    for (let _j = 0; _j < 2; ++_j) { // Convert largest two rolls
+    for (let _j = 0; _j < 2; ++_j) {
+      // Convert largest two rolls
       const indexMax = details.rolls.indexOf(Math.max(...details.rolls));
       details.rolls[indexMax] = 1;
     }
@@ -130,18 +189,35 @@ function _heroTokenProficiencyCheck(chatMsgCls: foundryAny, system: IChatSystem)
   updateProficiencyCheck(chatMsgCls, system, details.rolls);
 }
 
-async function updateProficiencyCheck(chatMsgCls: foundryAny, system: IChatSystem, newResults: number[]) {
+async function updateProficiencyCheck(
+  chatMsgCls: foundryAny,
+  system: IChatSystem,
+  newResults: number[],
+) {
   const { details } = system;
-  foundry.utils.mergeObject(details, DiceServer.proficiencyOutcome(newResults, details.diceServerConfig));
+  foundry.utils.mergeObject(
+    details,
+    DiceServer.proficiencyOutcome(newResults, details.diceServerConfig),
+  );
   if ("interpretation" in details) {
-    details.interpretation = ProficiencyConfig.rollOutcome(details.proficiency, details.quality);
+    details.interpretation = ProficiencyConfig.rollOutcome(
+      details.proficiency,
+      details.quality,
+    );
   }
   const newContent = await renderTemplate(
-    "systems/the_edge/templates/chat/proficiency_check.hbs", details);
+    "systems/the_edge/templates/chat/proficiency_check.hbs",
+    details,
+  );
   updateChatMessage(chatMsgCls, newContent, system);
 }
 
-function _heroTokenWeaponCheck(chatMsgCls: foundryAny, actor: foundryAny, system: IChatSystem, index: number) {
+function _heroTokenWeaponCheck(
+  chatMsgCls: foundryAny,
+  actor: foundryAny,
+  system: IChatSystem,
+  index: number,
+) {
   const details = system.details as IDetailsWeaponCheck;
   const newResults = structuredClone(details.attackRollResult.rolls);
   if (newResults[index].hit) newResults[index].dieResult = 1;
@@ -149,14 +225,20 @@ function _heroTokenWeaponCheck(chatMsgCls: foundryAny, actor: foundryAny, system
   updateWeaponCheck(chatMsgCls, actor, system, newResults, index);
 }
 
-
 async function updateWeaponCheck(
-  chatMsgCls: foundryAny, _actor: foundryAny, system: IChatSystem, newResults: IAttackRoll[], index: number
+  chatMsgCls: foundryAny,
+  _actor: foundryAny,
+  system: IChatSystem,
+  newResults: IAttackRoll[],
+  index: number,
 ): Promise<void> {
   const details = system.details as IDetailsWeaponCheck;
-  if ((newResults[index].dieResult <= details.attackRollQuery.threshold || newResults[index].dieResult == 1) &&
+  if (
+    (newResults[index].dieResult <= details.attackRollQuery.threshold ||
+      newResults[index].dieResult == 1) &&
     // TODO: Refactor once we have a generic crit interface
-    ![20].includes(newResults[index].dieResult)) {
+    ![20].includes(newResults[index].dieResult)
+  ) {
     newResults[index].hit = true;
   } else newResults[index].hit = false;
 
@@ -166,34 +248,54 @@ async function updateWeaponCheck(
     if (details.attackRollResult.rolls[i].hit) hitIndex += 1;
   }
 
-  if (details.attackRollResult.rolls[index].hit) { // Previous roll was a hit
-    if (!newResults[index].hit) details.attackRollResult.damage.splice(hitIndex, 1);
+  if (details.attackRollResult.rolls[index].hit) {
+    // Previous roll was a hit
+    if (!newResults[index].hit)
+      details.attackRollResult.damage.splice(hitIndex, 1);
     // TODO: Refactor once we have a generic crit interface
-    else if ([1].includes(newResults[index].dieResult) &&
-      ![1].includes(details.attackRollResult.rolls[index].dieResult)) {
-      details.attackRollResult.damage[hitIndex] += DiceServer.max(details.attackRollQuery.damageRoll);
-    } else if (newResults[index].dieResult != 1 && details.attackRollResult.rolls[index].dieResult == 1) {
-      details.attackRollResult.damage[hitIndex] -= DiceServer.max(details.attackRollQuery.damageRoll);
+    else if (
+      [1].includes(newResults[index].dieResult) &&
+      ![1].includes(details.attackRollResult.rolls[index].dieResult)
+    ) {
+      details.attackRollResult.damage[hitIndex] += DiceServer.max(
+        details.attackRollQuery.damageRoll,
+      );
+    } else if (
+      newResults[index].dieResult != 1 &&
+      details.attackRollResult.rolls[index].dieResult == 1
+    ) {
+      details.attackRollResult.damage[hitIndex] -= DiceServer.max(
+        details.attackRollQuery.damageRoll,
+      );
     }
-  } else { // Previous roll wasn't a hit
+  } else {
+    // Previous roll wasn't a hit
     if (newResults[index].hit) {
       details.attackRollResult.damage = [
         ...details.attackRollResult.damage.slice(0, hitIndex),
         await DiceServer.genericRoll(details.attackRollQuery.damageRoll),
-        ...details.attackRollResult.damage.slice(hitIndex)
-      ]
+        ...details.attackRollResult.damage.slice(hitIndex),
+      ];
     }
     if (newResults[index].dieResult == 1) {
-      details.attackRollResult.damage[hitIndex] += DiceServer.max(details.attackRollQuery.damageRoll);
+      details.attackRollResult.damage[hitIndex] += DiceServer.max(
+        details.attackRollQuery.damageRoll,
+      );
     }
   }
 
   details.attackRollResult.rolls = newResults;
   const newContent = await renderTemplate(
-    "systems/the_edge/templates/chat/weapon-check.hbs", details);
+    "systems/the_edge/templates/chat/weapon-check.hbs",
+    details,
+  );
   updateChatMessage(chatMsgCls, newContent, system);
 }
 
-async function updateChatMessage(chatMsgCls: foundryAny, newContent: string, newSystem: IChatSystem) {
-  chatMsgCls.update({"content": newContent, "system": newSystem});
+async function updateChatMessage(
+  chatMsgCls: foundryAny,
+  newContent: string,
+  newSystem: IChatSystem,
+) {
+  chatMsgCls.update({ content: newContent, system: newSystem });
 }

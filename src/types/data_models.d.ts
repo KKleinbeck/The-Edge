@@ -1,123 +1,125 @@
 interface ATTRIBUTES {
-  end: foundryAny
-  str: foundryAny
-  spd: foundryAny
-  crd: foundryAny
-  cha: foundryAny
-  emp: foundryAny
-  foc: foundryAny
-  res: foundryAny
-  int: foundryAny
+  end: foundryAny;
+  str: foundryAny;
+  spd: foundryAny;
+  crd: foundryAny;
+  cha: foundryAny;
+  emp: foundryAny;
+  foc: foundryAny;
+  res: foundryAny;
+  int: foundryAny;
 }
 
 interface ICounter {
-  name: string
-  value: number
-  max: number
+  name: string;
+  value: number;
+  max: number;
 }
 
 interface IEmbeddedSkill {
-  name: string
-  effect: string
-  id: string
-  parentId: string
+  name: string;
+  effect: string;
+  id: string;
+  parentId: string;
 }
 
 interface GENERAL_MODIFIERS {
-  painThreshold: foundryAny
-  overloadThreshold: foundryAny
+  painThreshold: foundryAny;
+  overloadThreshold: foundryAny;
 }
 
 interface HEALTH {
-  value: foundryAny
-  max: foundryAny
+  value: foundryAny;
+  max: foundryAny;
 }
 
 interface PROFICIENCIES {
-  environmental: foundryAny
-  knowledge: foundryAny
-  mental: foundryAny
-  physical: foundryAny
-  social: foundryAny
-  technical: foundryAny
+  environmental: foundryAny;
+  knowledge: foundryAny;
+  mental: foundryAny;
+  physical: foundryAny;
+  social: foundryAny;
+  technical: foundryAny;
 }
 
-type TSex = "female" | "male" | "other"
+type TSex = "female" | "male" | "other";
 
 interface STRAIN {
-  value: foundryAny
-  max: foundryAny
-  statusThreshold: foundryAny
-  maxUseReduction: foundryAny
+  value: foundryAny;
+  max: foundryAny;
+  statusThreshold: foundryAny;
+  maxUseReduction: foundryAny;
 }
 
 interface IWeapons {
-  energy: IWeaponsEnergy
-  general: IWeaponsGeneral
-  kinetic: IWeaponsKinetic
+  energy: IWeaponsEnergy;
+  general: IWeaponsGeneral;
+  kinetic: IWeaponsKinetic;
 }
 
 interface IWeaponsEnergy {
-  "Blaster Pistols": foundryAny
-  "Pulse Rifle": foundryAny
-  "SABs": foundryAny
-  "Blaster Shockguns": foundryAny
-  "Blaster Snipers": foundryAny
+  "Blaster Pistols": foundryAny;
+  "Pulse Rifle": foundryAny;
+  SABs: foundryAny;
+  "Blaster Shockguns": foundryAny;
+  "Blaster Snipers": foundryAny;
 }
 
 interface IWeaponsGeneral {
-  "General weapon proficiency": foundryAny
-  "Hand-to-Hand combat": foundryAny
-  "Recoilless Rifles": foundryAny
+  "General weapon proficiency": foundryAny;
+  "Hand-to-Hand combat": foundryAny;
+  "Recoilless Rifles": foundryAny;
 }
 
 interface IWeaponsKinetic {
-  "Kinetic Pistols": foundryAny
-  "Slug Throwers": foundryAny
-  "LMGs": foundryAny
-  "Shotguns": foundryAny
-  "Projectile Snipers": foundryAny
+  "Kinetic Pistols": foundryAny;
+  "Slug Throwers": foundryAny;
+  LMGs: foundryAny;
+  Shotguns: foundryAny;
+  "Projectile Snipers": foundryAny;
 }
 
 interface IWound {
-  bleeding: number
-  bodyPart: TBodyPart
-  coordinates: TCoordinate
-  damage: number
-  status: TWoundStatus
-  type: TWoundType
+  bleeding: number;
+  bodyPart: TBodyPart;
+  coordinates: TCoordinate;
+  damage: number;
+  status: TWoundStatus;
+  type: TWoundType;
 }
 
-type TWoundStatus = "treatable" | "treated"
-type TWoundType = "abrasion" | "fracture" | "laceration" | "light burn" | "strong burn"
+type TWoundStatus = "treatable" | "treated";
+type TWoundType =
+  "abrasion" | "fracture" | "laceration" | "light burn" | "strong burn";
 
 // Helpers
 interface IDamageBodyParts {
-  arms: number
-  legs: number
-  torso: number
-  head: number
+  arms: number;
+  legs: number;
+  torso: number;
+  head: number;
 }
 
-type TDamageTypes = "energy" | "elemental" | "fall" | "HandToHand" | "impact" | "kinetic"
+type TDamageTypes =
+  "energy" | "elemental" | "fall" | "HandToHand" | "impact" | "kinetic";
 
 interface IStatusEffectTemplate {
-  nameID: string
-  isActive: boolean | number
-  modFunction: Function
+  nameID: string;
+  isActive: boolean | number;
+  modFunction: Function;
 }
 
 interface IStatusEffect {
-  name: string
-  level: number | undefined
-  modifiers: IModifier[]
+  name: string;
+  level: number | undefined;
+  modifiers: IModifier[];
 }
 
 interface IWoundDetails {
-  bleeding: number
-  bodyPart: TBodyPart
-  coordinates: TCoordinate
-  damage: number
-  damageType: TDamageTypes
-  source: string
+  bleeding: number;
+  bodyPart: TBodyPart;
+  coordinates: TCoordinate;
+  damage: number;
+  damageType: TDamageTypes;
+  source: string;
 }

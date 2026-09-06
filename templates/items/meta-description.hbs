@@ -4,19 +4,33 @@
   data-tab="description"
   style="overflow-y: auto; overflow-x: hidden"
 >
-  {{#if editable}} 
-    <prose-mirror name="system.description" data-document-u-u-i-d="{{item.uuid}}" value="{{item.system.description}}" collaborate="true" toggled="false">
+  {{#if editable}}
+    <prose-mirror
+      name="system.description"
+      data-document-u-u-i-d="{{item.uuid}}"
+      value="{{item.system.description}}"
+      collaborate="true"
+      toggled="false"
+    >
       {{{descriptionHTML}}}
     </prose-mirror>
-  {{else}} {{{descriptionHTML}}}
+  {{else}}
+    {{{descriptionHTML}}}
   {{/if}}
   {{#if userIsGM}}
     <h4>{{genName "GM Notes"}}</h4>
-    {{#if editable}} 
-      <prose-mirror name="system.gmDescription" data-document-u-u-i-d="{{item.uuid}}" value="{{item.system.gmDescription}}" collaborate="true" toggled="false">
+    {{#if editable}}
+      <prose-mirror
+        name="system.gmDescription"
+        data-document-u-u-i-d="{{item.uuid}}"
+        value="{{item.system.gmDescription}}"
+        collaborate="true"
+        toggled="false"
+      >
         {{{gmDescriptionHTML}}}
       </prose-mirror>
-    {{else}} {{{gmDescriptionHTML}}}
+    {{else}}
+      {{{gmDescriptionHTML}}}
     {{/if}}
   {{/if}}
 </section>

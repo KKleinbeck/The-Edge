@@ -14,12 +14,21 @@
       {{#each item.system.attachments as |attachment|}}
         <tr>
           <td>
-            <div style="display: flex; justify-content: space-between; align-items: center" data-index={{@index}}
-              data-actor-id="{{attachment.actorId}}" data-token-id="{{attachment.tokenId}}" data-attachment-id="{{attachment.shell._id}}">
+            <div
+              style="display: flex; justify-content: space-between; align-items: center"
+              data-index={{@index}}
+              data-actor-id="{{attachment.actorId}}"
+              data-token-id="{{attachment.tokenId}}"
+              data-attachment-id="{{attachment.shell._id}}"
+            >
               <a style="cursor: pointer;" data-action="editAttachment">
                 {{attachment.shell.name}}
               </a>
-              <a class="attachment-detach" title="{{ itemName 'Detach' }}" data-action="detachAttachment"><i class="far fa-square-minus"></i></a>
+              <a
+                class="attachment-detach"
+                title="{{itemName 'Detach'}}"
+                data-action="detachAttachment"
+              ><i class="far fa-square-minus"></i></a>
             </div>
           </td>
           <td style="text-align: center;">

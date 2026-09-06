@@ -1,37 +1,49 @@
-import THE_EDGE from "./config-the-edge.js"
-import LocalisationServer from "./localisation_server.js"
+import THE_EDGE from "./config-the-edge.js";
+import LocalisationServer from "./localisation_server.js";
 import NotificationServer from "./notifications.js";
 
 const { renderTemplate } = foundry.applications.handlebars;
 
 export default class Aux {
-  static asChance(value: number, asHtmlString: boolean = false, digits: number = 1): number | string {
+  static asChance(
+    value: number,
+    asHtmlString: boolean = false,
+    digits: number = 1,
+  ): number | string {
     value *= 100;
     if (!asHtmlString) return value;
-    return `${value.toFixed(digits)}&nbsp;%`
+    return `${value.toFixed(digits)}&nbsp;%`;
   }
 
-
-  static evalOnEventWith(definition: string, details: Record<string, any>, id: string): undefined {
-    const onEvent = new Function("details, id", `
+  static evalOnEventWith(
+    definition: string,
+    details: Record<string, any>,
+    id: string,
+  ): undefined {
+    const onEvent = new Function(
+      "details, id",
+      `
       ${definition};
       return onEvent(details, id);
-    `);
+    `,
+    );
 
     try {
       onEvent(details, id);
     } catch {
-      NotificationServer.error("Illicit event")
+      NotificationServer.error("Illicit event");
     }
   }
 
-
   static filterToGenericModifiers(modifiers: IModifier[]): IModifier[] {
-    return modifiers.filter(x => x.group !== "dynamicModifiers");
+    return modifiers.filter((x) => x.group !== "dynamicModifiers");
   }
 
-
-  static getActor(actorID: string, tokenID: string, sceneID: string | undefined = undefined): Actor | undefined {
+  static getActor(
+    actorID: string,
+    tokenID: string,
+    sceneID: string | undefined = undefined,
+  ): Actor | undefined {
     let actor = undefined;
     if (tokenID) {
       if (!sceneID) {
@@ -45,8 +57,8 @@ export default class Aux {
     return game.actors.get(actorID);
   }
 
-
-  static getActorNew(speakerData) { // TODO: use speaker data interface
+  static getActorNew(speakerData) {
+    // TODO: use speaker data interface
     if (speakerData.token) {
       const sceneID = speakerData.scene;
       if (!sceneID) {
@@ -62,15 +74,17 @@ export default class Aux {
     return game.actors.get(speakerData.actor);
   }
 
-
   static getCombatant(): foundryAny {
     if (game.combat && game.combat.combatant) {
       const combatant = game.combat.combatant;
-      return Aux.getActor(combatant.actorId, combatant.tokenId, combatant.sceneId);
+      return Aux.getActor(
+        combatant.actorId,
+        combatant.tokenId,
+        combatant.sceneId,
+      );
     }
     return undefined;
   }
-
 
   static getPlayerTokens(): foundryAny[] {
     const scene = game.canvas.scene;
@@ -84,7 +98,6 @@ export default class Aux {
     return tokens;
   }
 
-
   static getToken(actorID, sceneID = undefined) {
     if (!sceneID) {
       if (!game.canvas.id) return undefined; // This can happen during startup of the game
@@ -94,12 +107,11 @@ export default class Aux {
     for (var token of scene.tokens) {
       if (token.actorId === actorID) return token;
     }
-    return null
+    return null;
   }
 
-
   static hasRaceCondDanger(id) {
-    const lastUpdate = game.data[id]
+    const lastUpdate = game.data[id];
     if (lastUpdate === undefined || Date.now() - lastUpdate > 350) {
       // Prevent too frequent updates to avoid race conditions
       game.data[id] = Date.now();
@@ -108,58 +120,71 @@ export default class Aux {
     return true;
   }
 
-
   static objectAt(obj, path) {
-    return path.split(".").reduce((a,i) => a[i], obj);
+    return path.split(".").reduce((a, i) => a[i], obj);
   }
 
-
-  static sleep(duration: number) { return new Promise(r => setTimeout(r, duration)); }
-
+  static sleep(duration: number) {
+    return new Promise((r) => setTimeout(r, duration));
+  }
 
   static unloadAmmunition(weapon: Item, actor: Actor): void {
     const ammu = actor.items.get(weapon.system.ammunitionID);
     const unloadedCopy = (actor as any).findItem(ammu);
     if (unloadedCopy) {
       ammu.delete();
-      unloadedCopy.update({"system.quantity": unloadedCopy.system.quantity + 1});
+      unloadedCopy.update({
+        "system.quantity": unloadedCopy.system.quantity + 1,
+      });
     } else {
-      ammu.update({"system.loaded": false});
+      ammu.update({ "system.loaded": false });
     }
-    weapon.update({"system.ammunitionID": ""});
+    weapon.update({ "system.ammunitionID": "" });
   }
-
 
   static _language_cost_table(humanSpoken) {
-    return humanSpoken ? [200, 400, 1000, 2000, 3200, 3200] : [600, 3000, 6400]
+    return humanSpoken ? [200, 400, 1000, 2000, 3200, 3200] : [600, 3000, 6400];
   }
 
-
-  static parseCostStr(costStr: string, maxLevel = undefined): number[] | undefined {
-    costStr = costStr.replace(/\s+/g, ''); // w.o. whitespace
+  static parseCostStr(
+    costStr: string,
+    maxLevel = undefined,
+  ): number[] | undefined {
+    costStr = costStr.replace(/\s+/g, ""); // w.o. whitespace
     const regex = /^(\d+\/)*\d+$/; // parse [n_1 / n_2 / ...] n_m
     if (regex.test(costStr)) {
-      const costs = costStr.split('/').map(Number)
-      if (!maxLevel || costs.length == maxLevel || costs.length == 1) return costs;
+      const costs = costStr.split("/").map(Number);
+      if (!maxLevel || costs.length == maxLevel || costs.length == 1)
+        return costs;
     }
-    NotificationServer.notify("Wrong cost string", {str: costStr});
+    NotificationServer.notify("Wrong cost string", { str: costStr });
     return undefined;
   }
 
-
-  static async parseStrainCostStr(skill: foundryAny, currentStrainLevel: 0 | 1 | 2 | 3 | 4): Promise<number | undefined> {
-    const costs = skill.system.strainCost.replace(/\s+/g, '').split("/");
+  static async parseStrainCostStr(
+    skill: foundryAny,
+    currentStrainLevel: 0 | 1 | 2 | 3 | 4,
+  ): Promise<number | undefined> {
+    const costs = skill.system.strainCost.replace(/\s+/g, "").split("/");
     if (costs.length != 1 && costs.length != 5) {
-      NotificationServer.notify("Wrong strain cost string", {skillName: skill.name});
+      NotificationServer.notify("Wrong strain cost string", {
+        skillName: skill.name,
+      });
       return undefined;
     }
 
     const costRoll = costs.length == 1 ? costs[0] : costs[currentStrainLevel];
     if (costRoll.toUpperCase() == "N.A.") {
-      NotificationServer.notify("Invalid Strain Level", {skillName: skill.name, level: currentStrainLevel});
+      NotificationServer.notify("Invalid Strain Level", {
+        skillName: skill.name,
+        level: currentStrainLevel,
+      });
       return undefined;
     } else if (!Roll.validate(costRoll)) {
-      NotificationServer.notify("Wrong Strain cost Format", {skillName: skill.name, costRoll: costRoll});
+      NotificationServer.notify("Wrong Strain cost Format", {
+        skillName: skill.name,
+        costRoll: costRoll,
+      });
       return undefined;
     }
 
@@ -167,21 +192,26 @@ export default class Aux {
     return roll.total;
   }
 
-
-  static getSkillCost(skill: Item, mode: "delete" | "decrease" | "increase" | "learn"): number | undefined {
+  static getSkillCost(
+    skill: Item,
+    mode: "delete" | "decrease" | "increase" | "learn",
+  ): number | undefined {
     const level = skill.system.level;
     if (skill.type == "Languageskill") {
       switch (mode) {
         case "delete":
           return this._language_cost_table(skill.system.humanSpoken)
-              .slice(0, level).reduce((a,b) => a+b, 0);
-        
+            .slice(0, level)
+            .reduce((a, b) => a + b, 0);
+
         case "increase":
           if (
-            (skill.system.humanSpoken && level == 6) || (!skill.system.humanSpoken && level == 3)
-          ) return undefined;
+            (skill.system.humanSpoken && level == 6) ||
+            (!skill.system.humanSpoken && level == 3)
+          )
+            return undefined;
           return this._language_cost_table(skill.system.humanSpoken)[level];
-        
+
         case "decrease":
           return this._language_cost_table(skill.system.humanSpoken)[level - 1];
       }
@@ -192,12 +222,15 @@ export default class Aux {
     const costs = this.parseCostStr(skill.system.cost, maxLevel);
     if (typeof costs === "undefined") return undefined;
 
-    if (costs.length === 1) { // cost is number
+    if (costs.length === 1) {
+      // cost is number
       if (mode == "delete") return level * costs[0];
-      else if (mode == "increase" && level >= skill.system.maxLevel) return undefined;
+      else if (mode == "increase" && level >= skill.system.maxLevel)
+        return undefined;
       return costs[0];
     }
-    if (mode == "delete") return costs.slice(0, level).reduce((a,b) => a+b, 0);
+    if (mode == "delete")
+      return costs.slice(0, level).reduce((a, b) => a + b, 0);
     else if (mode == "increase") {
       if (level == skill.system.maxLevel) return undefined;
       return costs[level];
@@ -205,30 +238,39 @@ export default class Aux {
     return costs[level - 1];
   }
 
+  static randomInt(min: number, max: number): number {
+    return min + Math.floor(Math.random() * (max - min + 1));
+  }
 
-  static randomInt(min: number, max: number): number { return min + Math.floor(Math.random() * (max - min + 1)); }
-
-
-  static pickFromOdds<T extends string>(objectWithOdds: Record<T, number | undefined>): T {
+  static pickFromOdds<T extends string>(
+    objectWithOdds: Record<T, number | undefined>,
+  ): T {
     let sum: number = 0;
     const cumSum = Object.values(objectWithOdds).map(
-      (n: unknown, _index: number, _array: unknown[]): number => {sum += (n as number); return sum;}
+      (n: unknown, _index: number, _array: unknown[]): number => {
+        sum += n as number;
+        return sum;
+      },
     );
     const threshold = this.randomInt(1, cumSum.last());
-    const index = cumSum.findIndex(x => x >= threshold);
+    const index = cumSum.findIndex((x) => x >= threshold);
     return Object.keys(objectWithOdds)[index] as T;
   }
 
-
   static generateWoundLocation(
-    crit: boolean, sex: TSex, givenLocation: TBodyPartCoarse | undefined = undefined): [TBodyPart, TCoordinate] {
+    crit: boolean,
+    sex: TSex,
+    givenLocation: TBodyPartCoarse | undefined = undefined,
+  ): [TBodyPart, TCoordinate] {
     let locationDescription = "";
     if (givenLocation === undefined) {
       if (crit) locationDescription = "Head";
       else {
         let rand = Math.random();
-        if (rand < 0.15) locationDescription = "Legs" + ["Left", "Right"].random(); // 15%
-        else if (rand < 0.30) locationDescription = "Arms" + ["Left", "Right"].random(); // 15%
+        if (rand < 0.15)
+          locationDescription = "Legs" + ["Left", "Right"].random(); // 15%
+        else if (rand < 0.3)
+          locationDescription = "Arms" + ["Left", "Right"].random(); // 15%
         else locationDescription = "Torso"; // 65%, as p(crit) == 5%
       }
     } else {
@@ -236,73 +278,78 @@ export default class Aux {
         locationDescription = givenLocation + ["Left", "Right"].random();
       } else locationDescription = givenLocation;
     }
-    let cordDescription = THE_EDGE.wounds_pixel_coords[sex][locationDescription]
+    let cordDescription =
+      THE_EDGE.wounds_pixel_coords[sex][locationDescription];
     let [x0, y0] = cordDescription.coords[0];
     let [x1, y1] = cordDescription.coords[1];
     let r = cordDescription.radius * Math.random();
     let [t, phi] = [Math.random(), 2 * Math.PI * Math.random()];
-    let x = (1-t)*x0 + t*x1 + r * Math.cos(phi);
-    let y = (1-t)*y0 + t*y1 + r * Math.sin(phi);
-    return [locationDescription as TBodyPart, [x,y]];
+    let x = (1 - t) * x0 + t * x1 + r * Math.cos(phi);
+    let y = (1 - t) * y0 + t * y1 + r * Math.sin(phi);
+    return [locationDescription as TBodyPart, [x, y]];
   }
-
 
   static async detachFromParent(parent, childId, regainedAttachmentPoints) {
-    const newAttachments = parent.system.attachments.filter(x => x.shellId != childId);
+    const newAttachments = parent.system.attachments.filter(
+      (x) => x.shellId != childId,
+    );
     await parent.update({
       "system.attachments": newAttachments,
-      "system.attachmentPoints.used": parent.system.attachmentPoints.used - regainedAttachmentPoints
+      "system.attachmentPoints.used":
+        parent.system.attachmentPoints.used - regainedAttachmentPoints,
     });
   }
-
 
   static async promptInput(title_dialog_id = "Prompt number"): Promise<number> {
     var result = await foundry.applications.api.DialogV2.prompt({
       window: { title: LocalisationServer.localise(title_dialog_id, "dialog") },
       position: { width: 100 },
-      content: '<input name="input" type="number" step="1" autofocus style="text-align: right;">',
+      content:
+        '<input name="input" type="number" step="1" autofocus style="text-align: right;">',
       ok: {
         label: LocalisationServer.localise("Submit", "dialog"),
-        callback: (_event, button, _dialog) => button.form.elements.input.valueAsNumber
-      }
+        callback: (_event, button, _dialog) =>
+          button.form.elements.input.valueAsNumber,
+      },
     });
     return result;
   }
 
-
-  static tokenDistance(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
-
+  static tokenDistance(a, b) {
+    return Math.hypot(a.x - b.x, a.y - b.y);
+  }
 
   static async replacePlaceholderInContent(content, context) {
     // TODO: phase out by directly acting on DOM, see hooks/applications.ts
-    const replacementPattern = /<div\s*class="replace-hook"\s*data-replace-by="([\w-]+)"\s*><\/div>/g;
+    const replacementPattern =
+      /<div\s*class="replace-hook"\s*data-replace-by="([\w-]+)"\s*><\/div>/g;
     const matches = content.matchAll(replacementPattern);
-    for (const match of matches) { // match = [fullMatch, replace-by]
+    for (const match of matches) {
+      // match = [fullMatch, replace-by]
       let result = "";
       let template = "";
       let details = {};
       switch (match[1]) {
         case "range-chart":
           template = "systems/the_edge/templates/generic/range-chart.hbs";
-          details = {rangeChart: context.rangeChart};
+          details = { rangeChart: context.rangeChart };
           result = await renderTemplate(template, details);
           break;
-        
+
         case "slider":
           template = "systems/the_edge/template/generic/slider.hbs";
           details = {};
           result = await renderTemplate(template, details);
-          break
+          break;
       }
       content = content.replace(match[0], result);
     }
     return content;
   }
 
-  
   static proficiencySuccessChance(
     baseThreshold: number,
-    diceParameters: Partial<IDiceParameters>
+    diceParameters: Partial<IDiceParameters>,
   ): number {
     const {
       critDice = [],
@@ -323,8 +370,10 @@ export default class Aux {
           for (let d4 = 1; d4 <= FACES; d4++) {
             const tuple = [d1, d2, d3, d4];
 
-            const critCount = tuple.filter(v => critDice.includes(v)).length;
-            const critFailCount = tuple.filter(v => critFailDice.includes(v)).length;
+            const critCount = tuple.filter((v) => critDice.includes(v)).length;
+            const critFailCount = tuple.filter((v) =>
+              critFailDice.includes(v),
+            ).length;
 
             let threshold = baseThreshold;
             threshold += critDieBonus * critCount;
@@ -348,10 +397,9 @@ export default class Aux {
     return successes / total;
   }
 
-
   static attackSuccessChance(
     baseThreshold: number,
-    diceParameters: Partial<IAttackDiceParameters>
+    diceParameters: Partial<IAttackDiceParameters>,
   ): number {
     let successes: number = 0;
     const { critFailDice = [20] } = diceParameters;

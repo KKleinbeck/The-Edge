@@ -1,5 +1,5 @@
 import initHooks from "./hooks/init.js";
-import THE_EDGE from "./system/config-the-edge.js"
+import THE_EDGE from "./system/config-the-edge.js";
 import DiceServer from "./system/dice_server.js";
 import setupGameSettings from "./system/settings.js";
 import TheEdgeHotbar from "./applications/hotbar.js";
@@ -13,7 +13,12 @@ import AmmunitionData from "./data_models/items/ammunition.js";
 import ArmourData from "./data_models/items/armour.js";
 import ConsumablesData from "./data_models/items/consumables.js";
 import GearData from "./data_models/items/gear.js";
-import { CombatSkillData, LanguageSkillData, MedicalSkillData, SkillData } from "./data_models/items/skills.js";
+import {
+  CombatSkillData,
+  LanguageSkillData,
+  MedicalSkillData,
+  SkillData,
+} from "./data_models/items/skills.js";
 import VantageData from "./data_models/items/vantage.js";
 import WeaponData from "./data_models/items/weapon.js";
 
@@ -29,18 +34,18 @@ import { TheEdgeToken, TheEdgeTokenDocument } from "./documents/token.js";
 import { TheEdgeStoreSheet } from "./actors/store-sheet.js";
 import setupItemSheets from "./items/item-sheets/setup.js";
 
-Hooks.once("init", async function() {
+Hooks.once("init", async function () {
   console.log(`Initializing the Galaxy`);
   // Useful helpers
   _extendNativePrototypes();
 
   // Generating maps for the fundamental data model
-  _finaliseConfigSetup()
+  _finaliseConfigSetup();
 
   game.the_edge = {
     config: THE_EDGE,
     diceServer: new DiceServer(),
-    socketHandler: new SocketHandler()
+    socketHandler: new SocketHandler(),
   };
 
   // Define custom Document classes
@@ -69,13 +74,23 @@ Hooks.once("init", async function() {
   CONFIG.Token.objectClass = TheEdgeToken;
 
   // Register actor, item and other sheets
-  foundry.documents.collections.Actors.unregisterSheet('core', foundry.appv1.sheets.ActorSheet);
+  foundry.documents.collections.Actors.unregisterSheet(
+    "core",
+    foundry.appv1.sheets.ActorSheet,
+  );
   const actorSheets = [
-    { sheetClass: TheEdgePlayableSheet, types: ['character'], makeDefault: true },
-    { sheetClass: TheEdgeStoreSheet, types: ['Store'], makeDefault: true },
+    {
+      sheetClass: TheEdgePlayableSheet,
+      types: ["character"],
+      makeDefault: true,
+    },
+    { sheetClass: TheEdgeStoreSheet, types: ["Store"], makeDefault: true },
   ];
   actorSheets.forEach(({ sheetClass, types, makeDefault }) => {
-    foundry.documents.collections.Actors.registerSheet('the_edge', sheetClass, { types, makeDefault });
+    foundry.documents.collections.Actors.registerSheet("the_edge", sheetClass, {
+      types,
+      makeDefault,
+    });
   });
 
   setupItemSheets();
@@ -84,12 +99,13 @@ Hooks.once("init", async function() {
   CONFIG.ui.combat = TheEdgeCombatTracker;
 
   // Alter the default chat system
-  CONFIG.ChatMessage.template = "systems/the_edge/templates/chat/chat_message.hbs";
+  CONFIG.ChatMessage.template =
+    "systems/the_edge/templates/chat/chat_message.hbs";
   CONFIG.ui.chat.MESSAGE_PATTERNS = {
     givePH: /^\/givePH\s*(\d+)?\s*([a-zA-Z0-9 ]*)?$/,
     language: /^\/language\s+([a-zA-Z]+)\s+(.*)$/,
     ...CONFIG.ui.chat.MESSAGE_PATTERNS,
-  }
+  };
 
   // UI setup
   CONFIG.ui.hotbar = TheEdgeHotbar;
@@ -99,8 +115,8 @@ Hooks.once("init", async function() {
   /**
    * Slugify a string.
    */
-  Handlebars.registerHelper('slugify', function(value) {
-    return value.slugify({strict: true});
+  Handlebars.registerHelper("slugify", function (value) {
+    return value.slugify({ strict: true });
   });
 
   // Preload template partials
@@ -111,40 +127,48 @@ initHooks();
 
 function _extendNativePrototypes() {
   Array.prototype.random = function () {
-    return this[Math.floor((Math.random()*this.length))];
-  }
+    return this[Math.floor(Math.random() * this.length)];
+  };
   Array.prototype.last = function () {
     return this[this.length - 1];
-  }
+  };
   Array.prototype.sum = function () {
-    return this.reduce((a,b) => a+b,0);
-  }
+    return this.reduce((a, b) => a + b, 0);
+  };
   Array.prototype.variance = function () {
     const sum = this.sum();
-    return this.reduce((a,b) => a + b*b, -sum) / this.length;
-  }
+    return this.reduce((a, b) => a + b * b, -sum) / this.length;
+  };
   Number.prototype.mod = function (n) {
     // Javascripts % returns remainder, not module (-1 % n == -1 != n - 1)
     return ((this % n) + n) % n;
-  }
-  String.prototype.rsplit = function(sep, maxsplit = 1) {
-      var split = this.split(sep || /\s+/);
-      return maxsplit ? [ split.slice(0, -maxsplit).join(sep) ].concat(split.slice(-maxsplit)) : split;
-  }
+  };
+  String.prototype.rsplit = function (sep, maxsplit = 1) {
+    var split = this.split(sep || /\s+/);
+    return maxsplit
+      ? [split.slice(0, -maxsplit).join(sep)].concat(split.slice(-maxsplit))
+      : split;
+  };
 }
 
 function _finaliseConfigSetup() {
   const characterDataInstance = new CharacterData();
   THE_EDGE.characterSchema = characterDataInstance.toObject();
-  const coreValues = Object.keys(foundry.utils.flattenObject(THE_EDGE.characterSchema))
-    .filter(x => x.split(".").last() == "advances");
+  const coreValues = Object.keys(
+    foundry.utils.flattenObject(THE_EDGE.characterSchema),
+  ).filter((x) => x.split(".").last() == "advances");
   for (const coreValue of coreValues) {
     const parts = coreValue.split(".");
-    THE_EDGE.coreValueMap[parts[0]][parts[parts.length-2]] = coreValue.replace(".advances", "");
+    THE_EDGE.coreValueMap[parts[0]][parts[parts.length - 2]] =
+      coreValue.replace(".advances", "");
   }
 
-  const basicEffects = Object.keys(foundry.utils.flattenObject(THE_EDGE.characterSchema))
-    .filter(x => x.split(".").last() == "status" || x.split(".")[0] == "generalModifiers");
+  const basicEffects = Object.keys(
+    foundry.utils.flattenObject(THE_EDGE.characterSchema),
+  ).filter(
+    (x) =>
+      x.split(".").last() == "status" || x.split(".")[0] == "generalModifiers",
+  );
   for (let effect of basicEffects) {
     const parts = effect.split(".");
     effect = "system." + effect;
@@ -159,20 +183,26 @@ function _finaliseConfigSetup() {
       }
       THE_EDGE.effectMap[parts[0]].all?.push(effect);
     } else {
-      THE_EDGE.effectMap["generalModifiers"][parts[0] + " - " + parts[1]] = [effect];
+      THE_EDGE.effectMap["generalModifiers"][parts[0] + " - " + parts[1]] = [
+        effect,
+      ];
     }
   }
   THE_EDGE.effectMap["attributes"]["physical"] = [
-    THE_EDGE.effectMap["attributes"]["end"], THE_EDGE.effectMap["attributes"]["str"], 
-    THE_EDGE.effectMap["attributes"]["spd"], THE_EDGE.effectMap["attributes"]["crd"], 
-  ]
+    THE_EDGE.effectMap["attributes"]["end"],
+    THE_EDGE.effectMap["attributes"]["str"],
+    THE_EDGE.effectMap["attributes"]["spd"],
+    THE_EDGE.effectMap["attributes"]["crd"],
+  ];
   THE_EDGE.effectMap["attributes"]["social"] = [
-    THE_EDGE.effectMap["attributes"]["cha"], THE_EDGE.effectMap["attributes"]["emp"], 
-  ]
+    THE_EDGE.effectMap["attributes"]["cha"],
+    THE_EDGE.effectMap["attributes"]["emp"],
+  ];
   THE_EDGE.effectMap["attributes"]["mental"] = [
-    THE_EDGE.effectMap["attributes"]["foc"], THE_EDGE.effectMap["attributes"]["res"], 
-    THE_EDGE.effectMap["attributes"]["int"]
-  ]
+    THE_EDGE.effectMap["attributes"]["foc"],
+    THE_EDGE.effectMap["attributes"]["res"],
+    THE_EDGE.effectMap["attributes"]["int"],
+  ];
 
   // definedEffects only holds the string names, not the targets
   THE_EDGE.definedEffects = {};

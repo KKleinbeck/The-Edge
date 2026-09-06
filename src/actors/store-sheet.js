@@ -4,71 +4,77 @@ import NotificationServer from "../system/notifications.js";
 import { TheEdgeActorSheet } from "./actor-sheet.js";
 
 export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
-  constructor (options) {
+  constructor(options) {
     super(options);
 
     this.playerTokens = Aux.getPlayerTokens();
     const storeToken = this.document.token;
-    if (storeToken) { // Sort tokens by proximity (relevant for player view)
+    if (storeToken) {
+      // Sort tokens by proximity (relevant for player view)
       this.playerTokens.sort((a, b) => {
-        return Aux.tokenDistance(a, storeToken) - Aux.tokenDistance(b, storeToken)
-      })
+        return (
+          Aux.tokenDistance(a, storeToken) - Aux.tokenDistance(b, storeToken)
+        );
+      });
     }
     this.selectedTokenIndex = 0;
   }
 
-  static DEFAULT_OPTIONS = {...TheEdgeActorSheet.DEFAULT_OPTIONS,
+  static DEFAULT_OPTIONS = {
+    ...TheEdgeActorSheet.DEFAULT_OPTIONS,
     actions: {
       itemInformation: TheEdgeStoreSheet._editItem,
       delete: TheEdgeStoreSheet._deleteItem,
       buyOrRetrieve: TheEdgeStoreSheet._buyOrRetrieveItem,
-      sellOrStore: TheEdgeStoreSheet._sellOrStoreItem
+      sellOrStore: TheEdgeStoreSheet._sellOrStoreItem,
     },
-  }
+  };
 
   static PARTS = {
     form: {
-      template: "systems/the_edge/templates/actors/store/store-header.hbs"
+      template: "systems/the_edge/templates/actors/store/store-header.hbs",
     },
     tabs: {
-      template: "templates/generic/tab-navigation.hbs" // Foundry default
+      template: "templates/generic/tab-navigation.hbs", // Foundry default
     },
     Ammunition: {
-      template: "systems/the_edge/templates/actors/store/meta-item-page.hbs"
+      template: "systems/the_edge/templates/actors/store/meta-item-page.hbs",
     },
     Armour: {
-      template: "systems/the_edge/templates/actors/store/meta-item-page.hbs"
+      template: "systems/the_edge/templates/actors/store/meta-item-page.hbs",
     },
     Consumables: {
-      template: "systems/the_edge/templates/actors/store/meta-item-page.hbs"
+      template: "systems/the_edge/templates/actors/store/meta-item-page.hbs",
     },
     Gear: {
-      template: "systems/the_edge/templates/actors/store/meta-item-page.hbs"
+      template: "systems/the_edge/templates/actors/store/meta-item-page.hbs",
     },
     Weapon: {
-      template: "systems/the_edge/templates/actors/store/meta-item-page.hbs"
+      template: "systems/the_edge/templates/actors/store/meta-item-page.hbs",
     },
     Sell: {
-      template: "systems/the_edge/templates/actors/store/buy-from-player.hbs"
+      template: "systems/the_edge/templates/actors/store/buy-from-player.hbs",
     },
     Store: {
-      template: "systems/the_edge/templates/actors/store/buy-from-player.hbs"
-    }
-  }
+      template: "systems/the_edge/templates/actors/store/buy-from-player.hbs",
+    },
+  };
 
   static TABS = {
     primary: {
-      tabs: [{id: "Gear"}, {id: "Test"}],
+      tabs: [{ id: "Gear" }, { id: "Test" }],
       labelPrefix: "TABS",
       initial: "Gear",
-    }
-  }
+    },
+  };
 
-  async render(options={}, _options={}) {
+  async render(options = {}, _options = {}) {
     // Select only item classes that have content (+ always Gear)
     const tabs = Object.entries(this.document.itemTypes)
-      .filter(x => x[1].length > 0 || x[0] == "Gear")
-      .map(x => { return {id: x[0]}; })
+      .filter((x) => x[1].length > 0 || x[0] == "Gear")
+      .map((x) => {
+        return { id: x[0] };
+      });
     if (this.actor.system.buysFromPlayer) {
       if (this.actor.system.isStorage) tabs.push({ id: "Store" });
       else tabs.push({ id: "Sell" });
@@ -82,13 +88,13 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
     switch (item.type) {
       case "Weapon":
       case "Armour":
-        return super._onDropItem(event, data)
+        return super._onDropItem(event, data);
 
       case "Ammunition":
       case "Gear":
       case "Consumables":
-        return this._onDropStackableItem(event, data, item)
-      
+        return this._onDropStackableItem(event, data, item);
+
       default:
         return;
     }
@@ -105,7 +111,7 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
     const playerActor = this.playerTokens[this.selectedTokenIndex].actor;
     for (const [type, items] of Object.entries(playerActor.itemTypes)) {
       if (items.length && "value" in items[0].system) {
-        const tradables = items.filter(item => {
+        const tradables = items.filter((item) => {
           const notEquipped = !(item.system.equipped ?? false);
           const notLoaded = !(item.system.loaded ?? false);
           return notEquipped && notLoaded;
@@ -140,7 +146,7 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
           }
         }
         break;
-      
+
       case "Weapon":
         // Sort items by weapon category
         context.groups = {};
@@ -157,19 +163,19 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
   }
 
   _onRender(context, options) {
-    super._onRender(context, options)
+    super._onRender(context, options);
 
-    this.element.querySelectorAll(".actor-selection-hook").forEach(x =>
-      x.addEventListener("change", event => {
+    this.element.querySelectorAll(".actor-selection-hook").forEach((x) =>
+      x.addEventListener("change", (event) => {
         this.selectedTokenIndex = event.currentTarget.value;
-      })
+      }),
     );
   }
 
   onIconSelected(_iconType, value) {
     const newIsStorage = value === "Storage";
     if (this.actor.system.isStorage !== newIsStorage) {
-      this.actor.update({"system.isStorage": newIsStorage})
+      this.actor.update({ "system.isStorage": newIsStorage });
     }
   }
 
@@ -196,24 +202,25 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
     if (!this.playerTokens.length) return;
     const token = this.playerTokens[this.selectedTokenIndex];
 
-    const credits = token.actor.system.credits.chids +
-      token.actor.system.credits.digital;
+    const credits =
+      token.actor.system.credits.chids + token.actor.system.credits.digital;
 
     const itemInformation = target.closest(".item").dataset;
     const price = +itemInformation.price;
     if (credits < price && !this.actor.system.isStorage) {
-      NotificationServer.notify(
-        "Too expensive",
-        {name: token.name, price: price, credits: credits}
-      );
-      return
+      NotificationServer.notify("Too expensive", {
+        name: token.name,
+        price: price,
+        credits: credits,
+      });
+      return;
     }
 
     const payload = {
       sceneId: game.canvas.id,
       tokenId: token.id,
       storeId: this.actor.token?.id ?? this.actor.id,
-      itemId: itemInformation.itemId
+      itemId: itemInformation.itemId,
     };
     if (game.user.isGM) {
       TheEdgeStoreSheet.handleBuyOrRetrieve(payload);
@@ -223,7 +230,7 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
   }
 
   static handleBuyOrRetrieve(payload) {
-    const {sceneId, tokenId, storeId, itemId} = payload;
+    const { sceneId, tokenId, storeId, itemId } = payload;
     const scene = game.scenes.get(sceneId);
     const store = scene.tokens.get(storeId)?.actor ?? game.actors.get(storeId);
     const actor = scene.tokens.get(tokenId).actor;
@@ -239,7 +246,8 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
       }
 
       actor.addOneItem(item);
-      if (item.system.quantity > 1) item.update({"system.quantity": item.system.quantity - 1});
+      if (item.system.quantity > 1)
+        item.update({ "system.quantity": item.system.quantity - 1 });
       else item.delete();
     }
   }
@@ -248,22 +256,25 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
     if (!this.playerTokens.length) return;
     const token = this.playerTokens[this.selectedTokenIndex];
 
-    const credits = this.actor.system.credits.chids + this.actor.system.credits.digital;
+    const credits =
+      this.actor.system.credits.chids + this.actor.system.credits.digital;
 
     const itemInformation = target.closest(".store-item").dataset;
     const price = +itemInformation.price;
     if (credits < price && !this.actor.system.isStorage) {
-      NotificationServer.notify(
-        "Too expensive", {name: this.actor.name, price: price, credits: credits}
-      );
-      return
+      NotificationServer.notify("Too expensive", {
+        name: this.actor.name,
+        price: price,
+        credits: credits,
+      });
+      return;
     }
 
     const payload = {
       sceneId: game.canvas.id,
       tokenId: token.id,
       storeId: this.actor.token?.id ?? this.actor.id,
-      itemId: itemInformation.itemId
+      itemId: itemInformation.itemId,
     };
     if (game.user.isGM) {
       TheEdgeStoreSheet.handleSellOrStore(payload);
@@ -271,9 +282,9 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
       game.the_edge.socketHandler.emit("SELL_OR_STORE", payload);
     }
   }
-  
+
   static async handleSellOrStore(payload) {
-    const {sceneId, tokenId, storeId, itemId} = payload;
+    const { sceneId, tokenId, storeId, itemId } = payload;
     const scene = game.scenes.get(sceneId);
     const store = scene.tokens.get(storeId)?.actor ?? game.actors.get(storeId);
     const actor = scene.tokens.get(tokenId).actor;
@@ -289,10 +300,15 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
       }
 
       store.addOneItem(item);
-      if (item.system.quantity > 1) await item.update({"system.quantity": item.system.quantity - 1});
+      if (item.system.quantity > 1)
+        await item.update({ "system.quantity": item.system.quantity - 1 });
       else await item.delete();
-      
-      game.the_edge.socketHandler.emit("ITEM_SOLD_OR_STORED", {sceneId, tokenId, storeId});
+
+      game.the_edge.socketHandler.emit("ITEM_SOLD_OR_STORED", {
+        sceneId,
+        tokenId,
+        storeId,
+      });
     }
   }
 }

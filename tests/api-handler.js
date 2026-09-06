@@ -2,12 +2,14 @@
 /** @return {string} */
 function uuid(object) {
   if (typeof object == "string") return object;
-  if ( object.hasOwnProperty("uuid") || object.constructor.prototype.hasOwnProperty("uuid") ) {
+  if (
+    object.hasOwnProperty("uuid") ||
+    object.constructor.prototype.hasOwnProperty("uuid")
+  ) {
     return object.uuid;
   }
   throw new Error(`Object '${object}' has no property named 'uuid'.`);
 }
-
 
 export default class ApiHandler {
   constructor(url, apiKey) {
@@ -19,35 +21,33 @@ export default class ApiHandler {
     this._tokens = {};
   }
 
-
   async requestClients() {
     const response = await fetch(this.url + "/clients", {
-      method: 'GET',
-      headers: { 'x-api-key': this.apiKey }
+      method: "GET",
+      headers: { "x-api-key": this.apiKey },
     });
     return await response.json();
   }
 
-
   /** @param {Record<string, any>} options */
   /** @return {Actor} */
   async actorCreate(options = {}) {
-    const {name, systemPreset, systemPayload = {}} = options;
+    const { name, systemPreset, systemPayload = {} } = options;
 
     const response = await fetch(this.url + "/create", {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'x-api-key': this.apiKey,
-        'Content-Type': 'application/json'
+        "x-api-key": this.apiKey,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        "entityType": "Actor",
-        "data": {
-          "name": name ?? "TestActor",
-          "type": "character",
-          "system": {...Actor.getSystemPreset(systemPreset), ...systemPayload}
-        }
-      })
+        entityType: "Actor",
+        data: {
+          name: name ?? "TestActor",
+          type: "character",
+          system: { ...Actor.getSystemPreset(systemPreset), ...systemPayload },
+        },
+      }),
     });
     const result = await response.json();
     const actor = new Actor(this, result.entity, result.uuid);
@@ -55,26 +55,24 @@ export default class ApiHandler {
     return actor;
   }
 
-
   /** @param {string | Actor} actor */
   async actorDelete(actor) {
     actor = this._getFromCollection(this._actors, actor);
 
-    const path = '/delete';
-    const params = {uuid: uuid(actor)};
+    const path = "/delete";
+    const params = { uuid: uuid(actor) };
     const queryString = new URLSearchParams(params).toString();
     const url = `${this.url}${path}?${queryString}`;
 
     const response = await fetch(url, {
-      method: 'DELETE',
-      headers: { 'x-api-key': this.apiKey }
+      method: "DELETE",
+      headers: { "x-api-key": this.apiKey },
     });
     const result = await response.json();
-    
+
     if (result.success) delete this._actors[uuid(actor)];
     return result;
   }
-
 
   /** @param {string | Actor} actor */
   /** @return {Record<string, any>} */
@@ -86,101 +84,98 @@ export default class ApiHandler {
 
     const url = `${this.url}/get?${queryString}`;
     const response = await fetch(url, {
-      method: 'GET',
-      headers: { 'x-api-key': this.apiKey }
+      method: "GET",
+      headers: { "x-api-key": this.apiKey },
     });
     const result = await response.json();
     return result.data;
   }
 
-
   /** @param {(string | Token)[]} tokens */
   /** @param {string} encounterId */
   async encounterAddTokens(tokens, encounterId) {
-    const tokenIds = tokens.map(
-      x => typeof x == "string" ? this._getFromCollection(this._tokens, x).uuid : x.uuid
+    const tokenIds = tokens.map((x) =>
+      typeof x == "string"
+        ? this._getFromCollection(this._tokens, x).uuid
+        : x.uuid,
     );
 
     const response = await fetch(this.url + "/add-to-encounter", {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'x-api-key': this.apiKey,
-        'Content-Type': 'application/json'
+        "x-api-key": this.apiKey,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         encounterId: encounterId,
-        "uuids": tokenIds,
-        "rollInitiative": true
-      })
+        uuids: tokenIds,
+        rollInitiative: true,
+      }),
     });
     const result = await response.json();
     return result;
   }
 
-
   /** @param {string} encounterId */
   /** @return {Record<string, any>} */
-  async encounterEnd(encounterId){
+  async encounterEnd(encounterId) {
     const params = { encounterId };
     const queryString = new URLSearchParams(params).toString();
 
     const url = `${this.url}/end-encounter?${queryString}`;
     const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'x-api-key': this.apiKey }
+      method: "POST",
+      headers: { "x-api-key": this.apiKey },
     });
     const result = await response.json();
     return result;
   }
-  
 
   /** @param {string} encounterId */
   async encounterNextTurn(encounterId) {
     const response = await fetch(this.url + "/next-turn", {
-      method: 'POST',
-      headers: { 'x-api-key': this.apiKey },
+      method: "POST",
+      headers: { "x-api-key": this.apiKey },
       body: JSON.stringify({
         encounterId: encounterId,
-      })
+      }),
     });
     const result = await response.json();
     return result;
   }
 
-
   /** @return {Encounter} */
   async encounterStart() {
     const response = await fetch(this.url + "/start-encounter", {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'x-api-key': this.apiKey,
-        'Content-Type': 'application/json'
+        "x-api-key": this.apiKey,
+        "Content-Type": "application/json",
       },
     });
     const result = await response.json();
     return new Encounter(this, result.encounterId);
   }
 
-
   /** @param {Record<string, any>} options */
   /** @return {Item} */
   async itemCreate(options = {}) {
-    const {name, type, systemPreset, systemPayload = {}} = options;
+    const { name, type, systemPreset, systemPayload = {} } = options;
 
     const response = await fetch(this.url + "/create", {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'x-api-key': this.apiKey,
-        'Content-Type': 'application/json'
+        "x-api-key": this.apiKey,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        "entityType": "Item",
-        "data": {
-          "name": name ?? "TestItem",
-          "type": type ?? "Ammunition",
-          "system": {...Actor.getSystemPreset(systemPreset), ...systemPayload}
-        }
-      })
+        entityType: "Item",
+        data: {
+          name: name ?? "TestItem",
+          type: type ?? "Ammunition",
+          system: { ...Actor.getSystemPreset(systemPreset), ...systemPayload },
+        },
+      }),
     });
     const result = await response.json();
     const item = new Item(this, result.entity, result.uuid);
@@ -188,42 +183,39 @@ export default class ApiHandler {
     return item;
   }
 
-
   /** @param {string | Item} item */
   async itemDelete(item) {
     item = this._getFromCollection(this._items, item);
 
-    const path = '/delete';
-    const params = {uuid: uuid(item)};
+    const path = "/delete";
+    const params = { uuid: uuid(item) };
     const queryString = new URLSearchParams(params).toString();
     const url = `${this.url}${path}?${queryString}`;
 
     const response = await fetch(url, {
-      method: 'DELETE',
-      headers: { 'x-api-key': this.apiKey }
+      method: "DELETE",
+      headers: { "x-api-key": this.apiKey },
     });
     const result = await response.json();
-    
+
     if (result.success) delete this._items[uuid(item)];
     return result;
   }
-
 
   /** @param {string} command */
   /** @return {Record<string, any>} */
   async runCommand(command) {
     const response = await fetch(this.url + "/execute-js", {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'x-api-key': this.apiKey,
-        'Content-Type': 'application/json'
+        "x-api-key": this.apiKey,
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({"script": command})
+      body: JSON.stringify({ script: command }),
     });
     const result = await response.json();
     return result.result;
   }
-
 
   /** @param {string | Actor} actor */
   /** @param {boolean} actorLink */
@@ -232,26 +224,25 @@ export default class ApiHandler {
     actor = this._getFromCollection(this._actors, actor);
 
     const response = await fetch(this.url + "/canvas/tokens", {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'x-api-key': this.apiKey,
-        'Content-Type': 'application/json'
+        "x-api-key": this.apiKey,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        "data": {
-          "x": 0,
-          "y": 0,
-          "actorLink": actorLink,
-          "actorId": actor.data._id
-        }
-      })
+        data: {
+          x: 0,
+          y: 0,
+          actorLink: actorLink,
+          actorId: actor.data._id,
+        },
+      }),
     });
     const result = await response.json();
     const token = new Token(this, result.data[0], result.sceneId);
     this._tokens[result.data._id] = token;
     return token;
   }
-
 
   /** @param {string | Token} token */
   async tokenDelete(token) {
@@ -262,13 +253,12 @@ export default class ApiHandler {
 
     const url = `${this.url}/canvas/tokens?${queryString}`;
     const response = await fetch(url, {
-      method: 'DELETE',
-      headers: { 'x-api-key': this.apiKey }
+      method: "DELETE",
+      headers: { "x-api-key": this.apiKey },
     });
     const result = await response.json();
-    return result
+    return result;
   }
-
 
   /** @param {string | Token} token */
   /** @param {number} x */
@@ -276,29 +266,28 @@ export default class ApiHandler {
   /** @return {Token} */
   async tokenMove(token, x, y) {
     token = this._getFromCollection(this._tokens, token);
-    
+
     const response = await fetch(this.url + "/move-token", {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'x-api-key': this.apiKey,
-        'Content-Type': 'application/json'
+        "x-api-key": this.apiKey,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        "uuid": `Actor.${token.data.actorId}`,
-        "x": x,
-        "y": y,
-        "animate": false
-      })
+        uuid: `Actor.${token.data.actorId}`,
+        x: x,
+        y: y,
+        animate: false,
+      }),
     });
     const result = await response.json();
     return token;
   }
 
-
   /** @param {Record<string, Actor | Token>} collection */
   /** @param {string | Actor | Token} entity */
   _getFromCollection(collection, entity) {
-    if (typeof(entity) == "string") {
+    if (typeof entity == "string") {
       try {
         entity = collection[entity];
       } catch (exception) {
@@ -308,7 +297,6 @@ export default class ApiHandler {
     return entity;
   }
 }
-
 
 class Actor {
   /** @param {ApiHandler} handler */
@@ -320,15 +308,14 @@ class Actor {
     this.uuid = uuid;
   }
 
-
   /** @param {boolean} actorLink */
   async createToken(actorLink = false) {
     return await this.handler.tokenCreate(this, actorLink);
   }
 
-
-  async delete() { return await this.handler.actorDelete(this); }
-
+  async delete() {
+    return await this.handler.actorDelete(this);
+  }
 
   /** @param {string} preset */
   static getSystemPreset(preset) {
@@ -344,12 +331,11 @@ class Actor {
           foc: { advances: 10 },
           res: { advances: 10 },
           int: { advances: 10 },
-        }
-      }
+        },
+      };
     }
     return {};
   }
-
 
   /** @return {Record<string, any>} */
   async updateData() {
@@ -358,7 +344,6 @@ class Actor {
     return result;
   }
 }
-
 
 class Item {
   /** @param {ApiHandler} handler */
@@ -370,16 +355,15 @@ class Item {
     this.uuid = uuid;
   }
 
-
   /** @param {boolean} actorLink */
   async createToken(actorLink = false) {
     return await this.handler.tokenCreate(this, actorLink);
   }
 
-
-  async delete() { return await this.handler.itemDelete(this); }
+  async delete() {
+    return await this.handler.itemDelete(this);
+  }
 }
-
 
 class Encounter {
   /** @param {ApiHandler} handler */
@@ -389,12 +373,10 @@ class Encounter {
     this.encounterId = encounterId;
   }
 
-
   /** @param {ApiHandler} handler */
   static async start(apiHandler) {
     return await apiHandler.encounterStart();
   }
-
 
   /** @param {(string | Token)[]} tokens */
   /** @return {Encounter} */
@@ -403,9 +385,9 @@ class Encounter {
     return this;
   }
 
-
-  async end() { return await this.handler.encounterEnd(this.encounterId); }
-
+  async end() {
+    return await this.handler.encounterEnd(this.encounterId);
+  }
 
   /** @return {Encounter} */
   async nextTurn() {
@@ -413,8 +395,6 @@ class Encounter {
     return this;
   }
 }
-
-
 
 class Token {
   /** @param {ApiHandler} handler */
@@ -425,7 +405,6 @@ class Token {
     this.data = data;
     this.sceneId = sceneId;
   }
-
 
   /** @param {number} x */
   /** @param {number} y */
@@ -439,16 +418,17 @@ class Token {
     return this;
   }
 
-
-  async delete() { return await this.handler.tokenDelete(this); }
-
+  async delete() {
+    return await this.handler.tokenDelete(this);
+  }
 
   /** @return {Record<string, any>} */
   async getActorDocument() {
-    const result = await this.handler.actorGetDocument(`Actor.${this.data.actorId}`);
+    const result = await this.handler.actorGetDocument(
+      `Actor.${this.data.actorId}`,
+    );
     return result;
   }
-
 
   /** @return {string} */
   get uuid() {

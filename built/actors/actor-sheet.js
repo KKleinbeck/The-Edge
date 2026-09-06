@@ -11,468 +11,561 @@ import NotificationServer from "../system/notifications.js";
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
 const { renderTemplate } = foundry.applications.handlebars;
-export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(HandlebarsApplicationMixin(ActorSheetV2))) {
-    effectIsExpanded = {};
-    constructor(...args) {
-        super(...args);
-        this.effectIsExpanded = {};
-        this._prepareTabs("stest");
-    }
-    static DEFAULT_OPTIONS = {
-        tag: "form",
-        position: {
-            width: 740,
-            height: 800,
-        },
-        form: {
-            submitOnChange: true,
-        },
-        classes: ["the_edge", "actor"],
-        actions: {
-            itemControl: TheEdgeActorSheet._onItemControl,
-            effectControl: TheEdgeActorSheet._onEffectControl,
-            embeddedSkillControl: TheEdgeActorSheet._onEmbeddedSkillControl,
-            skillControl: TheEdgeActorSheet._onSkillControl,
-        },
-    };
-    get title() { return this.actor.name; }
-    async _prepareContext(options) {
-        const context = await super._prepareContext(options);
-        context.userIsGM = game.user.isGM;
-        context.actor = this.actor;
-        context.system = context.document.system;
-        return context;
-    }
-    // Actions
-    static async _onItemControl(event, target) {
-        event.preventDefault();
-        // Obtain event data
-        const itemElement = target.closest(".item-hook");
-        if (!(itemElement instanceof HTMLElement))
-            return;
-        const item = this.actor.items.get(itemElement.dataset.itemId);
-        // Handle different actions
-        switch (target.dataset.subaction) {
-            case "create":
-                const itemType = target.dataset.type;
-                const cls = getDocumentClass("Item");
-                return cls.create({ name: LocalisationServer.localise("New", "item"), type: itemType }, { parent: this.actor });
-            case "edit":
-                return item?.sheet.render(true);
-            case "post":
-                ChatServer.transmitEvent("POST ITEM", { item: item }, this.actor.chatConfig());
+export class TheEdgeActorSheet extends CounterMixin(
+  EffectModifierMixin(HandlebarsApplicationMixin(ActorSheetV2)),
+) {
+  effectIsExpanded = {};
+  constructor(...args) {
+    super(...args);
+    this.effectIsExpanded = {};
+    this._prepareTabs("stest");
+  }
+  static DEFAULT_OPTIONS = {
+    tag: "form",
+    position: {
+      width: 740,
+      height: 800,
+    },
+    form: {
+      submitOnChange: true,
+    },
+    classes: ["the_edge", "actor"],
+    actions: {
+      itemControl: TheEdgeActorSheet._onItemControl,
+      effectControl: TheEdgeActorSheet._onEffectControl,
+      embeddedSkillControl: TheEdgeActorSheet._onEmbeddedSkillControl,
+      skillControl: TheEdgeActorSheet._onSkillControl,
+    },
+  };
+  get title() {
+    return this.actor.name;
+  }
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    context.userIsGM = game.user.isGM;
+    context.actor = this.actor;
+    context.system = context.document.system;
+    return context;
+  }
+  // Actions
+  static async _onItemControl(event, target) {
+    event.preventDefault();
+    // Obtain event data
+    const itemElement = target.closest(".item-hook");
+    if (!(itemElement instanceof HTMLElement)) return;
+    const item = this.actor.items.get(itemElement.dataset.itemId);
+    // Handle different actions
+    switch (target.dataset.subaction) {
+      case "create":
+        const itemType = target.dataset.type;
+        const cls = getDocumentClass("Item");
+        return cls.create(
+          { name: LocalisationServer.localise("New", "item"), type: itemType },
+          { parent: this.actor },
+        );
+      case "edit":
+        return item?.sheet.render(true);
+      case "post":
+        ChatServer.transmitEvent(
+          "POST ITEM",
+          { item: item },
+          this.actor.chatConfig(),
+        );
+        break;
+      case "increase":
+        this.actor.addOrCreateVantage(item);
+        break;
+      case "decrease":
+        this.actor.decrementVantage(item);
+        break;
+      case "delete":
+        if (item.type.includes("vantage")) this.actor.deleteVantage(item);
+        else DialogItemDeletion.start({ item: item, actor: this.actor });
+        break;
+      case "toggle-equip":
+        if (item.type == "Armour") {
+          if (
+            item.system.structurePoints <= 0 &&
+            item.system.structurePointsOriginal > 0
+          ) {
+            NotificationServer.notify("EquipBroken");
+            return undefined;
+          }
+          if (item.system.layer == "Outer") {
+            if (item.system.equipped) {
+              const parent = this.actor.items.get(
+                item.system.attachments[0].armourId,
+              );
+              await Aux.detachFromParent(
+                parent,
+                item._id,
+                item.system.attachmentPoints.max,
+              );
+              await item.update({ "system.attachments": [] });
+              await item.system.toggleEquipped();
+              break;
+            } else {
+              const attachableArmour = this._findAttachableArmour(item);
+              if (attachableArmour.length == 0) {
+                NotificationServer.notify("No attachable armour");
                 break;
-            case "increase":
-                this.actor.addOrCreateVantage(item);
-                break;
-            case "decrease":
-                this.actor.decrementVantage(item);
-                break;
-            case "delete":
-                if (item.type.includes("vantage"))
-                    this.actor.deleteVantage(item);
-                else
-                    DialogItemDeletion.start({ item: item, actor: this.actor });
-                break;
-            case "toggle-equip":
-                if (item.type == "Armour") {
-                    if (item.system.structurePoints <= 0 && item.system.structurePointsOriginal > 0) {
-                        NotificationServer.notify("EquipBroken");
-                        return undefined;
-                    }
-                    if (item.system.layer == "Outer") {
-                        if (item.system.equipped) {
-                            const parent = this.actor.items.get(item.system.attachments[0].armourId);
-                            await Aux.detachFromParent(parent, item._id, item.system.attachmentPoints.max);
-                            await item.update({ "system.attachments": [] });
-                            await item.system.toggleEquipped();
-                            break;
-                        }
-                        else {
-                            const attachableArmour = this._findAttachableArmour(item);
-                            if (attachableArmour.length == 0) {
-                                NotificationServer.notify("No attachable armour");
-                                break;
-                            }
-                            DialogArmourAttachment.start({ actor: this.actor, tokenId: this.token?.id, shellId: item.id, attachable: attachableArmour });
-                            break;
-                        }
-                    }
-                }
-                const equippedFlag = await item.system.toggleEquipped();
-                await this.actor.update({});
-                const payload = {
-                    actionType: equippedFlag ? "equip" : "unequip",
-                    actionCost: 1,
-                    actor: this.actor,
-                    details: { itemName: item.name }
-                };
-                Hooks.call("TheEdgeAction", payload);
-                break;
-            case "consume":
-                Hooks.call("onModifierEvent", "onUse", { actor: this.actor, itemId: item.id });
-                switch (item.system.current_type) {
-                    case "medicine":
-                        const wounds = this.actor.system.wounds;
-                        if (wounds.length) {
-                            DialogMedicine.start({ medicineItem: item, wounds: wounds, actor: this.actor });
-                        }
-                        else {
-                            NotificationServer.notify("No wounds on Actor", { name: this.actor.name });
-                        }
-                        break;
-                    case "grenade":
-                        NotificationServer.notify("Grenade use tipp");
-                        break;
-                    default:
-                        const existingCopies = this.actor.system.findEffectsByName(item.name);
-                        if (existingCopies.length) {
-                            NotificationServer.notify("Effect already exists");
-                            return;
-                        }
-                        const genericModifiers = Aux.filterToGenericModifiers(item.system.effect);
-                        const hasEffect = genericModifiers.length > 0;
-                        if (hasEffect) {
-                            this.actor.system.createNewEffect(item.name, genericModifiers);
-                        }
-                        const strainRoll = await new Roll(item.system.subtypes.food.strainReduction).evaluate();
-                        const strainChange = await this.actor.system.applyStrain(-strainRoll.total);
-                        ChatServer.transmitEvent("FOOD CONSUME", {
-                            details: { actorName: this.actor.name, item: item.name, strainReduction: -strainChange },
-                            hasEffects: hasEffect
-                        }, this.actor.chatConfig());
-                        item.useOne();
-                        break;
-                }
-                break;
+              }
+              DialogArmourAttachment.start({
+                actor: this.actor,
+                tokenId: this.token?.id,
+                shellId: item.id,
+                attachable: attachableArmour,
+              });
+              break;
+            }
+          }
         }
-    }
-    static async _onEffectControl(event, target) {
-        event.preventDefault();
-        // Obtain event data
-        const effectElement = target.closest(".effect-hook");
-        if (!(effectElement instanceof HTMLElement))
-            return;
-        const index = effectElement?.dataset.index || "";
-        const source = effectElement?.dataset.source || "";
-        // Handle different actions
-        switch (target.dataset.subaction) {
-            case "create":
-                if (!target.dataset.source)
-                    return;
-                await this.actor.system.createNewEffect();
-                this.effectIsExpanded[target.dataset.source].push(false);
-                break;
-            case "delete":
-                // TODO: proper movement animations
-                this.actor.system.deleteEffect(index);
-                this.effectIsExpanded[source].splice(index, 1);
-                break;
-            case "edit":
-                if (!effectElement.dataset.source)
-                    return;
-                if (["itemEffects", "skillEffects"].includes(effectElement.dataset.source)) {
-                    const id = effectElement?.dataset.id || "";
-                    const item = this.actor.items.get(id);
-                    return item?.sheet.render(true);
-                }
-                break;
-            case "toggleShowContent":
-                this.effectIsExpanded[source][index] = !this.effectIsExpanded[source][index];
-                const container = effectElement.parentElement;
-                const content = effectElement.querySelector(".content");
-                if (!effectElement.classList.contains('expanded')) {
-                    this.expandItem(effectElement, content, container);
-                }
-                else {
-                    this.collapseItem(effectElement, content, container);
-                }
-                break;
-            case "toggle-active":
-                if (effectElement.dataset.source == "effects") {
-                    this.actor.system.toggleEffect(index);
-                }
-                else { // Skill effect
-                    const item = this.actor.items.get(effectElement.dataset.id);
-                    await item.system.toggleActive({ render: false });
-                    await this.actor.update({}, { render: false }); // Force effect recalculation
-                    this.render({ force: true }); // Force redraw for icon update
-                }
-                break;
+        const equippedFlag = await item.system.toggleEquipped();
+        await this.actor.update({});
+        const payload = {
+          actionType: equippedFlag ? "equip" : "unequip",
+          actionCost: 1,
+          actor: this.actor,
+          details: { itemName: item.name },
+        };
+        Hooks.call("TheEdgeAction", payload);
+        break;
+      case "consume":
+        Hooks.call("onModifierEvent", "onUse", {
+          actor: this.actor,
+          itemId: item.id,
+        });
+        switch (item.system.current_type) {
+          case "medicine":
+            const wounds = this.actor.system.wounds;
+            if (wounds.length) {
+              DialogMedicine.start({
+                medicineItem: item,
+                wounds: wounds,
+                actor: this.actor,
+              });
+            } else {
+              NotificationServer.notify("No wounds on Actor", {
+                name: this.actor.name,
+              });
+            }
+            break;
+          case "grenade":
+            NotificationServer.notify("Grenade use tipp");
+            break;
+          default:
+            const existingCopies = this.actor.system.findEffectsByName(
+              item.name,
+            );
+            if (existingCopies.length) {
+              NotificationServer.notify("Effect already exists");
+              return;
+            }
+            const genericModifiers = Aux.filterToGenericModifiers(
+              item.system.effect,
+            );
+            const hasEffect = genericModifiers.length > 0;
+            if (hasEffect) {
+              this.actor.system.createNewEffect(item.name, genericModifiers);
+            }
+            const strainRoll = await new Roll(
+              item.system.subtypes.food.strainReduction,
+            ).evaluate();
+            const strainChange = await this.actor.system.applyStrain(
+              -strainRoll.total,
+            );
+            ChatServer.transmitEvent(
+              "FOOD CONSUME",
+              {
+                details: {
+                  actorName: this.actor.name,
+                  item: item.name,
+                  strainReduction: -strainChange,
+                },
+                hasEffects: hasEffect,
+              },
+              this.actor.chatConfig(),
+            );
+            item.useOne();
+            break;
         }
+        break;
     }
-    getModifiers(target) {
-        const effectIndex = target.closest(".effect-hook").dataset.index;
-        const modifiers = this.actor.system.effects[effectIndex].modifiers;
-        return { modifiers: modifiers, context: { effectIndex: effectIndex } };
+  }
+  static async _onEffectControl(event, target) {
+    event.preventDefault();
+    // Obtain event data
+    const effectElement = target.closest(".effect-hook");
+    if (!(effectElement instanceof HTMLElement)) return;
+    const index = effectElement?.dataset.index || "";
+    const source = effectElement?.dataset.source || "";
+    // Handle different actions
+    switch (target.dataset.subaction) {
+      case "create":
+        if (!target.dataset.source) return;
+        await this.actor.system.createNewEffect();
+        this.effectIsExpanded[target.dataset.source].push(false);
+        break;
+      case "delete":
+        // TODO: proper movement animations
+        this.actor.system.deleteEffect(index);
+        this.effectIsExpanded[source].splice(index, 1);
+        break;
+      case "edit":
+        if (!effectElement.dataset.source) return;
+        if (
+          ["itemEffects", "skillEffects"].includes(effectElement.dataset.source)
+        ) {
+          const id = effectElement?.dataset.id || "";
+          const item = this.actor.items.get(id);
+          return item?.sheet.render(true);
+        }
+        break;
+      case "toggleShowContent":
+        this.effectIsExpanded[source][index] =
+          !this.effectIsExpanded[source][index];
+        const container = effectElement.parentElement;
+        const content = effectElement.querySelector(".content");
+        if (!effectElement.classList.contains("expanded")) {
+          this.expandItem(effectElement, content, container);
+        } else {
+          this.collapseItem(effectElement, content, container);
+        }
+        break;
+      case "toggle-active":
+        if (effectElement.dataset.source == "effects") {
+          this.actor.system.toggleEffect(index);
+        } else {
+          // Skill effect
+          const item = this.actor.items.get(effectElement.dataset.id);
+          await item.system.toggleActive({ render: false });
+          await this.actor.update({}, { render: false }); // Force effect recalculation
+          this.render({ force: true }); // Force redraw for icon update
+        }
+        break;
     }
-    async updateModifiers(modifiers, context) {
+  }
+  getModifiers(target) {
+    const effectIndex = target.closest(".effect-hook").dataset.index;
+    const modifiers = this.actor.system.effects[effectIndex].modifiers;
+    return { modifiers: modifiers, context: { effectIndex: effectIndex } };
+  }
+  async updateModifiers(modifiers, context) {
+    const effects = this.actor.system.effects;
+    effects[context.effectIndex].modifiers = modifiers;
+    this.actor.update({ "system.effects": effects });
+  }
+  // TODO: Refactor into an animator class
+  expandItem(item, content, container) {
+    const DURATION = 300;
+    // First: do FLIP measurement
+    const items = [...container.children];
+    const firstRects = items.map((el) => el.getBoundingClientRect());
+    item.classList.add("expanded");
+    requestAnimationFrame(() => {
+      const lastRects = items.map((el) => el.getBoundingClientRect());
+      items.forEach((el, i) => {
+        const dx = firstRects[i].left - lastRects[i].left;
+        const dy = firstRects[i].top - lastRects[i].top;
+        el.animate(
+          [
+            { transform: `translate(${dx}px, ${dy}px)` },
+            { transform: `translate(0,0)` },
+          ],
+          {
+            duration: DURATION,
+            easing: "ease",
+          },
+        );
+      });
+      // AFTER layout animation finishes → expand content
+      setTimeout(() => {
+        this.revealContent(content);
+        item.querySelector(".chevron-hook").classList.add("rotate90");
+      }, DURATION);
+    });
+  }
+  collapseItem(item, content, container) {
+    const DURATION = 300;
+    item.querySelector(".chevron-hook").classList.remove("rotate90");
+    this.hideContent(content);
+    setTimeout(() => {
+      const items = [...container.children];
+      const firstRects = items.map((el) => el.getBoundingClientRect());
+      item.classList.remove("expanded");
+      requestAnimationFrame(() => {
+        const lastRects = items.map((el) => el.getBoundingClientRect());
+        items.forEach((el, i) => {
+          const dx = firstRects[i].left - lastRects[i].left;
+          const dy = firstRects[i].top - lastRects[i].top;
+          el.animate(
+            [
+              { transform: `translate(${dx}px, ${dy}px)` },
+              { transform: `translate(0,0)` },
+            ],
+            {
+              duration: DURATION,
+              easing: "ease",
+            },
+          );
+        });
+      });
+    }, DURATION);
+  }
+  revealContent(content) {
+    content.style.height = "0px";
+    content.style.opacity = "0";
+    const fullHeight = content.scrollHeight;
+    requestAnimationFrame(() => {
+      content.style.height = fullHeight + "px";
+      content.style.opacity = "1";
+    });
+    content.addEventListener(
+      "transitionend",
+      () => {
+        content.style.height = "auto";
+      },
+      { once: true },
+    );
+  }
+  hideContent(content) {
+    content.style.height = content.scrollHeight + "px";
+    requestAnimationFrame(() => {
+      content.style.height = "0px";
+      content.style.opacity = "0";
+    });
+  }
+  static async _onEmbeddedSkillControl(event, target) {
+    event.preventDefault();
+    // Obtain event data
+    const skillElement = target.closest(".embedded-skill-hook");
+    if (!(skillElement instanceof HTMLDivElement)) return;
+    const itemId = skillElement.dataset.itemId;
+    const item = this.actor.items.get(itemId);
+    const skillId = skillElement.dataset.id ?? "";
+    const skill = item.system.embeddedSkills.find((x) => (x.id = skillId));
+    // Handle different actions
+    switch (target.dataset.subaction) {
+      case "post":
+        ChatServer.transmitEvent(
+          "POST ITEM",
+          { item },
+          this.actor.chatConfig(),
+        );
+        break;
+      case "roll":
+        Aux.evalOnEventWith(skill.effect, { parent: item }, skillId);
+        break;
+    }
+  }
+  static async _onSkillControl(event, target) {
+    event.preventDefault();
+    // Obtain event data
+    const skillElement = target.closest(".skill-hook");
+    if (!(skillElement instanceof HTMLDivElement)) return;
+    const skillId = skillElement.dataset.itemId;
+    const skill = this.actor.items.get(skillId);
+    // Handle different actions
+    switch (target.dataset.subaction) {
+      case "increase":
+        if (skill.type == "Advantage" || skill.type == "Disadvantage") {
+          return this.actor.addOrCreateVantage(skill);
+        }
+        return this.actor.skillLevelIncrease(skillId);
+      case "decrease":
+        if (skill.type == "Advantage" || skill.type == "Disadvantage") {
+          return this.actor.decrementVantage(skill);
+        }
+        return this.actor.skillLevelDecrease(skillId);
+      case "delete":
+        if (skill.type == "Advantage" || skill.type == "Disadvantage") {
+          return this.actor.deleteVantage(skill);
+        }
+        return this.actor.deleteSkill(skillId);
+      case "post":
+        ChatServer.transmitEvent(
+          "POST SKILL",
+          {
+            name: skill.name,
+            type: skill.type,
+            description: skill.system.description,
+          },
+          this.actor.chatConfig(),
+        );
+        break;
+      case "roll":
+        Hooks.call("onModifierEvent", "onUse", {
+          actor: this.actor,
+          itemId: skillId,
+        });
+        if (skill.type == "Medicalskill") {
+          DialogProficiency.start({
+            actor: this.actor,
+            actorId: this.actor.id,
+            proficiency: skill.system.basis,
+            tokenId: this.token?.id,
+            sceneId: game.user.viewedScene,
+          });
+        } else {
+          let strainChange = await Aux.parseStrainCostStr(
+            skill,
+            this.actor.system.strainLevel,
+          );
+          strainChange = await this.actor.system.applyStrain(strainChange);
+          const payload = {
+            action: skill.name,
+            actionType: "skill",
+            actor: this.actor,
+            strainCost: strainChange,
+            actionCost: 0,
+          };
+          Hooks.call("TheEdgeAction", payload);
+        }
+        break;
+    }
+  }
+  _findAttachableArmour(outerShell) {
+    const bodyTarget = outerShell.system.bodyPart;
+    const size = outerShell.system.attachmentPoints.max;
+    return this.actor.itemTypes["Armour"].filter((armour) => {
+      if (armour.system.layer == "Outer") return false;
+      if (
+        armour.system.attachmentPoints.max -
+          armour.system.attachmentPoints.used <
+        size
+      )
+        return false;
+      else if (armour.system.bodyPart.includes(bodyTarget)) return true;
+      else if (armour.system.bodyPart == "Entire") return true;
+      else if (armour.system.bodyPart == "Below_Neck" && bodyTarget != "Head")
+        return true;
+      return false;
+    });
+  }
+  // Mixin Related code
+  async updateCounters(counters, context = {}) {
+    await this.document.update(
+      { "system.counters": counters },
+      { render: false },
+    );
+  }
+  async onUpdateCounters(_counters, context) {
+    await this.redrawActorCounters(context);
+  }
+  async redrawActorCounters(context) {
+    const template =
+      "systems/the_edge/templates/actors/character/biography/counters.hbs";
+    const html = await renderTemplate(template, {
+      ...context,
+      counters: this.actor.system.counters,
+    });
+    const actorCounterElement = this.element.querySelector(
+      ".actor-counters-group-hook",
+    );
+    actorCounterElement.innerHTML = html;
+    this.attachCounterEffectListeners(actorCounterElement);
+  }
+  // Specific listeners
+  _onRender(context, options) {
+    super._onRender(context, options);
+    if (ui.hotbar.token?.actor?.id == this.actor.id) {
+      ui.hotbar.render(true);
+    }
+    const effectNames = this.element.querySelectorAll(".effect-name-hook");
+    for (const effectName of effectNames) {
+      effectName.addEventListener("change", (ev) => {
+        if (!(ev.target instanceof HTMLInputElement)) return;
+        const effectElement = ev.target.closest(".effect-hook");
+        if (
+          !(effectElement instanceof HTMLElement) ||
+          !effectElement.dataset.index
+        )
+          return;
         const effects = this.actor.system.effects;
-        effects[context.effectIndex].modifiers = modifiers;
-        this.actor.update({ "system.effects": effects });
+        effects[effectElement.dataset.index].name = ev.target.value;
+        this.actor.update({ "system.effects": effects }, { render: false });
+      });
     }
-    ;
-    // TODO: Refactor into an animator class
-    expandItem(item, content, container) {
-        const DURATION = 300;
-        // First: do FLIP measurement
-        const items = [...container.children];
-        const firstRects = items.map(el => el.getBoundingClientRect());
-        item.classList.add('expanded');
-        requestAnimationFrame(() => {
-            const lastRects = items.map(el => el.getBoundingClientRect());
-            items.forEach((el, i) => {
-                const dx = firstRects[i].left - lastRects[i].left;
-                const dy = firstRects[i].top - lastRects[i].top;
-                el.animate([
-                    { transform: `translate(${dx}px, ${dy}px)` },
-                    { transform: `translate(0,0)` }
-                ], {
-                    duration: DURATION,
-                    easing: 'ease'
-                });
-            });
-            // AFTER layout animation finishes → expand content
-            setTimeout(() => {
-                this.revealContent(content);
-                item.querySelector(".chevron-hook").classList.add("rotate90");
-            }, DURATION);
-        });
+    const quantityItems = this.element.querySelectorAll(".quantity-input");
+    for (const input of quantityItems) {
+      input.addEventListener("change", (ev) => {
+        this._onItemQuantiyChange(ev);
+      });
     }
-    collapseItem(item, content, container) {
-        const DURATION = 300;
-        item.querySelector(".chevron-hook").classList.remove("rotate90");
-        this.hideContent(content);
-        setTimeout(() => {
-            const items = [...container.children];
-            const firstRects = items.map(el => el.getBoundingClientRect());
-            item.classList.remove('expanded');
-            requestAnimationFrame(() => {
-                const lastRects = items.map(el => el.getBoundingClientRect());
-                items.forEach((el, i) => {
-                    const dx = firstRects[i].left - lastRects[i].left;
-                    const dy = firstRects[i].top - lastRects[i].top;
-                    el.animate([
-                        { transform: `translate(${dx}px, ${dy}px)` },
-                        { transform: `translate(0,0)` }
-                    ], {
-                        duration: DURATION,
-                        easing: 'ease'
-                    });
-                });
-            });
-        }, DURATION);
+    this.element.querySelectorAll(".dynamic-size").forEach((input) => {
+      this._adjustInputWidth(input);
+      input.addEventListener("input", () => this._adjustInputWidth(input));
+    });
+  }
+  _adjustInputWidth(input) {
+    const span = document.createElement("span");
+    span.style.visibility = "hidden";
+    span.style.whiteSpace = "pre";
+    span.style.position = "absolute";
+    span.style.font = getComputedStyle(input).font;
+    span.textContent = input.value || input.placeholder || "";
+    document.body.appendChild(span);
+    const width = span.offsetWidth + 20;
+    document.body.removeChild(span);
+    input.style.width = `${width}px`;
+  }
+  async _onItemQuantiyChange(ev) {
+    const target = ev.target;
+    const itemDetails = target.closest(".item-hook");
+    const newQuantity = target.valueAsNumber;
+    // Todo: Quantity == 0: Deletion dialog
+    if (newQuantity && newQuantity > 0) {
+      const item = this.actor.items.get(itemDetails.dataset.itemId);
+      item.update({ "system.quantity": newQuantity });
     }
-    revealContent(content) {
-        content.style.height = "0px";
-        content.style.opacity = "0";
-        const fullHeight = content.scrollHeight;
-        requestAnimationFrame(() => {
-            content.style.height = fullHeight + "px";
-            content.style.opacity = "1";
-        });
-        content.addEventListener('transitionend', () => {
-            content.style.height = "auto";
-        }, { once: true });
-    }
-    hideContent(content) {
-        content.style.height = content.scrollHeight + "px";
-        requestAnimationFrame(() => {
-            content.style.height = "0px";
-            content.style.opacity = "0";
-        });
-    }
-    static async _onEmbeddedSkillControl(event, target) {
-        event.preventDefault();
-        // Obtain event data
-        const skillElement = target.closest(".embedded-skill-hook");
-        if (!(skillElement instanceof HTMLDivElement))
-            return;
-        const itemId = skillElement.dataset.itemId;
-        const item = this.actor.items.get(itemId);
-        const skillId = skillElement.dataset.id ?? "";
-        const skill = item.system.embeddedSkills.find((x) => x.id = skillId);
-        // Handle different actions
-        switch (target.dataset.subaction) {
-            case "post":
-                ChatServer.transmitEvent("POST ITEM", { item }, this.actor.chatConfig());
-                break;
-            case "roll":
-                Aux.evalOnEventWith(skill.effect, { parent: item }, skillId);
-                break;
-        }
-    }
-    static async _onSkillControl(event, target) {
-        event.preventDefault();
-        // Obtain event data
-        const skillElement = target.closest(".skill-hook");
-        if (!(skillElement instanceof HTMLDivElement))
-            return;
-        const skillId = skillElement.dataset.itemId;
-        const skill = this.actor.items.get(skillId);
-        // Handle different actions
-        switch (target.dataset.subaction) {
-            case "increase":
-                if (skill.type == "Advantage" || skill.type == "Disadvantage") {
-                    return this.actor.addOrCreateVantage(skill);
-                }
-                return this.actor.skillLevelIncrease(skillId);
-            case "decrease":
-                if (skill.type == "Advantage" || skill.type == "Disadvantage") {
-                    return this.actor.decrementVantage(skill);
-                }
-                return this.actor.skillLevelDecrease(skillId);
-            case "delete":
-                if (skill.type == "Advantage" || skill.type == "Disadvantage") {
-                    return this.actor.deleteVantage(skill);
-                }
-                return this.actor.deleteSkill(skillId);
-            case "post":
-                ChatServer.transmitEvent("POST SKILL", { name: skill.name, type: skill.type, description: skill.system.description }, this.actor.chatConfig());
-                break;
-            case "roll":
-                Hooks.call("onModifierEvent", "onUse", { actor: this.actor, itemId: skillId });
-                if (skill.type == "Medicalskill") {
-                    DialogProficiency.start({
-                        actor: this.actor, actorId: this.actor.id, proficiency: skill.system.basis,
-                        tokenId: this.token?.id, sceneId: game.user.viewedScene
-                    });
-                }
-                else {
-                    let strainChange = await Aux.parseStrainCostStr(skill, this.actor.system.strainLevel);
-                    strainChange = await this.actor.system.applyStrain(strainChange);
-                    const payload = {
-                        action: skill.name, actionType: "skill", actor: this.actor, strainCost: strainChange, actionCost: 0
-                    };
-                    Hooks.call("TheEdgeAction", payload);
-                }
-                break;
-        }
-    }
-    _findAttachableArmour(outerShell) {
-        const bodyTarget = outerShell.system.bodyPart;
-        const size = outerShell.system.attachmentPoints.max;
-        return this.actor.itemTypes["Armour"].filter(armour => {
-            if (armour.system.layer == "Outer")
-                return false;
-            if (armour.system.attachmentPoints.max - armour.system.attachmentPoints.used < size)
-                return false;
-            else if (armour.system.bodyPart.includes(bodyTarget))
-                return true;
-            else if (armour.system.bodyPart == "Entire")
-                return true;
-            else if (armour.system.bodyPart == "Below_Neck" && bodyTarget != "Head")
-                return true;
-            return false;
-        });
-    }
-    // Mixin Related code
-    async updateCounters(counters, context = {}) {
-        await this.document.update({ "system.counters": counters }, { render: false });
-    }
-    ;
-    async onUpdateCounters(_counters, context) {
-        await this.redrawActorCounters(context);
-    }
-    async redrawActorCounters(context) {
-        const template = "systems/the_edge/templates/actors/character/biography/counters.hbs";
-        const html = await renderTemplate(template, { ...context, counters: this.actor.system.counters });
-        const actorCounterElement = this.element.querySelector(".actor-counters-group-hook");
-        actorCounterElement.innerHTML = html;
-        this.attachCounterEffectListeners(actorCounterElement);
-    }
-    // Specific listeners
-    _onRender(context, options) {
-        super._onRender(context, options);
-        if (ui.hotbar.token?.actor?.id == this.actor.id) {
-            ui.hotbar.render(true);
-        }
-        const effectNames = this.element.querySelectorAll(".effect-name-hook");
-        for (const effectName of effectNames) {
-            effectName.addEventListener("change", (ev) => {
-                if (!(ev.target instanceof HTMLInputElement))
-                    return;
-                const effectElement = ev.target.closest(".effect-hook");
-                if (!(effectElement instanceof HTMLElement) || !effectElement.dataset.index)
-                    return;
-                const effects = this.actor.system.effects;
-                effects[effectElement.dataset.index].name = ev.target.value;
-                this.actor.update({ "system.effects": effects }, { render: false });
-            });
-        }
-        const quantityItems = this.element.querySelectorAll(".quantity-input");
-        for (const input of quantityItems) {
-            input.addEventListener("change", (ev) => {
-                this._onItemQuantiyChange(ev);
-            });
-        }
-        this.element.querySelectorAll(".dynamic-size").forEach(input => {
-            this._adjustInputWidth(input);
-            input.addEventListener('input', () => this._adjustInputWidth(input));
-        });
-    }
-    _adjustInputWidth(input) {
-        const span = document.createElement('span');
-        span.style.visibility = 'hidden';
-        span.style.whiteSpace = 'pre';
-        span.style.position = 'absolute';
-        span.style.font = getComputedStyle(input).font;
-        span.textContent = input.value || input.placeholder || '';
-        document.body.appendChild(span);
-        const width = span.offsetWidth + 20;
-        document.body.removeChild(span);
-        input.style.width = `${width}px`;
-    }
-    async _onItemQuantiyChange(ev) {
-        const target = ev.target;
-        const itemDetails = target.closest(".item-hook");
-        const newQuantity = target.valueAsNumber;
-        // Todo: Quantity == 0: Deletion dialog
-        if (newQuantity && newQuantity > 0) {
-            const item = this.actor.items.get(itemDetails.dataset.itemId);
-            item.update({ "system.quantity": newQuantity });
-        }
-    }
-    // Item dropping
-    async _onDropItem(event, data) {
-        const item = (await Item.implementation.fromDropData(data)).toObject();
-        switch (item.type) {
-            case "Weapon":
-            case "Armour":
-            case "Effect":
-                return super._onDropItem(event, data);
-            case "Ammunition":
-            case "Gear":
-            case "Consumables":
-                return this._onDropStackableItem(event, data, item);
-            case "Advantage":
-            case "Disadvantage":
-                this.actor.addOrCreateVantage(item);
-                break;
-            case "Skill":
-            case "Combatskill":
-            case "Medicalskill":
-            case "Languageskill":
-                const createNew = this.actor.learnSkill(item);
-                return createNew ? super._onDropItem(event, data) : undefined;
-            case "Credits":
-                if (item.system.isChid) {
-                    this.actor.update({ "system.credits.chids": this.actor.system.credits.chids + item.system.value });
-                }
-                else
-                    this.actor.update({ "system.credits.digital": this.actor.system.credits.digital + item.system.value });
-                return false;
-        }
-    }
-    _onDropStackableItem(event, data, item) {
-        const existingCopy = this._itemExists(item);
-        if (existingCopy) {
-            existingCopy.update({ "system.quantity": existingCopy.system.quantity + 1 });
-            return existingCopy;
-        }
+  }
+  // Item dropping
+  async _onDropItem(event, data) {
+    const item = (await Item.implementation.fromDropData(data)).toObject();
+    switch (item.type) {
+      case "Weapon":
+      case "Armour":
+      case "Effect":
         return super._onDropItem(event, data);
+      case "Ammunition":
+      case "Gear":
+      case "Consumables":
+        return this._onDropStackableItem(event, data, item);
+      case "Advantage":
+      case "Disadvantage":
+        this.actor.addOrCreateVantage(item);
+        break;
+      case "Skill":
+      case "Combatskill":
+      case "Medicalskill":
+      case "Languageskill":
+        const createNew = this.actor.learnSkill(item);
+        return createNew ? super._onDropItem(event, data) : undefined;
+      case "Credits":
+        if (item.system.isChid) {
+          this.actor.update({
+            "system.credits.chids":
+              this.actor.system.credits.chids + item.system.value,
+          });
+        } else
+          this.actor.update({
+            "system.credits.digital":
+              this.actor.system.credits.digital + item.system.value,
+          });
+        return false;
     }
-    _itemExists(item) {
-        return this.actor.findItem(item);
+  }
+  _onDropStackableItem(event, data, item) {
+    const existingCopy = this._itemExists(item);
+    if (existingCopy) {
+      existingCopy.update({
+        "system.quantity": existingCopy.system.quantity + 1,
+      });
+      return existingCopy;
     }
+    return super._onDropItem(event, data);
+  }
+  _itemExists(item) {
+    return this.actor.findItem(item);
+  }
 }

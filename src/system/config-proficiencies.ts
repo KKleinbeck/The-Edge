@@ -12,12 +12,18 @@ export default class ProficiencyConfig {
           outcome.dir = 0;
           outcome.description = "Object lands exactly at target";
         } else if (ql >= 0) {
-          outcome.distance = 9 - 1.5*ql;
+          outcome.distance = 9 - 1.5 * ql;
           outcome.dir = [0, 1, 2, 3, 4, 5, 6, 7].random();
 
           const dir = [
-            "north", "north east", "east", "south east",
-            "south", "south west", "west", "north west"
+            "north",
+            "north east",
+            "east",
+            "south east",
+            "south",
+            "south west",
+            "west",
+            "north west",
           ][outcome.dir];
           outcome.description = `Object lands ${outcome.distance}m ${dir} of target`;
         } else if (ql >= -5) {

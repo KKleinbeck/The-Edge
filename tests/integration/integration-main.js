@@ -1,10 +1,13 @@
-import ApiHandler from "../api-handler.js"
-import { assert, TestRegistry } from "../test-registry.js"
+import ApiHandler from "../api-handler.js";
+import { assert, TestRegistry } from "../test-registry.js";
 
 /** @param {ApiHandler} apiHandler */
 export default function registerIntegrationTests(apiHandler) {
   async function strainAfterCombatMovement() {
-    const actor = await apiHandler.actorCreate({name: "Test Combat Actor", systemPreset: "10s"});
+    const actor = await apiHandler.actorCreate({
+      name: "Test Combat Actor",
+      systemPreset: "10s",
+    });
     const token = await actor.createToken(true);
 
     const encounter = await apiHandler.encounterStart();
@@ -18,7 +21,11 @@ export default function registerIntegrationTests(apiHandler) {
     await token.delete();
     await encounter.end();
 
-    assert(document.system.strain.value == 9)
+    assert(document.system.strain.value == 9);
   }
-  TestRegistry.registerTest(strainAfterCombatMovement, "Combat Movement Strain", "integration");
+  TestRegistry.registerTest(
+    strainAfterCombatMovement,
+    "Combat Movement Strain",
+    "integration",
+  );
 }

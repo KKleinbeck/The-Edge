@@ -6,19 +6,20 @@
  * @returns {Promise}
  */
 export async function createWorldbuildingMacro(data, slot) {
-    if (!data.roll || !data.label)
-        return false;
-    const command = `const roll = new Roll("${data.roll}", actor ? actor.getRollData() : {});
+  if (!data.roll || !data.label) return false;
+  const command = `const roll = new Roll("${data.roll}", actor ? actor.getRollData() : {});
   roll.toMessage({speaker, flavor: "${data.label}"});`;
-    let macro = game.macros.find(m => (m.name === data.label) && (m.command === command));
-    if (!macro) {
-        macro = await Macro.create({
-            name: data.label,
-            type: "script",
-            command: command,
-            flags: { "the_edge.attrMacro": true }
-        });
-    }
-    game.user.assignHotbarMacro(macro, slot);
-    return false;
+  let macro = game.macros.find(
+    (m) => m.name === data.label && m.command === command,
+  );
+  if (!macro) {
+    macro = await Macro.create({
+      name: data.label,
+      type: "script",
+      command: command,
+      flags: { "the_edge.attrMacro": true },
+    });
+  }
+  game.user.assignHotbarMacro(macro, slot);
+  return false;
 }

@@ -7,11 +7,16 @@ const { renderTemplate } = foundry.applications.handlebars;
 export default class DialogAttribute extends CheckDialog {
   static async start(checkData: IAttributeRollQuery) {
     const template = "systems/the_edge/templates/dialogs/basic-rolls.hbs";
-    const attributeLevel = checkData.actor.system.attributes[checkData.attribute].value;
-    const strainMaxUseReduction = checkData.actor.system.strain.maxUseReduction.status;
+    const attributeLevel =
+      checkData.actor.system.attributes[checkData.attribute].value;
+    const strainMaxUseReduction =
+      checkData.actor.system.strain.maxUseReduction.status;
     const html = await renderTemplate(template, {
-      maxStrain: THE_EDGE.attributesMaxStrain(attributeLevel, strainMaxUseReduction),
-      strainHintType: "Attribute Strain"
+      maxStrain: THE_EDGE.attributesMaxStrain(
+        attributeLevel,
+        strainMaxUseReduction,
+      ),
+      strainHintType: "Attribute Strain",
     });
     const content = document.createElement("div");
     content.innerHTML = html;
@@ -32,22 +37,25 @@ export default class DialogAttribute extends CheckDialog {
         icon: "fa-regular fa-eye-low-vision",
         label: LocalisationServer.localise("Blind Roll", "Dialog"),
       },
-    ]
+    ];
     if (game.user.isGM) {
       buttons.push({
         action: "cheat",
         icon: "",
         label: LocalisationServer.localise("Cheat", "Dialog"),
-      })
+      });
     }
 
     return new DialogAttribute({
       window: {
-        title: LocalisationServer.localise(checkData.attribute, "attr") + " " + game.i18n.localize("CHECK"),
+        title:
+          LocalisationServer.localise(checkData.attribute, "attr") +
+          " " +
+          game.i18n.localize("CHECK"),
       },
       content: content,
       buttons: buttons,
-      position: {width: 300},
+      position: { width: 300 },
       submit: (result: any, dialog: DialogAttribute) => {
         if (result === "cheat") {
           DialogAttribute.cheatCallback(dialog, checkData);
@@ -55,11 +63,15 @@ export default class DialogAttribute extends CheckDialog {
         }
 
         DialogAttribute.rollCallback(dialog, checkData, result);
-      }
-    }).render(true)
+      },
+    }).render(true);
   }
 
-  static async rollCallback(dialog: DialogAttribute, checkData: IAttributeRollQuery, roll: TRollType) {
+  static async rollCallback(
+    dialog: DialogAttribute,
+    checkData: IAttributeRollQuery,
+    roll: TRollType,
+  ) {
     dialog.getSliderValues();
 
     const vantageElement = dialog.element.querySelector(".vantage-hook");
@@ -67,11 +79,11 @@ export default class DialogAttribute extends CheckDialog {
       ui.notifications.error("VantageElement is not of type HTMLSelectElement");
       return;
     }
-    const promptResult: IRollPromptResult = {roll, ...dialog.promptResult};
-    
+    const promptResult: IRollPromptResult = { roll, ...dialog.promptResult };
+
     checkData.attribute = checkData.attribute.toLowerCase();
-    const attributePromptResult: IAttributePromptResult = foundry.utils.mergeObject(
-      checkData, promptResult);
+    const attributePromptResult: IAttributePromptResult =
+      foundry.utils.mergeObject(checkData, promptResult);
     await checkData.actor.system.rollAttributeCheck(attributePromptResult);
 
     const payload: ITheEdgeActionPayload = {
@@ -79,7 +91,7 @@ export default class DialogAttribute extends CheckDialog {
       actor: checkData.actor,
       actionCost: 0,
       strainCost: promptResult.strain,
-    }
+    };
     Hooks.call("TheEdgeAction", payload);
   }
 

@@ -2,7 +2,7 @@ import LocalisationServer from "../system/localisation_server.js";
 import Aux from "../system/auxilliaries.js";
 import THE_EDGE from "../system/config-the-edge.js";
 
-export default function() {
+export default function () {
   Handlebars.registerHelper({
     genName: (a) => LocalisationServer.localise(a),
     actorName: (a) => LocalisationServer.localise(a, "Actor"),
@@ -16,21 +16,23 @@ export default function() {
     tooltipText: (a) => LocalisationServer.localise(a, "tooltip"),
     proficiencyName: (a) => LocalisationServer.localise(a, "proficiency"),
     textLocalisation: (a) => LocalisationServer.localise(a, "text"),
-    detailedLocalisation: (a, b, c) => LocalisationServer.parsedLocalisation(b, a, c),
-    effectRequirementName: (a, b) => LocalisationServer.effectLocalisation(a, b),
+    detailedLocalisation: (a, b, c) =>
+      LocalisationServer.parsedLocalisation(b, a, c),
+    effectRequirementName: (a, b) =>
+      LocalisationServer.effectLocalisation(a, b),
 
-    define: function(options) {
+    define: function (options) {
       const context = Object.assign({}, this, options.hash);
       return options.fn(context);
     },
     range: (from, to, step, options) => {
-      let out = ''
+      let out = "";
       for (let i = from; i <= to; i += step) {
-        out += options.fn(i)
+        out += options.fn(i);
       }
-      return out
+      return out;
     },
-    dumpContext: function(_options) {
+    dumpContext: function (_options) {
       const json = JSON.stringify(this);
       return new Handlebars.SafeString(btoa(json));
     },
@@ -41,48 +43,100 @@ export default function() {
       if (preface == "less") return "< " + distance;
       return "> " + distance;
     },
-    size: (a) => { return a.size; },
-    length: (a) => { return a.length; },
-    objectLength: (a) => { return Object.keys(a).length; },
-    round: (a, b) => { return a.toFixed(b); },
-    strCombine: (a, b) => { return a + " " + b; },
-    toLowerCase: (a) => { return a.toLowerCase(); },
+    size: (a) => {
+      return a.size;
+    },
+    length: (a) => {
+      return a.length;
+    },
+    objectLength: (a) => {
+      return Object.keys(a).length;
+    },
+    round: (a, b) => {
+      return a.toFixed(b);
+    },
+    strCombine: (a, b) => {
+      return a + " " + b;
+    },
+    toLowerCase: (a) => {
+      return a.toLowerCase();
+    },
 
     concat: (...args) => {
       let result = "";
-      args.slice(0, -1).forEach(arg => result = result.concat(arg.toString()) );
+      args
+        .slice(0, -1)
+        .forEach((arg) => (result = result.concat(arg.toString())));
       return result;
     },
-    checkEqual: (a, b) => { return a === b; },
-    checkIn: (a, b) => { return b[a] !== undefined; },
-    checkInstance: (a, b) => { return b.includes(a); },
-    checkNotEmpty: (a) => { if (!a) return false; return a.length !== 0; },
+    checkEqual: (a, b) => {
+      return a === b;
+    },
+    checkIn: (a, b) => {
+      return b[a] !== undefined;
+    },
+    checkInstance: (a, b) => {
+      return b.includes(a);
+    },
+    checkNotEmpty: (a) => {
+      if (!a) return false;
+      return a.length !== 0;
+    },
     checkNotEmptyObject: (a) => {
       if (!a) return false;
       return Object.keys(a).length !== 0;
     },
-    checkNotUndefined: (a) => {return (typeof a !== "undefined");},
-    checkSubtypedItem: (a) => { return (a == "Weapon" || a == "Consumables");},
-    checkST: (a, b) => { return a < b; },
-    checkSET: (a, b) => { return a <= b; },
-    checkGT: (a, b) => { return a > b; },
-    checkGET: (a, b) => { return a >= b; },
-    checkIsEven: (a) => { return a % 2 ==0; },
-    checkAttachment: (a) => { return a.system?.layer === "Outer"; },
-    defaultTo: (a, b) => { if(a) return a; return b; },
-    getSys: (a, b, c, d) => { return a.system[b][c][d]; },
-    getSys5: (a, b, c, d, e) => { return a.system[b][c][d][e]; },
-    getEntry: (a, b) => { return a[b]; },
+    checkNotUndefined: (a) => {
+      return typeof a !== "undefined";
+    },
+    checkSubtypedItem: (a) => {
+      return a == "Weapon" || a == "Consumables";
+    },
+    checkST: (a, b) => {
+      return a < b;
+    },
+    checkSET: (a, b) => {
+      return a <= b;
+    },
+    checkGT: (a, b) => {
+      return a > b;
+    },
+    checkGET: (a, b) => {
+      return a >= b;
+    },
+    checkIsEven: (a) => {
+      return a % 2 == 0;
+    },
+    checkAttachment: (a) => {
+      return a.system?.layer === "Outer";
+    },
+    defaultTo: (a, b) => {
+      if (a) return a;
+      return b;
+    },
+    getSys: (a, b, c, d) => {
+      return a.system[b][c][d];
+    },
+    getSys5: (a, b, c, d, e) => {
+      return a.system[b][c][d][e];
+    },
+    getEntry: (a, b) => {
+      return a[b];
+    },
     getEntries: (a, ...args) => {
       const argsWithoutCall = args.slice(0, -1); // Handlebars adds call to the end
       return argsWithoutCall.reduce(
-        (obj, key) => (obj && obj[key] !== 'undefined') ? obj[key] : undefined,
-        a
+        (obj, key) => (obj && obj[key] !== "undefined" ? obj[key] : undefined),
+        a,
       );
     },
     log: (a) => console.log(a),
-    add: (a, b) => { return +a + +b; },
-    sub: (a, b) => { return a - b; },
+    add: (a, b) => {
+      return +a + +b;
+    },
+    sub: (a, b) => {
+      return a - b;
+    },
     div: (a, b) => {
       if (b == 0) {
         if (a == 0) return 0;
@@ -90,15 +144,27 @@ export default function() {
       }
       return a / b;
     },
-    mul: (a, b) => { return a * b; },
-    and: (a, b) => { return a && b; },
-    or: (a, b) => { return a || b; },
-    capitalise: (a) => { return a.charAt(0).toUpperCase() + a.slice(1); },
-    anyObjectValues: (a) => { return Object.values(a).some(x => x); },
-    storePrice: (a, b) => { return Math.round(a * b / 10) * 10; },
+    mul: (a, b) => {
+      return a * b;
+    },
+    and: (a, b) => {
+      return a && b;
+    },
+    or: (a, b) => {
+      return a || b;
+    },
+    capitalise: (a) => {
+      return a.charAt(0).toUpperCase() + a.slice(1);
+    },
+    anyObjectValues: (a) => {
+      return Object.values(a).some((x) => x);
+    },
+    storePrice: (a, b) => {
+      return Math.round((a * b) / 10) * 10;
+    },
     times: (n, block) => {
       let accum = "";
-      for (let i = 0; i < n; ++ i) accum += block.fn(i);
+      for (let i = 0; i < n; ++i) accum += block.fn(i);
       return accum;
     },
 
@@ -109,10 +175,18 @@ export default function() {
       }
       return effects;
     },
-    getProficiency: (a, b, c, d) => { return a.system.proficiencies[b][c][d]; },
-    getProficiencyDice: (a, b, c, d) => { return a.system.proficiencies[b][c].dice[d]; },
-    getWeaponProficiency: (a, b, c, d) => { return a.system.weapons[b][c][d]; },
-    getWeaponLevel: (actor, weaponType) => { return actor.system.getWeaponLevel(weaponType); },
+    getProficiency: (a, b, c, d) => {
+      return a.system.proficiencies[b][c][d];
+    },
+    getProficiencyDice: (a, b, c, d) => {
+      return a.system.proficiencies[b][c].dice[d];
+    },
+    getWeaponProficiency: (a, b, c, d) => {
+      return a.system.weapons[b][c][d];
+    },
+    getWeaponLevel: (actor, weaponType) => {
+      return actor.system.getWeaponLevel(weaponType);
+    },
     getLoadedAmmunition: (actor, weapon) => {
       if (weapon.system.type == "Hand-to-Hand combat") return "";
       for (const ammu of actor.itemTypes["Ammunition"]) {
@@ -123,14 +197,22 @@ export default function() {
       }
       return "(empty)";
     },
-    calcWeaponPL: (actor, weaponID) => { return actor.system.getWeaponPlOfWeapon(weaponID) },
-    calcCombaticsPL: (actor) => { return actor.system.combaticsPL; },
+    calcWeaponPL: (actor, weaponID) => {
+      return actor.system.getWeaponPlOfWeapon(weaponID);
+    },
+    calcCombaticsPL: (actor) => {
+      return actor.system.combaticsPL;
+    },
     checkRenderItem: (item, type) => {
       if (type !== "any" && item.type !== type) {
         return false;
       } else if (item.type == "Ammunition" && item.system.loaded) {
         return false;
-      } else if (item.type == "Armour" && item.system.layer == "Outer" && item.system.equipped == true) {
+      } else if (
+        item.type == "Armour" &&
+        item.system.layer == "Outer" &&
+        item.system.equipped == true
+      ) {
         return false;
       }
       return true;
@@ -144,26 +226,36 @@ export default function() {
       return false;
     },
     getRangeModifier: (rangeChart, distance) => {
-      if (distance < 2) return `(${rangeChart["less_2m"][0]} / ${rangeChart["less_2m"][1]})`;
-      else if (distance < 10) return `(${rangeChart["less_10m"][0]} / ${rangeChart["less_10m"][1]})`;
-      else if (distance < 25) return `(${rangeChart["less_25m"][0]} / ${rangeChart["less_25m"][1]})`;
-      else if (distance < 100) return `(${rangeChart["less_100m"][0]} / ${rangeChart["less_100m"][1]})`;
+      if (distance < 2)
+        return `(${rangeChart["less_2m"][0]} / ${rangeChart["less_2m"][1]})`;
+      else if (distance < 10)
+        return `(${rangeChart["less_10m"][0]} / ${rangeChart["less_10m"][1]})`;
+      else if (distance < 25)
+        return `(${rangeChart["less_25m"][0]} / ${rangeChart["less_25m"][1]})`;
+      else if (distance < 100)
+        return `(${rangeChart["less_100m"][0]} / ${rangeChart["less_100m"][1]})`;
       return `(${rangeChart["more_100m"][0]} / ${rangeChart["more_100m"][1]})`;
     },
     getSizeModifier: (size) => {
-      return `(${THE_EDGE.sizeModifiers[size][0]} / ${THE_EDGE.sizeModifiers[size][1]})`
+      return `(${THE_EDGE.sizeModifiers[size][0]} / ${THE_EDGE.sizeModifiers[size][1]})`;
     },
-    getAmmunitionCount: (a) => {return `(${a.system.capacity.value} / ${a.system.capacity.max})`},
-    getStructurePoints: (a) => {return `(${a.system.structurePoints})`},
+    getAmmunitionCount: (a) => {
+      return `(${a.system.capacity.value} / ${a.system.capacity.max})`;
+    },
+    getStructurePoints: (a) => {
+      return `(${a.system.structurePoints})`;
+    },
     getAttachmentDetails: (actorId, tokenId, shellId) => {
       const actor = Aux.getActor(actorId, tokenId);
 
       const shell = actor.items.get(shellId);
       return `${shell.name} (${shell.system.structurePoints})`;
     },
-    getDmgModifier: (a) => {return `dmg: ${a.system.damage.bonus} / ${a.system.damage.penetration}`},
+    getDmgModifier: (a) => {
+      return `dmg: ${a.system.damage.bonus} / ${a.system.damage.penetration}`;
+    },
     getNextWeightClass: (weightTillNextOverload) => {
-      return `${Math.floor(10 * weightTillNextOverload)/10}kg ${LocalisationServer.localise("to next level")}`
+      return `${Math.floor(10 * weightTillNextOverload) / 10}kg ${LocalisationServer.localise("to next level")}`;
     },
     getWoundIcon: (status) => {
       switch (status) {
@@ -189,16 +281,16 @@ export default function() {
       return candidate >= range && candidate <= 0;
     },
     hexPoints: (a) => {
-      const d = Math.sqrt(3) * a / 2;
+      const d = (Math.sqrt(3) * a) / 2;
 
       return [
-        `${ a  },${0}`,
-        `${ a/2},${-d}`,
-        `${-a/2},${-d}`,
-        `${-a  },${0}`,
-        `${-a/2},${d}`,
-        `${ a/2},${d}`
-      ].join(' ')
+        `${a},${0}`,
+        `${a / 2},${-d}`,
+        `${-a / 2},${-d}`,
+        `${-a},${0}`,
+        `${-a / 2},${d}`,
+        `${a / 2},${d}`,
+      ].join(" ");
     },
     barTooltip: (value) => {
       if (value >= 11 || value <= -11) {
@@ -212,7 +304,7 @@ export default function() {
       if (value < -11) return -11;
       if (value == 0) return 1;
       if (value == -1) return -2;
-      return value
-    }
-  })
+      return value;
+    },
+  });
 }

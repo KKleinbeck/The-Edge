@@ -4,7 +4,7 @@ const { ArrayField, BooleanField, ObjectField } = foundry.data.fields;
 
 export default class EquipableData extends DataModelComponent {
   declare equipped: boolean;
-  declare effect: IModifier[]
+  declare effect: IModifier[];
 
   static defineSchema(): Record<string, foundryAny> {
     return {
@@ -15,9 +15,11 @@ export default class EquipableData extends DataModelComponent {
 
   async toggleEquipped(): Promise<boolean> {
     const newValue = !this.equipped;
-    await this.parent.update({"system.equipped": newValue});
+    await this.parent.update({ "system.equipped": newValue });
     return newValue;
   }
 
-  get modifiers(): IModifier[] { return this.effect; }
+  get modifiers(): IModifier[] {
+    return this.effect;
+  }
 }

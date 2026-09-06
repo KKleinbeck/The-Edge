@@ -1,36 +1,67 @@
-{{!-- 
+{{! 
 Interface:
 - skills: The embedded skills to display
 - editable (default = false): Whether counter name, value and max are editable
 - title (default = ""): Displayed text on the top row
- --}}
+ }}
 {{#define editable=(or editable false)}}
-<div class="embedded-skills-context-hook" data-title="{{title}}" data-editable="{{editable}}">
-  <div style="display: flex; justify-content: space-between; padding-bottom: 2px;">
-    <div style="white-space: nowrap;">{{title}}</div>
-    <a title="{{ itemName 'Create' }}" data-action="embeddedSkillCreate"
-      style="display: flex; width: 100%; justify-content: end; align-items: end; gap: 10px; padding-bottom: 7px;">
-      {{ itemName "Add" }}<i class="fas fa-plus"></i>
-    </a>
-  </div>
-  {{#each skills as |skill|}}
-    <div class="embedded-skill-hook" data-index="{{@index}}"
-      style="display: flex; gap: 12px; align-items: center; padding-bottom: 7px;">
-      <input class="embedded-skills-name-hook" type="text" value="{{skill.name}}"/>
-
-      <div style="display: flex; gap: 5px;">
-        <a data-action="embeddedSkillControl" data-subaction="use" data-tooltip aria-label="{{ genName 'use' }}">
-          <i class="fal fa-dice-d20"></i>
-        </a>
-        <a data-action="embeddedSkillControl" data-subaction="edit" data-tooltip aria-label="{{ genName 'edit' }}">
-          <i class="fa-regular fa-pen-to-square"></i>
-        </a>
-      </div>
-
-      <a data-action="embeddedSkillControl" data-subaction="delete" data-tooltip aria-label="{{ genName 'delete' }}">
-        <i class="fas fa-trash"></i>
+  <div
+    class="embedded-skills-context-hook"
+    data-title="{{title}}"
+    data-editable="{{editable}}"
+  >
+    <div
+      style="display: flex; justify-content: space-between; padding-bottom: 2px;"
+    >
+      <div style="white-space: nowrap;">{{title}}</div>
+      <a
+        title="{{itemName 'Create'}}"
+        data-action="embeddedSkillCreate"
+        style="display: flex; width: 100%; justify-content: end; align-items: end; gap: 10px; padding-bottom: 7px;"
+      >
+        {{itemName "Add"}}<i class="fas fa-plus"></i>
       </a>
     </div>
-  {{/each}}
-</div>
+    {{#each skills as |skill|}}
+      <div
+        class="embedded-skill-hook"
+        data-index="{{@index}}"
+        style="display: flex; gap: 12px; align-items: center; padding-bottom: 7px;"
+      >
+        <input
+          class="embedded-skills-name-hook"
+          type="text"
+          value="{{skill.name}}"
+        />
+
+        <div style="display: flex; gap: 5px;">
+          <a
+            data-action="embeddedSkillControl"
+            data-subaction="use"
+            data-tooltip
+            aria-label="{{genName 'use'}}"
+          >
+            <i class="fal fa-dice-d20"></i>
+          </a>
+          <a
+            data-action="embeddedSkillControl"
+            data-subaction="edit"
+            data-tooltip
+            aria-label="{{genName 'edit'}}"
+          >
+            <i class="fa-regular fa-pen-to-square"></i>
+          </a>
+        </div>
+
+        <a
+          data-action="embeddedSkillControl"
+          data-subaction="delete"
+          data-tooltip
+          aria-label="{{genName 'delete'}}"
+        >
+          <i class="fas fa-trash"></i>
+        </a>
+      </div>
+    {{/each}}
+  </div>
 {{/define}}

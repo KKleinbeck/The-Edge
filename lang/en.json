@@ -8,7 +8,7 @@
     "BELOW_NECK": "Below neck",
     "HEAD": "Head",
     "ENTIRE": "Entire"
-  }, 
+  },
   "ATTR": {
     "END": "Endurance",
     "STR": "Strength",
@@ -105,7 +105,7 @@
     "ABSORPTION": "Absorption",
     "ARMOUR PENETRATION": "Armour penetration",
     "THRESHOLD": "Threshold",
-    
+
     "DAMAGE MODIFIERS": "Damage Modifiers",
     "ENERGY": "Energy",
     "KINETIC": "Kinetic",
@@ -154,7 +154,7 @@
     "HALF COVER": "half cover",
     "THREE QUARTERS": "three quarters",
     "FULL COVER": "full cover",
-    
+
     "FIRE MODES": "Fire modes",
     "AUTOMATIC": "Automatic",
     "BURST": "Burst",
@@ -176,7 +176,7 @@
     "SHOTS": "Shots",
     "AIMED": "Aimed",
     "UNAIMED": "Unaimed",
-    
+
     "ATTACK": "Roll Attack",
     "FIRE SELECTION": "Fire selection",
     "LOADOUT": "Loadout",
@@ -442,7 +442,7 @@
     "WRONG STRAIN COST STRING": "Something wrong with the strain cost of skill {skillName}. It has to be either one or five numbers, separated by '/'.",
 
     "EFFECT ALREADY EXISTS": "An effect for this item already exists. Rename or delete previous effect.",
-    
+
     "NO ATTACHABLE ARMOUR": "There is no armour avaible to which this can be attached to.",
     "MISSING ATTACHMENT POINTS": "Cannot attach to this armour. It has {available} attachment points left, but {needed} are needed.",
 
@@ -502,13 +502,13 @@
     "MENTAL FORTITUDE": "Mental Fortitude",
     "LOGIC & MATHS": "Logic & Maths",
     "MEMORY": "Memory",
-    "EXPLOSIVES" : "Explosives",
-    "ELECTRONICS" : "Electronics",
-    "COMPUTER SYSTEMS" : "Computer systems",
-    "MECHANICAL" : "Mechanical",
-    "BOTS AND MECHS" : "Bots and Mechs",
-    "CHEMICALS" : "Chemicals",
-    "WEAPONS" : "Weapons",
+    "EXPLOSIVES": "Explosives",
+    "ELECTRONICS": "Electronics",
+    "COMPUTER SYSTEMS": "Computer systems",
+    "MECHANICAL": "Mechanical",
+    "BOTS AND MECHS": "Bots and Mechs",
+    "CHEMICALS": "Chemicals",
+    "WEAPONS": "Weapons",
     "HUMAN CULTURES": "Human cultures",
     "ALIEN CULTURES": "Alien cultures",
     "OUTLAWS' CUSTOMS": "Outlaws' customs",

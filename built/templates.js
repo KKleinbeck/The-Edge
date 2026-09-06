@@ -1,76 +1,76 @@
 export const REPLACEMENTS = {
-    "range-chart": "systems/the_edge/templates/generic/range-chart.hbs",
-    "slider": "systems/the_edge/templates/generic/slider.hbs",
+  "range-chart": "systems/the_edge/templates/generic/range-chart.hbs",
+  slider: "systems/the_edge/templates/generic/slider.hbs",
 };
 export const preloadHandlebarsTemplates = async function () {
-    // Define template paths to load
-    const templatePaths = [
-        // Actor templates
-        // Generics
-        "systems/the_edge/templates/actors/skills.hbs",
-        // Attributes
-        "systems/the_edge/templates/actors/character/attributes/conditioning.hbs",
-        "systems/the_edge/templates/actors/character/attributes/embedded-skills.hbs",
-        "systems/the_edge/templates/actors/character/attributes/languages.hbs",
-        "systems/the_edge/templates/actors/character/attributes/layout.hbs",
-        "systems/the_edge/templates/actors/character/attributes/main_attributes.hbs",
-        "systems/the_edge/templates/actors/character/attributes/progress.hbs",
-        // Biography
-        "systems/the_edge/templates/actors/character/biography/counters.hbs",
-        // Proficiencies
-        "systems/the_edge/templates/actors/character/proficiencies/layout.hbs",
-        // Combat
-        "systems/the_edge/templates/actors/character/combat/layout.hbs",
-        "systems/the_edge/templates/actors/character/combat/proficiencies.hbs",
-        "systems/the_edge/templates/actors/character/combat/weapon_overview.hbs",
-        // Health
-        "systems/the_edge/templates/actors/character/health.hbs",
-        "systems/the_edge/templates/actors/character/health/effects.hbs",
-        "systems/the_edge/templates/actors/character/health/effect-list.hbs",
-        "systems/the_edge/templates/actors/character/health/wounds.hbs",
-        // Others
-        "systems/the_edge/templates/actors/character/items.hbs",
-        "systems/the_edge/templates/actors/character/biography.hbs",
-        // Store templates
-        "systems/the_edge/templates/actors/store/buy-from-player.hbs",
-        "systems/the_edge/templates/actors/store/meta-ammunition.hbs",
-        "systems/the_edge/templates/actors/store/meta-armour.hbs",
-        "systems/the_edge/templates/actors/store/meta-buy-or-retrieve.hbs",
-        "systems/the_edge/templates/actors/store/meta-consumables.hbs",
-        "systems/the_edge/templates/actors/store/meta-item-header.hbs",
-        "systems/the_edge/templates/actors/store/meta-item.hbs",
-        "systems/the_edge/templates/actors/store/meta-sell-or-store.hbs",
-        "systems/the_edge/templates/actors/store/meta-weapon.hbs",
-        // Item templates
-        "systems/the_edge/templates/items/Ammunition-details-content.hbs",
-        "systems/the_edge/templates/items/Grenade-effects-content.hbs",
-        "systems/the_edge/templates/items/meta-counters.hbs",
-        "systems/the_edge/templates/items/meta-effects.hbs",
-        "systems/the_edge/templates/items/meta-embedded-skills.hbs",
-        // Chat templates
-        "systems/the_edge/templates/chat/items/meta-effects.hbs",
-        "systems/the_edge/templates/chat/meta-damage.hbs",
-        "systems/the_edge/templates/chat/meta-apply-damage.hbs",
-        "systems/the_edge/templates/chat/meta-protection-log.hbs",
-        // Dialogs
-        "systems/the_edge/templates/dialogs/meta-chat-options.html",
-        // Hotbar
-        "systems/the_edge/templates/applications/hotbar/dynamic-field.hbs",
-        "systems/the_edge/templates/applications/hotbar/counter.hbs",
-        "systems/the_edge/templates/applications/hotbar/health.hbs",
-        "systems/the_edge/templates/applications/hotbar/item.hbs",
-        "systems/the_edge/templates/applications/hotbar/proficiency.hbs",
-        "systems/the_edge/templates/applications/hotbar/weapon.hbs",
-        // Sidebar
-        "systems/the_edge/templates/sidebar/combat/combat_log.hbs",
-        // Generic templates
-        "systems/the_edge/templates/generic/counter-token.hbs",
-        "systems/the_edge/templates/generic/effect-modifiers.hbs",
-        "systems/the_edge/templates/generic/icon-selector.hbs",
-        "systems/the_edge/templates/generic/progress-bar-modern.hbs",
-        "systems/the_edge/templates/generic/range-chart.hbs",
-        "systems/the_edge/templates/generic/slider.hbs",
-    ];
-    // Load the template parts
-    return foundry.applications.handlebars.loadTemplates(templatePaths);
+  // Define template paths to load
+  const templatePaths = [
+    // Actor templates
+    // Generics
+    "systems/the_edge/templates/actors/skills.hbs",
+    // Attributes
+    "systems/the_edge/templates/actors/character/attributes/conditioning.hbs",
+    "systems/the_edge/templates/actors/character/attributes/embedded-skills.hbs",
+    "systems/the_edge/templates/actors/character/attributes/languages.hbs",
+    "systems/the_edge/templates/actors/character/attributes/layout.hbs",
+    "systems/the_edge/templates/actors/character/attributes/main_attributes.hbs",
+    "systems/the_edge/templates/actors/character/attributes/progress.hbs",
+    // Biography
+    "systems/the_edge/templates/actors/character/biography/counters.hbs",
+    // Proficiencies
+    "systems/the_edge/templates/actors/character/proficiencies/layout.hbs",
+    // Combat
+    "systems/the_edge/templates/actors/character/combat/layout.hbs",
+    "systems/the_edge/templates/actors/character/combat/proficiencies.hbs",
+    "systems/the_edge/templates/actors/character/combat/weapon_overview.hbs",
+    // Health
+    "systems/the_edge/templates/actors/character/health.hbs",
+    "systems/the_edge/templates/actors/character/health/effects.hbs",
+    "systems/the_edge/templates/actors/character/health/effect-list.hbs",
+    "systems/the_edge/templates/actors/character/health/wounds.hbs",
+    // Others
+    "systems/the_edge/templates/actors/character/items.hbs",
+    "systems/the_edge/templates/actors/character/biography.hbs",
+    // Store templates
+    "systems/the_edge/templates/actors/store/buy-from-player.hbs",
+    "systems/the_edge/templates/actors/store/meta-ammunition.hbs",
+    "systems/the_edge/templates/actors/store/meta-armour.hbs",
+    "systems/the_edge/templates/actors/store/meta-buy-or-retrieve.hbs",
+    "systems/the_edge/templates/actors/store/meta-consumables.hbs",
+    "systems/the_edge/templates/actors/store/meta-item-header.hbs",
+    "systems/the_edge/templates/actors/store/meta-item.hbs",
+    "systems/the_edge/templates/actors/store/meta-sell-or-store.hbs",
+    "systems/the_edge/templates/actors/store/meta-weapon.hbs",
+    // Item templates
+    "systems/the_edge/templates/items/Ammunition-details-content.hbs",
+    "systems/the_edge/templates/items/Grenade-effects-content.hbs",
+    "systems/the_edge/templates/items/meta-counters.hbs",
+    "systems/the_edge/templates/items/meta-effects.hbs",
+    "systems/the_edge/templates/items/meta-embedded-skills.hbs",
+    // Chat templates
+    "systems/the_edge/templates/chat/items/meta-effects.hbs",
+    "systems/the_edge/templates/chat/meta-damage.hbs",
+    "systems/the_edge/templates/chat/meta-apply-damage.hbs",
+    "systems/the_edge/templates/chat/meta-protection-log.hbs",
+    // Dialogs
+    "systems/the_edge/templates/dialogs/meta-chat-options.html",
+    // Hotbar
+    "systems/the_edge/templates/applications/hotbar/dynamic-field.hbs",
+    "systems/the_edge/templates/applications/hotbar/counter.hbs",
+    "systems/the_edge/templates/applications/hotbar/health.hbs",
+    "systems/the_edge/templates/applications/hotbar/item.hbs",
+    "systems/the_edge/templates/applications/hotbar/proficiency.hbs",
+    "systems/the_edge/templates/applications/hotbar/weapon.hbs",
+    // Sidebar
+    "systems/the_edge/templates/sidebar/combat/combat_log.hbs",
+    // Generic templates
+    "systems/the_edge/templates/generic/counter-token.hbs",
+    "systems/the_edge/templates/generic/effect-modifiers.hbs",
+    "systems/the_edge/templates/generic/icon-selector.hbs",
+    "systems/the_edge/templates/generic/progress-bar-modern.hbs",
+    "systems/the_edge/templates/generic/range-chart.hbs",
+    "systems/the_edge/templates/generic/slider.hbs",
+  ];
+  // Load the template parts
+  return foundry.applications.handlebars.loadTemplates(templatePaths);
 };

@@ -4,75 +4,83 @@ import ValueSchemaField from "../../Fields/value_schema.js";
 import { DataModelComponent } from "../../abstracts.js";
 const { NumberField, SchemaField } = foundry.data.fields;
 function ATTR_FIELD() {
-    return new ValueSchemaField({
-        status: new NumberField({ initial: 0 }),
-        advances: new NumberField({ initial: 0 }),
-    });
+  return new ValueSchemaField({
+    status: new NumberField({ initial: 0 }),
+    advances: new NumberField({ initial: 0 }),
+  });
 }
 export default class AttributeData extends DataModelComponent {
-    static defineSchema() {
-        return {
-            attributes: new SchemaField({
-                end: ATTR_FIELD(),
-                str: ATTR_FIELD(),
-                spd: ATTR_FIELD(),
-                crd: ATTR_FIELD(),
-                cha: ATTR_FIELD(),
-                emp: ATTR_FIELD(),
-                foc: ATTR_FIELD(),
-                res: ATTR_FIELD(),
-                int: ATTR_FIELD(),
-            }),
-        };
+  static defineSchema() {
+    return {
+      attributes: new SchemaField({
+        end: ATTR_FIELD(),
+        str: ATTR_FIELD(),
+        spd: ATTR_FIELD(),
+        crd: ATTR_FIELD(),
+        cha: ATTR_FIELD(),
+        emp: ATTR_FIELD(),
+        foc: ATTR_FIELD(),
+        res: ATTR_FIELD(),
+        int: ATTR_FIELD(),
+      }),
+    };
+  }
+  get combaticsDamage() {
+    const { crd, str } = this.attributes;
+    return `1d${str.value + crd.value}+${str.value}`;
+  }
+  get attributeDiceParameters() {
+    // Placeholder
+    return {
+      critDice: [1],
+      critBonus: 2,
+      critDieBonus: 0,
+      critFailDice: [20],
+      critFailMalus: -2,
+      critFailDieMalus: 0,
+      critFailEvents: [],
+      qualityStep: 2,
+    };
+  }
+  async rollAttributeCheck(promptResult, transmit = true) {
+    const diceServerConfig = {
+      ...this.attributeDiceParameters,
+      modifier: promptResult.modifier + promptResult.strain,
+      threshold: this.attributes[promptResult.attribute].value,
+      vantage: promptResult.vantage,
+    };
+    Hooks.call("onModifierEvent", "rollAttributeCheck-Prior", {
+      actor: this.parent,
+      promptResult,
+    });
+    const rollResult = await DiceServer.attributeCheck(diceServerConfig);
+    Hooks.call("onModifierEvent", "rollAttributeCheck-Posterior", {
+      actor: this.parent,
+      promptResult,
+      rollResult,
+    });
+    this.applyStrain(promptResult.strain);
+    if (transmit) {
+      const details = {
+        ...rollResult,
+        attribute: promptResult.attribute,
+        attributeValue: this.attributes[promptResult.attribute].value,
+        diceServerConfig: diceServerConfig,
+        effectiveThreshold: rollResult.effectiveThreshold,
+        modifier: promptResult.modifier,
+        strain: promptResult.strain,
+        vantage: promptResult.vantage,
+      };
+      const chatConfig = {
+        roll: promptResult.roll,
+        speaker: {
+          actor: promptResult.actorId,
+          scene: promptResult.sceneId,
+          token: promptResult.tokenId,
+        },
+      };
+      ChatServer.transmitEvent("ATTRIBUTE CHECK", details, chatConfig);
     }
-    get combaticsDamage() {
-        const { crd, str } = this.attributes;
-        return `1d${str.value + crd.value}+${str.value}`;
-    }
-    get attributeDiceParameters() {
-        return {
-            critDice: [1],
-            critBonus: 2,
-            critDieBonus: 0,
-            critFailDice: [20],
-            critFailMalus: -2,
-            critFailDieMalus: 0,
-            critFailEvents: [],
-            qualityStep: 2
-        };
-    }
-    async rollAttributeCheck(promptResult, transmit = true) {
-        const diceServerConfig = {
-            ...this.attributeDiceParameters,
-            modifier: promptResult.modifier + promptResult.strain,
-            threshold: this.attributes[promptResult.attribute].value,
-            vantage: promptResult.vantage
-        };
-        Hooks.call("onModifierEvent", "rollAttributeCheck-Prior", { actor: this.parent, promptResult });
-        const rollResult = await DiceServer.attributeCheck(diceServerConfig);
-        Hooks.call("onModifierEvent", "rollAttributeCheck-Posterior", { actor: this.parent, promptResult, rollResult });
-        this.applyStrain(promptResult.strain);
-        if (transmit) {
-            const details = {
-                ...rollResult,
-                attribute: promptResult.attribute,
-                attributeValue: this.attributes[promptResult.attribute].value,
-                diceServerConfig: diceServerConfig,
-                effectiveThreshold: rollResult.effectiveThreshold,
-                modifier: promptResult.modifier,
-                strain: promptResult.strain,
-                vantage: promptResult.vantage
-            };
-            const chatConfig = {
-                roll: promptResult.roll,
-                speaker: {
-                    actor: promptResult.actorId,
-                    scene: promptResult.sceneId,
-                    token: promptResult.tokenId
-                }
-            };
-            ChatServer.transmitEvent("ATTRIBUTE CHECK", details, chatConfig);
-        }
-        return rollResult;
-    }
+    return rollResult;
+  }
 }

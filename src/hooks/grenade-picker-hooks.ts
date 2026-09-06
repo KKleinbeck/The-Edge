@@ -1,7 +1,7 @@
 import GrenadePicker from "../applications/grenades-picker.js";
 
 export default function grenadePickerHooks() {
-  Hooks.on("ready", function() {
+  Hooks.on("ready", function () {
     _setupGrenadePicker();
 
     // Redraw the hotbar to a sensible actor
@@ -9,11 +9,14 @@ export default function grenadePickerHooks() {
     ui.hotbar.render(true);
   });
 
-  Hooks.on("renderTokenHUD", function(_tokenHUG) { _preventGrenadePick() });
+  Hooks.on("renderTokenHUD", function (_tokenHUG) {
+    _preventGrenadePick();
+  });
 
-  Hooks.on("closeBasePlaceableHUD", function(_tokenHUD) { _preventGrenadePick() });
+  Hooks.on("closeBasePlaceableHUD", function (_tokenHUD) {
+    _preventGrenadePick();
+  });
 }
-
 
 function _setupGrenadePicker() {
   let rightClickStart: number | null = null;
@@ -21,18 +24,18 @@ function _setupGrenadePicker() {
   let gp: GrenadePicker | null = null;
   // TODO: make user controllable options
   const maxClickDuration = 300; // ms
-  const maxMoveDistance = 5;    // px
+  const maxMoveDistance = 5; // px
 
-  canvas.app.view.addEventListener("mousedown", e => {
+  canvas.app.view.addEventListener("mousedown", (e) => {
     if (e.button === 2) {
       rightClickStart = Date.now();
       startPos = { x: e.clientX, y: e.clientY };
     }
   });
 
-  canvas.app.view.addEventListener("mouseup", e => {
+  canvas.app.view.addEventListener("mouseup", (e) => {
     if (e.button === 2 && rightClickStart) {
-      if(Date.now() - game.the_edge.tokenClickTime < maxClickDuration) {
+      if (Date.now() - game.the_edge.tokenClickTime < maxClickDuration) {
         rightClickStart = null;
         return;
       }
@@ -46,8 +49,8 @@ function _setupGrenadePicker() {
       if (duration < maxClickDuration && distance < maxMoveDistance) {
         if (gp) gp.close();
         gp = new GrenadePicker({
-          position: {left: e.clientX, top: e.clientY},
-          mousePosition: canvas.mousePosition
+          position: { left: e.clientX, top: e.clientY },
+          mousePosition: canvas.mousePosition,
         });
         if (gp.hasContent()) {
           gp.render(true);
@@ -59,5 +62,6 @@ function _setupGrenadePicker() {
   });
 }
 
-
-function _preventGrenadePick() { game.the_edge.tokenClickTime = Date.now(); }
+function _preventGrenadePick() {
+  game.the_edge.tokenClickTime = Date.now();
+}

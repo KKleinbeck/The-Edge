@@ -1,5 +1,5 @@
 <h3>{{item.name}} - {{itemName "grenade"}}</h3>
-{{!-- Damage --}}
+{{! Damage }}
 <table class="grenade">
   <tr>
     <td></td>
@@ -25,30 +25,37 @@
     </td>
   </tr>
 </table>
-{{!-- Effects --}}
+{{! Effects }}
 {{#each item.system.subtypes.grenade.effects as |effectGroups category|}}
   {{#unless (checkEqual category "smoke")}}
-  {{#if effectGroups.active}}
-    <h5 style="margin: 12px 0 8px 0;">{{combatName category}}</h5>
-    {{#each effectGroups as |effects distance|}}
-      {{#unless (checkEqual distance "active")}}
-      {{#if (checkNotEmpty effects)}}
-      <div class="effect-data" data-category="{{category}}" data-distance="{{distance}}">
-        <b>{{combatName distance}}</b>
-        {{#each effects as |effect|}}
-          <div class="item-columned-page" style="align-items: center; padding-left: 10px;">
-            {{genName effect.group}}
-            {{effectRequirementName effect.name effect.group}}
-            <div class="output" style="width: 45px; text-align: right;">
-              {{effect.value}}
+    {{#if effectGroups.active}}
+      <h5 style="margin: 12px 0 8px 0;">{{combatName category}}</h5>
+      {{#each effectGroups as |effects distance|}}
+        {{#unless (checkEqual distance "active")}}
+          {{#if (checkNotEmpty effects)}}
+            <div
+              class="effect-data"
+              data-category="{{category}}"
+              data-distance="{{distance}}"
+            >
+              <b>{{combatName distance}}</b>
+              {{#each effects as |effect|}}
+                <div
+                  class="item-columned-page"
+                  style="align-items: center; padding-left: 10px;"
+                >
+                  {{genName effect.group}}
+                  {{effectRequirementName effect.name effect.group}}
+                  <div class="output" style="width: 45px; text-align: right;">
+                    {{effect.value}}
+                  </div>
+                </div>
+              {{/each}}
             </div>
-          </div>
-        {{/each}}
-      </div>
-      {{/if}}
-      {{/unless}}
-    {{/each}}
-  {{/if}}
+          {{/if}}
+        {{/unless}}
+      {{/each}}
+    {{/if}}
   {{/unless}}
 {{/each}}
 {{#if (checkNotEmpty item.system.description)}}

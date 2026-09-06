@@ -1,3 +1,5 @@
-declare class TheEdgeActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
+declare class TheEdgeActorSheet extends HandlebarsApplicationMixin(
+  ActorSheetV2,
+) {
   public effectIsExpanded: any;
 }

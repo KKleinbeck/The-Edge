@@ -10,9 +10,7 @@
       "flags": {}
     }
   ],
-  "esmodules": [
-    "built/the_edge.js"
-  ],
+  "esmodules": ["built/the_edge.js"],
   "styles": [
     "styles/dialogs.css",
     "styles/root.css",
@@ -39,17 +37,17 @@
       "Store": {}
     },
     "Item": {
-      "Advantage": {"htmlFields": ["description"]},
-      "Ammunition": {"htmlFields": ["description"]},
-      "Armour": {"htmlFields": ["description"]},
-      "Consumables": {"htmlFields": ["description"]},
-      "Combatskill": {"htmlFields": ["description"]},
-      "Disadvantage": {"htmlFields": ["description"]},
-      "Gear": {"htmlFields": ["description"]},
-      "Languageskill": {"htmlFields": ["description"]},
-      "Medicalskill": {"htmlFields": ["description"]},
-      "Skill": {"htmlFields": ["description"]},
-      "Weapon": {"htmlFields": ["description"]}
+      "Advantage": { "htmlFields": ["description"] },
+      "Ammunition": { "htmlFields": ["description"] },
+      "Armour": { "htmlFields": ["description"] },
+      "Consumables": { "htmlFields": ["description"] },
+      "Combatskill": { "htmlFields": ["description"] },
+      "Disadvantage": { "htmlFields": ["description"] },
+      "Gear": { "htmlFields": ["description"] },
+      "Languageskill": { "htmlFields": ["description"] },
+      "Medicalskill": { "htmlFields": ["description"] },
+      "Skill": { "htmlFields": ["description"] },
+      "Weapon": { "htmlFields": ["description"] }
     }
   },
   "grid": {

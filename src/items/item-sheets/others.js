@@ -7,33 +7,38 @@ import { TheEdgeItemSheet } from "../item-sheet.js";
 
 const { renderTemplate } = foundry.applications.handlebars;
 
-export class ItemSheetAmmunition extends RangeChartSelectorMixin(TheEdgeItemSheet) {
-  static PARTS = {...TheEdgeItemSheet.PARTS,
+export class ItemSheetAmmunition extends RangeChartSelectorMixin(
+  TheEdgeItemSheet,
+) {
+  static PARTS = {
+    ...TheEdgeItemSheet.PARTS,
     form: {
-      template: `systems/the_edge/templates/items/Ammunition-header.hbs`
+      template: `systems/the_edge/templates/items/Ammunition-header.hbs`,
     },
     details: {
-      template: "systems/the_edge/templates/items/Ammunition-details.hbs"
+      template: "systems/the_edge/templates/items/Ammunition-details.hbs",
     },
-  }
+  };
 
   static TABS = {
     primary: {
-      tabs: [
-        {id: "details"}, {id: "description"},
-      ],
+      tabs: [{ id: "details" }, { id: "description" }],
       labelPrefix: "TABS",
       initial: "details",
-    }
-  }
+    },
+  };
 
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
-    context.designatedWeaponsHTML = context.item.system.designatedWeapons
+    context.designatedWeaponsHTML = context.item.system.designatedWeapons;
     context.types = this._setTypesDict();
     context.subtypes = this._setSubtypesDict();
-    context.subtypeIsArbitrary = !THE_EDGE.ammunitionSubtypes.includes(this.item.system.subtype);
-    context.dynamicSubtype = context.subtypeIsArbitrary ? this.item.system.subtype : "";
+    context.subtypeIsArbitrary = !THE_EDGE.ammunitionSubtypes.includes(
+      this.item.system.subtype,
+    );
+    context.dynamicSubtype = context.subtypeIsArbitrary
+      ? this.item.system.subtype
+      : "";
     return context;
   }
 
@@ -42,8 +47,8 @@ export class ItemSheetAmmunition extends RangeChartSelectorMixin(TheEdgeItemShee
     for (const type of ["energy", "kinetic"]) {
       types[type] = {
         icon: `systems/the_edge/icons/ammunition/${type}.png`,
-        selected: type==this.item.system.type
-      }
+        selected: type == this.item.system.type,
+      };
     }
     return types;
   }
@@ -53,12 +58,12 @@ export class ItemSheetAmmunition extends RangeChartSelectorMixin(TheEdgeItemShee
     for (const type of THE_EDGE.ammunitionSubtypes) {
       subtypes[type] = {
         icon: `systems/the_edge/icons/ammunition/${type}.png`,
-        selected: type==this.item.system.subtype
-      }
+        selected: type == this.item.system.subtype,
+      };
     }
     return subtypes;
   }
-  
+
   async onIconSelected(iconType, value) {
     switch (iconType) {
       case "type":
@@ -66,88 +71,96 @@ export class ItemSheetAmmunition extends RangeChartSelectorMixin(TheEdgeItemShee
         this.updateIcons(iconType, this._setTypesDict());
         this._renderDetails();
         break;
-      
+
       case "subtype":
         this.item.system.subtype = value;
         this.updateIcons(
-          iconType, this._setSubtypesDict(),
-          THE_EDGE.ammunitionSubtypes.includes(value) ? "" : value
+          iconType,
+          this._setSubtypesDict(),
+          THE_EDGE.ammunitionSubtypes.includes(value) ? "" : value,
         );
         break;
     }
-    await this.item.update({[`system.${iconType}`]: value}, {render: false});
+    await this.item.update(
+      { [`system.${iconType}`]: value },
+      { render: false },
+    );
   }
 
   async _renderDetails() {
-    const template = "systems/the_edge/templates/items/Ammunition-details-content.hbs";
-    const html = await renderTemplate(
-      template, await this._prepareContext()
-    );
+    const template =
+      "systems/the_edge/templates/items/Ammunition-details-content.hbs";
+    const html = await renderTemplate(template, await this._prepareContext());
 
-    const ammunitionDetailsHTML = this.element.querySelector(".ammunition-details");
+    const ammunitionDetailsHTML = this.element.querySelector(
+      ".ammunition-details",
+    );
     ammunitionDetailsHTML.innerHTML = html;
   }
 }
 
 export class ItemSheetArmour extends TheEdgeItemSheet {
-  static DEFAULT_OPTIONS = {...TheEdgeItemSheet.DEFAULT_OPTIONS,
+  static DEFAULT_OPTIONS = {
+    ...TheEdgeItemSheet.DEFAULT_OPTIONS,
     actions: {
       ...TheEdgeItemSheet.DEFAULT_OPTIONS.actions,
       detachAttachment: ItemSheetArmour._detachAttachment,
       editAttachment: ItemSheetArmour._editAttachment,
-    }
-  }
+    },
+  };
 
-  static PARTS = {...TheEdgeItemSheet.PARTS,
+  static PARTS = {
+    ...TheEdgeItemSheet.PARTS,
     form: {
-      template: `systems/the_edge/templates/items/Armour-header.hbs`
+      template: `systems/the_edge/templates/items/Armour-header.hbs`,
     },
     effects: {
-      template: "systems/the_edge/templates/items/meta-effects.hbs"
-    }, 
+      template: "systems/the_edge/templates/items/meta-effects.hbs",
+    },
     details: {
-      template: "systems/the_edge/templates/items/Armour-details.hbs"
+      template: "systems/the_edge/templates/items/Armour-details.hbs",
     },
     attachments: {
-      template: "systems/the_edge/templates/items/meta-attachments.hbs"
-    }
-  }
+      template: "systems/the_edge/templates/items/meta-attachments.hbs",
+    },
+  };
 
   static TABS = {
     primary: {
-      tabs: [
-        {id: "effects"}, {id: "details"}, {id: "description"},
-      ],
+      tabs: [{ id: "effects" }, { id: "details" }, { id: "description" }],
       labelPrefix: "TABS",
       initial: "details",
     },
-  }
+  };
 
   async _prepareContext(options) {
-    if (this.item.system.attachments.length && this.item.system.layer == "Inner") {
-      this.constructor.TABS.primary.tabs.push({id: "attachments"})
+    if (
+      this.item.system.attachments.length &&
+      this.item.system.layer == "Inner"
+    ) {
+      this.constructor.TABS.primary.tabs.push({ id: "attachments" });
     } else {
       this.constructor.TABS.primary.tabs =
-        this.constructor.TABS.primary.tabs.filter(x => x.id != "attachments");
-      if (this.tabGroups.primary == "attachments") this.tabGroups.primary = "details";
+        this.constructor.TABS.primary.tabs.filter((x) => x.id != "attachments");
+      if (this.tabGroups.primary == "attachments")
+        this.tabGroups.primary = "details";
     }
     const context = await super._prepareContext(options);
     context.types = this._setTypesDict();
     return context;
   }
 
-
   _setTypesDict() {
     const types = {};
     for (const type of Object.keys(THE_EDGE.cover_map)) {
       types[type] = {
         icon: `systems/the_edge/icons/armour/${type.toLowerCase()}.png`,
-        selected: type==this.item.system.bodyPart
-      }
+        selected: type == this.item.system.bodyPart,
+      };
     }
     return types;
   }
-  
+
   async onIconSelected(iconType, value) {
     switch (iconType) {
       case "bodyPart":
@@ -155,7 +168,10 @@ export class ItemSheetArmour extends TheEdgeItemSheet {
         this.updateIcons(iconType, this._setTypesDict());
         break;
     }
-    await this.item.update({"system": structuredClone(this.item.system)}, {render: false});
+    await this.item.update(
+      { system: structuredClone(this.item.system) },
+      { render: false },
+    );
   }
 
   _fetchAttachment(target) {
@@ -163,7 +179,7 @@ export class ItemSheetArmour extends TheEdgeItemSheet {
 
     const actorId = dataElement.dataset.actorId;
     const tokenId = dataElement.dataset.tokenId;
-    const actor = Aux.getActor(actorId, tokenId)
+    const actor = Aux.getActor(actorId, tokenId);
 
     const attachmentId = dataElement.dataset.attachmentId;
     return actor.items.get(attachmentId);
@@ -176,39 +192,43 @@ export class ItemSheetArmour extends TheEdgeItemSheet {
 
   static _detachAttachment(_event, target) {
     const attachment = this._fetchAttachment(target);
-    attachment.update({"system.equipped": false, "system.attachments": []});
-    Aux.detachFromParent(this.item, attachment._id, attachment.system.attachmentPoints.max);
-    this.render()
+    attachment.update({ "system.equipped": false, "system.attachments": [] });
+    Aux.detachFromParent(
+      this.item,
+      attachment._id,
+      attachment.system.attachmentPoints.max,
+    );
+    this.render();
   }
 }
 
 export class ItemSheetSkill extends TheEdgeItemSheet {
-  static DEFAULT_OPTIONS = {...TheEdgeItemSheet.DEFAULT_OPTIONS,
+  static DEFAULT_OPTIONS = {
+    ...TheEdgeItemSheet.DEFAULT_OPTIONS,
     actions: {
       ...TheEdgeItemSheet.DEFAULT_OPTIONS.actions,
       addEffectLevel: ItemSheetSkill._addEffectLevel,
-      deleteEffectLevel: ItemSheetSkill._deleteEffectLevel
-    }
-  }
+      deleteEffectLevel: ItemSheetSkill._deleteEffectLevel,
+    },
+  };
 
-  static PARTS = {...TheEdgeItemSheet.PARTS,
+  static PARTS = {
+    ...TheEdgeItemSheet.PARTS,
     form: {
-      template: `systems/the_edge/templates/items/Skill-header.hbs`
+      template: `systems/the_edge/templates/items/Skill-header.hbs`,
     },
     details: {
-      template: `systems/the_edge/templates/items/Skill-details.hbs`
-    }
-  }
+      template: `systems/the_edge/templates/items/Skill-details.hbs`,
+    },
+  };
 
   static TABS = {
     primary: {
-      tabs: [
-        {id: "details"}, {id: "description"},
-      ],
+      tabs: [{ id: "details" }, { id: "description" }],
       labelPrefix: "TABS",
       initial: "details",
     },
-  }
+  };
 
   _footerContent() {
     let content = `
@@ -226,12 +246,14 @@ export class ItemSheetSkill extends TheEdgeItemSheet {
     `;
     return content;
   }
-  
+
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
     context.coreRequirements = structuredClone(THE_EDGE.coreValueMap);
     context.coreRequirements.skills = {};
-    const skills = game.items.filter(x => x.type.toLowerCase().includes("skill"));
+    const skills = game.items.filter((x) =>
+      x.type.toLowerCase().includes("skill"),
+    );
     for (const skill of skills) {
       context.coreRequirements.skills[skill.name] = skill.name;
     }
@@ -244,13 +266,13 @@ export class ItemSheetSkill extends TheEdgeItemSheet {
       case "effects":
         return {
           modifiers: this.item.system.effects[data.index],
-          context: data
-        }
+          context: data,
+        };
       case "requirements":
         return {
           modifiers: this.item.system.requirements[data.index],
-          context: data
-        }
+          context: data,
+        };
     }
   }
 
@@ -258,22 +280,27 @@ export class ItemSheetSkill extends TheEdgeItemSheet {
     const target = this.item.system[context.type];
     target[context.index] = modifiers;
     await this.item.update(
-      {[`system.${context.type}`]: target}, {render: false}
+      { [`system.${context.type}`]: target },
+      { render: false },
     );
-  };
+  }
 
   _onRender(context, options) {
-    super._onRender(context, options)
+    super._onRender(context, options);
     // this.element.find(".effect-hint").click(ev => {
     //   this.options.displayHint = !this.options.displayHint;
     //   this._render()
     // });
-    this.element.querySelectorAll(".max-level")?.forEach(
-      x => x.addEventListener("change", ev => this._onMaxLevelChange(ev))
-    )
-    this.element.querySelectorAll(".effect-level-modify")?.forEach(
-      x => x.addEventListener("change", ev => this._onLevelModify(ev))
-    )
+    this.element
+      .querySelectorAll(".max-level")
+      ?.forEach((x) =>
+        x.addEventListener("change", (ev) => this._onMaxLevelChange(ev)),
+      );
+    this.element
+      .querySelectorAll(".effect-level-modify")
+      ?.forEach((x) =>
+        x.addEventListener("change", (ev) => this._onLevelModify(ev)),
+      );
   }
 
   async _onMaxLevelChange(ev) {
@@ -282,48 +309,51 @@ export class ItemSheetSkill extends TheEdgeItemSheet {
     const req = this.item.system.requirements;
     if (eff.length >= maxLevel) {
       await this.item.update({
-        "system.maxLevel": maxLevel, "system.effects": eff.slice(0, maxLevel),
-        "system.requirements": req.slice(0, maxLevel)
-      })
+        "system.maxLevel": maxLevel,
+        "system.effects": eff.slice(0, maxLevel),
+        "system.requirements": req.slice(0, maxLevel),
+      });
     } else {
-      for (let i = eff.length; i < maxLevel ; ++i) {
-        eff.push([])
-        req.push([])
+      for (let i = eff.length; i < maxLevel; ++i) {
+        eff.push([]);
+        req.push([]);
       }
       await this.item.update({
-        "system.maxLevel": maxLevel, "system.effects": eff,
-        "system.requirements": req
+        "system.maxLevel": maxLevel,
+        "system.effects": eff,
+        "system.requirements": req,
       });
     }
   }
 }
 
 export class ItemSheetConsumables extends TheEdgeItemSheet {
-  static DEFAULT_OPTIONS = {...TheEdgeItemSheet.DEFAULT_OPTIONS,
-    actions: {...TheEdgeItemSheet.DEFAULT_OPTIONS.actions,
+  static DEFAULT_OPTIONS = {
+    ...TheEdgeItemSheet.DEFAULT_OPTIONS,
+    actions: {
+      ...TheEdgeItemSheet.DEFAULT_OPTIONS.actions,
       createGrenadeEffect: ItemSheetConsumables._createGrenadeEffect,
       deleteGrenadeEffect: ItemSheetConsumables._deleteGrenadeEffect,
-    }
-  }
+    },
+  };
 
-  static PARTS = {...TheEdgeItemSheet.PARTS,
+  static PARTS = {
+    ...TheEdgeItemSheet.PARTS,
     form: {
-      template: `systems/the_edge/templates/items/Consumables-header.hbs`
+      template: `systems/the_edge/templates/items/Consumables-header.hbs`,
     },
     effects: {
-      template: "systems/the_edge/templates/items/meta-effects.hbs"
-    }, 
-  }
+      template: "systems/the_edge/templates/items/meta-effects.hbs",
+    },
+  };
 
   static TABS = {
     primary: {
-      tabs: [
-        {id: "effects"}, {id: "description"},
-      ],
+      tabs: [{ id: "effects" }, { id: "description" }],
       labelPrefix: "TABS",
       initial: "description",
     },
-  }
+  };
 
   _footerContent() {
     let content = super._footerContent();
@@ -331,43 +361,52 @@ export class ItemSheetConsumables extends TheEdgeItemSheet {
       <select class="selection-box type-selection-hook" name="system.current_type"
         style="padding-left: 1px; padding-right: 1px;">`;
     for (const typeName of Object.keys(this.item.system.subtypes)) {
-      const selected = this.item.system.current_type == typeName ? "selected" : "";
+      const selected =
+        this.item.system.current_type == typeName ? "selected" : "";
       content += `
         <option value="${typeName}" ${selected}>
           ${LocalisationServer.localise(typeName, "Item")}
-        </option>`
+        </option>`;
     }
     content += `</select>`;
     return content;
   }
 
-  async render(options={}, _options={}) {
+  async render(options = {}, _options = {}) {
     // Disable effects for generic
     if (this.item.system.current_type != "generic") {
-      this.constructor.TABS.primary.tabs = [{id: "effects"}, {id: "description"}];
+      this.constructor.TABS.primary.tabs = [
+        { id: "effects" },
+        { id: "description" },
+      ];
     } else {
       this.constructor.TABS.primary.tabs =
-        this.constructor.TABS.primary.tabs.filter(x => x.id != "effects");
-      if (this.tabGroups.primary == "effects") this.tabGroups.primary = "details";
+        this.constructor.TABS.primary.tabs.filter((x) => x.id != "effects");
+      if (this.tabGroups.primary == "effects")
+        this.tabGroups.primary = "details";
     }
-    
+
     // Special Effects tab for Grenades
     if (this.item.system.current_type == "grenade") {
-        this.constructor.PARTS.effects.template = "systems/the_edge/templates/items/Grenade-effects.hbs";
+      this.constructor.PARTS.effects.template =
+        "systems/the_edge/templates/items/Grenade-effects.hbs";
     } else {
-        this.constructor.PARTS.effects.template = "systems/the_edge/templates/items/meta-effects.hbs";
+      this.constructor.PARTS.effects.template =
+        "systems/the_edge/templates/items/meta-effects.hbs";
     }
 
     // Remove non necessary headers
     switch (this.item.system.current_type) {
       case "drugs":
       case "generic":
-        this.constructor.PARTS.form.template = "systems/the_edge/templates/items/meta-no-header.hbs";
+        this.constructor.PARTS.form.template =
+          "systems/the_edge/templates/items/meta-no-header.hbs";
         break;
       case "food":
       case "grenade":
       case "medicine":
-        this.constructor.PARTS.form.template = "systems/the_edge/templates/items/Consumables-header.hbs";
+        this.constructor.PARTS.form.template =
+          "systems/the_edge/templates/items/Consumables-header.hbs";
         break;
     }
     super.render(options, _options);
@@ -379,44 +418,53 @@ export class ItemSheetConsumables extends TheEdgeItemSheet {
     context.helpers = {
       medicineEffects: THE_EDGE.medicine_effects,
       displayHint: this.options.displayHint,
-      damageTypes: THE_EDGE.combat_damage_types
+      damageTypes: THE_EDGE.combat_damage_types,
     };
-    
-    context.smallHeader = ["medicine", "food"].includes(this.item.system.current_type)
+
+    context.smallHeader = ["medicine", "food"].includes(
+      this.item.system.current_type,
+    );
     return context;
   }
 
   getModifiers(target) {
     const effectData = target.closest(".effect-modifiers-hook")?.dataset;
-    if (!(effectData?.type == "grenade-effect")) return super.getModifiers(target);
+    if (!(effectData?.type == "grenade-effect"))
+      return super.getModifiers(target);
 
-    const {category, distance} = effectData;
-    const modifiers = this.item.system.subtypes.grenade.effects[category][distance];
+    const { category, distance } = effectData;
+    const modifiers =
+      this.item.system.subtypes.grenade.effects[category][distance];
     return {
       modifiers: modifiers,
       context: {
         ...effectData,
-        title: LocalisationServer.localise(effectData.distance, "Combat")
-      }
+        title: LocalisationServer.localise(effectData.distance, "Combat"),
+      },
     };
   }
 
   async updateModifiers(modifiers, context) {
-    if (!(context?.type == "grenade-effect")) return super.updateModifiers(modifiers, context);
+    if (!(context?.type == "grenade-effect"))
+      return super.updateModifiers(modifiers, context);
     await this.item.update(
-      {[`system.subtypes.grenade.effects.${context.category}.${context.distance}`]: modifiers},
-      {render: false}
+      {
+        [`system.subtypes.grenade.effects.${context.category}.${context.distance}`]:
+          modifiers,
+      },
+      { render: false },
     );
-  };
+  }
 
   _grenadeEffects() {
     const grenadeEffects = {
-      smoke: {render: "solid", icon: "cloud"},
-      emp: {render: "regular", icon: "bolt-lightning"},
-      shellshock: {render: "solid", icon: "person-falling-burst"}
+      smoke: { render: "solid", icon: "cloud" },
+      emp: { render: "regular", icon: "bolt-lightning" },
+      shellshock: { render: "solid", icon: "person-falling-burst" },
     };
     for (const effect of Object.keys(grenadeEffects)) {
-      grenadeEffects[effect].selected = this.item.system.subtypes.grenade.effects[effect].active;
+      grenadeEffects[effect].selected =
+        this.item.system.subtypes.grenade.effects[effect].active;
     }
     return grenadeEffects;
   }
@@ -424,20 +472,23 @@ export class ItemSheetConsumables extends TheEdgeItemSheet {
   async onIconSelected(iconType, value) {
     switch (iconType) {
       case "grenadeEffect":
-        const effects = structuredClone(this.item.system.subtypes.grenade.effects);
-        const target = "system.subtypes.grenade.effects"
+        const effects = structuredClone(
+          this.item.system.subtypes.grenade.effects,
+        );
+        const target = "system.subtypes.grenade.effects";
         effects[value].active = !effects[value].active;
 
         const update = {};
         update[target] = effects;
-        await this.item.update(update, {render: false});
+        await this.item.update(update, { render: false });
         this._drawGrenadeEffects();
         this.updateIcons(iconType, this._grenadeEffects());
     }
   }
 
   async _drawGrenadeEffects() {
-    const template = "systems/the_edge/templates/items/Grenade-effects-content.hbs";
+    const template =
+      "systems/the_edge/templates/items/Grenade-effects-content.hbs";
     const html = await renderTemplate(template, await this._prepareContext());
 
     const grenadeEffectsHTML = this.element.querySelector(".grenade-effects");
@@ -447,15 +498,16 @@ export class ItemSheetConsumables extends TheEdgeItemSheet {
 }
 
 export class ItemSheetGear extends TheEdgeItemSheet {
-  static DEFAULT_OPTIONS = {...TheEdgeItemSheet.DEFAULT_OPTIONS,
-    position: { height: 170, },
-  }
+  static DEFAULT_OPTIONS = {
+    ...TheEdgeItemSheet.DEFAULT_OPTIONS,
+    position: { height: 170 },
+  };
 
   static PARTS = {
     form: {
-      template: `systems/the_edge/templates/items/meta-description.hbs`
+      template: `systems/the_edge/templates/items/meta-description.hbs`,
     },
-  }
+  };
 
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
@@ -464,7 +516,8 @@ export class ItemSheetGear extends TheEdgeItemSheet {
   }
 }
 
-export class ItemSheetLanguage extends ItemSheetGear { // Inherit Gear as a minimal interface
+export class ItemSheetLanguage extends ItemSheetGear {
+  // Inherit Gear as a minimal interface
   _footerContent() {
     return `
       <div style="display: flex; gap: 5px; align-items: center; white-space: nowrap">
@@ -477,12 +530,13 @@ export class ItemSheetLanguage extends ItemSheetGear { // Inherit Gear as a mini
   }
 }
 
-export class ItemSheetVantage extends ItemSheetGear { // Inherit Gear as a minimal interface
+export class ItemSheetVantage extends ItemSheetGear {
+  // Inherit Gear as a minimal interface
   _footerContent() {
     return `
       <div style="display: flex; gap: 5px; align-items: center; white-space: nowrap">
         <input class="item-footer-input" type="number" name="system.AP" value="${this.item.system.AP}" data-dtype="Number" id="AP"/>
-        <label for="AP" data-tooltip aria-label="${LocalisationServer.localise('AdvantagePoints')}"
+        <label for="AP" data-tooltip aria-label="${LocalisationServer.localise("AdvantagePoints")}"
           style="margin-right: 5px;">
           AP
         </label>
