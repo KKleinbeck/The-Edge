@@ -338,7 +338,6 @@ export class TheEdgeActor extends Actor {
       this.getItemEffects(true),
       this.getSkillEffects(true),
     );
-    console.log("Before", field);
     for (const effect of effects) {
       for (const modifier of effect.modifiers) {
         if (modifier.field === field) {
@@ -346,7 +345,6 @@ export class TheEdgeActor extends Actor {
         }
       }
     }
-    console.log("After", field);
   }
 
   attachOuterArmour(armourId: string, shellId: string, tokenId: string) {

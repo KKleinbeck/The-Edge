@@ -292,7 +292,6 @@ export class TheEdgeActor extends Actor {
     }
     effectHooks(field, details) {
         const effects = foundry.utils.mergeObject(this.getItemEffects(true), this.getSkillEffects(true));
-        console.log("Before", field);
         for (const effect of effects) {
             for (const modifier of effect.modifiers) {
                 if (modifier.field === field) {
@@ -300,7 +299,6 @@ export class TheEdgeActor extends Actor {
                 }
             }
         }
-        console.log("After", field);
     }
     attachOuterArmour(armourId, shellId, tokenId) {
         const armour = this.items.get(armourId);

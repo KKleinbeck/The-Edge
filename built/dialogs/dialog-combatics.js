@@ -12,7 +12,6 @@ export default class DialogCombatics extends CheckDialog {
         this.weaponId = weaponId;
     }
     static async start(checkData, weaponId) {
-        console.log(weaponId);
         const template = "systems/the_edge/templates/dialogs/basic-rolls.hbs";
         const handToHandLevel = checkData.actor.system.weapons.general["Hand-to-Hand combat"].value;
         const strainMaxUseReduction = checkData.actor.system.strain.maxUseReduction.status;

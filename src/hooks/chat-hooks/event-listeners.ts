@@ -141,7 +141,6 @@ export async function applyGrenadeDamage(_event: PointerEvent, sys, button) {
   }
 
   // Create smoke if necessary
-  console.log(sys.details, grenadeTile);
   if (grenadeDetails.effects.smoke.active) {
     _handleGreandeSmoke(
       grenadeTile.x + 0.5 * grenadeTile.width,

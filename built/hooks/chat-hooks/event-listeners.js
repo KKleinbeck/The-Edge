@@ -97,7 +97,6 @@ export async function applyGrenadeDamage(_event, sys, button) {
         button.outerHTML = LocalisationServer.localise("Harmless explosion", "text");
     }
     // Create smoke if necessary
-    console.log(sys.details, grenadeTile);
     if (grenadeDetails.effects.smoke.active) {
         _handleGreandeSmoke(grenadeTile.x + 0.5 * grenadeTile.width, grenadeTile.y + 0.5 * grenadeTile.height, grenadeDetails.blastDistance[0], grenadeDetails.blastDistance[1]);
     }
