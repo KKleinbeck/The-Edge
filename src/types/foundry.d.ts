@@ -140,6 +140,7 @@ declare class TokenDocument {
 // Hooks
 declare namespace Hooks {
   function on(id: string, callback: Function): boolean;
+  function once(id: string, callback: Function): boolean;
   function call(event: string, ...args: unknown[]): boolean;
 }
 
@@ -262,6 +263,7 @@ interface ICanvas {
     };
     id: string;
     tokens: FoundryContainer<foundryAny>;
+    createEmbeddedDocuments(documentType: string, details: object[])
   };
 }
 
@@ -330,6 +332,9 @@ declare class CONFIG {
   static Combat: {
     initiative: foundryAny;
   };
+  static TextEditor: {
+    enrichers: Record<string, any>[]
+  }
 }
 
 // Third Party

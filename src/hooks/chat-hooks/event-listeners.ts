@@ -199,7 +199,6 @@ async function _handleGreandeSmoke(
   closeDistance: number,
   farDistance: number,
 ) {
-  // @ts-expect-error
   const light = await canvas.scene.createEmbeddedDocuments("AmbientLight", [{
     x,
     y,
@@ -213,10 +212,9 @@ async function _handleGreandeSmoke(
       bright: closeDistance,
       color: "#000000",
       alpha: 1,
-      luminosity: -1     // conventionally negative luminosity for darkness
+      luminosity: -1
     }
   }]);
-  console.log(light)
 }
 
 async function _applyDamage(

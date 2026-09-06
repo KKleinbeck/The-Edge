@@ -1,6 +1,8 @@
+import DiceServer from "./system/dice_server.js";
+import LocalisationServer from "./system/localisation_server.js";
+
 import initHooks from "./hooks/init.js";
 import THE_EDGE from "./system/config-the-edge.js";
-import DiceServer from "./system/dice_server.js";
 import setupGameSettings from "./system/settings.js";
 import TheEdgeHotbar from "./applications/hotbar.js";
 
@@ -112,15 +114,16 @@ Hooks.once("init", async function () {
 
   setupGameSettings();
 
-  /**
-   * Slugify a string.
-   */
+  // Slugify a string.
   Handlebars.registerHelper("slugify", function (value) {
     return value.slugify({ strict: true });
   });
 
   // Preload template partials
   await preloadHandlebarsTemplates();
+
+  // Text enrichers add additional functionalities to prose mirror text handling
+  _setupTextEnrichers();
 });
 
 initHooks();
@@ -224,4 +227,18 @@ function _finaliseConfigSetup() {
     THE_EDGE.weapon_partners[energyWeapons[i]] = kineticWeapons[i];
     THE_EDGE.weapon_partners[kineticWeapons[i]] = energyWeapons[i];
   }
+}
+
+function _setupTextEnrichers() {
+  CONFIG.TextEditor.enrichers.push({
+    id: "my-module-localize",
+    pattern: /@Localise\[TheEdge\.((?<category>[\w]+)\.)?(?<id>[\w]+)\]/gi,
+    enricher: async (match, _options) => {
+      const { category, id } = match.groups;
+      const span = document.createElement("span");
+      span.classList.add("localized-text");
+      span.textContent = LocalisationServer.localise(id, category);
+      return span;
+    }
+  });
 }
