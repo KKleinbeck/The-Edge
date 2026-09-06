@@ -125,6 +125,7 @@ export async function applyGrenadeDamage(_event, sys, button) {
     _handleGreandeSmoke(
       grenadeTile.x + 0.5 * grenadeTile.width,
       grenadeTile.y + 0.5 * grenadeTile.height,
+      grenadeDetails.blastDistance[0],
       grenadeDetails.blastDistance[1],
     );
   }
@@ -156,30 +157,27 @@ async function _handleGrenadeEffect(effects, token, isClose, grendeName) {
     }
   }
 }
-async function _handleGreandeSmoke(xc, yc, farDistance) {
-  const cls = getDocumentClass("Wall");
-  console.log(cls);
-  const segments = 24;
-  const phi = (2 * Math.PI) / segments;
-  const r = farDistance * canvas.scene.grid.size;
-  for (var i = 0; i < segments; ++i) {
-    const res = await cls.create(
-      {
-        c: [
-          xc + r * Math.cos(phi * i),
-          yc + r * Math.sin(phi * i),
-          xc + r * Math.cos(phi * (i + 1)),
-          yc + r * Math.sin(phi * (i + 1)),
-        ],
-        move: 0, // No restriction
-        light: 10, // Limited restriction
-        sight: 10,
-        sound: 10,
+async function _handleGreandeSmoke(x, y, closeDistance, farDistance) {
+  // @ts-expect-error
+  const light = await canvas.scene.createEmbeddedDocuments("AmbientLight", [
+    {
+      x,
+      y,
+      rotation: 0,
+      walls: true,
+      vision: false,
+      config: {
+        animation: { type: "denseSmoke" },
+        negative: true,
+        dim: farDistance,
+        bright: closeDistance,
+        color: "#000000",
+        alpha: 1,
+        luminosity: -1, // conventionally negative luminosity for darkness
       },
-      { parent: canvas.scene },
-    );
-    console.log(res);
-  }
+    },
+  ]);
+  console.log(light);
 }
 async function _applyDamage(
   target,
