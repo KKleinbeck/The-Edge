@@ -285,17 +285,22 @@ export class ItemSheetSkill extends TheEdgeItemSheet {
     );
   }
 
+  _attachAdditionalFrameListeners() {
+    super._attachAdditionalFrameListeners();
+
+    this.element
+      .querySelectorAll("#maxLevel")
+      ?.forEach((x) =>
+        x.addEventListener("change", (ev) => this._onMaxLevelChange(ev)),
+      );
+  }
+
   _onRender(context, options) {
     super._onRender(context, options);
     // this.element.find(".effect-hint").click(ev => {
     //   this.options.displayHint = !this.options.displayHint;
     //   this._render()
     // });
-    this.element
-      .querySelectorAll(".max-level")
-      ?.forEach((x) =>
-        x.addEventListener("change", (ev) => this._onMaxLevelChange(ev)),
-      );
     this.element
       .querySelectorAll(".effect-level-modify")
       ?.forEach((x) =>
