@@ -423,6 +423,28 @@
     "LARGE": "Large",
     "SMALL": "Small"
   },
+  "KEYWORDS": {
+    "STR": "Current strength value",
+    "END": "Current endurance value",
+    "CRD": "Current coordination value",
+    "SPD": "Current speed value",
+    "CHA": "Current charisma value",
+    "EMP": "Current empathy value",
+    "FOC": "Current focus value",
+    "INT": "Current intelligence value",
+    "RES": "Current resiliance value",
+
+    "PAIN": "Pain decreases your general proficiencies and your weapon handling. You gain one level of pain for every 2&times;Res damage.",
+    "DYING": "Whe your life points hit zero, you start dying. Every round you gain +5 strain and new damage becomes strain. You are dead once your strain is full.",
+    "EXHAUSTION": "Every level of exhaustion reduces your maximal strain by 2. Exhaustion is caused by skills and effects.",
+    "FRIGHT": "You loose one action per level of fright on you. Fright is caused by skills and effects.",
+    "OVERLOAD": "Overload reduces your strength, general proficiency and movement speed. Carrying weight above 1.5&times;Str (incrementing in 0.5&times;Str steps) yields one level of overload.",
+
+    "BATTLE-ROUND": "During one round of battle (BR) every combatant performs one turn of three actions.",
+    "REACTION": "Reactions are skills that can be used in a battle round, out of turn order. Generally every combatant has one reaction per battle round.",
+    "READIED ACTION": "During your turn you may choose to use one of your actions at a later stage, before your next turn, by specifying relevant triggers.",
+    "TURN": "During ever battle round each combatant has one turn. During your turn you can perform 3 actions."
+  },
   "NOTIFICATIONS": {
     "DESTROYED": "Armour piece {name} was destroyed in combat",
     "EQUIPBROKEN": "Cannot equip broken armour (i.e., no structure points).",

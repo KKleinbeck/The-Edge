@@ -44,3 +44,33 @@
     1px 1px 3px fade(@color-ui-main-background-2, 50%) inset,
     1px 1px 3px fade(@color-ui-main-background-2, 50%);
 }
+
+.beveled-frame(@bevel: 2px; @border-width: 2px; @border-color: #333) {
+  position: relative;
+  box-sizing: border-box;
+
+  // Cut all 4 corners at 45°
+  clip-path: polygon(
+    @bevel 0%, calc(100% - @bevel) 0%,
+    100% @bevel, 100% calc(90% - @bevel),
+    calc(90% - @bevel) 100%, @bevel 90%,
+    0% calc(90% - @bevel), 0% @bevel
+  );
+
+  // Left + right "borders" as background strips
+  // (a real border would just draw a rectangle and ignore the clip-path shape)
+  background-image:
+    linear-gradient(@border-color, @border-color),
+    linear-gradient(@border-color, @border-color);
+  background-repeat: no-repeat, no-repeat;
+  background-position: left top, right top;
+  background-size: @border-width 100%, @border-width 100%;
+
+  // keep content clear of the bevels & strips
+  padding-left: max(@bevel, @border-width);
+  padding-right: max(@bevel, @border-width);
+}
+
+.ui-keyword {
+  .beveled-frame(2px, 2px, #FFFFFF)
+}

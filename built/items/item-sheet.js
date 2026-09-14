@@ -1,6 +1,7 @@
 import THE_EDGE from "../system/config-the-edge.js";
 import EffectModifierMixin from "../mixins/effect-modifier-mixin.js";
 import IconSelectorMixin from "../mixins/icon-selector-mixin.js";
+import LocalisationServer from "../system/localisation_server.js";
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ItemSheetV2 } = foundry.applications.sheets;
 const { renderTemplate } = foundry.applications.handlebars;
@@ -158,6 +159,22 @@ export class TheEdgeItemSheet extends EffectModifierMixin(IconSelectorMixin(Hand
             footer.outerHTML = await this._dynamicFooter(this.headerWidth, this.headerHeight);
         }
         this._attachAdditionalFrameListeners();
+    }
+    _onRender(context, options) {
+        super._onRender(context, options);
+        this.element
+            .querySelectorAll(".ui-keyword")
+            .forEach((x) => x.addEventListener("mouseover", this._displayKeywordTooltip));
+    }
+    _displayKeywordTooltip(event) {
+        const target = event.currentTarget;
+        if (!(target instanceof HTMLElement))
+            return;
+        const keyword = target.dataset.keyword;
+        if (typeof (keyword) == "undefined")
+            return;
+        const text = LocalisationServer.parsedLocalisation(keyword, "keywords");
+        game.tooltip.activate(event.currentTarget, { text, direction: "UP" });
     }
     async _prepareContext(options) {
         const context = await super._prepareContext(options);

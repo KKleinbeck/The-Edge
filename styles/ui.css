@@ -12,7 +12,16 @@
 .box-passive {
   padding: 1px 5px 1px 5px;
   border: 3px solid var(--color-ui-main-background-2);
-  box-shadow:
-    1px 1px 3px rgba(42, 80, 122, 0.5) inset,
-    1px 1px 3px rgba(42, 80, 122, 0.5);
+  box-shadow: 1px 1px 3px rgba(42, 80, 122, 0.5) inset, 1px 1px 3px rgba(42, 80, 122, 0.5);
+}
+.ui-keyword {
+  position: relative;
+  box-sizing: border-box;
+  clip-path: polygon(2px 0%, calc(100% - 2px) 0%, 100% 2px, 100% calc(90% - 2px), calc(90% - 2px) 100%, 2px 90%, 0% calc(90% - 2px), 0% 2px);
+  background-image: linear-gradient(#FFFFFF, #FFFFFF), linear-gradient(#FFFFFF, #FFFFFF);
+  background-repeat: no-repeat, no-repeat;
+  background-position: left top, right top;
+  background-size: 2px 100%, 2px 100%;
+  padding-left: 2px;
+  padding-right: 2px;
 }

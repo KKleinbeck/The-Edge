@@ -193,12 +193,12 @@ function _finaliseConfigSetup() {
 function _setupTextEnrichers() {
     CONFIG.TextEditor.enrichers.push({
         id: "my-module-localize",
-        pattern: /@Localise\[TheEdge\.((?<category>[\w]+)\.)?(?<id>[\w]+)\]/gi,
+        pattern: /@Localise\[TheEdge\.((?<category>[\w\s]+)\.)?(?<id>[\w\s\.]+)\]/gi,
         enricher: async (match, _options) => {
             const { category, id } = match.groups;
             const span = document.createElement("span");
             span.classList.add("localized-text");
-            span.textContent = LocalisationServer.localise(id, category);
+            span.innerHTML = LocalisationServer.localise(id, category);
             return span;
         },
     });
