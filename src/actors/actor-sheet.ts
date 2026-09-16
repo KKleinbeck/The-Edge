@@ -472,10 +472,11 @@ export class TheEdgeActorSheet extends CounterMixin(
             sceneId: game.user.viewedScene,
           });
         } else {
-          let strainChange = await Aux.parseStrainCostStr(
-            skill,
-            this.actor.system.strainLevel,
+          let strainChange = Aux.getCostFromCostString(
+            skill.system.strainCost,
+            skill.system.level,
           );
+
           strainChange = await this.actor.system.applyStrain(strainChange);
           const payload: ITheEdgeActionPayload = {
             action: skill.name,

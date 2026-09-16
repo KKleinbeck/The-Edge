@@ -76,9 +76,8 @@ export const EFFECTS = {
                     "    console.log(details)\n" +
                     "    // details.actor = ...\n" +
                     (field.includes("Posterior")
-                        ? "    // details.attackOutcome = ...\n"
+                        ? "    // details.attackRollResult = ...\n"
                         : "") +
-                    "    // details.diceServerConfig = ...\n" +
                     "    // details.prompt = ...\n" +
                     "  }\n}");
             case "rollMeleeCheck-Posterior":

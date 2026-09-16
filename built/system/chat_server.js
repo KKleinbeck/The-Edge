@@ -23,7 +23,7 @@ export default class ChatServer {
                 html = LocalisationServer.parsedLocalisation(id, "Chat", details);
                 break;
             case "FOOD CONSUME":
-                html = await renderTemplate("systems/the_edge/templates/chat/food_consum.hbs", details);
+                html = await renderTemplate("systems/the_edge/templates/chat/food_consume.hbs", details);
                 break;
             case "GENERIC DAMAGE":
                 html = await renderTemplate("systems/the_edge/templates/chat/generic_damage.hbs", details);

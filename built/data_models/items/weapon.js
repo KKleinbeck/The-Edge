@@ -69,4 +69,7 @@ export default class WeaponData extends generateDataModelWithComponents(Descript
         }
         return super.migrateData(source);
     }
+    get modifiers() {
+        return this.effect;
+    }
 }

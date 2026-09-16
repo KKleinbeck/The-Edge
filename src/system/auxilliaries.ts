@@ -146,9 +146,10 @@ export default class Aux {
     return humanSpoken ? [200, 400, 1000, 2000, 3200, 3200] : [600, 3000, 6400];
   }
 
+
   static parseCostStr(
     costStr: string,
-    maxLevel = undefined,
+    maxLevel: number | undefined = undefined,
   ): number[] | undefined {
     costStr = costStr.replace(/\s+/g, ""); // w.o. whitespace
     const regex = /^(\d+\/)*\d+$/; // parse [n_1 / n_2 / ...] n_m
@@ -161,36 +162,17 @@ export default class Aux {
     return undefined;
   }
 
-  static async parseStrainCostStr(
-    skill: foundryAny,
-    currentStrainLevel: 0 | 1 | 2 | 3 | 4,
-  ): Promise<number | undefined> {
-    const costs = skill.system.strainCost.replace(/\s+/g, "").split("/");
-    if (costs.length != 1 && costs.length != 5) {
-      NotificationServer.notify("Wrong strain cost string", {
-        skillName: skill.name,
-      });
-      return undefined;
-    }
 
-    const costRoll = costs.length == 1 ? costs[0] : costs[currentStrainLevel];
-    if (costRoll.toUpperCase() == "N.A.") {
-      NotificationServer.notify("Invalid Strain Level", {
-        skillName: skill.name,
-        level: currentStrainLevel,
-      });
-      return undefined;
-    } else if (!Roll.validate(costRoll)) {
-      NotificationServer.notify("Wrong Strain cost Format", {
-        skillName: skill.name,
-        costRoll: costRoll,
-      });
-      return undefined;
-    }
-
-    const roll = await new Roll(costRoll).evaluate();
-    return roll.total;
+  static getCostFromCostString(
+    costStr: string,
+    level: number = 1
+  ): number | undefined {
+    const costs = this.parseCostStr(costStr);
+    if (typeof costs == "undefined") return;
+    if (level > costs.length) return;
+    return costs[level - 1];
   }
+
 
   static getSkillCost(
     skill: Item,

@@ -130,31 +130,13 @@ export default class Aux {
         NotificationServer.notify("Wrong cost string", { str: costStr });
         return undefined;
     }
-    static async parseStrainCostStr(skill, currentStrainLevel) {
-        const costs = skill.system.strainCost.replace(/\s+/g, "").split("/");
-        if (costs.length != 1 && costs.length != 5) {
-            NotificationServer.notify("Wrong strain cost string", {
-                skillName: skill.name,
-            });
-            return undefined;
-        }
-        const costRoll = costs.length == 1 ? costs[0] : costs[currentStrainLevel];
-        if (costRoll.toUpperCase() == "N.A.") {
-            NotificationServer.notify("Invalid Strain Level", {
-                skillName: skill.name,
-                level: currentStrainLevel,
-            });
-            return undefined;
-        }
-        else if (!Roll.validate(costRoll)) {
-            NotificationServer.notify("Wrong Strain cost Format", {
-                skillName: skill.name,
-                costRoll: costRoll,
-            });
-            return undefined;
-        }
-        const roll = await new Roll(costRoll).evaluate();
-        return roll.total;
+    static getCostFromCostString(costStr, level = 1) {
+        const costs = this.parseCostStr(costStr);
+        if (typeof costs == "undefined")
+            return;
+        if (level > costs.length)
+            return;
+        return costs[level - 1];
     }
     static getSkillCost(skill, mode) {
         const level = skill.system.level;

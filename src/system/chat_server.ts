@@ -47,7 +47,7 @@ export default class ChatServer {
 
       case "FOOD CONSUME":
         html = await renderTemplate(
-          "systems/the_edge/templates/chat/food_consum.hbs",
+          "systems/the_edge/templates/chat/food_consume.hbs",
           details,
         );
         break;

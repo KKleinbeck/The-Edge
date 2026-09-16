@@ -334,10 +334,10 @@ export class TheEdgeActor extends Actor {
   }
 
   effectHooks(field: string, details: Record<string, any>) {
-    const effects = foundry.utils.mergeObject(
-      this.getItemEffects(true),
-      this.getSkillEffects(true),
-    );
+    const effects = [
+      ...this.getItemEffects(true),
+      ...this.getSkillEffects(true),
+    ];
     for (const effect of effects) {
       for (const modifier of effect.modifiers) {
         if (modifier.field === field) {
