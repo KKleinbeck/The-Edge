@@ -1,4 +1,5 @@
 import Aux from "../system/auxilliaries.js";
+import ChatServer from "../system/chat_server.js";
 import LocalisationServer from "../system/localisation_server.js";
 import NotificationServer from "../system/notifications.js";
 import THE_EDGE from "../system/config-the-edge.js";
@@ -389,5 +390,42 @@ export class TheEdgeActor extends Actor {
         token: this.token?.id,
       },
     };
+  }
+
+  async _foodConsume(item: Item) {
+    const existingCopies = this.system.findEffectsByName(
+      item.name,
+    );
+    if (existingCopies.length) {
+      NotificationServer.notify("Effect already exists");
+      return;
+    }
+
+    const genericModifiers = Aux.filterToGenericModifiers(
+      item.system.effect,
+    );
+    const hasEffect = genericModifiers.length > 0;
+    if (hasEffect) {
+      this.system.createNewEffect(item.name, genericModifiers);
+    }
+    const strainRoll = await new Roll(
+      item.system.subtypes.food.strainReduction,
+    ).evaluate();
+    const strainChange = await this.system.applyStrain(
+      -strainRoll.total,
+    );
+    ChatServer.transmitEvent(
+      "FOOD CONSUME",
+      {
+        details: {
+          actorName: this.name,
+          item: item.name,
+          strainReduction: -strainChange,
+        },
+        hasEffects: hasEffect,
+      },
+      this.chatConfig(),
+    );
+    item.useOne();
   }
 }

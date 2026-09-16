@@ -65,6 +65,7 @@ declare class Actor extends FoundryDocument {
     createNewEffect(name: string, modifiers: IModifier[]);
     deleteWound(index: number);
     editWound(index: number, details: Partial<IWoundDetails>);
+    findEffectsByName(name: string): IEffect[];
     getWeaponPlOfWeapon(weaponId: string): number;
     onUpdate(data: any): void;
     regenerateHeroToken();
@@ -122,6 +123,7 @@ declare class Item extends FoundryDocument {
 
   static create(data: foundryAny, options: foundryAny): foundryAny;
   getFlag(a: string, b: string);
+  useOne();
 }
 
 interface Items extends FoundryContainer<Item> {}

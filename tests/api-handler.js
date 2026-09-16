@@ -160,7 +160,7 @@ export default class ApiHandler {
   /** @param {Record<string, any>} options */
   /** @return {Item} */
   async itemCreate(options = {}) {
-    const { name, type, systemPreset, systemPayload = {} } = options;
+    const { name, type, systemPayload = {} } = options;
 
     const response = await fetch(this.url + "/create", {
       method: "POST",
@@ -173,7 +173,7 @@ export default class ApiHandler {
         data: {
           name: name ?? "TestItem",
           type: type ?? "Ammunition",
-          system: { ...Actor.getSystemPreset(systemPreset), ...systemPayload },
+          system: { ...systemPayload },
         },
       }),
     });

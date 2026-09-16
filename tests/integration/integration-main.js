@@ -25,7 +25,42 @@ export default function registerIntegrationTests(apiHandler) {
   }
   TestRegistry.registerTest(
     strainAfterCombatMovement,
-    "Combat Movement Strain",
+    "Strain - Combat Movement",
+    "integration",
+  );
+
+  async function strainAfterFoodConsumption() {
+    const actor = await apiHandler.actorCreate();
+    const samples = [
+      {actorStrain: 10, foodReduction:  5, result: 5},
+      {actorStrain: 10, foodReduction: 10, result: 0},
+      {actorStrain: 10, foodReduction: 15, result: 0},
+    ]
+    const actualResults = []
+
+    for (const sample of samples) {
+      const command =
+        `const actor = game.actors.get("${actor.data._id}");` +
+        `await actor.update({"system.strain.value": ${sample.actorStrain}});` +
+        `const cls = getDocumentClass("Item");` +
+        `const food = await cls.create(` +
+        `  { name: "Food", type: "Consumables", "system.subtypes.food.strainReduction": "${sample.foodReduction}" },` +
+        `  { parent: actor }` +
+        `);` +
+        `await actor._foodConsume(food);` +
+        `return actor.system.strain.value;`;
+      const result = await apiHandler.runCommand(command);
+      actualResults.push(result)
+    }
+
+    await actor.delete();
+
+    for (let i = 0; i < samples.length; i++)
+      assert(samples[i].result == actualResults[i]);
+  }
+  TestRegistry.registerTest(
+    strainAfterFoodConsumption,
+    "Strain - Food Consumption",
     "integration",
   );
 }
