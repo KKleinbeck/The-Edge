@@ -25,7 +25,6 @@ export class TheEdgeItemSheet extends EffectModifierMixin(
       this.definedEffects.dynamicModifiers = dynamicModifiers;
   }
 
-
   static DEFAULT_OPTIONS = {
     position: {
       width: 390,
@@ -41,7 +40,6 @@ export class TheEdgeItemSheet extends EffectModifierMixin(
     },
   };
 
-
   static PARTS = {
     form: {
       template: "templates/sheets/item-sheet.html",
@@ -54,7 +52,6 @@ export class TheEdgeItemSheet extends EffectModifierMixin(
     },
   };
 
-
   static TABS = {
     primary: {
       tabs: [{ id: "description" }],
@@ -66,7 +63,6 @@ export class TheEdgeItemSheet extends EffectModifierMixin(
   get title() {
     return this.item.name;
   }
-
 
   async _dynamicHeader(width, height) {
     const lineLength = 0.3 * height;
@@ -86,7 +82,6 @@ export class TheEdgeItemSheet extends EffectModifierMixin(
     return html;
   }
 
-
   async _dynamicFooter(width, height) {
     const lineLength = 0.5 * height;
     const path = `
@@ -102,7 +97,6 @@ export class TheEdgeItemSheet extends EffectModifierMixin(
     });
     return html;
   }
-
 
   _footerContent() {
     let content = "";
@@ -124,7 +118,6 @@ export class TheEdgeItemSheet extends EffectModifierMixin(
     }
     return content;
   }
-
 
   async _renderFrame(options) {
     const frame = await super._renderFrame(options);
@@ -149,15 +142,12 @@ export class TheEdgeItemSheet extends EffectModifierMixin(
     return frame;
   }
 
-
   _attachFrameListeners() {
     super._attachFrameListeners();
     this._attachAdditionalFrameListeners();
   }
 
-
   _attachAdditionalFrameListeners() {}
-
 
   async minimize() {
     super.minimize();
@@ -177,7 +167,6 @@ export class TheEdgeItemSheet extends EffectModifierMixin(
       footers[0].innerHTML = "";
     }
   }
-
 
   async maximize() {
     super.maximize();
@@ -206,7 +195,6 @@ export class TheEdgeItemSheet extends EffectModifierMixin(
     this._attachAdditionalFrameListeners();
   }
 
-
   _onRender(context, options) {
     super._onRender(context, options);
     this.element
@@ -216,18 +204,16 @@ export class TheEdgeItemSheet extends EffectModifierMixin(
       );
   }
 
-  
   _displayKeywordTooltip(event: Event) {
     const target = event.currentTarget;
     if (!(target instanceof HTMLElement)) return;
 
     const keyword = target.dataset.keyword;
-    if (typeof(keyword) == "undefined") return;
+    if (typeof keyword == "undefined") return;
 
     const text = LocalisationServer.parsedLocalisation(keyword, "keywords");
-    game.tooltip.activate(event.currentTarget, {text, direction: "UP"});
+    game.tooltip.activate(event.currentTarget, { text, direction: "UP" });
   }
-
 
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
@@ -253,11 +239,9 @@ export class TheEdgeItemSheet extends EffectModifierMixin(
     return context;
   }
 
-
   getModifiers(_target) {
     return { modifiers: this.item.system.effect, context: {} };
   }
-
 
   async updateModifiers(modifiers, _context) {
     await this.item.update({ "system.effect": modifiers }, { render: false });

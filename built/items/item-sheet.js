@@ -171,7 +171,7 @@ export class TheEdgeItemSheet extends EffectModifierMixin(IconSelectorMixin(Hand
         if (!(target instanceof HTMLElement))
             return;
         const keyword = target.dataset.keyword;
-        if (typeof (keyword) == "undefined")
+        if (typeof keyword == "undefined")
             return;
         const text = LocalisationServer.parsedLocalisation(keyword, "keywords");
         game.tooltip.activate(event.currentTarget, { text, direction: "UP" });

@@ -146,7 +146,6 @@ export default class Aux {
     return humanSpoken ? [200, 400, 1000, 2000, 3200, 3200] : [600, 3000, 6400];
   }
 
-
   static parseCostStr(
     costStr: string,
     maxLevel: number | undefined = undefined,
@@ -162,17 +161,15 @@ export default class Aux {
     return undefined;
   }
 
-
   static getCostFromCostString(
     costStr: string,
-    level: number = 1
+    level: number = 1,
   ): number | undefined {
     const costs = this.parseCostStr(costStr);
     if (typeof costs == "undefined") return;
     if (level > costs.length) return;
     return costs[level - 1];
   }
-
 
   static getSkillCost(
     skill: Item,
