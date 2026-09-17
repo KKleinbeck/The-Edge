@@ -77,7 +77,7 @@ export const STATUS_EFFECTS = {
         return [
           {
             group: "generalModifiers",
-            field: "health - max",
+            field: "strain - max",
             value: -3 * level,
           },
         ];

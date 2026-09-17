@@ -53,7 +53,7 @@ export default class CombatantData extends DataModelComponent {
                         required: true,
                     }),
                     baseline: new NumberField({ initial: 100, integer: true, min: 0 }),
-                    status: new NumberField({ initial: 0, integer: true, min: 0 }),
+                    status: new NumberField({ initial: 0, integer: true }),
                     value: new NumberField({ initial: 100, integer: true, min: 0 }),
                 }),
                 statusThreshold: new SchemaField({
