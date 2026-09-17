@@ -141,11 +141,13 @@ export default class Aux {
     static getSkillCost(skill, mode) {
         const level = skill.system.level;
         if (skill.type == "Languageskill") {
+            console.log(skill);
             switch (mode) {
                 case "delete":
                     return this._language_cost_table(skill.system.humanSpoken)
                         .slice(0, level)
                         .reduce((a, b) => a + b, 0);
+                case "learn":
                 case "increase":
                     if ((skill.system.humanSpoken && level == 6) ||
                         (!skill.system.humanSpoken && level == 3))
