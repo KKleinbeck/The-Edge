@@ -131,7 +131,7 @@ function _getSpeakingActors(language) {
       const learnedLevels =
         actor.itemTypes["Languageskill"]
           ?.filter((x) => {
-            x.name.toLowerCase() == language;
+            return x.name.toLowerCase() == language;
           })
           .map((x) => x.system.level) ?? 0;
 

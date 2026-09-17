@@ -177,7 +177,6 @@ export default class Aux {
   ): number | undefined {
     const level = skill.system.level;
     if (skill.type == "Languageskill") {
-      console.log(skill)
       switch (mode) {
         case "delete":
           return this._language_cost_table(skill.system.humanSpoken)
