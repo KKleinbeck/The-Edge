@@ -6,7 +6,7 @@ import registerUnitTestsForDiceServer from "./unit-dice-server.js";
 
 /** @param {ApiHandler} apiHandler */
 export default function registerUnitTests(apiHandler) {
-  // registerUnitTestsForActors(apiHandler);
-  // registerUnitTestsForItems(apiHandler);
+  registerUnitTestsForActors(apiHandler);
+  registerUnitTestsForItems(apiHandler);
   registerUnitTestsForDiceServer(apiHandler);
 }
