@@ -1,5 +1,5 @@
 import Aux from "../../system/auxilliaries.js";
-import ChatServer from "../../system/chat_server";
+import ChatServer from "../../system/chat_server.js";
 import NotificationServer from "../../system/notifications.js";
 
 

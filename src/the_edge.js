@@ -46,7 +46,7 @@ Hooks.once("init", async function () {
 
   game.the_edge = {
     config: THE_EDGE,
-    diceServer: new DiceServer(),
+    diceServer: DiceServer,
     socketHandler: new SocketHandler(),
   };
 

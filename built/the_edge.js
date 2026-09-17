@@ -33,7 +33,7 @@ Hooks.once("init", async function () {
     _finaliseConfigSetup();
     game.the_edge = {
         config: THE_EDGE,
-        diceServer: new DiceServer(),
+        diceServer: DiceServer,
         socketHandler: new SocketHandler(),
     };
     // Define custom Document classes

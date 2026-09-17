@@ -9,7 +9,7 @@ export default class DiceServer {
     return table.random();
   }
 
-  static async attributeCheck(config: IDiceServerConfig) {
+  static async attributeCheck(config: IDiceServerConfig): Promise<IRollResult> {
     var dieResult = await this._attributeRoll();
 
     if (config.vantage == "Advantage") {
