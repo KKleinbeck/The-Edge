@@ -142,7 +142,7 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
                         NotificationServer.notify("Grenade use tipp");
                         break;
                     default:
-                        this.actor._foodConsume(item);
+                        this.actor.controller._foodConsume(item);
                         break;
                 }
                 break;

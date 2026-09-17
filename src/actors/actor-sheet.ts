@@ -172,7 +172,7 @@ export class TheEdgeActorSheet extends CounterMixin(
             break;
 
           default:
-            this.actor._foodConsume(item);
+            this.actor.controller._foodConsume(item);
             break;
         }
         break;
