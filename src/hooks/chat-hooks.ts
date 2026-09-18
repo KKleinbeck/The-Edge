@@ -11,7 +11,7 @@ import {
 
 export default function () {
   Hooks.on("chatMessage", async (_chatLog, message, chatData) => {
-    return executeChatCommands(message, chatData);
+    if (game.version.includes("13.")) return executeChatCommands(message, chatData);
   });
 
   Hooks.on("createChatMessage", async (data, _options, _userId) => {

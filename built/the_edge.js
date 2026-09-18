@@ -11,9 +11,10 @@ import AmmunitionData from "./data_models/items/ammunition.js";
 import ArmourData from "./data_models/items/armour.js";
 import ConsumablesData from "./data_models/items/consumables.js";
 import GearData from "./data_models/items/gear.js";
-import { CombatSkillData, LanguageSkillData, MedicalSkillData, SkillData, } from "./data_models/items/skills.js";
 import VantageData from "./data_models/items/vantage.js";
 import WeaponData from "./data_models/items/weapon.js";
+import { processGivePH, processLanguage } from "./hooks/chat-hooks/chat-commands.js";
+import { CombatSkillData, LanguageSkillData, MedicalSkillData, SkillData, } from "./data_models/items/skills.js";
 import { TheEdgeActor } from "./actors/actor.js";
 import { TheEdgeCombat } from "./documents/Combat.js";
 import { TheEdgeCombatant } from "./documents/Combatant.js";
@@ -77,13 +78,7 @@ Hooks.once("init", async function () {
     // Alter the combat tracker
     CONFIG.ui.combat = TheEdgeCombatTracker;
     // Alter the default chat system
-    CONFIG.ChatMessage.template =
-        "systems/the_edge/templates/chat/chat_message.hbs";
-    CONFIG.ui.chat.MESSAGE_PATTERNS = {
-        givePH: /^\/givePH\s*(\d+)?\s*([a-zA-Z0-9 ]*)?$/,
-        language: /^\/language\s+([a-zA-Z]+)\s+(.*)$/,
-        ...CONFIG.ui.chat.MESSAGE_PATTERNS,
-    };
+    _setupChatConfigs();
     // UI setup
     CONFIG.ui.hotbar = TheEdgeHotbar;
     setupGameSettings();
@@ -188,6 +183,27 @@ function _finaliseConfigSetup() {
         THE_EDGE.weapon_damage_types[kineticWeapons[i]] = "kinetic";
         THE_EDGE.weapon_partners[energyWeapons[i]] = kineticWeapons[i];
         THE_EDGE.weapon_partners[kineticWeapons[i]] = energyWeapons[i];
+    }
+}
+function _setupChatConfigs() {
+    CONFIG.ChatMessage.template =
+        "systems/the_edge/templates/chat/chat_message.hbs";
+    if (game.version.includes("13.")) { // Legacy system
+        CONFIG.ui.chat.MESSAGE_PATTERNS = {
+            givePH: /^\/givePH\s*(\d+)?\s*([a-zA-Z0-9 ]*)?$/,
+            language: /^\/language\s+([a-zA-Z]+)\s+(.*)$/,
+            ...CONFIG.ui.chat.MESSAGE_PATTERNS,
+        };
+    }
+    else {
+        CONFIG.ui.chat.CHAT_COMMANDS.givePH = {
+            rgx: /^\/givePH\s*(\d+)?\s*([a-zA-Z0-9 ]*)?$/,
+            fn: (_command, match, chatData, _createOptions) => { processGivePH(match, chatData); }
+        };
+        CONFIG.ui.chat.CHAT_COMMANDS.language = {
+            rgx: /^\/language\s+([a-zA-Z]+)\s+(.*)$/,
+            fn: (_command, match, chatData, _createOptions) => { processLanguage(match, chatData); }
+        };
     }
 }
 function _setupTextEnrichers() {

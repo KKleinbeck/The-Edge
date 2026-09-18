@@ -4,14 +4,14 @@ import THE_EDGE from "../../system/config-the-edge.js";
 export default async function executeChatCommands(message, chatData) {
   const regexPH = CONFIG.ui.chat.MESSAGE_PATTERNS.givePH;
   const matchPH = regexPH.exec(message);
-  if (matchPH) return processGivePH(message, matchPH, chatData);
+  if (matchPH) return processGivePH(matchPH, chatData);
 
   const language = CONFIG.ui.chat.MESSAGE_PATTERNS.language;
   const matchLanguage = language.exec(message);
   if (matchLanguage) return processLanguage(matchLanguage, chatData);
 }
 
-function processGivePH(message, matches, chatData) {
+export function processGivePH(matches, chatData) {
   const user = game.users.get(chatData.user);
   if (!user.isGM) {
     const msg = LocalisationServer.localise("givePH permission", "chat");
@@ -22,14 +22,14 @@ function processGivePH(message, matches, chatData) {
 
   if (matches[1] === undefined) {
     chatData.content =
-      message + "<br />" + LocalisationServer.localise("givePH help", "chat");
+      matches[0] + "<br />" + LocalisationServer.localise("givePH help", "chat");
     return true;
   }
   const ph = +matches[1];
   const name = matches[2] ? matches[2].toLowerCase() : "all";
   const actors = _getActors(name);
   if (!actors.length) {
-    chatData.content = message + _missingActorError(name);
+    chatData.content = matches[0] + _missingActorError(name);
     return true;
   }
 
@@ -50,7 +50,23 @@ function processGivePH(message, matches, chatData) {
   return true;
 }
 
-function processLanguage(matches, chatData) {
+function _getActors(name) {
+  const actors = [];
+  if (name == "all") {
+    for (const actor of game.actors) {
+      if (actor.hasPlayerOwner && actor.type == "character") {
+        actors.push(actor);
+      }
+    }
+  } else {
+    const actor = game.actors.find(x => x.name.toLowerCase() == name);
+    if (!actor) return [];
+    actors.push(actor);
+  }
+  return actors;
+}
+
+export function processLanguage(matches, chatData) {
   const language = matches[1].toLowerCase();
 
   // Generate new pseudo message
