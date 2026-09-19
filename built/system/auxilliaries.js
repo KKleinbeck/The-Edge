@@ -9,18 +9,20 @@ export default class Aux {
             return value;
         return `${value.toFixed(digits)}&nbsp;%`;
     }
-    static objectAt(obj, path) {
-        return path.split(".").reduce((a, i) => a[i], obj);
-    }
-    static sleep(duration) { return new Promise(r => setTimeout(r, duration)); }
-    static hasRaceCondDanger(id) {
-        const lastUpdate = game.data[id];
-        if (lastUpdate === undefined || Date.now() - lastUpdate > 350) {
-            // Prevent too frequent updates to avoid race conditions
-            game.data[id] = Date.now();
-            return false;
+    static evalOnEventWith(definition, details, id) {
+        const onEvent = new Function("details, id", `
+      ${definition};
+      return onEvent(details, id);
+    `);
+        try {
+            onEvent(details, id);
         }
-        return true;
+        catch {
+            NotificationServer.error("Illicit event");
+        }
+    }
+    static filterToGenericModifiers(modifiers) {
+        return modifiers.filter((x) => x.group !== "dynamicModifiers");
     }
     static getActor(actorID, tokenID, sceneID = undefined) {
         let actor = undefined;
@@ -38,6 +40,7 @@ export default class Aux {
         return game.actors.get(actorID);
     }
     static getActorNew(speakerData) {
+        // TODO: use speaker data interface
         if (speakerData.token) {
             const sceneID = speakerData.scene;
             if (!sceneID) {
@@ -61,6 +64,16 @@ export default class Aux {
         }
         return undefined;
     }
+    static getPlayerTokens() {
+        const scene = game.canvas.scene;
+        const tokens = [];
+        for (var token of scene.tokens) {
+            if (token.actor.type === "character" && token.isOwner) {
+                tokens.push(token);
+            }
+        }
+        return tokens;
+    }
     static getToken(actorID, sceneID = undefined) {
         if (!sceneID) {
             if (!game.canvas.id)
@@ -74,22 +87,29 @@ export default class Aux {
         }
         return null;
     }
-    static getPlayerTokens() {
-        const scene = game.canvas.scene;
-        const tokens = [];
-        for (var token of scene.tokens) {
-            if (token.actor.type === "character" && token.isOwner) {
-                tokens.push(token);
-            }
+    static hasRaceCondDanger(id) {
+        const lastUpdate = game.data[id];
+        if (lastUpdate === undefined || Date.now() - lastUpdate > 350) {
+            // Prevent too frequent updates to avoid race conditions
+            game.data[id] = Date.now();
+            return false;
         }
-        return tokens;
+        return true;
+    }
+    static objectAt(obj, path) {
+        return path.split(".").reduce((a, i) => a[i], obj);
+    }
+    static sleep(duration) {
+        return new Promise((r) => setTimeout(r, duration));
     }
     static unloadAmmunition(weapon, actor) {
         const ammu = actor.items.get(weapon.system.ammunitionID);
         const unloadedCopy = actor.findItem(ammu);
         if (unloadedCopy) {
             ammu.delete();
-            unloadedCopy.update({ "system.quantity": unloadedCopy.system.quantity + 1 });
+            unloadedCopy.update({
+                "system.quantity": unloadedCopy.system.quantity + 1,
+            });
         }
         else {
             ammu.update({ "system.loaded": false });
@@ -100,33 +120,23 @@ export default class Aux {
         return humanSpoken ? [200, 400, 1000, 2000, 3200, 3200] : [600, 3000, 6400];
     }
     static parseCostStr(costStr, maxLevel = undefined) {
-        costStr = costStr.replace(/\s+/g, ''); // w.o. whitespace
+        costStr = costStr.replace(/\s+/g, ""); // w.o. whitespace
         const regex = /^(\d+\/)*\d+$/; // parse [n_1 / n_2 / ...] n_m
         if (regex.test(costStr)) {
-            const costs = costStr.split('/').map(Number);
+            const costs = costStr.split("/").map(Number);
             if (!maxLevel || costs.length == maxLevel || costs.length == 1)
                 return costs;
         }
         NotificationServer.notify("Wrong cost string", { str: costStr });
         return undefined;
     }
-    static async parseStrainCostStr(skill, currentStrainLevel) {
-        const costs = skill.system.strainCost.replace(/\s+/g, '').split("/");
-        if (costs.length != 1 && costs.length != 5) {
-            NotificationServer.notify("Wrong strain cost string", { skillName: skill.name });
-            return undefined;
-        }
-        const costRoll = costs.length == 1 ? costs[0] : costs[currentStrainLevel];
-        if (costRoll.toUpperCase() == "N.A.") {
-            NotificationServer.notify("Invalid Strain Level", { skillName: skill.name, level: currentStrainLevel });
-            return undefined;
-        }
-        else if (!Roll.validate(costRoll)) {
-            NotificationServer.notify("Wrong Strain cost Format", { skillName: skill.name, costRoll: costRoll });
-            return undefined;
-        }
-        const roll = await new Roll(costRoll).evaluate();
-        return roll.total;
+    static getCostFromCostString(costStr, level = 1) {
+        const costs = this.parseCostStr(costStr);
+        if (typeof costs == "undefined")
+            return;
+        if (level > costs.length)
+            return;
+        return costs[level - 1];
     }
     static getSkillCost(skill, mode) {
         const level = skill.system.level;
@@ -134,9 +144,12 @@ export default class Aux {
             switch (mode) {
                 case "delete":
                     return this._language_cost_table(skill.system.humanSpoken)
-                        .slice(0, level).reduce((a, b) => a + b, 0);
+                        .slice(0, level)
+                        .reduce((a, b) => a + b, 0);
+                case "learn":
                 case "increase":
-                    if ((skill.system.humanSpoken && level == 6) || (!skill.system.humanSpoken && level == 3))
+                    if ((skill.system.humanSpoken && level == 6) ||
+                        (!skill.system.humanSpoken && level == 3))
                         return undefined;
                     return this._language_cost_table(skill.system.humanSpoken)[level];
                 case "decrease":
@@ -148,7 +161,8 @@ export default class Aux {
         const costs = this.parseCostStr(skill.system.cost, maxLevel);
         if (typeof costs === "undefined")
             return undefined;
-        if (costs.length === 1) { // cost is number
+        if (costs.length === 1) {
+            // cost is number
             if (mode == "delete")
                 return level * costs[0];
             else if (mode == "increase" && level >= skill.system.maxLevel)
@@ -164,12 +178,17 @@ export default class Aux {
         }
         return costs[level - 1];
     }
-    static randomInt(min, max) { return min + Math.floor(Math.random() * (max - min + 1)); }
+    static randomInt(min, max) {
+        return min + Math.floor(Math.random() * (max - min + 1));
+    }
     static pickFromOdds(objectWithOdds) {
         let sum = 0;
-        const cumSum = Object.values(objectWithOdds).map((n, _index, _array) => { sum += n; return sum; });
+        const cumSum = Object.values(objectWithOdds).map((n, _index, _array) => {
+            sum += n;
+            return sum;
+        });
         const threshold = this.randomInt(1, cumSum.last());
-        const index = cumSum.findIndex(x => x >= threshold);
+        const index = cumSum.findIndex((x) => x >= threshold);
         return Object.keys(objectWithOdds)[index];
     }
     static generateWoundLocation(crit, sex, givenLocation = undefined) {
@@ -181,7 +200,7 @@ export default class Aux {
                 let rand = Math.random();
                 if (rand < 0.15)
                     locationDescription = "Legs" + ["Left", "Right"].random(); // 15%
-                else if (rand < 0.30)
+                else if (rand < 0.3)
                     locationDescription = "Arms" + ["Left", "Right"].random(); // 15%
                 else
                     locationDescription = "Torso"; // 65%, as p(crit) == 5%
@@ -204,10 +223,10 @@ export default class Aux {
         return [locationDescription, [x, y]];
     }
     static async detachFromParent(parent, childId, regainedAttachmentPoints) {
-        const newAttachments = parent.system.attachments.filter(x => x.shellId != childId);
+        const newAttachments = parent.system.attachments.filter((x) => x.shellId != childId);
         await parent.update({
             "system.attachments": newAttachments,
-            "system.attachmentPoints.used": parent.system.attachmentPoints.used - regainedAttachmentPoints
+            "system.attachmentPoints.used": parent.system.attachmentPoints.used - regainedAttachmentPoints,
         });
     }
     static async promptInput(title_dialog_id = "Prompt number") {
@@ -217,17 +236,20 @@ export default class Aux {
             content: '<input name="input" type="number" step="1" autofocus style="text-align: right;">',
             ok: {
                 label: LocalisationServer.localise("Submit", "dialog"),
-                callback: (_event, button, _dialog) => button.form.elements.input.valueAsNumber
-            }
+                callback: (_event, button, _dialog) => button.form.elements.input.valueAsNumber,
+            },
         });
         return result;
     }
-    static tokenDistance(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+    static tokenDistance(a, b) {
+        return Math.hypot(a.x - b.x, a.y - b.y);
+    }
     static async replacePlaceholderInContent(content, context) {
         // TODO: phase out by directly acting on DOM, see hooks/applications.ts
         const replacementPattern = /<div\s*class="replace-hook"\s*data-replace-by="([\w-]+)"\s*><\/div>/g;
         const matches = content.matchAll(replacementPattern);
-        for (const match of matches) { // match = [fullMatch, replace-by]
+        for (const match of matches) {
+            // match = [fullMatch, replace-by]
             let result = "";
             let template = "";
             let details = {};
@@ -257,8 +279,8 @@ export default class Aux {
                 for (let d3 = 1; d3 <= FACES; d3++) {
                     for (let d4 = 1; d4 <= FACES; d4++) {
                         const tuple = [d1, d2, d3, d4];
-                        const critCount = tuple.filter(v => critDice.includes(v)).length;
-                        const critFailCount = tuple.filter(v => critFailDice.includes(v)).length;
+                        const critCount = tuple.filter((v) => critDice.includes(v)).length;
+                        const critFailCount = tuple.filter((v) => critFailDice.includes(v)).length;
                         let threshold = baseThreshold;
                         threshold += critDieBonus * critCount;
                         threshold += critFailDieMalus * critFailCount;

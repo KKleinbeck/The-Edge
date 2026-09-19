@@ -1,11 +1,11 @@
 import Aux from "../system/auxilliaries.js";
 import LocalisationServer from "../system/localisation_server.js";
 
-export default class DialogItemDeletion extends Dialog{
+export default class DialogItemDeletion extends Dialog {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      width: 300
-    })
+      width: 300,
+    });
   }
 
   static async start(checkData) {
@@ -20,26 +20,39 @@ export default class DialogItemDeletion extends Dialog{
             if (item.system.layer == "Inner") {
               for (const attachmentData of item.system.attachments) {
                 const attachment = actor.items.get(attachmentData.shellId);
-                attachment.update({"system.equipped": false, "system.attachments": []});
+                attachment.update({
+                  "system.equipped": false,
+                  "system.attachments": [],
+                });
               }
             } else if (item.system.equipped == true) {
-              const parent = actor.items.get(item.system.attachments[0].armourId);
-              await Aux.detachFromParent(parent, item._id, item.system.attachmentPoints.max);
+              const parent = actor.items.get(
+                item.system.attachments[0].armourId,
+              );
+              await Aux.detachFromParent(
+                parent,
+                item._id,
+                item.system.attachmentPoints.max,
+              );
             }
           } else if (item.type == "Weapon") {
             if (item.system.ammunitionID) Aux.unloadAmmunition(item, actor);
           }
           item.delete();
-        }
+        },
       },
-      cancel: {label: LocalisationServer.localise("cancel", "dialog")}
-    }
+      cancel: { label: LocalisationServer.localise("cancel", "dialog") },
+    };
 
     return new DialogItemDeletion({
-      title: LocalisationServer.parsedLocalisation("delete item", "dialog", checkData.item),
+      title: LocalisationServer.parsedLocalisation(
+        "delete item",
+        "dialog",
+        checkData.item,
+      ),
       content: "",
       buttons: buttons,
-      default: "cancel"
-    }).render(true)
+      default: "cancel",
+    }).render(true);
   }
 }

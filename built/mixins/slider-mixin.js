@@ -22,7 +22,9 @@ export default function SliderMixin(BaseApplication) {
             this._attachEffectListeners();
         }
         _attachEffectListeners() {
-            this.element.querySelectorAll(".slider-click-hook")?.forEach((x) => x.addEventListener("click", (ev) => this._sliderClickedEvent(ev)));
+            this.element
+                .querySelectorAll(".slider-click-hook")
+                ?.forEach((x) => x.addEventListener("click", (ev) => this._sliderClickedEvent(ev)));
         }
         async _sliderClickedEvent(event) {
             const target = event.currentTarget;
@@ -34,7 +36,7 @@ export default function SliderMixin(BaseApplication) {
             const entryElement = target.closest(".slider-hook");
             if (!(entryElement instanceof HTMLElement))
                 return;
-            if (!(entryElement.dataset.binaryContext))
+            if (!entryElement.dataset.binaryContext)
                 return;
             const context = JSON.parse(atob(entryElement.dataset.binaryContext));
             context.value = value;
@@ -58,7 +60,9 @@ export default function SliderMixin(BaseApplication) {
             const html = await renderTemplate(template, context);
             const content = document.createElement("div");
             content.innerHTML = html;
-            content.querySelectorAll(".slider-click-hook")?.forEach((x) => x.addEventListener("click", (ev) => this._sliderClickedEvent(ev)));
+            content
+                .querySelectorAll(".slider-click-hook")
+                ?.forEach((x) => x.addEventListener("click", (ev) => this._sliderClickedEvent(ev)));
             element.replaceWith(content);
         }
     }

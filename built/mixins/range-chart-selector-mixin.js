@@ -1,12 +1,18 @@
 import Aux from "../system/auxilliaries.js";
 const { renderTemplate } = foundry.applications.handlebars;
 export default function RangeChartSelectorMixin(BaseApplication) {
-    class RangeChartSelector extends BaseApplication {
+    return class RangeChartSelector extends BaseApplication {
         static DEFAULT_OPTIONS = {
-            actions: { selectRange: RangeChartSelector._selectRange }
+            actions: { selectRange: RangeChartSelector._selectRange },
         };
         static async _selectRange(_event, target) {
             const dataset = target.dataset;
+            if (typeof dataset.label === "undefined")
+                return;
+            if (typeof dataset.modifier === "undefined")
+                return;
+            if (typeof dataset.index === "undefined")
+                return;
             const rangeAccuracy = this.item.system.rangeChart[dataset.label];
             const modifier = +dataset.modifier;
             if (modifier >= 11 || modifier <= -11) {
@@ -20,14 +26,18 @@ export default function RangeChartSelectorMixin(BaseApplication) {
             const update = {};
             update[field] = rangeAccuracy;
             await this.item.update(update, { render: false });
-            this._renderRangeChart();
+            RangeChartSelector._renderRangeChart.call(this);
         }
-        async _renderRangeChart() {
+        static async _renderRangeChart() {
             const template = "systems/the_edge/templates/generic/range-chart.hbs";
-            const html = await renderTemplate(template, { rangeChart: this.item.system.rangeChart });
+            const html = await renderTemplate(template, {
+                rangeChart: this.item.system.rangeChart,
+            });
+            // @ts-expect-error
             const rangeChartHTML = this.element.querySelector(".range-chart");
+            if (!(rangeChartHTML instanceof Element))
+                return;
             rangeChartHTML.outerHTML = html;
         }
-    }
-    return RangeChartSelector;
+    };
 }

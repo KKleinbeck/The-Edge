@@ -17,8 +17,9 @@ export default class DialogProficiency extends CheckDialog {
         const html = await renderTemplate(template, {
             chance: Aux.asChance(Aux.proficiencySuccessChance(threshold, checkData.actor.system.proficiencyDiceParameter), true),
             modifierValue: checkData.modifier ?? 0,
-            maxStrain: proficiencyData.filter(x => x.name == "proficiency")[0].threshold + strainReduction,
-            strainHintType: "proficiency strain"
+            maxStrain: proficiencyData.filter((x) => x.name == "proficiency")[0].threshold +
+                strainReduction,
+            strainHintType: "proficiency strain",
         });
         const content = document.createElement("div");
         content.innerHTML = html;
@@ -49,7 +50,8 @@ export default class DialogProficiency extends CheckDialog {
         return new DialogProficiency(checkData, {
             window: {
                 title: LocalisationServer.localise(checkData.proficiency, "proficiency") +
-                    " " + game.i18n.localize("CHECK"),
+                    " " +
+                    game.i18n.localize("CHECK"),
             },
             content: content,
             buttons: buttons,
@@ -59,7 +61,7 @@ export default class DialogProficiency extends CheckDialog {
                     DialogProficiency.cheatCallback(dialog, checkData, onSubmitCallback);
                 else
                     DialogProficiency.rollCallback(dialog, checkData, result, onSubmitCallback);
-            }
+            },
         }).render({ force: true });
     }
     static async rollCallback(dialog, checkData, roll, onSubmitCallback) {
@@ -71,10 +73,10 @@ export default class DialogProficiency extends CheckDialog {
             return;
         }
         const promptResult = { roll, ...dialog.promptResult };
-        if (!(promptResult.strain))
+        if (!promptResult.strain)
             promptResult.strain = 0;
         const proficiencyPromptResult = foundry.utils.mergeObject(checkData, promptResult);
-        checkData.actor.system.rollProficiencyCheck(proficiencyPromptResult, onSubmitCallback);
+        await checkData.actor.system.rollProficiencyCheck(proficiencyPromptResult, onSubmitCallback);
         const payload = {
             actionType: "proficiency check",
             actor: checkData.actor,
@@ -87,8 +89,12 @@ export default class DialogProficiency extends CheckDialog {
         console.log("not implemented yet");
     }
     // Helpers for rendering
-    onValueChanged(_id, _value) { this._onChanceChanged(); }
-    onVantageChanged() { this._onChanceChanged(); }
+    onValueChanged(_id, _value) {
+        this._onChanceChanged();
+    }
+    onVantageChanged() {
+        this._onChanceChanged();
+    }
     _onChanceChanged() {
         const sliderValues = this.getSliderValues();
         let threshold = Object.values(sliderValues).sum();

@@ -1,4 +1,5 @@
-const { ArrayField, NumberField, SchemaField, StringField } = foundry.data.fields;
+const { ArrayField, NumberField, SchemaField, StringField } =
+  foundry.data.fields;
 
 export default class CombatantBaseData extends foundry.abstract.TypeDataModel {
   static defineSchema(): Record<string, foundryAny> {
@@ -8,10 +9,10 @@ export default class CombatantBaseData extends foundry.abstract.TypeDataModel {
       actionLog: new ArrayField(
         new SchemaField({
           name: new StringField({ intial: "" }),
-          actionCost: new NumberField({ initial: 0, integer: true })
+          actionCost: new NumberField({ initial: 0, integer: true }),
         }),
-        { initial: [] }
-      )
-    }
+        { initial: [] },
+      ),
+    };
   }
 }

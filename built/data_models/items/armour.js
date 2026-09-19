@@ -13,25 +13,28 @@ export default class ArmourData extends generateDataModelWithComponents(Descript
         schema.bodyPart = new StringField({ initial: "Torso" });
         schema.layer = new StringField({ initial: "Inner" });
         schema.structurePoints = new NumberField({ initial: 10, integer: true });
-        schema.structurePointsOriginal = new NumberField({ initial: 10, integer: true });
+        schema.structurePointsOriginal = new NumberField({
+            initial: 10,
+            integer: true,
+        });
         schema.attachmentPoints = new SchemaField({
             max: new NumberField({ initial: 0, integer: true }),
-            used: new NumberField({ initial: 0, integer: true })
+            used: new NumberField({ initial: 0, integer: true }),
         });
         schema.attachments = new ArrayField(new ObjectField(), { initial: [] });
         schema.protection = new SchemaField({
             energy: new SchemaField({
                 absorption: new NumberField({ initial: 0, integer: true }),
-                threshold: new NumberField({ initial: 0, integer: true })
+                threshold: new NumberField({ initial: 0, integer: true }),
             }),
             kinetic: new SchemaField({
                 absorption: new NumberField({ initial: 0, integer: true }),
-                threshold: new NumberField({ initial: 0, integer: true })
+                threshold: new NumberField({ initial: 0, integer: true }),
             }),
             elemental: new SchemaField({
                 absorption: new NumberField({ initial: 0, integer: true }),
-                threshold: new NumberField({ initial: 0, integer: true })
-            })
+                threshold: new NumberField({ initial: 0, integer: true }),
+            }),
         });
         return schema;
     }
@@ -48,7 +51,9 @@ export default class ArmourData extends generateDataModelWithComponents(Descript
                 [damage, penetration] = await shell.system.protect(damage, penetration, damageType, location, protectionLog);
             }
         }
-        if (damageType == "HandToHand" || damageType == "fall" || damageType == "impact") {
+        if (damageType == "HandToHand" ||
+            damageType == "fall" ||
+            damageType == "impact") {
             damageType = "kinetic";
         }
         const protection = this.protection[damageType];
@@ -60,7 +65,8 @@ export default class ArmourData extends generateDataModelWithComponents(Descript
             protectionLog[this.parent.name] += damage;
             damage = Math.max(0, Math.min(penetration, protection.threshold));
         }
-        else { // TODO: It could be that structurePoints < Threshold => propagate damage
+        else {
+            // TODO: It could be that structurePoints < Threshold => propagate damage
             update["system.structurePoints"] = Math.max(0, this.structurePoints - protection.threshold);
             protectionLog[this.parent.name] += protection.threshold;
             damage -= Math.max(protection.threshold - penetration, 0);
@@ -68,7 +74,8 @@ export default class ArmourData extends generateDataModelWithComponents(Descript
         penetration = Math.max(penetration - protection.threshold, 0);
         if (update["system.structurePoints"] == 0) {
             NotificationServer.notify("Destroyed", { name: this.parent.name });
-            update["name"] = this.parent.name + " - " + LocalisationServer.localise("broken");
+            update["name"] =
+                this.parent.name + " - " + LocalisationServer.localise("broken");
             update["system.equipped"] = false;
             update["system.attachments"] = [];
             if (this.layer == "Outer") {

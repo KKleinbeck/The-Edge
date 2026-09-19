@@ -17,8 +17,14 @@ export default class ProficiencyConfig {
                     outcome.distance = 9 - 1.5 * ql;
                     outcome.dir = [0, 1, 2, 3, 4, 5, 6, 7].random();
                     const dir = [
-                        "north", "north east", "east", "south east",
-                        "south", "south west", "west", "north west"
+                        "north",
+                        "north east",
+                        "east",
+                        "south east",
+                        "south",
+                        "south west",
+                        "west",
+                        "north west",
                     ][outcome.dir];
                     outcome.description = `Object lands ${outcome.distance}m ${dir} of target`;
                 }

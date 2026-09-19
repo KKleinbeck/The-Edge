@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 30">
+  <!-- Background -->
+  <path d="M 10,0 H 6 L 0,6 V 24 L 6,30 H 10 Z"
+    fill="#2a507a"
+  />
+  <!-- Border -->
+  <path d="M 8,0 H 6 L 0,6 V 24 L 6,30 H 8 V 28 L 3,23 V 7 L 8,2 Z"
+    fill="#f0f0f0"
+  />
+</svg>

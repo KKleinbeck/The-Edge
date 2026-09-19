@@ -4,13 +4,13 @@ export default async function executeChatCommands(message, chatData) {
     const regexPH = CONFIG.ui.chat.MESSAGE_PATTERNS.givePH;
     const matchPH = regexPH.exec(message);
     if (matchPH)
-        return processGivePH(message, matchPH, chatData);
+        return processGivePH(matchPH, chatData);
     const language = CONFIG.ui.chat.MESSAGE_PATTERNS.language;
     const matchLanguage = language.exec(message);
     if (matchLanguage)
         return processLanguage(matchLanguage, chatData);
 }
-function processGivePH(message, matches, chatData) {
+export function processGivePH(matches, chatData) {
     const user = game.users.get(chatData.user);
     if (!user.isGM) {
         const msg = LocalisationServer.localise("givePH permission", "chat");
@@ -19,26 +19,50 @@ function processGivePH(message, matches, chatData) {
         return false;
     }
     if (matches[1] === undefined) {
-        chatData.content = message + "<br />" + LocalisationServer.localise("givePH help", "chat");
+        chatData.content =
+            matches[0] + "<br />" + LocalisationServer.localise("givePH help", "chat");
         return true;
     }
     const ph = +matches[1];
     const name = matches[2] ? matches[2].toLowerCase() : "all";
     const actors = _getActors(name);
     if (!actors.length) {
-        chatData.content = message + _missingActorError(name);
+        chatData.content = matches[0] + _missingActorError(name);
         return true;
     }
     const names = [];
     for (const actor of actors) {
-        actor.update({ "system.PracticeHours.max": actor.system.PracticeHours.max + ph });
+        actor.update({
+            "system.PracticeHours.max": actor.system.PracticeHours.max + ph,
+        });
         names.push(actor.name);
     }
-    chatData.content = `<h3>${LocalisationServer.localise("practice time", "chat")}</h3>` +
-        LocalisationServer.parsedLocalisation("Practice message", "chat", { actors: names, phGain: ph });
+    chatData.content =
+        `<h3>${LocalisationServer.localise("practice time", "chat")}</h3>` +
+            LocalisationServer.parsedLocalisation("Practice message", "chat", {
+                actors: names,
+                phGain: ph,
+            });
     return true;
 }
-function processLanguage(matches, chatData) {
+function _getActors(name) {
+    const actors = [];
+    if (name == "all") {
+        for (const actor of game.actors) {
+            if (actor.hasPlayerOwner && actor.type == "character") {
+                actors.push(actor);
+            }
+        }
+    }
+    else {
+        const actor = game.actors.find(x => x.name.toLowerCase() == name);
+        if (!actor)
+            return [];
+        actors.push(actor);
+    }
+    return actors;
+}
+export function processLanguage(matches, chatData) {
     const language = matches[1].toLowerCase();
     // Generate new pseudo message
     let newMessage = "";
@@ -57,7 +81,7 @@ function processLanguage(matches, chatData) {
 function _generatePseudoWord(language, word) {
     const hash = _stringHash(language + word.toLowerCase());
     const newWordLength = word.length - 1 + (hash % 4);
-    let pseudoWord = '';
+    let pseudoWord = "";
     let seed = hash;
     for (let i = 0; i < newWordLength; i++) {
         seed = (seed * seed + 11) % 1000000;
@@ -78,7 +102,7 @@ function _stringHash(string) {
 function _translateForProficientUsers(language, message, newMessage) {
     const speakingActors = _getSpeakingActors(language);
     // TODO: assert that message always renders for GM
-    if (!(speakingActors.length))
+    if (!speakingActors.length)
         return;
     const userProficiency = _createLevelByUserID(speakingActors);
     const usersByLevel = _mapLevelsToUsers(userProficiency);
@@ -89,16 +113,24 @@ function _translateForProficientUsers(language, message, newMessage) {
         const content = _createMessageForLevel(level, language, message, newMessage);
         ChatMessage.create({
             content: content,
-            whisper: users
+            whisper: users,
         });
     }
     return usersByLevel[0];
 }
 function _getSpeakingActors(language) {
-    const speakingActors = game.actors.map(actor => {
-        const learnedLevels = actor.itemTypes["Languageskill"]?.filter(x => { x.name.toLowerCase() == language; }).map(x => x.system.level) ?? 0;
-        const nativeLevel = (actor.system.nativeLanguage?.toLowerCase().includes(language) ?
-            6 : 0);
+    const speakingActors = game.actors
+        .map((actor) => {
+        const learnedLevels = actor.itemTypes["Languageskill"]
+            ?.filter((x) => {
+            return x.name.toLowerCase() == language;
+        })
+            .map((x) => x.system.level) ?? 0;
+        const nativeLevel = actor.system.nativeLanguage
+            ?.toLowerCase()
+            .includes(language)
+            ? 6
+            : 0;
         const properOwners = [];
         for (const [actorId, ownershipLevel] of Object.entries(actor.ownership)) {
             if (ownershipLevel === 3)
@@ -106,9 +138,10 @@ function _getSpeakingActors(language) {
         }
         return {
             ownerIDs: properOwners,
-            languageLevel: Math.max(nativeLevel, ...learnedLevels)
+            languageLevel: Math.max(nativeLevel, ...learnedLevels),
         };
-    }).filter(x => x.languageLevel);
+    })
+        .filter((x) => x.languageLevel);
     return speakingActors;
 }
 function _createLevelByUserID(speakingActors) {

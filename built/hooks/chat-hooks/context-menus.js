@@ -1,5 +1,5 @@
 import Aux from "../../system/auxilliaries.js";
-import NewChatServer from "../../system/new_chat_server.js";
+import ChatServer from "../../system/chat_server.js";
 import DiceServer from "../../system/dice_server.js";
 import LocalisationServer from "../../system/localisation_server.js";
 import ProficiencyConfig from "../../system/config-proficiencies.js";
@@ -12,26 +12,32 @@ export default async function attachContextMenus(config) {
             classes: "roll-context-menu",
             icon: "",
             condition: (contextHtml) => {
-                const prevRoll = parseInt(contextHtml.querySelector(".d20-overlay").innerText);
+                const prevRoll = parseInt(contextHtml.querySelector(".d20-overlay")
+                    .innerText);
                 const type = contextHtml.dataset.type;
-                return actor.system.heroToken.available > 0 && (prevRoll != 1 || type == "proficiency");
+                return (actor.system.heroToken.available > 0 &&
+                    (prevRoll != 1 || type == "proficiency"));
             },
-            callback: (contextHtml) => _heroTokenCallback(contextHtml, config)
+            callback: (contextHtml) => _heroTokenCallback(contextHtml, config),
         },
         {
             name: LocalisationServer.localise("Reroll"),
             classes: "roll-context-menu",
             icon: "",
-            condition: () => { return true; },
-            callback: (contextHtml) => _rerollCallback(contextHtml, config)
+            condition: () => {
+                return true;
+            },
+            callback: (contextHtml) => _rerollCallback(contextHtml, config),
         },
         {
             name: LocalisationServer.localise("Change"),
             classes: "roll-context-menu",
             icon: "",
-            condition: () => { return game.user.isGM; },
-            callback: (contextHtml) => _changeCallback(contextHtml, config)
-        }
+            condition: () => {
+                return game.user.isGM;
+            },
+            callback: (contextHtml) => _changeCallback(contextHtml, config),
+        },
     ], { jQuery: false, fixed: true }); // jQuery Option can be removed with Foundry v14
 }
 // Callbacks
@@ -65,7 +71,10 @@ async function _changeCallback(contextHtml, config) {
 }
 function _handleRerollOrChange(contextHtml, config, newRoll) {
     const { actor, chatMsgCls, system } = config;
-    const rerollDetails = { name: game.user.name, new: newRoll };
+    const rerollDetails = {
+        name: game.user.name,
+        new: newRoll,
+    };
     const index = +(contextHtml.dataset.index || 0);
     switch (contextHtml.dataset.type) {
         case "attribute":
@@ -80,14 +89,15 @@ function _handleRerollOrChange(contextHtml, config, newRoll) {
             updateProficiencyCheck(chatMsgCls, system, system.details.rolls);
             break;
         case "weapon":
-            rerollDetails.old = system.details.rolls[index].dieResult;
-            const newResults = structuredClone(system.details.rolls);
+            const details = system.details;
+            rerollDetails.old = details.attackRollResult.rolls[index].dieResult;
+            const newResults = structuredClone(details.attackRollResult.rolls);
             newResults[index].dieResult = newRoll;
             updateWeaponCheck(chatMsgCls, actor, system, newResults, index);
             rerollDetails.check = LocalisationServer.localise("combat", "combat");
             break;
     }
-    NewChatServer.transmitEvent("REROLL", rerollDetails);
+    ChatServer.transmitEvent("REROLL", rerollDetails);
 }
 // Helper functions
 function _heroTokenAttributeCheck(chatMsgCls, system) {
@@ -106,11 +116,13 @@ function _heroTokenProficiencyCheck(chatMsgCls, system) {
     const { details } = system;
     if (details.quality < 0) {
         for (let i = 0; i < 4; ++i) {
-            details.rolls[i] = Math.min(details.dice[i].threshold + Math.floor((details.modifier + details.strain) / 4), 19);
+            details.rolls[i] = Math.min(details.dice[i].threshold +
+                Math.floor((details.modifier + details.strain) / 4), 19);
         }
     }
     else {
-        for (let _j = 0; _j < 2; ++_j) { // Convert largest two rolls
+        for (let _j = 0; _j < 2; ++_j) {
+            // Convert largest two rolls
             const indexMax = details.rolls.indexOf(Math.max(...details.rolls));
             details.rolls[indexMax] = 1;
         }
@@ -127,17 +139,18 @@ async function updateProficiencyCheck(chatMsgCls, system, newResults) {
     updateChatMessage(chatMsgCls, newContent, system);
 }
 function _heroTokenWeaponCheck(chatMsgCls, actor, system, index) {
-    const { details } = system;
-    const newResults = structuredClone(details.rolls);
+    const details = system.details;
+    const newResults = structuredClone(details.attackRollResult.rolls);
     if (newResults[index].hit)
         newResults[index].dieResult = 1;
     else
-        newResults[index].dieResult = details.threshold;
+        newResults[index].dieResult = details.attackRollQuery.threshold;
     updateWeaponCheck(chatMsgCls, actor, system, newResults, index);
 }
 async function updateWeaponCheck(chatMsgCls, _actor, system, newResults, index) {
-    const { details } = system;
-    if ((newResults[index].dieResult <= details.threshold || newResults[index].dieResult == 1) &&
+    const details = system.details;
+    if ((newResults[index].dieResult <= details.attackRollQuery.threshold ||
+        newResults[index].dieResult == 1) &&
         // TODO: Refactor once we have a generic crit interface
         ![20].includes(newResults[index].dieResult)) {
         newResults[index].hit = true;
@@ -147,37 +160,40 @@ async function updateWeaponCheck(chatMsgCls, _actor, system, newResults, index) 
     // Which hit was modified?
     let hitIndex = 0;
     for (let i = 0; i < index; ++i) {
-        if (details.rolls[i].hit)
+        if (details.attackRollResult.rolls[i].hit)
             hitIndex += 1;
     }
-    if (details.rolls[index].hit) { // Previous roll was a hit
+    if (details.attackRollResult.rolls[index].hit) {
+        // Previous roll was a hit
         if (!newResults[index].hit)
-            details.damage.splice(hitIndex, 1);
+            details.attackRollResult.damage.splice(hitIndex, 1);
         // TODO: Refactor once we have a generic crit interface
         else if ([1].includes(newResults[index].dieResult) &&
-            ![1].includes(details.rolls[index].dieResult)) {
-            details.damage[hitIndex] += DiceServer.max(details.damageRoll);
+            ![1].includes(details.attackRollResult.rolls[index].dieResult)) {
+            details.attackRollResult.damage[hitIndex] += DiceServer.max(details.attackRollQuery.damageRoll);
         }
-        else if (newResults[index].dieResult != 1 && details.rolls[index].dieResult == 1) {
-            details.damage[hitIndex] -= DiceServer.max(details.damageRoll);
+        else if (newResults[index].dieResult != 1 &&
+            details.attackRollResult.rolls[index].dieResult == 1) {
+            details.attackRollResult.damage[hitIndex] -= DiceServer.max(details.attackRollQuery.damageRoll);
         }
     }
-    else { // Previous roll wasn't a hit
+    else {
+        // Previous roll wasn't a hit
         if (newResults[index].hit) {
-            details.damage = [
-                ...details.damage.slice(0, hitIndex),
-                await DiceServer.genericRoll(details.damageRoll),
-                ...details.damage.slice(hitIndex)
+            details.attackRollResult.damage = [
+                ...details.attackRollResult.damage.slice(0, hitIndex),
+                await DiceServer.genericRoll(details.attackRollQuery.damageRoll),
+                ...details.attackRollResult.damage.slice(hitIndex),
             ];
         }
         if (newResults[index].dieResult == 1) {
-            details.damage[hitIndex] += DiceServer.max(details.damageRoll);
+            details.attackRollResult.damage[hitIndex] += DiceServer.max(details.attackRollQuery.damageRoll);
         }
     }
-    details.rolls = newResults;
-    const newContent = await renderTemplate("systems/the_edge/templates/chat/weapon_check.hbs", details);
+    details.attackRollResult.rolls = newResults;
+    const newContent = await renderTemplate("systems/the_edge/templates/chat/weapon-check.hbs", details);
     updateChatMessage(chatMsgCls, newContent, system);
 }
 async function updateChatMessage(chatMsgCls, newContent, newSystem) {
-    chatMsgCls.update({ "content": newContent, "system": newSystem });
+    chatMsgCls.update({ content: newContent, system: newSystem });
 }

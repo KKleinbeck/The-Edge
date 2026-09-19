@@ -1,7 +1,9 @@
 # IDE
 .idea/
 .vs/
+.husky/
 the_edge.code-workspace
+The-Edge.code-workspace
 
 # Separate Repos
 docs/

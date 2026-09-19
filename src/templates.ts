@@ -1,20 +1,23 @@
 export const REPLACEMENTS = {
   "range-chart": "systems/the_edge/templates/generic/range-chart.hbs",
-  "slider": "systems/the_edge/templates/generic/slider.hbs",
-}
+  slider: "systems/the_edge/templates/generic/slider.hbs",
+};
 
-export const preloadHandlebarsTemplates = async function() {
+export const preloadHandlebarsTemplates = async function () {
   // Define template paths to load
   const templatePaths = [
     // Actor templates
     // Generics
     "systems/the_edge/templates/actors/skills.hbs",
     // Attributes
+    "systems/the_edge/templates/actors/character/attributes/conditioning.hbs",
+    "systems/the_edge/templates/actors/character/attributes/embedded-skills.hbs",
+    "systems/the_edge/templates/actors/character/attributes/languages.hbs",
     "systems/the_edge/templates/actors/character/attributes/layout.hbs",
     "systems/the_edge/templates/actors/character/attributes/main_attributes.hbs",
-    "systems/the_edge/templates/actors/character/attributes/languages.hbs",
-    "systems/the_edge/templates/actors/character/attributes/conditioning.hbs",
     "systems/the_edge/templates/actors/character/attributes/progress.hbs",
+    // Biography
+    "systems/the_edge/templates/actors/character/biography/counters.hbs",
     // Proficiencies
     "systems/the_edge/templates/actors/character/proficiencies/layout.hbs",
     // Combat
@@ -44,12 +47,17 @@ export const preloadHandlebarsTemplates = async function() {
     // Item templates
     "systems/the_edge/templates/items/Ammunition-details-content.hbs",
     "systems/the_edge/templates/items/Grenade-effects-content.hbs",
+    "systems/the_edge/templates/items/meta-counters.hbs",
+    "systems/the_edge/templates/items/meta-effects.hbs",
+    "systems/the_edge/templates/items/meta-embedded-skills.hbs",
 
     // Chat templates
     "systems/the_edge/templates/chat/items/meta-effects.hbs",
-    "systems/the_edge/templates/chat/meta-damage.html",
-    "systems/the_edge/templates/chat/meta-apply-damage.html",
-    "systems/the_edge/templates/chat/meta-protection-log.html",
+    "systems/the_edge/templates/chat/meta-damage.hbs",
+    "systems/the_edge/templates/chat/meta-apply-damage.hbs",
+    "systems/the_edge/templates/chat/meta-protection-log.hbs",
+
+    // Dialogs
     "systems/the_edge/templates/dialogs/meta-chat-options.html",
 
     // Hotbar

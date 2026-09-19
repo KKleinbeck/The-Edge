@@ -13,40 +13,41 @@ function WEAPON_FIELD() {
 }
 
 export default class WeaponData extends DataModelComponent {
-  declare weapons: IWeapons
+  declare weapons: IWeapons;
 
   static defineSchema() {
     return {
       weapons: new SchemaField({
-        "general": new SchemaField({
+        general: new SchemaField({
           "General weapon proficiency": WEAPON_FIELD(),
           "Hand-to-Hand combat": WEAPON_FIELD(),
           "Recoilless Rifles": WEAPON_FIELD(),
         }),
-        "energy": new SchemaField({
+        energy: new SchemaField({
           "Blaster Pistols": WEAPON_FIELD(),
           "Pulse Rifle": WEAPON_FIELD(),
-          "SABs": WEAPON_FIELD(),
+          SABs: WEAPON_FIELD(),
           "Blaster Shockguns": WEAPON_FIELD(),
           "Blaster Snipers": WEAPON_FIELD(),
         }),
-        "kinetic": new SchemaField({
+        kinetic: new SchemaField({
           "Kinetic Pistols": WEAPON_FIELD(),
           "Slug Throwers": WEAPON_FIELD(),
-          "LMGs": WEAPON_FIELD(),
-          "Shotguns": WEAPON_FIELD(),
+          LMGs: WEAPON_FIELD(),
+          Shotguns: WEAPON_FIELD(),
           "Projectile Snipers": WEAPON_FIELD(),
-        })
-      })
+        }),
+      }),
     };
   }
 
   getWeaponLevel(weaponType: TWeapon): number {
     const type: TWeaponType = THE_EDGE.weapon_damage_types[weaponType];
-    let level: number = Math.floor((
-      this.weapons[type][weaponType].value +
-      this.weapons.general["General weapon proficiency"].value
-    ) / 2);
+    let level: number = Math.floor(
+      (this.weapons[type][weaponType].value +
+        this.weapons.general["General weapon proficiency"].value) /
+        2,
+    );
     if (weaponType == "Hand-to-Hand combat") return level;
 
     const partner: TWeapon = THE_EDGE.weapon_partners[weaponType];
@@ -57,18 +58,7 @@ export default class WeaponData extends DataModelComponent {
     return level;
   }
 
-  get attackDiceParameters(): IAttackDiceParameters {
-    return {
-      critDice: [1],
-      critFailDice: [20],
-      critFailCheckThreshold: Math.floor((this.weapons.general["General weapon proficiency"].value) / 2),
-    };
-  }
-
   async rollAttackCheck(prompt: IAttackRollPrompt): Promise<IAttackRollResult> {
-    const config: IDiceServerAttackConfig = {
-      ...this.attackDiceParameters, ...prompt
-    };
-    return await DiceServer.attackCheck(config);
+    return await DiceServer.attackCheck(prompt);
   }
 }

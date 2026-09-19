@@ -5,7 +5,7 @@ import DescriptionData from "./components/description.js";
 const { NumberField } = foundry.data.fields;
 
 export default class VantageData extends generateDataModelWithComponents(
-  DescriptionData
+  DescriptionData,
 ) {
   static defineSchema() {
     const schema = super.defineSchema();

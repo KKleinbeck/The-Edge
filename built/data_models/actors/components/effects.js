@@ -4,7 +4,7 @@ const { ArrayField, ObjectField } = foundry.data.fields;
 export default class ActorEffectData extends DataModelComponent {
     static defineSchema() {
         return {
-            effects: new ArrayField(new ObjectField(), { initial: [] })
+            effects: new ArrayField(new ObjectField(), { initial: [] }),
         };
     }
     async createNewEffect(name, modifiers = undefined) {
@@ -12,7 +12,7 @@ export default class ActorEffectData extends DataModelComponent {
         this.effects.push({
             active: true,
             name: name,
-            modifiers: modifiers || [this._newModifier()]
+            modifiers: modifiers || [this._newModifier()],
         });
         await this.parent.update({ "system.effects": this.effects });
     }
@@ -30,9 +30,9 @@ export default class ActorEffectData extends DataModelComponent {
     }
     findEffectsByName(name) {
         const result = [];
-        for (const [candidate, details] of Object.entries(this.effects)) {
-            if (name === details.name)
-                result.push(candidate);
+        for (let i = 0; i < this.effects.length; i++) {
+            if (name === this.effects[i].name)
+                result.push(i);
         }
         return result;
     }

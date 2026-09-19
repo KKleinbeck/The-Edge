@@ -1,3 +1,4 @@
+import Aux from "../system/auxilliaries.js";
 export class TheEdgeItem extends Item {
     static defaultImages = {
         Weapon: "systems/the_edge/icons/rifle.png",
@@ -26,11 +27,6 @@ export class TheEdgeItem extends Item {
         this.defaultIcon(data);
         return await super.create(data, options);
     }
-    /* -------------------------------------------- */
-    /**
-     * Is this Item used as a template for other Items?
-     * @type {boolean}
-     */
     get isTemplate() {
         return !!this.getFlag("the_edge", "isTemplate");
     }
@@ -40,5 +36,12 @@ export class TheEdgeItem extends Item {
         }
         else
             await this.delete();
+    }
+    effectHooks(field, details) {
+        for (const modifier of this.system.modifiers) {
+            if (modifier.field === field) {
+                Aux.evalOnEventWith(modifier.value, details, this.id);
+            }
+        }
     }
 }

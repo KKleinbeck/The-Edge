@@ -7,7 +7,7 @@ export default function () {
             default: ["#6366f1", "#3b82f6", "#00f5ff"],
             health: ["#2e7d32", "#4caf50", "#53c24fff"],
             strain: ["#fc8414", "#c7411f", "rgb(160, 17, 17)"],
-        }
+        },
     };
     Handlebars.registerHelper({
         progressBarColour: (i, a = undefined) => {
@@ -31,10 +31,15 @@ export default function () {
             }
             let tooltip = "";
             if (longTooltip) {
-                tooltip = wound.source + " - " +
-                    LocalisationServer.localise(wound.status, "item") + " - " +
-                    `${wound.damage} ` + LocalisationServer.localise("Damage") +
-                    ` - ${wound.bleeding} ` + LocalisationServer.localise("Bleeding");
+                tooltip =
+                    wound.source +
+                        " - " +
+                        LocalisationServer.localise(wound.status, "item") +
+                        " - " +
+                        `${wound.damage} ` +
+                        LocalisationServer.localise("Damage") +
+                        ` - ${wound.bleeding} ` +
+                        LocalisationServer.localise("Bleeding");
             }
             else {
                 tooltip = LocalisationServer.localise(wound.status, "item");

@@ -21,21 +21,25 @@ export default class CharacterData extends CharacterDataParent {
     // Fixing relations
     _initialize(options = {}) {
         super._initialize(options);
-        this.health.max.value = this.health.max.baseline + this.health.max.status +
-            this.attributes.str.advances +
-            Math.floor((this.attributes.end.advances + this.attributes.res.advances) / 2);
-        this.strain.max.value = this.strain.max.baseline + this.strain.max.status +
-            2 * this.strain.max.advances + this.attributes.end.value;
+        this.health.max.value =
+            this.health.max.baseline +
+                this.health.max.status +
+                this.attributes.str.advances +
+                Math.floor((this.attributes.end.advances + this.attributes.res.advances) / 2);
+        this.strain.max.value =
+            this.strain.max.baseline +
+                this.strain.max.status +
+                2 * this.strain.max.advances +
+                this.attributes.end.value;
     }
     // General Hooks
     onUpdate(data) {
-        // Get a the current set of modifiers, so that status effects have up to date attributes
-        const preliminaryModifiers = this._modifiers;
         // Operate on a copy of this datamodel to simulate data model after the update
-        foundry.utils.mergeObject(preliminaryModifiers, data);
-        const systemModification = expandObject(preliminaryModifiers)?.system ?? {};
-        const tempDataModel = new this.constructor(this, { parent: this.parent });
-        tempDataModel.updateSource(systemModification);
+        const systemModification = expandObject(data)?.system ?? {};
+        mergeObject(systemModification, this);
+        const tempDataModel = new this.constructor(systemModification, {
+            parent: this.parent,
+        });
         // Based on the simulated update, get the proper update
         const activeModifiers = tempDataModel._modifiers;
         mergeObject(data, activeModifiers);
@@ -48,6 +52,7 @@ export default class CharacterData extends CharacterDataParent {
             }
         }
         function addToResult(keys, value) {
+            // Helper Function
             for (const key of keys) {
                 if (!(key in activeModifiers))
                     activeModifiers[key] = 0;
@@ -67,36 +72,18 @@ export default class CharacterData extends CharacterDataParent {
             }
         }
         const itemAndSkillEffects = [
-            ...this.parent.getItemEffects(true).map(x => x.modifiers),
-            ...this.parent.getSkillEffects(true).map(x => x.modifiers)
+            ...this.parent.getItemEffects(true).map((x) => x.modifiers),
+            ...this.parent.getSkillEffects(true).map((x) => x.modifiers),
         ];
         for (const effect of itemAndSkillEffects) {
             for (const modifier of effect) {
-                addToResult(THE_EDGE.effectMap[modifier.group][modifier.field], modifier.value);
+                if (modifier.group in THE_EDGE.effectMap) {
+                    addToResult(THE_EDGE.effectMap[modifier.group][modifier.field], modifier.value);
+                }
             }
         }
         return activeModifiers;
     }
-    // _updateCritDice(effect, critDice) {
-    //   if (effect.name == "crit") {
-    //     const index = critDice[effect.group].critFail.indexOf(effect.value);
-    //     if (index > -1) {
-    //       critDice[effect.group].critFail.splice(index, 1);
-    //       return true;
-    //     }
-    //     critDice[effect.group].crit.push(effect.value)
-    //     return true;
-    //   } else if (effect.name == "critFail") {
-    //     const index = critDice[effect.group].crit.indexOf(effect.value);
-    //     if (index > -1) {
-    //       critDice[effect.group].crit.splice(index, 1);
-    //       return true;
-    //     }
-    //     critDice[effect.group].critFail.push(effect.value)
-    //     return true;
-    //   }
-    //   return false;
-    // }
     // Core Methods
     async advanceAttr(attrName, type) {
         const attrValue = this.attributes[attrName].advances;
@@ -131,7 +118,12 @@ export default class CharacterData extends CharacterDataParent {
         const availablePH = this.PracticeHours.max - this.PracticeHours.used;
         const parts = coreName.split(".");
         if (cost > availablePH) {
-            const msg = LocalisationServer.parsedLocalisation("PH missing", "Notifications", { name: parts[parts.length - 2], level: newVal, need: cost, available: availablePH });
+            const msg = LocalisationServer.parsedLocalisation("PH missing", "Notifications", {
+                name: parts[parts.length - 2],
+                level: newVal,
+                need: cost,
+                available: availablePH,
+            });
             ui.notifications.notify(msg);
             return;
         }
@@ -143,17 +135,22 @@ export default class CharacterData extends CharacterDataParent {
                     return;
                 }
             }
-            else if (coreName.includes("General weapon proficiency")) { // Do nothing
+            else if (coreName.includes("General weapon proficiency")) {
+                // Do nothing
             }
             else if (newVal > this.weapons.general["General weapon proficiency"].advances) {
-                const msg = LocalisationServer.parsedLocalisation("Core Value too small", "Notifications", { name: parts[parts.length - 2], level: newVal,
-                    basic: this.weapons.general["General weapon proficiency"].value });
+                const msg = LocalisationServer.parsedLocalisation("Core Value too small", "Notifications", {
+                    name: parts[parts.length - 2],
+                    level: newVal,
+                    basic: this.weapons.general["General weapon proficiency"].value,
+                });
                 ui.notifications.notify(msg);
                 return;
             }
         }
         await this.parent.update({
-            [coreName]: newVal, "system.PracticeHours.used": this.PracticeHours.used + cost
+            [coreName]: newVal,
+            "system.PracticeHours.used": this.PracticeHours.used + cost,
         });
     }
     // Combat related
@@ -164,14 +161,19 @@ export default class CharacterData extends CharacterDataParent {
         const { crd, str } = this.attributes;
         const attr_mod = Math.floor((str.value + crd.value) / 4);
         const general = this.weapons.general;
-        const level = Math.floor((general["Hand-to-Hand combat"].value + general["General weapon proficiency"].value) / 2);
+        const level = Math.floor((general["Hand-to-Hand combat"].value +
+            general["General weapon proficiency"].value) /
+            2);
         return Math.max(level + attr_mod, 0);
     }
     getWeaponPlOfWeapon(weaponID) {
         const weapon = this.parent.items.get(weaponID).system;
         const level = this.getWeaponLevel(weapon.type);
-        const attr_mod = Math.floor((this.attributes[weapon.leadAttr1.name].value - weapon.leadAttr1.value +
-            this.attributes[weapon.leadAttr2.name].value - weapon.leadAttr2.value) / 4);
+        const attr_mod = Math.floor((this.attributes[weapon.leadAttr1.name].value -
+            weapon.leadAttr1.value +
+            this.attributes[weapon.leadAttr2.name].value -
+            weapon.leadAttr2.value) /
+            4);
         return Math.max(level + attr_mod, 0);
     }
 }

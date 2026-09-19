@@ -19,7 +19,7 @@ export class TheEdgeTokenDocument extends TokenDocument {
             // System paths to fields with value and max,
             bar: [["health"], ["strain"]],
             // System paths to fields with only a value
-            value: []
+            value: [],
         };
     }
 }

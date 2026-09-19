@@ -1,6 +1,6 @@
 export class DataModelComponent {
-  declare parent: foundryAny
-  
+  declare parent: foundryAny;
+
   constructor() {
     if (new.target === DataModelComponent) {
       throw new Error("Cannot instantiate abstract class.");
@@ -15,7 +15,7 @@ export class DataModelComponent {
 function mergeProperties(targetClass, referenceClass) {
   function copyByName(target, reference, name) {
     const descriptor = Object.getOwnPropertyDescriptor(reference, name);
-    if (typeof reference.value === 'function') {
+    if (typeof reference.value === "function") {
       // If the method already exists, chain it
       if (target[name]) {
         const existingMethod = target[name];
@@ -29,25 +29,33 @@ function mergeProperties(targetClass, referenceClass) {
     } else {
       // For properties, just copy the descriptor
       Object.defineProperty(
-        target, name, 
-        Object.getOwnPropertyDescriptor(reference, name) as PropertyDescriptor
+        target,
+        name,
+        Object.getOwnPropertyDescriptor(reference, name) as PropertyDescriptor,
       );
     }
   }
 
   const filterProperties = new Set([
-    "name", "length", "prototype", "defineSchema"
+    "name",
+    "length",
+    "prototype",
+    "defineSchema",
   ]);
 
   // Transfer all static methods and properties from components to the new class
   Object.getOwnPropertyNames(referenceClass)
-    .filter(name => !filterProperties.has(name))
-    .forEach(name => { copyByName(targetClass, referenceClass, name) });
+    .filter((name) => !filterProperties.has(name))
+    .forEach((name) => {
+      copyByName(targetClass, referenceClass, name);
+    });
 
   // Transfer all instance methods and properties from components to the new class
   Object.getOwnPropertyNames(referenceClass.prototype)
-    .filter(name => name !== "constructor")
-    .forEach(name => { copyByName(targetClass.prototype, referenceClass.prototype, name) });
+    .filter((name) => name !== "constructor")
+    .forEach((name) => {
+      copyByName(targetClass.prototype, referenceClass.prototype, name);
+    });
 }
 
 function combineDataModelComponents(...components) {
@@ -59,8 +67,8 @@ function combineDataModelComponents(...components) {
     }
   }
 
-  components.forEach(Component => {
-    mergeProperties(CombinedDataModelComponent, Component)
+  components.forEach((Component) => {
+    mergeProperties(CombinedDataModelComponent, Component);
   });
 
   return CombinedDataModelComponent;
@@ -71,13 +79,15 @@ export function generateDataModelWithComponents(...components) {
   class TempDataModel extends foundry.abstract.TypeDataModel {
     static defineSchema() {
       const schema = {};
-      components.forEach(x => foundry.utils.mergeObject(schema, x.defineSchema()));
+      components.forEach((x) =>
+        foundry.utils.mergeObject(schema, x.defineSchema()),
+      );
       return schema;
     }
 
     onUpdate(_data) {} // To be overwritten by final data Models
-  };
+  }
 
   mergeProperties(TempDataModel, combinedComponent);
-  return TempDataModel
+  return TempDataModel;
 }

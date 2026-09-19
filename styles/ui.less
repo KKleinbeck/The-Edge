@@ -44,3 +44,31 @@
     1px 1px 3px fade(@color-ui-main-background-2, 50%) inset,
     1px 1px 3px fade(@color-ui-main-background-2, 50%);
 }
+
+.ui-keyword {
+  display: inline-flex;
+  align-items: flex-start;
+  vertical-align: bottom;
+}
+
+.ui-keyword::before {
+  content: url("../assets/bracket_left.svg");
+  display: inline-block;
+  height: 1lh;
+  width: calc(0.3333 * 1lh);
+  vertical-align: top;
+  margin-left: 1px;
+}
+
+.ui-keyword::after {
+  content: url("../assets/bracket_right.svg");
+  display: inline-block;
+  height: 1lh;
+  width: calc(0.3333 * 1lh);
+  vertical-align: top;
+  margin-right: 1px;
+}
+
+.ui-keyword .ui-keyword-inner {
+  background-color: @color-ui-main-background-2;
+}

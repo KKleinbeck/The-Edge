@@ -6,8 +6,8 @@ export default class CombatantBaseData extends foundry.abstract.TypeDataModel {
             strainInitiative: new NumberField({ initial: 0, integer: true }),
             actionLog: new ArrayField(new SchemaField({
                 name: new StringField({ intial: "" }),
-                actionCost: new NumberField({ initial: 0, integer: true })
-            }), { initial: [] })
+                actionCost: new NumberField({ initial: 0, integer: true }),
+            }), { initial: [] }),
         };
     }
 }

@@ -3,10 +3,11 @@ import { generateDataModelWithComponents } from "../abstracts.js";
 import DescriptionData from "./components/description.js";
 import SkillTemplateData from "./components/skill.js";
 
-const { BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
+const { BooleanField, NumberField, StringField } = foundry.data.fields;
 
 export class SkillData extends generateDataModelWithComponents(
-  DescriptionData, SkillTemplateData
+  DescriptionData,
+  SkillTemplateData,
 ) {
   static defineSchema() {
     const schema = super.defineSchema();
@@ -16,7 +17,8 @@ export class SkillData extends generateDataModelWithComponents(
 }
 
 export class CombatSkillData extends generateDataModelWithComponents(
-  DescriptionData, SkillTemplateData
+  DescriptionData,
+  SkillTemplateData,
 ) {
   static defineSchema() {
     const schema = super.defineSchema();
@@ -26,10 +28,10 @@ export class CombatSkillData extends generateDataModelWithComponents(
 }
 
 export class LanguageSkillData extends generateDataModelWithComponents(
-  DescriptionData
+  DescriptionData,
 ) {
   static defineSchema() {
-    const schema = super.defineSchema()
+    const schema = super.defineSchema();
     schema.level = new NumberField({ initial: 1, integer: true });
     schema.humanSpoken = new BooleanField({ initial: true });
     return schema;
@@ -37,7 +39,8 @@ export class LanguageSkillData extends generateDataModelWithComponents(
 }
 
 export class MedicalSkillData extends generateDataModelWithComponents(
-  DescriptionData, SkillTemplateData
+  DescriptionData,
+  SkillTemplateData,
 ) {
   static defineSchema() {
     const schema = super.defineSchema();

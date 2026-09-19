@@ -1,11 +1,22 @@
-<div class="check-dialog-box" style="padding-bottom: 15px;">
+<div class="check-dialog-box" style="padding-bottom: 15px">
   {{#if (checkNotEmpty ammunition)}}
-    <select id="Ammunition" name="AmmunitionSelector" style="width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
-      {{#each ammunition as |ammo|}}
-        <option value="{{ammo.id}}">
-          {{ammo.name}} - {{getDmgModifier ammo}} {{getAmmunitionCount ammo}} - {{add ammo.system.reloadDuration ../weaponReloadDuration}} {{genName "actions"}}
-        </option>
-      {{/each}}
-    </select>
+  <select
+    id="Ammunition"
+    name="AmmunitionSelector"
+    style="
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    "
+  >
+    {{#each ammunition as |ammo|}}
+    <option value="{{ammo.id}}">
+      {{ammo.name}} - {{getDmgModifier ammo}} {{getAmmunitionCount ammo}} -
+      {{add ammo.system.reloadDuration ../weaponReloadDuration}} {{genName
+      "actions"}}
+    </option>
+    {{/each}}
+  </select>
   {{/if}}
 </div>

@@ -9,7 +9,7 @@ export default class DialogAttribute extends CheckDialog {
         const strainMaxUseReduction = checkData.actor.system.strain.maxUseReduction.status;
         const html = await renderTemplate(template, {
             maxStrain: THE_EDGE.attributesMaxStrain(attributeLevel, strainMaxUseReduction),
-            strainHintType: "Attribute Strain"
+            strainHintType: "Attribute Strain",
         });
         const content = document.createElement("div");
         content.innerHTML = html;
@@ -39,7 +39,9 @@ export default class DialogAttribute extends CheckDialog {
         }
         return new DialogAttribute({
             window: {
-                title: LocalisationServer.localise(checkData.attribute, "attr") + " " + game.i18n.localize("CHECK"),
+                title: LocalisationServer.localise(checkData.attribute, "attr") +
+                    " " +
+                    game.i18n.localize("CHECK"),
             },
             content: content,
             buttons: buttons,
@@ -50,11 +52,11 @@ export default class DialogAttribute extends CheckDialog {
                     return;
                 }
                 DialogAttribute.rollCallback(dialog, checkData, result);
-            }
+            },
         }).render(true);
     }
-    static rollCallback(dialog, checkData, roll) {
-        const sliderValues = dialog.getSliderValues();
+    static async rollCallback(dialog, checkData, roll) {
+        dialog.getSliderValues();
         const vantageElement = dialog.element.querySelector(".vantage-hook");
         if (!(vantageElement instanceof HTMLSelectElement)) {
             ui.notifications.error("VantageElement is not of type HTMLSelectElement");
@@ -63,7 +65,7 @@ export default class DialogAttribute extends CheckDialog {
         const promptResult = { roll, ...dialog.promptResult };
         checkData.attribute = checkData.attribute.toLowerCase();
         const attributePromptResult = foundry.utils.mergeObject(checkData, promptResult);
-        checkData.actor.system.rollAttributeCheck(attributePromptResult);
+        await checkData.actor.system.rollAttributeCheck(attributePromptResult);
         const payload = {
             actionType: "attribute check",
             actor: checkData.actor,

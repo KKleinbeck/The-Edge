@@ -24,14 +24,15 @@ export class SocketHandler {
                     break;
                 case "ITEM_SOLD_OR_STORED":
                     const scene = game.scenes.get(payload.sceneId);
-                    const store = scene.tokens.get(payload.storeId)?.actor ?? game.actors.get(payload.storeId);
+                    const store = scene.tokens.get(payload.storeId)?.actor ??
+                        game.actors.get(payload.storeId);
                     const actor = scene.tokens.get(payload.tokenId).actor;
                     if (actor.isOwner)
                         store.render(true);
                     break;
                 // Other actions
                 default:
-                    throw new Error('unknown type: ' + type);
+                    throw new Error("unknown type: " + type);
             }
         });
     }

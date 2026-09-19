@@ -36,11 +36,12 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
         tag: "aside",
         classes: [
             ...foundry.applications.ui.Hotbar.DEFAULT_OPTIONS.classes,
-            "the_edge", "the_edge-hotbar"
+            "the_edge",
+            "the_edge-hotbar",
         ],
         window: {
             frame: false,
-            positioned: false
+            positioned: false,
         },
         actions: {
             changeDynamicField: TheEdgeHotbar._onChangeDynamicField,
@@ -54,14 +55,14 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
             scroll: TheEdgeHotbar._onScroll,
             searchProficiency: TheEdgeHotbar._onSearchProficiency,
             useItem: TheEdgeHotbar._onUseItem,
-        }
+        },
     };
     /** @override */
     static PARTS = {
         hotbar: {
             root: true,
-            template: "systems/the_edge/templates/applications/hotbar.hbs"
-        }
+            template: "systems/the_edge/templates/applications/hotbar.hbs",
+        },
     };
     async _prepareContext(options) {
         const context = await super._prepareContext(options);
@@ -70,40 +71,34 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
         context.selectedActorId = context.actor?.id;
         context.selectedActorName = context.actor?.name ?? "No Actor Selected";
         context.counters = context.actor?.system.counters;
-        const equippedArmour = context.actor?.itemTypes["Armour"]?.filter(a => a.system.equipped && a.system.layer == "Inner") ?? [];
-        context.armourProtection = { "value": 0, "original": 0 };
+        const equippedArmour = context.actor?.itemTypes["Armour"]?.filter((a) => a.system.equipped && a.system.layer == "Inner") ?? [];
+        context.armourProtection = { value: 0, original: 0 };
         for (const armour of equippedArmour) {
             context.armourProtection.value += armour.system.structurePoints;
-            context.armourProtection.original += armour.system.structurePointsOriginal;
+            context.armourProtection.original +=
+                armour.system.structurePointsOriginal;
             for (const attachment of armour.system.attachments) {
-                context.armourProtection.value += attachment.shell.system.structurePoints;
-                context.armourProtection.original += attachment.shell.system.structurePointsOriginal;
+                context.armourProtection.value +=
+                    attachment.shell.system.structurePoints;
+                context.armourProtection.original +=
+                    attachment.shell.system.structurePointsOriginal;
             }
         }
-        context.equippedWeapons = context.actor?.itemTypes["Weapon"]?.filter(w => w.system.equipped) ?? [];
+        context.equippedWeapons =
+            context.actor?.itemTypes["Weapon"]?.filter((w) => w.system.equipped) ??
+                [];
         context.weaponsScroll = context.equippedWeapons.length > this.nItemsShown;
         if (context.weaponsScroll) {
             context.equippedWeapons = this._getVisibleSubset(context.equippedWeapons, this.weaponSelectedIndex, this.nItemsShown);
         }
-        context.equippedWeapons.forEach(weapon => {
-            weapon.ammunitionStatus = `(${LocalisationServer.localise("Empty", "Dialog")})`;
-            if (weapon.system.ammunitionID) {
-                const ammunition = context.actor.items.get(weapon.system.ammunitionID);
-                if (!ammunition)
-                    return;
-                const ammunitionMax = ammunition.system.capacity.max;
-                const ammunitionValue = ammunition.system.capacity.value;
-                weapon.ammunitionStatus = `(${ammunitionValue} / ${ammunitionMax})`;
-            }
-        });
         const dynamicFields = ["item", "health"];
         if (context.actor?.system.counters.length) {
             dynamicFields.push("counter");
         }
-        context.dynamicField = dynamicFields[this.dynamicFieldIndex.mod(dynamicFields.length)];
+        context.dynamicField =
+            dynamicFields[this.dynamicFieldIndex.mod(dynamicFields.length)];
         const sex = context.actor?.system.sex ?? "female";
-        const img = await fetch(`systems/the_edge/icons/body_${sex}.svg`)
-            .then(res => res.text());
+        const img = await fetch(`systems/the_edge/icons/body_${sex}.svg`).then((res) => res.text());
         context.bodyImg = img;
         const effects = {};
         if (context.actor) {
@@ -123,7 +118,8 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
                         }
                         else {
                             effects[hash] = {
-                                ...modifier, sources: [effectGroup.name]
+                                ...modifier,
+                                sources: [effectGroup.name],
                             };
                         }
                     }
@@ -132,27 +128,33 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
         }
         const nEffects = Object.keys(effects).length;
         context.effectsScroll = nEffects > this.nItemsShown;
-        context.effects = Object.keys(effects).map(key => ({ ...effects[key] }));
+        context.effects = Object.keys(effects).map((key) => ({ ...effects[key] }));
         if (context.effectsScroll) {
             context.effects = this._getVisibleSubset(context.effects, this.effectSelectedIndex, this.nItemsShown);
         }
         context.consumables = [];
         for (const item of context.actor?.itemTypes["Consumables"] ?? []) {
             if (item.system.subtype == "medicine") {
-                item.tooltip = item.name + " \u2014 " +
-                    LocalisationServer.localise("heals") + ": " +
-                    item.system.subtypes.medicine.healing + " \u2013 " +
-                    LocalisationServer.localise("coagulates") + ": " +
-                    item.system.subtypes.medicine.coagulation;
+                item.tooltip =
+                    item.name +
+                        " \u2014 " +
+                        LocalisationServer.localise("heals") +
+                        ": " +
+                        item.system.subtypes.medicine.healing +
+                        " \u2013 " +
+                        LocalisationServer.localise("coagulates") +
+                        ": " +
+                        item.system.subtypes.medicine.coagulation;
                 item.displayName = item.system.quantity + "x " + item.name;
                 context.consumables.push(item);
             }
-            else if (item.system.subtype = "drugs") {
+            else if ((item.system.subtype = "drugs")) {
                 item.tooltip = item.name;
-                for (const effect of item.system.effect) {
+                for (const modifier of Aux.filterToGenericModifiers(item.system.modifiers)) {
                     item.tooltip += " \u2014 ";
-                    item.tooltip += LocalisationServer.effectLocalisation(effect.field, effect.group);
-                    item.tooltip += (effect.value > 0) ? " +" + effect.value : " " + effect.value;
+                    item.tooltip += LocalisationServer.effectLocalisation(modifier.field, modifier.group);
+                    item.tooltip +=
+                        modifier.value > 0 ? " +" + modifier.value : " " + modifier.value;
                 }
                 item.displayName = item.system.quantity + "x " + item.name;
                 context.consumables.push(item);
@@ -167,7 +169,7 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
         if (context.counterScroll) {
             context.counters = this._getVisibleSubset(context.counters, this.counterSelectedIndex, 4);
         }
-        context.equippedWeapons.forEach(weapon => {
+        context.equippedWeapons.forEach((weapon) => {
             if (weapon.system.ammunitionID) {
                 const ammunition = context.actor.items.get(weapon.system.ammunitionID);
                 const ammunitionMax = ammunition.system.capacity.max;
@@ -175,7 +177,10 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
                 weapon.ammunitionStatus = `(${ammunitionValue} / ${ammunitionMax})`;
             }
             else {
-                weapon.ammunitionStatus = `(${LocalisationServer.localise("Empty", "Dialog")})`;
+                weapon.ammunitionStatus =
+                    weapon.system.type === "Hand-to-Hand combat"
+                        ? ""
+                        : `(${LocalisationServer.localise("Empty", "Dialog")})`;
             }
         });
         context.proficiencySearchHistory = this.proficiencySearchHistory;
@@ -184,15 +189,13 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
         return context;
     }
     getActor() {
-        const controlled = canvas.tokens?.controlled
-            .filter(x => x.actor?.type == "character");
+        const controlled = canvas.tokens?.controlled.filter((x) => x.actor?.type == "character");
         if (controlled?.length) {
             this.token = controlled[0];
             return controlled[0].actor;
         }
         // permission == 2: Observer, permission == 3: Owner
-        const tokens = (canvas.scene?.tokens ?? [])
-            .filter(x => x.actor?.permission >= 2 && x.actor?.type == "character");
+        const tokens = (canvas.scene?.tokens ?? []).filter((x) => x.actor?.permission >= 2 && x.actor?.type == "character");
         if (tokens.length) {
             const actor = tokens[0].actor;
             this.token = tokens[0];
@@ -266,7 +269,8 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
         for (const prof of Object.keys(this.proficiencies)) {
             if (prof.toLowerCase().includes(this.searchBuffer.toLowerCase())) {
                 this.searchCandidate = {
-                    name: prof, dice: this.proficiencies[prof].dice
+                    name: prof,
+                    dice: this.proficiencies[prof].dice,
                 };
                 break;
             }
@@ -358,8 +362,8 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
         }
     }
     _attachCounterListeners() {
-        this.element.querySelectorAll(".svg-progress-input").forEach(x => {
-            x.addEventListener("change", ev => {
+        this.element.querySelectorAll(".svg-progress-input").forEach((x) => {
+            x.addEventListener("change", (ev) => {
                 const counters = this.token.actor.system.counters;
                 const index = +ev.target.closest(".counter-index").dataset.index;
                 counters[index].value = Math.min(ev.target.valueAsNumber, counters[index].max);

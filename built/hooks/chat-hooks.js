@@ -2,13 +2,14 @@ import Aux from "../system/auxilliaries.js";
 import attachContextMenus from "./chat-hooks/context-menus.js";
 import executeChatCommands from "./chat-hooks/chat-commands.js";
 import NotificationServer from "../system/notifications.js";
-import { applyDamage, applyGrenadeDamage, rollProficiencyCheck } from "./chat-hooks/event-listeners.js";
+import { applyDamage, applyGrenadeDamage, rollProficiencyCheck, } from "./chat-hooks/event-listeners.js";
 export default function () {
     Hooks.on("chatMessage", async (_chatLog, message, chatData) => {
-        return executeChatCommands(message, chatData);
+        if (game.version.includes("13."))
+            return executeChatCommands(message, chatData);
     });
     Hooks.on("createChatMessage", async (data, _options, _userId) => {
-        data.content = await Aux.replacePlaceholderInContent(data.content, data.system.item?.system ?? {});
+        data.content = await Aux.replacePlaceholderInContent(data.content, data.system.item?.system ?? data.system.details?.item?.system ?? {});
     });
     Hooks.on("renderChatMessageHTML", async (chatMsgCls, html, message) => {
         const newContent = await Aux.replacePlaceholderInContent(chatMsgCls.content, chatMsgCls.system.item?.system ?? {});
@@ -20,7 +21,7 @@ export default function () {
             actor: actor,
             chatMsgCls: chatMsgCls,
             html: html,
-            system: message.message.system
+            system: message.message.system,
         };
         attachContextMenus(contextMenuConfig);
         // Dynamic rolls listeners
@@ -80,13 +81,12 @@ function rollIsReady(id, target) {
         return false;
     return true;
 }
-;
 function rollFollowUps(elem) {
     const followUps = elem.parent().find(".roll-offline");
     followUps.removeClass("roll-offline");
 }
 async function updateChatMessage(chatMsgCls, newContent, newSys) {
-    chatMsgCls.update({ "content": newContent, "system": newSys });
+    chatMsgCls.update({ content: newContent, system: newSys });
 }
 function updateChatMessageFromHTML(chatMsgCls, html, sys) {
     html.querySelector(".message-header")?.remove();

@@ -2,11 +2,11 @@ import Aux from "../system/auxilliaries.js";
 
 const { renderTemplate } = foundry.applications.handlebars;
 
-export default class DialogReload extends Dialog{
+export default class DialogReload extends Dialog {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      width: 300
-    })
+      width: 300,
+    });
   }
 
   static async start(checkData) {
@@ -14,29 +14,34 @@ export default class DialogReload extends Dialog{
     const weaponSys = checkData.weapon.system;
     const html = await renderTemplate(template, {
       ammunition: checkData.ammunitionOptions,
-      weaponReloadDuration: weaponSys.reloadDuration
+      weaponReloadDuration: weaponSys.reloadDuration,
     });
 
-    const buttons = {}
+    const buttons = {};
     if (checkData.ammunitionOptions.length > 0) {
       foundry.utils.mergeObject(buttons, {
         select: {
           label: game.i18n.localize("DIALOG.SELECT"),
           callback: async (html) => {
-            if (weaponSys.ammunitionID) Aux.unloadAmmunition(checkData.weapon, checkData.actor);
+            if (weaponSys.ammunitionID)
+              Aux.unloadAmmunition(checkData.weapon, checkData.actor);
 
             const selectedID = html.find('[name="AmmunitionSelector"]').val();
             let reloadDuration = weaponSys.reloadDuration;
             for (const ammu of checkData.ammunitionOptions) {
               if (ammu.id == selectedID) {
                 // Copy the ammuniation and load the weapon with it
-                const created = await Item.create(ammu, {parent: checkData.actor})
-                created.update({"system.loaded": true, "system.quantity": 1})
-                await checkData.weapon.update({"system.ammunitionID": created.id})
+                const created = await Item.create(ammu, {
+                  parent: checkData.actor,
+                });
+                created.update({ "system.loaded": true, "system.quantity": 1 });
+                await checkData.weapon.update({
+                  "system.ammunitionID": created.id,
+                });
 
                 reloadDuration += ammu.system.reloadDuration;
 
-                ammu.useOne()
+                ammu.useOne();
               }
             }
 
@@ -45,11 +50,11 @@ export default class DialogReload extends Dialog{
               actionType: "reload",
               actor: checkData.actor,
               actionCost: reloadDuration,
-              details: {weapon: checkData.weapon.name}
+              details: { weapon: checkData.weapon.name },
             });
-          }
-        }
-      })
+          },
+        },
+      });
     }
     if (weaponSys.ammunitionID !== "") {
       foundry.utils.mergeObject(buttons, {
@@ -57,21 +62,21 @@ export default class DialogReload extends Dialog{
           label: game.i18n.localize("DIALOG.EMPTY"),
           callback: async (_html) => {
             Aux.unloadAmmunition(checkData.weapon, checkData.actor);
-          }
+          },
         },
-      })
+      });
     }
     foundry.utils.mergeObject(buttons, {
       cancel: {
-        label: game.i18n.localize("DIALOG.CANCEL")
-      }
-    })
+        label: game.i18n.localize("DIALOG.CANCEL"),
+      },
+    });
 
     return new DialogReload({
       title: game.i18n.localize("Reload"),
       content: html,
       buttons: buttons,
-      default: "cancel"
-    }).render(true)
+      default: "cancel",
+    }).render(true);
   }
 }

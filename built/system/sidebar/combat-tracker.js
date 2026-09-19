@@ -7,19 +7,21 @@ export class TheEdgeCombatTracker extends CombatTracker {
             decreaseStrain: TheEdgeCombatTracker._handleStrain,
             increaseStrain: TheEdgeCombatTracker._handleStrain,
             undoAction: TheEdgeCombatTracker._undoAction,
-            undoMovement: TheEdgeCombatTracker._undoMovement
-        }
+            undoMovement: TheEdgeCombatTracker._undoMovement,
+        },
     };
     static PARTS = {
         ...CombatTracker.PARTS,
         tracker: {
             template: "systems/the_edge/templates/sidebar/combat/tracker.hbs",
-            scrollable: [""]
+            scrollable: [""],
         },
     };
     async _onRender(context, options) {
         await super._onRender(context, options);
-        this.element.querySelectorAll(".token-image, .token-name").forEach((x) => x.addEventListener("dblclick", event => {
+        this.element
+            .querySelectorAll(".token-image, .token-name")
+            .forEach((x) => x.addEventListener("dblclick", (event) => {
             const target = event.target;
             if (!(target instanceof HTMLElement))
                 return;
@@ -33,7 +35,9 @@ export class TheEdgeCombatTracker extends CombatTracker {
             if (combatant.actor?.testUserPermission(game.user, "OBSERVER"))
                 combatant.actor?.sheet.render(true);
         }, { passive: true }));
-        this.element.querySelector("#movement-options")?.addEventListener("change", ev => {
+        this.element
+            .querySelector("#movement-options")
+            ?.addEventListener("change", (ev) => {
             this.changeMovementIndex(ev.target.selectedIndex);
         });
     }
@@ -65,12 +69,16 @@ export class TheEdgeCombatTracker extends CombatTracker {
         const { action } = target.dataset;
         switch (action) {
             case "increaseStrain":
-                combatant.update({ "system.strainInitiative": (combatant.system.strainInitiative ?? 0) + 1 });
+                combatant.update({
+                    "system.strainInitiative": (combatant.system.strainInitiative ?? 0) + 1,
+                });
                 break;
             case "decreaseStrain":
                 if (combatant.system.strainInitiative <= 0)
                     break;
-                combatant.update({ "system.strainInitiative": (combatant.system.strainInitiative ?? 0) - 1 });
+                combatant.update({
+                    "system.strainInitiative": (combatant.system.strainInitiative ?? 0) - 1,
+                });
                 break;
         }
     }
@@ -93,7 +101,9 @@ export class TheEdgeCombatTracker extends CombatTracker {
         if (game.combat)
             return game.combat.combatant;
     }
-    updateDistance() { this.render(); }
+    updateDistance() {
+        this.render();
+    }
     changeMovementIndex(newIndex) {
         const currentCombatant = this._getCurrentCombatant();
         currentCombatant?.update({ "system.movementIndex": newIndex });

@@ -19,7 +19,8 @@ export default class MovementCalculator {
         return initialPattern;
     }
     static _getBestPatternRecursive(distance, currentPattern, speeds, costs) {
-        if (MovementCalculator._calculateTotalFromPattern(currentPattern, speeds) >= distance) {
+        if (MovementCalculator._calculateTotalFromPattern(currentPattern, speeds) >=
+            distance) {
             return [
                 MovementCalculator._calculateTotalFromPattern(currentPattern, costs),
                 currentPattern,
@@ -27,7 +28,10 @@ export default class MovementCalculator {
         }
         let bestCost = Infinity;
         let bestPattern = [...currentPattern];
-        for (const [fromIdx, toIdx] of [[0, 1], [1, 2]]) {
+        for (const [fromIdx, toIdx] of [
+            [0, 1],
+            [1, 2],
+        ]) {
             if (currentPattern.includes(fromIdx)) {
                 const newPattern = [...currentPattern];
                 newPattern[currentPattern.indexOf(fromIdx)] = toIdx;

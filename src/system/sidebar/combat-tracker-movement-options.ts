@@ -1,15 +1,32 @@
 export default class MovementCalculator {
-  static determineBestPattern(actions: number, distance: number, speeds: number[], costs: number[]): IMovementOption {
+  static determineBestPattern(
+    actions: number,
+    distance: number,
+    speeds: number[],
+    costs: number[],
+  ): IMovementOption {
     const initialPattern = MovementCalculator.getFirstGuessForPattern(
-      actions, distance, speeds, costs
+      actions,
+      distance,
+      speeds,
+      costs,
     );
 
-    const [strainCost, pattern] = MovementCalculator._getBestPatternRecursive(distance, initialPattern, speeds, costs);
+    const [strainCost, pattern] = MovementCalculator._getBestPatternRecursive(
+      distance,
+      initialPattern,
+      speeds,
+      costs,
+    );
     return { actions, pattern, strainCost };
   }
 
-
-  static getFirstGuessForPattern(actions: number, distance: number, speeds: number[], costs: number[]): number[] {
+  static getFirstGuessForPattern(
+    actions: number,
+    distance: number,
+    speeds: number[],
+    costs: number[],
+  ): number[] {
     const distanceMissingFromStride = distance - speeds[0] * actions;
 
     if (distanceMissingFromStride < 0) return new Array(actions).fill(0);
@@ -21,10 +38,10 @@ export default class MovementCalculator {
     const nFasterSteps = Math.min(
       actions,
       Math.floor(
-        distanceMissingFromStride / (speeds[betterSpeedIndex] - speeds[0])
-      )
+        distanceMissingFromStride / (speeds[betterSpeedIndex] - speeds[0]),
+      ),
     );
-    
+
     const initialPattern = [
       ...new Array(nFasterSteps).fill(betterSpeedIndex),
       ...new Array(actions - nFasterSteps).fill(0),
@@ -32,11 +49,16 @@ export default class MovementCalculator {
     return initialPattern;
   }
 
-
   static _getBestPatternRecursive(
-    distance: number, currentPattern: number[], speeds: number[], costs: number[]
+    distance: number,
+    currentPattern: number[],
+    speeds: number[],
+    costs: number[],
   ): [number, number[]] {
-    if (MovementCalculator._calculateTotalFromPattern(currentPattern, speeds) >= distance) {
+    if (
+      MovementCalculator._calculateTotalFromPattern(currentPattern, speeds) >=
+      distance
+    ) {
       return [
         MovementCalculator._calculateTotalFromPattern(currentPattern, costs),
         currentPattern,
@@ -46,13 +68,20 @@ export default class MovementCalculator {
     let bestCost = Infinity;
     let bestPattern = [...currentPattern];
 
-    for (const [fromIdx, toIdx] of [[0, 1], [1, 2]] as const) {
+    for (const [fromIdx, toIdx] of [
+      [0, 1],
+      [1, 2],
+    ] as const) {
       if (currentPattern.includes(fromIdx)) {
         const newPattern = [...currentPattern];
         newPattern[currentPattern.indexOf(fromIdx)] = toIdx;
-        const [cost, resolvedPattern] = MovementCalculator._getBestPatternRecursive(
-          distance, newPattern, speeds, costs
-        );
+        const [cost, resolvedPattern] =
+          MovementCalculator._getBestPatternRecursive(
+            distance,
+            newPattern,
+            speeds,
+            costs,
+          );
 
         if (cost < bestCost) {
           bestCost = cost;
@@ -64,8 +93,10 @@ export default class MovementCalculator {
     return [bestCost, bestPattern];
   }
 
-
-  static _calculateTotalFromPattern(pattern: number[], values: number[]): number {
+  static _calculateTotalFromPattern(
+    pattern: number[],
+    values: number[],
+  ): number {
     return pattern.reduce((sum, digit) => sum + values[digit], 0);
   }
 }

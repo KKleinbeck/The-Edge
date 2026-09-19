@@ -10,14 +10,29 @@ export default class CharacterBaseData extends DataModelComponent {
                 max: new NumberField({ initial: 2, min: 0, required: true }),
                 available: new NumberField({ initial: 1, min: 0, required: true }),
             }),
-            height: new NumberField({ initial: 170, integer: true, required: true, min: 0 }),
+            height: new NumberField({
+                initial: 170,
+                integer: true,
+                required: true,
+                min: 0,
+            }),
             PracticeHours: new SchemaField({
-                used: new NumberField({ initial: 0, integer: true, required: true, min: 0 }),
-                max: new NumberField({ initial: 50000, integer: true, required: true, min: 0 })
+                used: new NumberField({
+                    initial: 0,
+                    integer: true,
+                    required: true,
+                    min: 0,
+                }),
+                max: new NumberField({
+                    initial: 50000,
+                    integer: true,
+                    required: true,
+                    min: 0,
+                }),
             }),
             AdvantagePoints: new SchemaField({
                 used: new NumberField({ initial: 0, integer: true, required: true }),
-                max: new NumberField({ initial: 0, integer: true, required: true })
+                max: new NumberField({ initial: 0, integer: true, required: true }),
             }),
             counters: new ArrayField(new SchemaField({
                 name: new StringField({ initial: "" }),
@@ -26,13 +41,16 @@ export default class CharacterBaseData extends DataModelComponent {
             }), { initial: [] }),
         };
     }
-    ;
     // Hero Token related
     async useHeroToken(reason = "generic") {
-        await this.parent.update({ "system.heroToken.available": this.heroToken.available - 1 });
-        ChatServer.transmitEvent("Hero Token", { name: this.parent.name, reason: reason });
+        await this.parent.update({
+            "system.heroToken.available": this.heroToken.available - 1,
+        });
+        ChatServer.transmitEvent("HERO TOKEN", { name: this.parent.name, reason: reason }, this.parent.chatConfig());
     }
     async regenerateHeroToken() {
-        await this.parent.update({ "system.heroToken.available": this.heroToken.available + 1 });
+        await this.parent.update({
+            "system.heroToken.available": this.heroToken.available + 1,
+        });
     }
 }

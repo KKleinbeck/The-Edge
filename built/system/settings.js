@@ -8,7 +8,7 @@ export default function setupGameSettings() {
         scope: "world",
         type: Boolean,
         default: true,
-        config: true
+        config: true,
     });
     // Register initiative setting.
     game.settings.register("the_edge", "initFormula", {
@@ -18,7 +18,7 @@ export default function setupGameSettings() {
         type: String,
         default: "1d@spd + 1d@foc + @initiative",
         config: true,
-        onChange: (formula) => _simpleUpdateInit(formula, true)
+        onChange: (formula) => _simpleUpdateInit(formula, true),
     });
     const initFormula = game.settings.get("the_edge", "initFormula");
     _simpleUpdateInit(initFormula);
@@ -30,7 +30,7 @@ export default function setupGameSettings() {
         hint: "SETTINGS.LICENCES DESCRIPTION",
         icon: "fa-solid fa-bars",
         type: LicenceDialog,
-        restricted: false
+        restricted: false,
     });
 }
 function _simpleUpdateInit(formula, notify = false) {
@@ -55,13 +55,13 @@ class LicenceDialog extends foundry.applications.api.DialogV2 {
             window: { title: LocalisationServer.localise("licences", "settings") },
             position: { width: 640, height: 400 },
             content: LicenceDialog.CONTENT,
-            buttons: [{ label: LocalisationServer.localise("close") }]
+            buttons: [{ label: LocalisationServer.localise("close") }],
         });
     }
     static async prepareContent() {
         const licences = {
             "Lucius Cipher": await LicenceDialog.readLocalFile("fonts/LicenseLucius.txt"),
-            "Titlillium Web": await LicenceDialog.readLocalFile("fonts/OFL.txt")
+            "Titlillium Web": await LicenceDialog.readLocalFile("fonts/OFL.txt"),
         };
         LicenceDialog.CONTENT = `<div style="max-height: 280px; overflow-y: scroll">`;
         for (const [name, licence] of Object.entries(licences)) {

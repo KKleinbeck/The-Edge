@@ -1,6 +1,6 @@
 export default class LocalisationServer {
     static localise(id, category = undefined) {
-        category = category === undefined ? '' : category.toUpperCase() + '.';
+        category = category === undefined ? "" : category.toUpperCase() + ".";
         return game.i18n.localize(category + id.toUpperCase());
     }
     static parsedLocalisation(id, category, dict = undefined) {
@@ -12,10 +12,16 @@ export default class LocalisationServer {
         if (type == "skills")
             return id;
         switch (type) {
-            case "attributes": return LocalisationServer.localise(id, "attr");
-            case "generalModifiers": return LocalisationServer.localise(id, "effect_group");
-            case "proficiencies": return LocalisationServer.localise(id, "proficiency");
-            case "weapons": return LocalisationServer.localise(id, "combat");
+            case "attributes":
+                return LocalisationServer.localise(id, "attr");
+            case "dynamicModifiers":
+                return LocalisationServer.localise(id, "effect_group");
+            case "generalModifiers":
+                return LocalisationServer.localise(id, "effect_group");
+            case "proficiencies":
+                return LocalisationServer.localise(id, "proficiency");
+            case "weapons":
+                return LocalisationServer.localise(id, "combat");
         }
         return LocalisationServer.localise(id);
     }

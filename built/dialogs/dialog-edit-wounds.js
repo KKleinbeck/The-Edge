@@ -5,7 +5,7 @@ export default class DialogEditWounds extends DialogV2 {
     static get DEFAULT_CONFIG() {
         return {
             position: { width: 250, height: 250 },
-            window: { title: LocalisationServer.localise("Edit Wound", "dialog") }
+            window: { title: LocalisationServer.localise("Edit Wound", "dialog") },
         };
     }
     static async prompt(wound, config = {}) {
@@ -24,10 +24,11 @@ export default class DialogEditWounds extends DialogV2 {
                 const result = {};
                 for (const entry of ["source", "status", "damage", "bleeding"]) {
                     const element = dialog.element.querySelector(`.${entry}-hook`);
-                    result[entry] = element.type === "number" ? +element.value : element.value;
+                    result[entry] =
+                        element.type === "number" ? +element.value : element.value;
                 }
                 return result;
-            }
+            },
         };
     }
 }

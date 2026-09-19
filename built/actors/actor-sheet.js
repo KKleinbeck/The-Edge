@@ -1,5 +1,6 @@
 import Aux from "../system/auxilliaries.js";
 import ChatServer from "../system/chat_server.js";
+import CounterMixin from "../mixins/counter-mixin.js";
 import DialogArmourAttachment from "../dialogs/dialog-attachOuterArmour.js";
 import DialogItemDeletion from "../dialogs/dialog-item-deletion.js";
 import DialogMedicine from "../dialogs/dialog-medicine.js";
@@ -9,7 +10,8 @@ import LocalisationServer from "../system/localisation_server.js";
 import NotificationServer from "../system/notifications.js";
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
-export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplicationMixin(ActorSheetV2)) {
+const { renderTemplate } = foundry.applications.handlebars;
+export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(HandlebarsApplicationMixin(ActorSheetV2))) {
     effectIsExpanded = {};
     constructor(...args) {
         super(...args);
@@ -29,11 +31,13 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
         actions: {
             itemControl: TheEdgeActorSheet._onItemControl,
             effectControl: TheEdgeActorSheet._onEffectControl,
+            embeddedSkillControl: TheEdgeActorSheet._onEmbeddedSkillControl,
             skillControl: TheEdgeActorSheet._onSkillControl,
-            counterControl: TheEdgeActorSheet.onCounterControl,
         },
     };
-    get title() { return this.actor.name; }
+    get title() {
+        return this.actor.name;
+    }
     async _prepareContext(options) {
         const context = await super._prepareContext(options);
         context.userIsGM = game.user.isGM;
@@ -45,8 +49,10 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
     static async _onItemControl(event, target) {
         event.preventDefault();
         // Obtain event data
-        const itemElement = target.closest(".item");
-        const item = this.actor.items.get(itemElement?.dataset.itemId);
+        const itemElement = target.closest(".item-hook");
+        if (!(itemElement instanceof HTMLElement))
+            return;
+        const item = this.actor.items.get(itemElement.dataset.itemId);
         // Handle different actions
         switch (target.dataset.subaction) {
             case "create":
@@ -56,7 +62,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
             case "edit":
                 return item?.sheet.render(true);
             case "post":
-                ChatServer.transmitEvent("Post Item", { item: item });
+                ChatServer.transmitEvent("POST ITEM", { item: item }, this.actor.chatConfig());
                 break;
             case "increase":
                 this.actor.addOrCreateVantage(item);
@@ -72,7 +78,8 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
                 break;
             case "toggle-equip":
                 if (item.type == "Armour") {
-                    if (item.system.structurePoints <= 0 && item.system.structurePointsOriginal > 0) {
+                    if (item.system.structurePoints <= 0 &&
+                        item.system.structurePointsOriginal > 0) {
                         NotificationServer.notify("EquipBroken");
                         return undefined;
                     }
@@ -90,7 +97,12 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
                                 NotificationServer.notify("No attachable armour");
                                 break;
                             }
-                            DialogArmourAttachment.start({ actor: this.actor, tokenId: this.token?.id, shellId: item.id, attachable: attachableArmour });
+                            DialogArmourAttachment.start({
+                                actor: this.actor,
+                                tokenId: this.token?.id,
+                                shellId: item.id,
+                                attachable: attachableArmour,
+                            });
                             break;
                         }
                     }
@@ -101,41 +113,36 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
                     actionType: equippedFlag ? "equip" : "unequip",
                     actionCost: 1,
                     actor: this.actor,
-                    details: { itemName: item.name }
+                    details: { itemName: item.name },
                 };
                 Hooks.call("TheEdgeAction", payload);
                 break;
             case "consume":
+                Hooks.call("onModifierEvent", "onUse", {
+                    actor: this.actor,
+                    itemId: item.id,
+                });
                 switch (item.system.current_type) {
                     case "medicine":
                         const wounds = this.actor.system.wounds;
                         if (wounds.length) {
-                            DialogMedicine.start({ medicineItem: item, wounds: wounds, actor: this.actor });
+                            DialogMedicine.start({
+                                medicineItem: item,
+                                wounds: wounds,
+                                actor: this.actor,
+                            });
                         }
                         else {
-                            NotificationServer.notify("No wounds on Actor", { name: this.actor.name });
+                            NotificationServer.notify("No wounds on Actor", {
+                                name: this.actor.name,
+                            });
                         }
                         break;
                     case "grenade":
                         NotificationServer.notify("Grenade use tipp");
                         break;
                     default:
-                        const existingCopies = this.actor.system.findEffectsByName(item.name);
-                        if (existingCopies.length) {
-                            NotificationServer.notify("Effect already exists");
-                            return;
-                        }
-                        const hasEffect = item.system.effect.length > 0;
-                        if (hasEffect) {
-                            this.actor.system.createNewEffect(item.name, item.system.effect);
-                        }
-                        const strainRoll = await new Roll(item.system.subtypes.food.strainReduction).evaluate();
-                        const strainChange = await this.actor.system.applyStrain(-strainRoll.total);
-                        ChatServer.transmitEvent("Food Consume", {
-                            details: { actorName: this.actor.name, item: item.name, strainReduction: -strainChange },
-                            hasEffects: hasEffect
-                        });
-                        item.useOne();
+                        this.actor.controller._foodConsume(item);
                         break;
                 }
                 break;
@@ -172,10 +179,11 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
                 }
                 break;
             case "toggleShowContent":
-                this.effectIsExpanded[source][index] = !this.effectIsExpanded[source][index];
+                this.effectIsExpanded[source][index] =
+                    !this.effectIsExpanded[source][index];
                 const container = effectElement.parentElement;
                 const content = effectElement.querySelector(".content");
-                if (!effectElement.classList.contains('expanded')) {
+                if (!effectElement.classList.contains("expanded")) {
                     this.expandItem(effectElement, content, container);
                 }
                 else {
@@ -186,7 +194,8 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
                 if (effectElement.dataset.source == "effects") {
                     this.actor.system.toggleEffect(index);
                 }
-                else { // Skill effect
+                else {
+                    // Skill effect
                     const item = this.actor.items.get(effectElement.dataset.id);
                     await item.system.toggleActive({ render: false });
                     await this.actor.update({}, { render: false }); // Force effect recalculation
@@ -205,25 +214,24 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
         effects[context.effectIndex].modifiers = modifiers;
         this.actor.update({ "system.effects": effects });
     }
-    ;
     // TODO: Refactor into an animator class
     expandItem(item, content, container) {
         const DURATION = 300;
         // First: do FLIP measurement
         const items = [...container.children];
-        const firstRects = items.map(el => el.getBoundingClientRect());
-        item.classList.add('expanded');
+        const firstRects = items.map((el) => el.getBoundingClientRect());
+        item.classList.add("expanded");
         requestAnimationFrame(() => {
-            const lastRects = items.map(el => el.getBoundingClientRect());
+            const lastRects = items.map((el) => el.getBoundingClientRect());
             items.forEach((el, i) => {
                 const dx = firstRects[i].left - lastRects[i].left;
                 const dy = firstRects[i].top - lastRects[i].top;
                 el.animate([
                     { transform: `translate(${dx}px, ${dy}px)` },
-                    { transform: `translate(0,0)` }
+                    { transform: `translate(0,0)` },
                 ], {
                     duration: DURATION,
-                    easing: 'ease'
+                    easing: "ease",
                 });
             });
             // AFTER layout animation finishes → expand content
@@ -239,19 +247,19 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
         this.hideContent(content);
         setTimeout(() => {
             const items = [...container.children];
-            const firstRects = items.map(el => el.getBoundingClientRect());
-            item.classList.remove('expanded');
+            const firstRects = items.map((el) => el.getBoundingClientRect());
+            item.classList.remove("expanded");
             requestAnimationFrame(() => {
-                const lastRects = items.map(el => el.getBoundingClientRect());
+                const lastRects = items.map((el) => el.getBoundingClientRect());
                 items.forEach((el, i) => {
                     const dx = firstRects[i].left - lastRects[i].left;
                     const dy = firstRects[i].top - lastRects[i].top;
                     el.animate([
                         { transform: `translate(${dx}px, ${dy}px)` },
-                        { transform: `translate(0,0)` }
+                        { transform: `translate(0,0)` },
                     ], {
                         duration: DURATION,
-                        easing: 'ease'
+                        easing: "ease",
                     });
                 });
             });
@@ -265,7 +273,7 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
             content.style.height = fullHeight + "px";
             content.style.opacity = "1";
         });
-        content.addEventListener('transitionend', () => {
+        content.addEventListener("transitionend", () => {
             content.style.height = "auto";
         }, { once: true });
     }
@@ -276,44 +284,81 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
             content.style.opacity = "0";
         });
     }
+    static async _onEmbeddedSkillControl(event, target) {
+        event.preventDefault();
+        // Obtain event data
+        const skillElement = target.closest(".embedded-skill-hook");
+        if (!(skillElement instanceof HTMLDivElement))
+            return;
+        const itemId = skillElement.dataset.itemId;
+        const item = this.actor.items.get(itemId);
+        const skillId = skillElement.dataset.id ?? "";
+        const skill = item.system.embeddedSkills.find((x) => (x.id = skillId));
+        // Handle different actions
+        switch (target.dataset.subaction) {
+            case "post":
+                ChatServer.transmitEvent("POST ITEM", { item }, this.actor.chatConfig());
+                break;
+            case "roll":
+                Aux.evalOnEventWith(skill.effect, { parent: item }, skillId);
+                break;
+        }
+    }
     static async _onSkillControl(event, target) {
         event.preventDefault();
         // Obtain event data
-        const skillElement = target.closest(".skill");
-        const skillID = skillElement?.dataset.itemId;
-        const skill = this.actor.items.get(skillID);
+        const skillElement = target.closest(".skill-hook");
+        if (!(skillElement instanceof HTMLDivElement))
+            return;
+        const skillId = skillElement.dataset.itemId;
+        const skill = this.actor.items.get(skillId);
         // Handle different actions
         switch (target.dataset.subaction) {
             case "increase":
                 if (skill.type == "Advantage" || skill.type == "Disadvantage") {
                     return this.actor.addOrCreateVantage(skill);
                 }
-                return this.actor.skillLevelIncrease(skillID);
+                return this.actor.skillLevelIncrease(skillId);
             case "decrease":
                 if (skill.type == "Advantage" || skill.type == "Disadvantage") {
                     return this.actor.decrementVantage(skill);
                 }
-                return this.actor.skillLevelDecrease(skillID);
+                return this.actor.skillLevelDecrease(skillId);
             case "delete":
                 if (skill.type == "Advantage" || skill.type == "Disadvantage") {
                     return this.actor.deleteVantage(skill);
                 }
-                return this.actor.deleteSkill(skillID);
+                return this.actor.deleteSkill(skillId);
             case "post":
-                ChatServer.transmitEvent("Post Skill", { name: skill.name, type: skill.type, description: skill.system.description });
+                ChatServer.transmitEvent("POST SKILL", {
+                    name: skill.name,
+                    type: skill.type,
+                    description: skill.system.description,
+                }, this.actor.chatConfig());
                 break;
             case "roll":
+                Hooks.call("onModifierEvent", "onUse", {
+                    actor: this.actor,
+                    itemId: skillId,
+                });
                 if (skill.type == "Medicalskill") {
                     DialogProficiency.start({
-                        actor: this.actor, actorId: this.actor.id, proficiency: skill.system.basis,
-                        tokenId: this.token?.id, sceneId: game.user.viewedScene
+                        actor: this.actor,
+                        actorId: this.actor.id,
+                        proficiency: skill.system.basis,
+                        tokenId: this.token?.id,
+                        sceneId: game.user.viewedScene,
                     });
                 }
                 else {
-                    let strainChange = await Aux.parseStrainCostStr(skill, this.actor.system.strainLevel);
+                    let strainChange = Aux.getCostFromCostString(skill.system.strainCost, skill.system.level);
                     strainChange = await this.actor.system.applyStrain(strainChange);
                     const payload = {
-                        action: skill.name, actionType: "skill", actor: this.actor, strainCost: strainChange, actionCost: 0
+                        action: skill.name,
+                        actionType: "skill",
+                        actor: this.actor,
+                        strainCost: strainChange,
+                        actionCost: 0,
                     };
                     Hooks.call("TheEdgeAction", payload);
                 }
@@ -323,10 +368,12 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
     _findAttachableArmour(outerShell) {
         const bodyTarget = outerShell.system.bodyPart;
         const size = outerShell.system.attachmentPoints.max;
-        return this.actor.itemTypes["Armour"].filter(armour => {
+        return this.actor.itemTypes["Armour"].filter((armour) => {
             if (armour.system.layer == "Outer")
                 return false;
-            if (armour.system.attachmentPoints.max - armour.system.attachmentPoints.used < size)
+            if (armour.system.attachmentPoints.max -
+                armour.system.attachmentPoints.used <
+                size)
                 return false;
             else if (armour.system.bodyPart.includes(bodyTarget))
                 return true;
@@ -337,59 +384,28 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
             return false;
         });
     }
-    static onCounterControl(event, target) {
-        event.preventDefault();
-        // Obtain event data
-        const counterElement = target.closest(".counter");
-        const index = +counterElement?.dataset.index;
-        // Handle different actions
-        const counters = this.actor.system.counters || [];
-        switch (target.dataset.subaction) {
-            case "create-counter":
-                counters.push({
-                    name: LocalisationServer.localise("New Counter", "item"),
-                    value: 1, max: 1
-                });
-                break;
-            case "delete":
-                counters.splice(index, 1);
-                break;
-            case "increase-counter":
-                counters[index].max += 1;
-                break;
-            case "decrease-counter":
-                if (counters[index].max == 1)
-                    return;
-                counters[index].max -= 1;
-                counters[index].value = Math.min(counters[index].value, counters[index].max);
-                break;
-            case "deplete-counter":
-                counters[index].value = 0;
-                break;
-            case "use":
-                const level = 1 + +target.dataset.level;
-                counters[index].value = (counters[index].value < level) ? level : level - 1;
-                break;
-        }
-        this.actor.update({ "system.counters": counters });
+    // Mixin Related code
+    async updateCounters(counters, context = {}) {
+        await this.document.update({ "system.counters": counters }, { render: false });
+    }
+    async onUpdateCounters(_counters, context) {
+        await this.redrawActorCounters(context);
+    }
+    async redrawActorCounters(context) {
+        const template = "systems/the_edge/templates/actors/character/biography/counters.hbs";
+        const html = await renderTemplate(template, {
+            ...context,
+            counters: this.actor.system.counters,
+        });
+        const actorCounterElement = this.element.querySelector(".actor-counters-group-hook");
+        actorCounterElement.innerHTML = html;
+        this.attachCounterEffectListeners(actorCounterElement);
     }
     // Specific listeners
     _onRender(context, options) {
         super._onRender(context, options);
-        const counterNames = this.element.querySelectorAll(".counter-name");
-        for (const counter of counterNames) {
-            counter.addEventListener("change", (ev) => this._onCounterChange(ev, "name"));
-        }
         if (ui.hotbar.token?.actor?.id == this.actor.id) {
             ui.hotbar.render(true);
-        }
-        const progressBarInputs = this.element.querySelectorAll(".counter-input");
-        for (const input of progressBarInputs) {
-            input.addEventListener("change", (ev) => {
-                if (!(ev.target instanceof HTMLElement))
-                    return;
-                this._onCounterChange(ev, ev.target.dataset.subtype);
-            });
         }
         const effectNames = this.element.querySelectorAll(".effect-name-hook");
         for (const effectName of effectNames) {
@@ -397,7 +413,8 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
                 if (!(ev.target instanceof HTMLInputElement))
                     return;
                 const effectElement = ev.target.closest(".effect-hook");
-                if (!(effectElement instanceof HTMLElement) || !effectElement.dataset.index)
+                if (!(effectElement instanceof HTMLElement) ||
+                    !effectElement.dataset.index)
                     return;
                 const effects = this.actor.system.effects;
                 effects[effectElement.dataset.index].name = ev.target.value;
@@ -410,47 +427,27 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
                 this._onItemQuantiyChange(ev);
             });
         }
-        this.element.querySelectorAll(".dynamic-size").forEach(input => {
+        this.element.querySelectorAll(".dynamic-size").forEach((input) => {
             this._adjustInputWidth(input);
-            input.addEventListener('input', () => this._adjustInputWidth(input));
+            input.addEventListener("input", () => this._adjustInputWidth(input));
         });
     }
     _adjustInputWidth(input) {
-        const span = document.createElement('span');
-        span.style.visibility = 'hidden';
-        span.style.whiteSpace = 'pre';
-        span.style.position = 'absolute';
+        const span = document.createElement("span");
+        span.style.visibility = "hidden";
+        span.style.whiteSpace = "pre";
+        span.style.position = "absolute";
         span.style.font = getComputedStyle(input).font;
-        span.textContent = input.value || input.placeholder || '';
+        span.textContent = input.value || input.placeholder || "";
         document.body.appendChild(span);
         const width = span.offsetWidth + 20;
         document.body.removeChild(span);
         input.style.width = `${width}px`;
     }
-    async _onCounterChange(event, changeId) {
-        const target = event.target;
-        const counterElement = target.closest(".counter");
-        const index = +counterElement?.dataset.index;
-        const counters = this.actor.system.counters || [];
-        switch (changeId) {
-            case "value":
-                counters[index].value = Math.min(+target.value, +target.dataset.max);
-                break;
-            case "max":
-                counters[index].max = +target.value;
-                counters[index].value = Math.min(counters[index].value, +target.value);
-                break;
-            case "name":
-                counters[index].name = target.value;
-                break;
-        }
-        this.actor.update({ "system.counters": counters });
-    }
     async _onItemQuantiyChange(ev) {
         const target = ev.target;
-        const itemDetails = target.closest(".item");
+        const itemDetails = target.closest(".item-hook");
         const newQuantity = target.valueAsNumber;
-        // Todo: Prevent negative quantities (do nothing)
         // Todo: Quantity == 0: Deletion dialog
         if (newQuantity && newQuantity > 0) {
             const item = this.actor.items.get(itemDetails.dataset.itemId);
@@ -481,17 +478,23 @@ export class TheEdgeActorSheet extends EffectModifierMixin(HandlebarsApplication
                 return createNew ? super._onDropItem(event, data) : undefined;
             case "Credits":
                 if (item.system.isChid) {
-                    this.actor.update({ "system.credits.chids": this.actor.system.credits.chids + item.system.value });
+                    this.actor.update({
+                        "system.credits.chids": this.actor.system.credits.chids + item.system.value,
+                    });
                 }
                 else
-                    this.actor.update({ "system.credits.digital": this.actor.system.credits.digital + item.system.value });
+                    this.actor.update({
+                        "system.credits.digital": this.actor.system.credits.digital + item.system.value,
+                    });
                 return false;
         }
     }
     _onDropStackableItem(event, data, item) {
         const existingCopy = this._itemExists(item);
         if (existingCopy) {
-            existingCopy.update({ "system.quantity": existingCopy.system.quantity + 1 });
+            existingCopy.update({
+                "system.quantity": existingCopy.system.quantity + 1,
+            });
             return existingCopy;
         }
         return super._onDropItem(event, data);

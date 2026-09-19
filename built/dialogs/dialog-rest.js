@@ -3,7 +3,7 @@ const { renderTemplate } = foundry.applications.handlebars;
 export default class DialogRest extends Dialog {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
-            width: 300
+            width: 300,
         });
     }
     static async start(checkData) {
@@ -21,15 +21,15 @@ export default class DialogRest extends Dialog {
                             checkData.actor.system.longRest();
                             break;
                     }
-                }
+                },
             },
-            cancel: { label: LocalisationServer.localise("cancel", "dialog") }
+            cancel: { label: LocalisationServer.localise("cancel", "dialog") },
         };
         return new DialogRest({
             title: LocalisationServer.localise(checkData.type),
             content: html,
             buttons: buttons,
-            default: "rest"
+            default: "rest",
         }).render(true);
     }
 }

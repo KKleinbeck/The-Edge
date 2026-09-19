@@ -8,7 +8,7 @@
     "BELOW_NECK": "Below neck",
     "HEAD": "Head",
     "ENTIRE": "Entire"
-  }, 
+  },
   "ATTR": {
     "END": "Endurance",
     "STR": "Strength",
@@ -105,7 +105,7 @@
     "ABSORPTION": "Absorption",
     "ARMOUR PENETRATION": "Armour penetration",
     "THRESHOLD": "Threshold",
-    
+
     "DAMAGE MODIFIERS": "Damage Modifiers",
     "ENERGY": "Energy",
     "KINETIC": "Kinetic",
@@ -122,10 +122,10 @@
     "RANGE CHART": "Range chart",
     "RANGE": "Target distance",
     "LESS_2M": "< 2m",
-    "LESS_20M": "< 20m",
-    "LESS_200M": "< 200m",
-    "LESS_1KM": "< 1km",
-    "MORE_1KM": "> 1km",
+    "LESS_10M": "< 10m",
+    "LESS_25M": "< 25m",
+    "LESS_100M": "< 100m",
+    "MORE_100M": "> 100m",
 
     "SIZE": "Target Size",
     "TINY": "Tiny",
@@ -154,7 +154,7 @@
     "HALF COVER": "half cover",
     "THREE QUARTERS": "three quarters",
     "FULL COVER": "full cover",
-    
+
     "FIRE MODES": "Fire modes",
     "AUTOMATIC": "Automatic",
     "BURST": "Burst",
@@ -176,7 +176,7 @@
     "SHOTS": "Shots",
     "AIMED": "Aimed",
     "UNAIMED": "Unaimed",
-    
+
     "ATTACK": "Roll Attack",
     "FIRE SELECTION": "Fire selection",
     "LOADOUT": "Loadout",
@@ -296,7 +296,19 @@
     "STRAIN": "Strain",
     "STRAIN - MAX": "Max Strain",
     "STRAIN - STATUSTHRESHOLD": "Delay strain effects",
-    "STRAIN - MAXUSEREDUCTION": "Reduce max strain per roll"
+    "STRAIN - MAXUSEREDUCTION": "Reduce max strain per roll",
+
+    "ROLLATTACKCHECK-PRIOR": "Before attack roll",
+    "ROLLATTACKCHECK-POSTERIOR": "After attack roll",
+    "ROLLATTRIBUTECHECK-PRIOR": "Before attribute roll",
+    "ROLLATTRIBUTECHECK-POSTERIOR": "After attribute roll",
+    "ROLLMELEECHECK-PRIOR": "Before melee roll",
+    "ROLLMELEECHECK-POSTERIOR": "After melee roll",
+    "ROLLPROFICIENCYCHECK-PRIOR": "Before proficiency roll",
+    "ROLLPROFICIENCYCHECK-POSTERIOR": "After proficiency roll",
+    "ONRECEIVEDAMAGE": "On receive damage",
+    "ONREST": "On rest",
+    "ONUSE": "On use"
   },
   "GAME ACTIONS": {
     "ATTRIBUTE CHECK": "Attribute Check",
@@ -325,9 +337,12 @@
     "CREATE COUNTER": "Create Counter",
     "DELETE": "Delete Item",
     "DELETE COUNTER": "Delete Counter",
+    "EMBEDDED SKILLS": "Embedded Skills",
+    "ITEM COUNTERS": "Item Counters",
     "NEW": "New Item",
     "NEW COUNTER": "New Counter",
     "NEW EFFECT": "New Effect",
+    "NEW EMBEDDED SKILL": "New Embedded Skills",
     "TOGGLE EFFECTS": "Toggle effects",
 
     "EQUIP": "Equip",
@@ -408,6 +423,28 @@
     "LARGE": "Large",
     "SMALL": "Small"
   },
+  "KEYWORDS": {
+    "STR": "Current strength value",
+    "END": "Current endurance value",
+    "CRD": "Current coordination value",
+    "SPD": "Current speed value",
+    "CHA": "Current charisma value",
+    "EMP": "Current empathy value",
+    "FOC": "Current focus value",
+    "INT": "Current intelligence value",
+    "RES": "Current resiliance value",
+
+    "PAIN": "Pain decreases your general proficiencies and your weapon handling. You gain one level of pain for every 2&times;Res damage.",
+    "DYING": "Whe your life points hit zero, you start dying. Every round you gain +5 strain and new damage becomes strain. You are dead once your strain is full.",
+    "EXHAUSTION": "Every level of exhaustion reduces your maximal strain by 2. Exhaustion is caused by skills and effects.",
+    "FRIGHT": "You loose one action per level of fright on you. Fright is caused by skills and effects.",
+    "OVERLOAD": "Overload reduces your strength, general proficiency and movement speed. Carrying weight above 1.5&times;Str (incrementing in 0.5&times;Str steps) yields one level of overload.",
+
+    "BATTLE-ROUND": "During one round of battle (BR) every combatant performs one turn of three actions.",
+    "REACTION": "Reactions are skills that can be used in a battle round, out of turn order. Generally every combatant has one reaction per battle round.",
+    "READIED ACTION": "During your turn you may choose to use one of your actions at a later stage, before your next turn, by specifying relevant triggers.",
+    "TURN": "During ever battle round each combatant has one turn. During your turn you can perform 3 actions."
+  },
   "NOTIFICATIONS": {
     "DESTROYED": "Armour piece {name} was destroyed in combat",
     "EQUIPBROKEN": "Cannot equip broken armour (i.e., no structure points).",
@@ -423,17 +460,17 @@
 
     "INVALID STRAIN LEVEL": "Cannot use skill {skillName} when at strain level {level}.",
     "WRONG COST STRING": "Something wrong with the skill cost {str}. It can only be a single number or one number per level, separated by '/'.",
-    "WRONG STRAIN COST FORMAT": "Cannot parse strain cost of skill {skillNmae}. The cost has to be a valid roll description or 'N.A.'. Got {costRoll} instead.",
-    "WRONG STRAIN COST STRING": "Something wrong with the strain cost of skill {skillName}. It has to be either one or five numbers, separated by '/'.",
 
     "EFFECT ALREADY EXISTS": "An effect for this item already exists. Rename or delete previous effect.",
-    
+
     "NO ATTACHABLE ARMOUR": "There is no armour avaible to which this can be attached to.",
     "MISSING ATTACHMENT POINTS": "Cannot attach to this armour. It has {available} attachment points left, but {needed} are needed.",
 
     "MISSING PH": "Not enough PH to learn {name}. {need} needed, {available} available.",
     "MISSING REQUIREMENTS": "Skill has unmatched requirements. Skill {field} has to be at {value} first.",
     "UNMET REQUIREMENTS": "Skill has unmatched requirements. {field} has to be {value}, but is {valueIs}.",
+
+    "ILLICIT EVENT": "Cannot execute the event. Did you define `onEvent`?",
 
     "MAX LEVEL": "{name} is already at it's max level.",
 
@@ -485,13 +522,13 @@
     "MENTAL FORTITUDE": "Mental Fortitude",
     "LOGIC & MATHS": "Logic & Maths",
     "MEMORY": "Memory",
-    "EXPLOSIVES" : "Explosives",
-    "ELECTRONICS" : "Electronics",
-    "COMPUTER SYSTEMS" : "Computer systems",
-    "MECHANICAL" : "Mechanical",
-    "BOTS AND MECHS" : "Bots and Mechs",
-    "CHEMICALS" : "Chemicals",
-    "WEAPONS" : "Weapons",
+    "EXPLOSIVES": "Explosives",
+    "ELECTRONICS": "Electronics",
+    "COMPUTER SYSTEMS": "Computer systems",
+    "MECHANICAL": "Mechanical",
+    "BOTS AND MECHS": "Bots and Mechs",
+    "CHEMICALS": "Chemicals",
+    "WEAPONS": "Weapons",
     "HUMAN CULTURES": "Human cultures",
     "ALIEN CULTURES": "Alien cultures",
     "OUTLAWS' CUSTOMS": "Outlaws' customs",
@@ -633,6 +670,7 @@
   "DAMAGE MODIFIERS": "Damage mods",
   "DAMAGE TYPE": "Damage type",
   "DEFAULT": "Default",
+  "DELETE": "Delete",
   "DESCRIPTION": "Description",
   "DESCRIPTION TAB": "Description",
   "DESIGNATED WEAPONS": "Designated Weapons",
@@ -642,6 +680,8 @@
   "DISADVANTAGES": "Disadvantages",
   "DISTANCE": "Distance",
   "DYING": "Dying",
+  "DYNAMICMODIFIERS": "Dynamic mods",
+  "EDIT": "Edit",
   "EFFECTS": "Effects",
   "EXPLANATIONS": "Explanations",
   "FAILURE": "Failure",
@@ -672,6 +712,7 @@
   "IMPACT SPEED": "Impact speed",
   "ITEMEFFECTS": "Item effects",
   "ITEMS": "Items",
+  "ITEM SKILLS": "Item Skills",
   "LANGUAGE": "Language",
   "LANGUAGES": "Languages",
   "LEFT": "Left",
@@ -691,6 +732,7 @@
   "MOD": "Mod",
   "MODIFICATORS": "Modificators",
   "MODIFIER": "Modifier",
+  "MODIFIERS": "Modifiers",
   "MOVEMENT": "Movement",
   "NAME": "Name",
   "NATIVE LANGUAGE": "Native language",

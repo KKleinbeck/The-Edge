@@ -3,7 +3,7 @@ import LocalisationServer from "../system/localisation_server.js";
 export default class DialogItemDeletion extends Dialog {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
-            width: 300
+            width: 300,
         });
     }
     static async start(checkData) {
@@ -17,7 +17,10 @@ export default class DialogItemDeletion extends Dialog {
                         if (item.system.layer == "Inner") {
                             for (const attachmentData of item.system.attachments) {
                                 const attachment = actor.items.get(attachmentData.shellId);
-                                attachment.update({ "system.equipped": false, "system.attachments": [] });
+                                attachment.update({
+                                    "system.equipped": false,
+                                    "system.attachments": [],
+                                });
                             }
                         }
                         else if (item.system.equipped == true) {
@@ -30,15 +33,15 @@ export default class DialogItemDeletion extends Dialog {
                             Aux.unloadAmmunition(item, actor);
                     }
                     item.delete();
-                }
+                },
             },
-            cancel: { label: LocalisationServer.localise("cancel", "dialog") }
+            cancel: { label: LocalisationServer.localise("cancel", "dialog") },
         };
         return new DialogItemDeletion({
             title: LocalisationServer.parsedLocalisation("delete item", "dialog", checkData.item),
             content: "",
             buttons: buttons,
-            default: "cancel"
+            default: "cancel",
         }).render(true);
     }
 }

@@ -4,7 +4,9 @@ import CreditData from "./components/credits.js";
 
 const { BooleanField, NumberField } = foundry.data.fields;
 
-export default class StoreData extends generateDataModelWithComponents(CreditData) {
+export default class StoreData extends generateDataModelWithComponents(
+  CreditData,
+) {
   static defineSchema() {
     const schema = super.defineSchema();
     schema.tradeFactor = new NumberField({ initial: 1 });

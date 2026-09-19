@@ -2,7 +2,9 @@
 {{#if item.system.effect}}
   <h5 style="margin: 12px 0 8px 0;">{{genName "Effects"}}:</h5>
   {{#each item.system.effect as |modifier|}}
-    <div style="display: flex; justify-content: space-between; align-items: center; padding-left: 10px;">
+    <div
+      style="display: flex; justify-content: space-between; align-items: center; padding-left: 10px;"
+    >
       {{genName modifier.group}}
       {{effectRequirementName modifier.field modifier.group}}
       <div class="output" style="width: 45px; text-align: right;">

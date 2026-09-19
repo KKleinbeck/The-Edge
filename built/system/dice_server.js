@@ -27,7 +27,7 @@ export default class DiceServer {
     }
     static attributeOutcome(dieResult, config) {
         const preResult = {
-            effectiveThreshold: config.threshold + config.modifier
+            effectiveThreshold: config.threshold + config.modifier,
         };
         if (config.critDice.includes(dieResult)) {
             preResult.effectiveThreshold += config.critBonus;
@@ -44,7 +44,7 @@ export default class DiceServer {
             quality: Math.floor(netOutcome / config.qualityStep),
             rolls: [dieResult],
             effectiveThreshold: preResult.effectiveThreshold,
-            ...preResult
+            ...preResult,
         };
     }
     static async proficiencyCheck(config) {
@@ -75,8 +75,10 @@ export default class DiceServer {
                 nCritFails += 1;
         }
         const preResult = {
-            effectiveThreshold: config.threshold + config.modifier +
-                (nCrits * config.critDieBonus) + (nCritFails * config.critFailDieMalus)
+            effectiveThreshold: config.threshold +
+                config.modifier +
+                nCrits * config.critDieBonus +
+                nCritFails * config.critFailDieMalus,
         };
         if (nCrits - nCritFails >= 2) {
             preResult.effectiveThreshold += config.critBonus;
@@ -94,7 +96,7 @@ export default class DiceServer {
             rolls: diceResults,
             total: diceResults.sum(),
             effectiveThreshold: preResult.effectiveThreshold,
-            ...preResult
+            ...preResult,
         };
     }
     static async attackCheck(config) {
@@ -116,10 +118,11 @@ export default class DiceServer {
         let netOutcome = 0;
         for (let i = 0; i < config.nRolls; ++i) {
             const dieResult = await this.genericRoll("1d20");
-            const crit = config.critDice.includes(dieResult);
-            const hit = dieResult <= config.threshold && !(config.critFailDice.includes(dieResult));
+            const crit = config.critDice.includes(dieResult) && dieResult <= config.threshold;
+            const hit = dieResult <= config.threshold &&
+                !config.critFailDice.includes(dieResult);
             rolls.push({ crit, dieResult, hit });
-            netOutcome += +hit + 2 * (+crit);
+            netOutcome += +hit + 2 * +crit;
         }
         return [rolls, netOutcome];
     }
@@ -128,16 +131,19 @@ export default class DiceServer {
         for (let i = 0; i < config.nRolls; ++i) {
             if (!rolls[i].hit)
                 continue;
-            damage.push((await DiceServer.genericRoll(config.damageRoll)));
+            damage.push(await DiceServer.genericRoll(config.damageRoll));
             if (rolls[i].crit) {
                 damage[damage.length - 1] += DiceServer.max(config.damageRoll);
             }
         }
         let failEvent = "";
-        const nCritFailures = rolls.map(x => x.dieResult).filter(x => config.critFailDice.includes(x));
+        const nCritFailures = rolls
+            .map((x) => x.dieResult)
+            .filter((x) => config.critFailDice.includes(x));
         if (nCritFailures.length >= 0.33335 * config.nRolls) {
-            const failCheck = (await DiceServer.genericRoll("1d20"));
-            if (config.critFailDice.includes(failCheck) || failCheck > config.critFailCheckThreshold) {
+            const failCheck = await DiceServer.genericRoll("1d20");
+            if (config.critFailDice.includes(failCheck) ||
+                failCheck > config.critFailCheckThreshold) {
                 failEvent = this.selectFromCritFailEvents(THE_EDGE.combatConfig.critFailTable);
             }
         }
@@ -148,7 +154,7 @@ export default class DiceServer {
         return roll._total;
     }
     static max(rollDescription) {
-        const rolls = rollDescription.replace(/\s/g, '').split("+");
+        const rolls = rollDescription.replace(/\s/g, "").split("+");
         let result = 0;
         for (const roll of rolls) {
             if (!isNaN(+roll)) {

@@ -6,7 +6,8 @@
   {{#each helpers.itemTypes as |type|}}
     <div class="title">
       <div class="section-title">{{itemName type}}</div>
-      <div title="{{ itemName 'Create' }}" data-action="itemControl" data-subaction="create" data-type="{{type}}" style="gap: 5px; cursor: pointer;">
+      <div class="item-hook" title="{{ itemName 'Create' }}" data-action="itemControl" data-subaction="create"
+        data-type="{{type}}" style="gap: 5px; cursor: pointer;">
         {{itemName "Create"}}
         <a><i class="fas fa-plus"></i></a>
       </div>
@@ -14,7 +15,7 @@
     <ol class="item-list item-category" data-category="{{loc}}" style="margin-bottom: 15px; padding: 0px 5px 0px 5px;">
       {{#each ../actor.items as |item id|}}
         {{#if (checkRenderItem item type)}}
-          <li class="item" data-item-id="{{item._id}}" style="break-inside: avoid;">
+          <li class="item-hook item-element" data-item-id="{{item._id}}" style="break-inside: avoid;">
             <div class="flexrow">
               <div data-action="itemControl" data-subaction="edit" style="cursor: pointer; display: flex; align-items: center;">
                 <img class="item-img" src="{{item.img}}" title="{{item.name}}" width="24" height="24" />

@@ -10,9 +10,7 @@
       "flags": {}
     }
   ],
-  "esmodules": [
-    "built/the_edge.js"
-  ],
+  "esmodules": ["built/the_edge.js"],
   "styles": [
     "styles/dialogs.css",
     "styles/root.css",
@@ -29,7 +27,7 @@
   ],
   "compatibility": {
     "minimum": "13",
-    "verified": "13"
+    "verified": "14"
   },
   "documentTypes": {
     "Actor": {
@@ -39,17 +37,17 @@
       "Store": {}
     },
     "Item": {
-      "Advantage": {"htmlFields": ["description"]},
-      "Ammunition": {"htmlFields": ["description"]},
-      "Armour": {"htmlFields": ["description"]},
-      "Consumables": {"htmlFields": ["description"]},
-      "Combatskill": {"htmlFields": ["description"]},
-      "Disadvantage": {"htmlFields": ["description"]},
-      "Gear": {"htmlFields": ["description"]},
-      "Languageskill": {"htmlFields": ["description"]},
-      "Medicalskill": {"htmlFields": ["description"]},
-      "Skill": {"htmlFields": ["description"]},
-      "Weapon": {"htmlFields": ["description"]}
+      "Advantage": { "htmlFields": ["description"] },
+      "Ammunition": { "htmlFields": ["description"] },
+      "Armour": { "htmlFields": ["description"] },
+      "Consumables": { "htmlFields": ["description"] },
+      "Combatskill": { "htmlFields": ["description"] },
+      "Disadvantage": { "htmlFields": ["description"] },
+      "Gear": { "htmlFields": ["description"] },
+      "Languageskill": { "htmlFields": ["description"] },
+      "Medicalskill": { "htmlFields": ["description"] },
+      "Skill": { "htmlFields": ["description"] },
+      "Weapon": { "htmlFields": ["description"] }
     }
   },
   "grid": {
@@ -58,8 +56,8 @@
   },
   "socket": true,
   "primaryTokenAttribute": "health.value",
-  "secondaryTokenAttribute": "heartRate.value",
-  "version": "v0.15.7",
+  "secondaryTokenAttribute": "strain.value",
+  "version": "v0.16.0",
   "manifest": "https://raw.githubusercontent.com/KKleinbeck/The-Edge/master/system.json",
-  "download": "https://github.com/KKleinbeck/The-Edge/archive/refs/tags/v0.15.7.zip"
+  "download": "https://github.com/KKleinbeck/The-Edge/archive/refs/tags/v0.16.0.zip"
 }

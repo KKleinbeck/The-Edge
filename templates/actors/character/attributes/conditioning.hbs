@@ -3,23 +3,39 @@
     <div class="section-title">{{genName "Conditioning"}}</div>
   </div>
   <div class="columned-page section-content" style="gap: 10px 5px;">
-    {{!-- TODO: This should be a grid layout --}}
+    {{! TODO: This should be a grid layout }}
     <div class="page-right-aligned">
-      <p data-tooltip aria-label="{{tooltipText 'Stride Speed'}}" style="margin-top: 0px;">
+      <p
+        data-tooltip
+        aria-label="{{tooltipText 'Stride Speed'}}"
+        style="margin-top: 0px;"
+      >
         {{attrName "Stride Speed"}}&#8199;
         <span class="output" style="width: 50px;">{{system.strideSpeed}}</span>
       </p>
-      <p data-tooltip aria-label="{{tooltipText 'Sprint Speed'}}" style="margin-top: 0px;">
+      <p
+        data-tooltip
+        aria-label="{{tooltipText 'Sprint Speed'}}"
+        style="margin-top: 0px;"
+      >
         {{attrName "Sprint Speed"}}&#8199;
         <span class="output" style="width: 50px;">{{system.sprintSpeed}}</span>
       </p>
       <p>
-        <span class="output" style="max-width: 0px; visibility: hidden;">0</span> <!-- Hidden element to match height -->
+        <span
+          class="output"
+          style="max-width: 0px; visibility: hidden;"
+        >0</span>
+        <!-- Hidden element to match height -->
         {{genName "Initiative"}}
       </p>
     </div>
     <div class="page-right-aligned">
-      <p data-tooltip aria-label="{{tooltipText 'Run Speed'}}" style="margin-top: 0px;">
+      <p
+        data-tooltip
+        aria-label="{{tooltipText 'Run Speed'}}"
+        style="margin-top: 0px;"
+      >
         {{attrName "Run Speed"}}&#8199;
         <span class="output" style="width: 50px;">{{system.runSpeed}}</span>
       </p>
@@ -30,7 +46,7 @@
           data-target="system.strain.max.advances"
           value="{{system.strain.max.advances}}"
           style="width: 50px; text-align: right; padding-right: 5px;"
-        >
+        />
       </p>
       <div class="output" data-tooltip="{{helpers.initiative.baseFormula}}">
         {{helpers.initiative.parsedFormula}}

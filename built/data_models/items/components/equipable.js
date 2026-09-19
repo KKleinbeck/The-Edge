@@ -12,5 +12,7 @@ export default class EquipableData extends DataModelComponent {
         await this.parent.update({ "system.equipped": newValue });
         return newValue;
     }
-    get modifiers() { return this.effect; }
+    get modifiers() {
+        return this.effect;
+    }
 }

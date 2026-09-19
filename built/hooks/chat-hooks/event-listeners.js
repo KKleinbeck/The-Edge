@@ -11,7 +11,11 @@ export async function rollProficiencyCheck(event, sys, actor) {
     if (!rollIsReady("proficiency-roll", target))
         return;
     const checkData = {
-        proficiency: sys.check, actor, actorId: actor.id, sceneId: canvas.scene.id, transmit: false
+        proficiency: sys.check,
+        actor,
+        actorId: actor.id,
+        sceneId: canvas.scene.id,
+        transmit: false,
     };
     DialogProficiency.start(checkData, (rollDetails) => _onProficiencyCheck(rollDetails, target, sys));
 }
@@ -28,7 +32,6 @@ async function _onProficiencyCheck(rollDetails, target, sys) {
     }
     const rollDescription = ProficiencyConfig.rollOutcome(sys.check, rollDetails.quality);
     _addRollDescription(elem, rollDescription);
-    // rollFollowUps(elem);
 }
 function _addRollDescription(elem, msg) {
     let rollDescription = elem.parent().find(".roll-description");
@@ -44,16 +47,17 @@ function rollIsReady(id, target) {
         return false;
     return true;
 }
-;
 export async function applyDamage(_event, sys, html) {
     const details = sys.details; // TODO Type
-    if (details.targetId) {
+    if (details.attackRollQuery.targetId) {
         const scene = game.scenes.get(sys.config.speaker.scene);
-        const target = scene.tokens.get(details.targetId)?.actor;
-        const protectionLog = await _applyDamage(target, details.damage, details.penetration === undefined ? 0 : details.penetration, details.rolls.map(x => x.crit), details.damageType, details.name);
+        const target = scene.tokens.get(details.attackRollQuery.targetId)?.actor;
+        const protectionLog = await _applyDamage(target, details.attackRollResult.damage, "penetration" in details.specifics ? details.specifics.penetration : 0, details.attackRollResult.rolls.map((x) => x.crit), details.damageType, details.attackRollQuery.name);
         if (Object.keys(protectionLog).length != 0) {
-            const template = "systems/the_edge/templates/chat/meta-protection-log.html";
-            const protectionHtml = await renderTemplate(template, { protection: protectionLog });
+            const template = "systems/the_edge/templates/chat/meta-protection-log.hbs";
+            const protectionHtml = await renderTemplate(template, {
+                protection: protectionLog,
+            });
             html.querySelector(".apply-damage").outerHTML = protectionHtml;
         }
         else
@@ -75,37 +79,78 @@ export async function applyGrenadeDamage(_event, sys, button) {
         const factor = scene.grid.distance / scene.grid.size;
         const distance = factor * Math.hypot(token.x - grenadeTile.x, token.y - grenadeTile.y);
         if (distance < maxDistance) {
-            const damage = await DiceServer.genericRoll(grenadeDetails.damage[distance < closeDistance ? 0 : 1]);
-            const partialLog = await _applyDamage(token.actor, [damage], 0, [false], grenadeDetails.type, sys.details.nameGrenade);
-            // Add damage and protection to the log
-            let protection = 0;
-            for (const protectionArray of Object.values(partialLog))
-                protection += protectionArray.sum();
-            logs[token.actor.name] = {
-                damage: damage,
-                protection: protection
-            };
+            var damageAndProtection = await _handleGrenadeDamage(grenadeDetails.damage[distance < closeDistance ? 0 : 1], token, grenadeDetails.type, sys.details.nameGrenade);
+            logs[token.actor.name] = damageAndProtection;
+            await _handleGrenadeEffect(grenadeDetails.effects, token, distance < closeDistance, sys.details.nameGrenade);
         }
     }
     // Update the chat message
     if (Object.keys(logs).length != 0) {
-        const template = "systems/the_edge/templates/chat/meta-grenade-damage.html";
-        const damageHtml = await renderTemplate(template, { logs: logs, grenade: grenadeDetails });
+        const template = "systems/the_edge/templates/chat/meta-grenade-damage.hbs";
+        const damageHtml = await renderTemplate(template, {
+            logs: logs,
+            grenade: grenadeDetails,
+        });
         button.outerHTML = damageHtml;
     }
     else {
         button.outerHTML = LocalisationServer.localise("Harmless explosion", "text");
     }
+    // Create smoke if necessary
+    if (grenadeDetails.effects.smoke.active) {
+        _handleGreandeSmoke(grenadeTile.x + 0.5 * grenadeTile.width, grenadeTile.y + 0.5 * grenadeTile.height, grenadeDetails.blastDistance[0], grenadeDetails.blastDistance[1]);
+    }
     // Remove the grenade tile
     grenadeTile.delete();
+}
+async function _handleGrenadeDamage(damageRoll, token, type, grenadeName) {
+    // Apply Damage
+    const damage = await DiceServer.genericRoll(damageRoll);
+    const partialLog = await _applyDamage(token.actor, [damage], 0, [false], type, grenadeName);
+    // Add damage and protection to the log
+    let protection = 0;
+    for (const protectionArray of Object.values(partialLog))
+        protection += protectionArray.sum();
+    return { damage, protection };
+}
+async function _handleGrenadeEffect(effects, token, isClose, grendeName) {
+    if (token.actor.type == "character" && effects.shellshock.active) {
+        const effect = isClose ? effects.shellshock.close : effects.shellshock.far;
+        if (effect.length) {
+            token.actor.system.createNewEffect(grendeName, effect);
+        }
+    }
+}
+async function _handleGreandeSmoke(x, y, closeDistance, farDistance) {
+    const light = await canvas.scene.createEmbeddedDocuments("AmbientLight", [
+        {
+            x,
+            y,
+            rotation: 0,
+            walls: true,
+            vision: false,
+            config: {
+                animation: { type: "denseSmoke" },
+                negative: true,
+                dim: farDistance,
+                bright: closeDistance,
+                color: "#000000",
+                alpha: 1,
+                luminosity: -1,
+            },
+        },
+    ]);
 }
 async function _applyDamage(target, damage, penetration, crits, damageType, name) {
     const protectionLog = {};
     const partialLogs = [];
     for (let i = 0; i < damage.length; ++i) {
         const config = {
-            crit: crits[i], damage: damage[i], damageType,
-            name, penetration,
+            crit: crits[i],
+            damage: damage[i],
+            damageType,
+            name,
+            penetration,
         };
         const partialLog = await target.system.applyDamage(config);
         partialLogs.push(partialLog);

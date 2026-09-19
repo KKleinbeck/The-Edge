@@ -1,6 +1,6 @@
 import LocalisationServer from "../system/localisation_server.js";
 
-export default function() {
+export default function () {
   const definitions = {
     progressBar: {
       armour: ["#4d0080", "#9900ff", "#cb69e9ff"],
@@ -8,13 +8,14 @@ export default function() {
       default: ["#6366f1", "#3b82f6", "#00f5ff"],
       health: ["#2e7d32", "#4caf50", "#53c24fff"],
       strain: ["#fc8414", "#c7411f", "rgb(160, 17, 17)"],
-    }
-  }
+    },
+  };
 
   Handlebars.registerHelper({
     progressBarColour: (i: number, a: string | undefined = undefined) => {
-      if ((a as string) in definitions.progressBar) return definitions.progressBar[(a as string)][i];
-      return definitions.progressBar.default[i]
+      if ((a as string) in definitions.progressBar)
+        return definitions.progressBar[a as string][i];
+      return definitions.progressBar.default[i];
     },
     getWoundHTML: (wound, longTooltip = false) => {
       const colour = wound.bleeding > 0 ? "red" : "orange";
@@ -32,10 +33,15 @@ export default function() {
       }
       let tooltip = "";
       if (longTooltip) {
-        tooltip = wound.source + " - " +
-          LocalisationServer.localise(wound.status, "item") + " - " +
-          `${wound.damage} ` + LocalisationServer.localise("Damage") +
-          ` - ${wound.bleeding} ` + LocalisationServer.localise("Bleeding")
+        tooltip =
+          wound.source +
+          " - " +
+          LocalisationServer.localise(wound.status, "item") +
+          " - " +
+          `${wound.damage} ` +
+          LocalisationServer.localise("Damage") +
+          ` - ${wound.bleeding} ` +
+          LocalisationServer.localise("Bleeding");
       } else {
         tooltip = LocalisationServer.localise(wound.status, "item");
       }
@@ -48,5 +54,5 @@ export default function() {
         </div>
       `;
     },
-  })
+  });
 }
