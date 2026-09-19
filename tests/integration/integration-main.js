@@ -32,11 +32,11 @@ export default function registerIntegrationTests(apiHandler) {
   async function strainAfterFoodConsumption() {
     const actor = await apiHandler.actorCreate();
     const samples = [
-      {actorStrain: 10, foodReduction:  5, result: 5},
-      {actorStrain: 10, foodReduction: 10, result: 0},
-      {actorStrain: 10, foodReduction: 15, result: 0},
-    ]
-    const actualResults = []
+      { actorStrain: 10, foodReduction: 5, result: 5 },
+      { actorStrain: 10, foodReduction: 10, result: 0 },
+      { actorStrain: 10, foodReduction: 15, result: 0 },
+    ];
+    const actualResults = [];
 
     for (const sample of samples) {
       const command =
@@ -50,7 +50,7 @@ export default function registerIntegrationTests(apiHandler) {
         `await actor.controller._foodConsume(food);` +
         `return actor.system.strain.value;`;
       const result = await apiHandler.runCommand(command);
-      actualResults.push(result)
+      actualResults.push(result);
     }
 
     await actor.delete();

@@ -122,6 +122,7 @@ export class TheEdgeCombatant extends Combatant {
 
   get _momentStrainCost(): number {
     const movementOptions = this.getMovementOptions(this.distanceTravelled);
+    if (movementOptions.length == 0) return 0;
     const movementStrainCost =
       movementOptions[this.system.movementIndex].strainCost;
 
