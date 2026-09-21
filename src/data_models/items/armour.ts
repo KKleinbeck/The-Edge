@@ -5,6 +5,7 @@ import THE_EDGE from "../../system/config-the-edge.js";
 import { generateDataModelWithComponents } from "../abstracts.js";
 
 import DescriptionData from "./components/description.js";
+import EmbeddedSkillsData from "./components/embedded-skills.js";
 import EquipableData from "./components/equipable.js";
 import NonstackableData from "./components/nonstackable.js";
 
@@ -13,11 +14,12 @@ const { ArrayField, NumberField, ObjectField, SchemaField, StringField } =
 
 export default class ArmourData extends generateDataModelWithComponents(
   DescriptionData,
+  EmbeddedSkillsData,
   EquipableData,
   NonstackableData,
 ) {
   static defineSchema() {
-    const schema = super.defineSchema();
+    const schema: Record<string, any> = super.defineSchema();
     schema.bodyPart = new StringField({ initial: "Torso" });
     schema.layer = new StringField({ initial: "Inner" });
     schema.structurePoints = new NumberField({ initial: 10, integer: true });

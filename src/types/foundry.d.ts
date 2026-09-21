@@ -49,6 +49,7 @@ declare class Actor extends FoundryDocument {
     counters: ICounter[];
     credits: { chids: number; digital: number };
     effects: IEffect[];
+    heroToken: {available: number}
     overloadLevel: number;
     statusEffects: IStatusEffect[];
     weapons: {
@@ -70,7 +71,7 @@ declare class Actor extends FoundryDocument {
     onUpdate(data: any): void;
     regenerateHeroToken();
     rollAttackCheck(prompt: IAttackRollPrompt): Promise<IAttackRollResult>;
-    useHeroToken();
+    useHeroToken(reason?: string);
   };
   token: TokenDocument;
   addOrCreateVantage(item: Item);

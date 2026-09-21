@@ -1,13 +1,13 @@
 import { TheEdgeItemSheet } from "../item-sheet.js";
 import {
   ItemSheetAmmunition,
-  ItemSheetArmour,
   ItemSheetConsumables,
   ItemSheetGear,
   ItemSheetLanguage,
   ItemSheetSkill,
   ItemSheetVantage,
 } from "./others.js";
+import { ItemSheetArmour } from "./armour.js";
 import ItemSheetWeapon from "./weapons.js";
 
 export default function setupItemSheets() {

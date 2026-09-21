@@ -82,7 +82,7 @@ interface IDetailsWeaponCheckForRanged {
 
 // Hooks
 interface IContextMenuHookConfig {
-  actor: foundryAny;
+  actor: Actor;
   chatMsgCls: foundryAny;
   html: string;
   system: IChatSystem;

@@ -1,5 +1,7 @@
 import LocalisationServer from "../system/localisation_server.js";
 
+const { renderTemplate } = foundry.applications.handlebars;
+
 type intype = Constructor<HandlebarsApplication>;
 type outtype<T> = T & Constructor<any>;
 export default function CounterMixin<T extends intype>(
@@ -19,6 +21,7 @@ export default function CounterMixin<T extends intype>(
     getCounters(_context: DOMStringMap = {}): ICounter[] {
       return this.document.system.counters;
     }
+
     async updateCounters(
       counters: ICounter[],
       _context: DOMStringMap = {},
@@ -28,7 +31,32 @@ export default function CounterMixin<T extends intype>(
         { render: false },
       );
     }
-    onUpdateCounters(_counters: ICounter[], _context: DOMStringMap) {}
+
+    async onUpdateCounters(
+      counters: ICounter[],
+      context: DOMStringMap,
+    ): Promise<void> {
+      await this.redrawCounters(counters, context);
+    }
+
+    async redrawCounters(
+      counters: ICounter[],
+      context: DOMStringMap,
+    ): Promise<void> {
+      const template = "systems/the_edge/templates/items/meta-counters.hbs";
+      const html = await renderTemplate(template, {
+        counters: counters,
+        ...context,
+      });
+
+      const counterGroupElement = this.element.querySelector(
+        ".counter-group-hook",
+      );
+      if (counterGroupElement === null) return;
+
+      counterGroupElement.innerHTML = html;
+      this.attachCounterEffectListeners(counterGroupElement);
+    }
 
     // Public interface - do not override
     attachCounterEffectListeners(
