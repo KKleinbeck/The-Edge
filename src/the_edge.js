@@ -52,6 +52,7 @@ Hooks.once("init", async function () {
   game.the_edge = {
     config: THE_EDGE,
     diceServer: DiceServer,
+    localisationServer: LocalisationServer,
     socketHandler: new SocketHandler(),
   };
 
@@ -254,7 +255,7 @@ function _setupTextEnrichers() {
   CONFIG.TextEditor.enrichers.push({
     id: "my-module-localize",
     pattern:
-      /@Localise\[TheEdge\.((?<category>[\w\s]+)\.)?(?<id>[\w\s\.]+)\]/gi,
+      /@Localise\[TheEdge\.((?<category>[\w\s]+)\.)?(?<id>[\w\s-_\.]+)\]/gi,
     enricher: async (match, _options) => {
       const { category, id } = match.groups;
       const span = document.createElement("span");

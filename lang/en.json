@@ -4,7 +4,11 @@
     "TORSO": "Torso",
     "TORSO_ARMS": "Torso & Arms",
     "ARMS": "Arms",
+    "ARMSLEFT": "Arms (Left)",
+    "ARMSRIGHT": "Arms (Right)",
     "LEGS": "Legs",
+    "LEGSLEFT": "Legs (Left)",
+    "LEGSRIGHT": "Legs (Right)",
     "BELOW_NECK": "Below neck",
     "HEAD": "Head",
     "ENTIRE": "Entire"
