@@ -73,6 +73,7 @@
     "CONSUMED FOOD": "{actorName} ate {item}.",
     "CONSUMED FOOD W STRAIN": "{actorName} ate {item}, reducing their strain by {strainReduction}.",
     "SAME NAME EFFECT": "This created a new effect under the same name.",
+    "USED CONSUMABLE": "{actorName} used {item}.",
 
     "SKILL USED": "This changed their strain by: {change}."
   },

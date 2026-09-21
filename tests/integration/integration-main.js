@@ -47,7 +47,7 @@ export default function registerIntegrationTests(apiHandler) {
         `  { name: "Food", type: "Consumables", "system.subtypes.food.strainReduction": "${sample.foodReduction}" },` +
         `  { parent: actor }` +
         `);` +
-        `await actor.controller._foodConsume(food);` +
+        `await actor.controller.useConsumable(food);` +
         `return actor.system.strain.value;`;
       const result = await apiHandler.runCommand(command);
       actualResults.push(result);

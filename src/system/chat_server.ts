@@ -34,6 +34,13 @@ export default class ChatServer {
         );
         break;
 
+      case "CONSUMABLE USED":
+        html = await renderTemplate(
+          "systems/the_edge/templates/chat/consumable_used.hbs",
+          details,
+        );
+        break;
+
       case "FALL":
         html = await renderTemplate(
           "systems/the_edge/templates/chat/fall.hbs",

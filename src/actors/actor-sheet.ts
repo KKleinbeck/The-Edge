@@ -168,11 +168,11 @@ export class TheEdgeActorSheet extends CounterMixin(
             break;
 
           case "grenade":
-            NotificationServer.notify("Grenade use tipp");
+            NotificationServer.notify("Grenade use tip");
             break;
 
           default:
-            this.actor.controller._foodConsume(item);
+            this.actor.controller.useConsumable(item);
             break;
         }
         break;

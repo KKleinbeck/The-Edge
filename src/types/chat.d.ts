@@ -2,6 +2,7 @@ type TRollType = "public" | "blind" | "whisper";
 
 type ChatId =
   | "ATTRIBUTE CHECK"
+  | "CONSUMABLE USED"
   | "CRIT FAIL EVENT"
   | "FALL"
   | "FIRING EMPTY WEAPON"
