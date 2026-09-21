@@ -93,7 +93,7 @@ export class TheEdgeActor extends Actor {
                 continue;
             for (const counter of item.system.counters) {
                 var name = `${item.name} - ${counter.name}`;
-                if (item.type == "Armour" && item.system.layer == "Outer") {
+                if (item.type == "Armour" && item.system.layer == "Outer" && item.system.attachments.length > 0) {
                     const attachedTo = this.items.get(item.system.attachments[0].armourId);
                     var name = `${attachedTo.name} - ${counter.name}`;
                 }
