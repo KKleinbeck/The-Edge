@@ -256,6 +256,14 @@ export default function () {
         getNextWeightClass: (weightTillNextOverload) => {
             return `${Math.floor(10 * weightTillNextOverload) / 10}kg ${LocalisationServer.localise("to next level")}`;
         },
+        localiseDescription: (description) => {
+            function replacer(_match, _p1, p2, p3) {
+                return LocalisationServer.localise(p3, p2);
+            }
+            const localisationEnricher = CONFIG.TextEditor.enrichers.find(x => x.id == "the-edge-localisation");
+            const matches = localisationEnricher.pattern.exec(description);
+            return description.replaceAll(localisationEnricher.pattern, replacer);
+        },
         getWoundIcon: (status) => {
             switch (status) {
                 case "treatable":

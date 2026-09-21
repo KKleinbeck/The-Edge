@@ -253,7 +253,7 @@ function _setupChatConfigs() {
 
 function _setupTextEnrichers() {
   CONFIG.TextEditor.enrichers.push({
-    id: "my-module-localize",
+    id: "the-edge-localisation",
     pattern:
       /@Localise\[TheEdge\.((?<category>[\w\s]+)\.)?(?<id>[\w\s-_\.]+)\]/gi,
     enricher: async (match, _options) => {
