@@ -85,19 +85,32 @@ export class TheEdgeActor extends Actor {
         return true;
     }
     get itemCounters() {
-        const counters = [];
+        const counterMap = {};
         for (const item of this.items) {
+            if ("equipped" in item.system && !item.system.equipped)
+                continue;
             if (!item.system.counters || !item.system.counters.length)
                 continue;
             for (const counter of item.system.counters) {
-                counters.push({
-                    name: `${item.name} - ${counter.name}`,
-                    value: counter.value,
-                    max: counter.max,
-                });
+                var name = `${item.name} - ${counter.name}`;
+                if (item.type == "Armour" && item.system.layer == "Outer") {
+                    const attachedTo = this.items.get(item.system.attachments[0].armourId);
+                    var name = `${attachedTo.name} - ${counter.name}`;
+                }
+                if (name in counterMap) {
+                    counterMap[name].value += counter.value;
+                    counterMap[name].max += counter.max;
+                }
+                else {
+                    counterMap[name] = {
+                        name,
+                        value: counter.value,
+                        max: counter.max,
+                    };
+                }
             }
         }
-        return counters;
+        return Object.values(counterMap);
     }
     get embeddedSkills() {
         const skills = [];
