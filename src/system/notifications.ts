@@ -18,4 +18,13 @@ export default class NotificationServer {
     );
     ui.notifications.error(msg);
   }
+
+  static customError(id: string, group: string, details: Record<string, any> = {}) {
+    const msg = LocalisationServer.parsedLocalisation(
+      id,
+      group,
+      details,
+    );
+    ui.notifications.error(msg);
+  }
 }
