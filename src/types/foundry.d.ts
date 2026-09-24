@@ -227,6 +227,7 @@ declare class Dialog {
 declare class DialogV2 extends HandlebarsApplication {
   constructor(options: foundryAny);
   render(options?: foundryAny): Promise<DialogV2>;
+  static input(config: foundryAny): Promise<any>;
   static prompt(config?: foundryAny): Promise<any>;
 }
 

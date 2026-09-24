@@ -321,36 +321,6 @@ export class TheEdgeActor extends Actor {
             }
         }
     }
-    attachOuterArmour(armourId, shellId, tokenId) {
-        const armour = this.items.get(armourId);
-        const shell = this.items.get(shellId);
-        const availableAttachment = armour.system.attachmentPoints.max - armour.system.attachmentPoints.used;
-        if (shell.system.attachmentPoints.max > availableAttachment) {
-            NotificationServer.notify("Missing Attachment points", {
-                available: availableAttachment,
-                needed: shell.system.attachmentPoints.max,
-            });
-            return;
-        }
-        // Hack relevant information into the shells attachment list, needed in item.js upon breaking
-        shell.update({
-            "system.equipped": true,
-            "system.attachments": [
-                { actorId: this.id, tokenId: tokenId, armourId: armour.id },
-            ],
-        });
-        const attachments = armour.system.attachments;
-        attachments.push({
-            actorId: this.id,
-            tokenId: tokenId,
-            shellId: shell.id,
-            shell: shell,
-        });
-        armour.update({
-            "system.attachments": attachments,
-            "system.attachmentPoints.used": armour.system.attachmentPoints.used + shell.system.attachmentPoints.max,
-        });
-    }
     chatConfig(roll = "public") {
         return {
             roll,

@@ -1,7 +1,8 @@
 import DiceServer from "./system/dice_server.js";
 import LocalisationServer from "./system/localisation_server.js";
+import NotificationServer from "./system/notifications.js";
 
-import initHooks from "./hooks/init.js";
+import setupTheEdgeHooks from "./hooks/init.js";
 import THE_EDGE from "./system/config-the-edge.js";
 import setupGameSettings from "./system/settings.js";
 import TheEdgeHotbar from "./applications/hotbar.js";
@@ -53,6 +54,7 @@ Hooks.once("init", async function () {
     config: THE_EDGE,
     diceServer: DiceServer,
     localisationServer: LocalisationServer,
+    notificationServer: NotificationServer,
     socketHandler: new SocketHandler(),
   };
 
@@ -126,7 +128,7 @@ Hooks.once("init", async function () {
   _setupTextEnrichers();
 });
 
-initHooks();
+setupTheEdgeHooks();
 
 function _extendNativePrototypes() {
   Array.prototype.random = function () {
