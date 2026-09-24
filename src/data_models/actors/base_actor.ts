@@ -50,7 +50,7 @@ export default class CharacterBaseData extends DataModelComponent {
   }
 
   // Hero Token related
-  async useHeroToken(reason = "generic") {
+  async useHeroToken(reason: string = "generic") {
     await this.parent.update({
       "system.heroToken.available": this.heroToken.available - 1,
     });

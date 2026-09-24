@@ -16,6 +16,12 @@ export default class EquipableData extends DataModelComponent {
   async toggleEquipped(): Promise<boolean> {
     const newValue = !this.equipped;
     await this.parent.update({ "system.equipped": newValue });
+    if (newValue) {
+      Hooks.call("onModifierEvent", "onEquip", {
+        actor: this.parent.actor,
+        itemId: this.parent.id
+      })
+    }
     return newValue;
   }
 

@@ -32,6 +32,7 @@ async function handleOutOfCombatAction(payload) {
 }
 function _onModifierEvent(field, details) {
     switch (field) {
+        case "onEquip":
         case "onUse":
             const item = details.actor.items.get(details.itemId);
             item.effectHooks(field, details);

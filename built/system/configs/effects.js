@@ -7,6 +7,7 @@ export const EVENT_NAMES = [
     "rollMeleeCheck-Posterior",
     "rollProficiencyCheck-Prior",
     "rollProficiencyCheck-Posterior",
+    "onEquip",
     "onReceiveDamage",
     "onRest",
     "onUse",
@@ -33,6 +34,7 @@ export const EFFECTS = {
             "rollMeleeCheck-Posterior",
             "rollAttackCheck-Prior",
             "rollAttackCheck-Posterior",
+            "onEquip"
         ];
         switch (type) {
             case "Armour":
@@ -110,6 +112,7 @@ export const EFFECTS = {
                     "  // details.actor = ... \n" +
                     "  // details.restDescription = ... \n" +
                     "}");
+            case "onEquip":
             case "onUse":
                 return (header +
                     "function onEvent(details, id) {\n" +

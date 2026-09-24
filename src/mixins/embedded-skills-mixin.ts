@@ -2,6 +2,8 @@ import Aux from "../system/auxilliaries.js";
 import DialogDynamicModifier from "../dialogs/dialog-dynamic-modifier.js";
 import LocalisationServer from "../system/localisation_server.js";
 
+const { renderTemplate } = foundry.applications.handlebars;
+
 const NEW_EFFECT_DEFAULT: string =
   `function onEvent(details, id) {\n` +
   `  console.log(details);\n` +
@@ -27,6 +29,7 @@ export default function EmbeddedSkillMixin<T extends intype>(
     getSkills(_context: DOMStringMap = {}): IEmbeddedSkill[] {
       return this.document.system.embeddedSkills;
     }
+
     async updateSkills(
       counters: IEmbeddedSkill[],
       _context: DOMStringMap = {},
@@ -36,7 +39,30 @@ export default function EmbeddedSkillMixin<T extends intype>(
         { render: false },
       );
     }
-    onUpdateSkills(_counters: IEmbeddedSkill[], _context: DOMStringMap) {}
+
+    async onUpdateSkills(
+      skills: IEmbeddedSkill[],
+      context: DOMStringMap,
+    ): Promise<void> {
+      await this.redrawSkills(skills, context);
+    }
+
+    async redrawSkills(
+      skills: IEmbeddedSkill[],
+      context: DOMStringMap,
+    ): Promise<void> {
+      const template =
+        "systems/the_edge/templates/items/meta-embedded-skills.hbs";
+      const html = await renderTemplate(template, { skills: skills, ...context });
+
+      const skillsGroupElement = this.element.querySelector(
+        ".embedded-skills-group-hook",
+      );
+      if (skillsGroupElement === null) return;
+
+      skillsGroupElement.innerHTML = html;
+      this.attachSkillEffectListeners(skillsGroupElement);
+    }
 
     // Public interface - do not override
     attachSkillEffectListeners(element: Element | undefined = undefined): void {

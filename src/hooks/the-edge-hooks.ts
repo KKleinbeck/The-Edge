@@ -48,6 +48,7 @@ function _onModifierEvent(
   details: Record<string, any>,
 ): boolean {
   switch (field) {
+    case "onEquip":
     case "onUse":
       const item = details.actor.items.get(details.itemId);
       item.effectHooks(field, details);

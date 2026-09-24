@@ -5,7 +5,7 @@ export default class ControllerCharacter {
     constructor(actor) {
         this.actor = actor;
     }
-    async _foodConsume(item) {
+    async useConsumable(item) {
         const existingCopies = this.actor.system.findEffectsByName(item.name);
         if (existingCopies.length) {
             NotificationServer.notify("Effect already exists");
@@ -18,7 +18,7 @@ export default class ControllerCharacter {
         }
         const strainRoll = await new Roll(item.system.subtypes.food.strainReduction).evaluate();
         const strainChange = await this.actor.system.applyStrain(-strainRoll.total);
-        ChatServer.transmitEvent("FOOD CONSUME", {
+        ChatServer.transmitEvent(item.system.current_type == "food" ? "FOOD CONSUME" : "CONSUMABLE USED", {
             details: {
                 actorName: this.actor.name,
                 item: item.name,

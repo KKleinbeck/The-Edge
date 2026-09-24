@@ -29,7 +29,7 @@ export default class ItemSheetWeapon extends EmbeddedSkillMixin(
       template: `systems/the_edge/templates/items/Weapon-header.hbs`,
     },
     effects: {
-      template: "systems/the_edge/templates/items/Weapon-effects.hbs",
+      template: "systems/the_edge/templates/items/meta-effects-counters-skills.hbs",
     },
     details: {
       template: "systems/the_edge/templates/items/Weapon-details.hbs",
@@ -162,55 +162,5 @@ export default class ItemSheetWeapon extends EmbeddedSkillMixin(
       fireModes[+index][field] = +target.value;
     }
     await this.item.update({ "system.fireModes": fireModes });
-  }
-
-  async onUpdateCounters(
-    counters: ICounter[],
-    context: DOMStringMap,
-  ): Promise<void> {
-    await this.redrawCounters(counters, context);
-  }
-
-  async redrawCounters(
-    counters: ICounter[],
-    context: DOMStringMap,
-  ): Promise<void> {
-    const template = "systems/the_edge/templates/items/meta-counters.hbs";
-    const html = await renderTemplate(template, {
-      counters: counters,
-      ...context,
-    });
-
-    const counterGroupElement = this.element.querySelector(
-      ".counter-group-hook",
-    );
-    if (counterGroupElement === null) return;
-
-    counterGroupElement.innerHTML = html;
-    this.attachCounterEffectListeners(counterGroupElement);
-  }
-
-  async onUpdateSkills(
-    skills: IEmbeddedSkill[],
-    context: DOMStringMap,
-  ): Promise<void> {
-    await this.redrawSkills(skills, context);
-  }
-
-  async redrawSkills(
-    skills: IEmbeddedSkill[],
-    context: DOMStringMap,
-  ): Promise<void> {
-    const template =
-      "systems/the_edge/templates/items/meta-embedded-skills.hbs";
-    const html = await renderTemplate(template, { skills: skills, ...context });
-
-    const skillsGroupElement = this.element.querySelector(
-      ".embedded-skills-group-hook",
-    );
-    if (skillsGroupElement === null) return;
-
-    skillsGroupElement.innerHTML = html;
-    this.attachSkillEffectListeners(skillsGroupElement);
   }
 }

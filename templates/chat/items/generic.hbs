@@ -1,19 +1,9 @@
 <h3>{{item.name}}</h3>
-{{#if item.system.effect}}
+{{#if (checkNotEmpty item.system.effect)}}
   <h5 style="margin: 12px 0 8px 0;">{{genName "Effects"}}:</h5>
-  {{#each item.system.effect as |modifier|}}
-    <div
-      style="display: flex; justify-content: space-between; align-items: center; padding-left: 10px;"
-    >
-      {{genName modifier.group}}
-      {{effectRequirementName modifier.field modifier.group}}
-      <div class="output" style="width: 45px; text-align: right;">
-        {{modifier.value}}
-      </div>
-    </div>
-  {{/each}}
+  {{> systems/the_edge/templates/chat/items/meta-effects.hbs}}
 {{/if}}
 {{#if (checkNotEmpty item.system.description)}}
   <h5 style="margin: 12px 0 8px 0;">{{genName "Description"}}:</h5>
-  {{{item.system.description}}}
+  {{{localiseDescription item.system.description}}}
 {{/if}}

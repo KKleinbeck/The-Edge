@@ -1,6 +1,7 @@
 import Aux from "../system/auxilliaries.js";
 import DialogDynamicModifier from "../dialogs/dialog-dynamic-modifier.js";
 import LocalisationServer from "../system/localisation_server.js";
+const { renderTemplate } = foundry.applications.handlebars;
 const NEW_EFFECT_DEFAULT = `function onEvent(details, id) {\n` +
     `  console.log(details);\n` +
     `  // details.parent equals the item holding this skill\n}`;
@@ -19,7 +20,18 @@ export default function EmbeddedSkillMixin(BaseApplication) {
         async updateSkills(counters, _context = {}) {
             await this.document.update({ "system.embeddedSkills": counters }, { render: false });
         }
-        onUpdateSkills(_counters, _context) { }
+        async onUpdateSkills(skills, context) {
+            await this.redrawSkills(skills, context);
+        }
+        async redrawSkills(skills, context) {
+            const template = "systems/the_edge/templates/items/meta-embedded-skills.hbs";
+            const html = await renderTemplate(template, { skills: skills, ...context });
+            const skillsGroupElement = this.element.querySelector(".embedded-skills-group-hook");
+            if (skillsGroupElement === null)
+                return;
+            skillsGroupElement.innerHTML = html;
+            this.attachSkillEffectListeners(skillsGroupElement);
+        }
         // Public interface - do not override
         attachSkillEffectListeners(element = undefined) {
             if (!element)

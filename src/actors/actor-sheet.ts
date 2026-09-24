@@ -1,7 +1,6 @@
 import Aux from "../system/auxilliaries.js";
 import ChatServer from "../system/chat_server.js";
 import CounterMixin from "../mixins/counter-mixin.js";
-import DialogArmourAttachment from "../dialogs/dialog-attachOuterArmour.js";
 import DialogItemDeletion from "../dialogs/dialog-item-deletion.js";
 import DialogMedicine from "../dialogs/dialog-medicine.js";
 import DialogProficiency from "../dialogs/dialog-proficiency.js";
@@ -97,44 +96,6 @@ export class TheEdgeActorSheet extends CounterMixin(
         else DialogItemDeletion.start({ item: item, actor: this.actor });
         break;
       case "toggle-equip":
-        if (item.type == "Armour") {
-          if (
-            item.system.structurePoints <= 0 &&
-            item.system.structurePointsOriginal > 0
-          ) {
-            NotificationServer.notify("EquipBroken");
-            return undefined;
-          }
-
-          if (item.system.layer == "Outer") {
-            if (item.system.equipped) {
-              const parent = this.actor.items.get(
-                item.system.attachments[0].armourId,
-              );
-              await Aux.detachFromParent(
-                parent,
-                item._id,
-                item.system.attachmentPoints.max,
-              );
-              await item.update({ "system.attachments": [] });
-              await item.system.toggleEquipped();
-              break;
-            } else {
-              const attachableArmour = this._findAttachableArmour(item);
-              if (attachableArmour.length == 0) {
-                NotificationServer.notify("No attachable armour");
-                break;
-              }
-              DialogArmourAttachment.start({
-                actor: this.actor,
-                tokenId: this.token?.id,
-                shellId: item.id,
-                attachable: attachableArmour,
-              });
-              break;
-            }
-          }
-        }
         const equippedFlag = await item.system.toggleEquipped();
         await this.actor.update({});
 
@@ -168,11 +129,11 @@ export class TheEdgeActorSheet extends CounterMixin(
             break;
 
           case "grenade":
-            NotificationServer.notify("Grenade use tipp");
+            NotificationServer.notify("Grenade use tip");
             break;
 
           default:
-            this.actor.controller._foodConsume(item);
+            this.actor.controller.useConsumable(item);
             break;
         }
         break;
@@ -457,25 +418,6 @@ export class TheEdgeActorSheet extends CounterMixin(
 
         break;
     }
-  }
-
-  _findAttachableArmour(outerShell) {
-    const bodyTarget = outerShell.system.bodyPart;
-    const size = outerShell.system.attachmentPoints.max;
-    return this.actor.itemTypes["Armour"].filter((armour) => {
-      if (armour.system.layer == "Outer") return false;
-      if (
-        armour.system.attachmentPoints.max -
-          armour.system.attachmentPoints.used <
-        size
-      )
-        return false;
-      else if (armour.system.bodyPart.includes(bodyTarget)) return true;
-      else if (armour.system.bodyPart == "Entire") return true;
-      else if (armour.system.bodyPart == "Below_Neck" && bodyTarget != "Head")
-        return true;
-      return false;
-    });
   }
 
   // Mixin Related code

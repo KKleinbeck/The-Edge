@@ -1,5 +1,5 @@
 <div style="display: table;">
-  {{#if (checkEqual system.subtype "medicine")}}
+  {{#if (checkEqual system.current_type "medicine")}}
     <div style="display: table-row;">
       <div style="display: table-cell;"><b>{{genName
             "Medicine Effect"
@@ -23,7 +23,7 @@
       >{{system.subtypes.medicine.coagulation}}</div>
     </div>
   {{/if}}
-  {{#if (checkEqual system.subtype "grenade")}}
+  {{#if (checkEqual system.current_type "grenade")}}
     <div style="display: table-row;">
       <div style="display: table-cell;"><b>{{genName "Damage"}}:</b></div>
       <div
@@ -48,7 +48,7 @@
     </div>
   {{/if}}
 </div>
-{{#if (checkEqual system.subtype "grenade")}}
+{{#if (checkEqual system.current_type "grenade")}}
   {{#with system.subtypes.grenade.effects as |effects|}}
     {{#if (checkNotEmpty (getActiveGrenadeEffects effects))}}
       <b>{{genName "Effects"}}:</b>

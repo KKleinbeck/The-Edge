@@ -1,10 +1,12 @@
 import Aux from "../../system/auxilliaries.js";
+import DialogArmourAttachment from "../../dialogs/dialog-attachOuterArmour.js";
 import LocalisationServer from "../../system/localisation_server.js";
 import NotificationServer from "../../system/notifications.js";
 import THE_EDGE from "../../system/config-the-edge.js";
 import { generateDataModelWithComponents } from "../abstracts.js";
 
 import DescriptionData from "./components/description.js";
+import EmbeddedSkillsData from "./components/embedded-skills.js";
 import EquipableData from "./components/equipable.js";
 import NonstackableData from "./components/nonstackable.js";
 
@@ -13,11 +15,12 @@ const { ArrayField, NumberField, ObjectField, SchemaField, StringField } =
 
 export default class ArmourData extends generateDataModelWithComponents(
   DescriptionData,
+  EmbeddedSkillsData,
   EquipableData,
   NonstackableData,
 ) {
   static defineSchema() {
-    const schema = super.defineSchema();
+    const schema: Record<string, any> = super.defineSchema();
     schema.bodyPart = new StringField({ initial: "Torso" });
     schema.layer = new StringField({ initial: "Inner" });
     schema.structurePoints = new NumberField({ initial: 10, integer: true });
@@ -46,6 +49,126 @@ export default class ArmourData extends generateDataModelWithComponents(
     });
     return schema;
   }
+
+  async toggleEquipped(): Promise<boolean | undefined> {
+    if (
+      this.structurePoints <= 0 &&
+      this.structurePointsOriginal > 0
+    ) {
+      NotificationServer.notify("EquipBroken");
+      return undefined;
+    }
+
+    const newValue = (
+      this.layer == "Outer" ?
+      await this._toggleEquippedOuter() :
+      !this.equipped
+    );
+
+    await this.parent.update({ "system.equipped": newValue });
+    if (newValue) {
+      Hooks.call("onModifierEvent", "onEquip", {
+        actor: this.parent.actor,
+        itemId: this.parent.id
+      })
+    }
+    return newValue;
+  }
+
+  async _toggleEquippedOuter(): Promise<boolean | undefined> {
+    if (this.equipped) {
+      const parent = this.parent.actor.items.get(
+        this.attachments[0].armourId,
+      );
+
+      const innerArmour = this.parent.actor.items.get(this.attachments[0].armourId);
+      this.parent.update({ "system.attachments": [] }, { render: false });
+      await Aux.detachFromParent(
+        innerArmour,
+        this.parent._id,
+        this.attachmentPoints.max,
+      );
+      return false;
+    } else {
+      const attachableArmour = this._findAttachableArmour();
+      if (attachableArmour.length == 0) {
+        NotificationServer.notify("No attachable armour");
+        return undefined;
+      }
+      const dialogResult = await DialogArmourAttachment.start({
+        actor: this.parent.actor,
+        tokenId: this.parent.actor.token?.id,
+        shellId: this.parent.id,
+        attachable: attachableArmour,
+      });
+      if (dialogResult?.selectedArmourId) {
+        const targetArmour = this.parent.actor.items.get(dialogResult.selectedArmourId);
+        const canAttach = targetArmour.system._attachOuterArmour(this.parent);
+        if (!canAttach) return undefined;
+        // Store outer armour information into the shells attachment list
+        this.parent.update(
+          {
+            "system.attachments": [{
+              actorId: this.parent.actor.id,
+              tokenId: this.parent.actor.token?.id,
+              armourId: dialogResult.selectedArmourId
+            }],
+          },
+          { render: false }
+        );
+        return true;
+      }
+    }
+    return undefined;
+  }
+
+  _findAttachableArmour(): Item[] {
+    const bodyTarget = this.bodyPart;
+    const size = this.attachmentPoints.max;
+    return this.parent.actor.itemTypes["Armour"].filter((armour) => {
+      if (armour.system.layer == "Outer") return false;
+      if (
+        armour.system.attachmentPoints.max -
+          armour.system.attachmentPoints.used <
+        size
+      )
+        return false;
+      else if (armour.system.bodyPart.includes(bodyTarget)) return true;
+      else if (armour.system.bodyPart == "Entire") return true;
+      else if (armour.system.bodyPart == "Below_Neck" && bodyTarget != "Head")
+        return true;
+      return false;
+    });
+  }
+
+
+  _attachOuterArmour(shell: Item): boolean {
+    const armour = this.parent;
+    const availableAttachment =
+      armour.system.attachmentPoints.max - armour.system.attachmentPoints.used;
+    if (shell.system.attachmentPoints.max > availableAttachment) {
+      NotificationServer.notify("Missing Attachment points", {
+        available: availableAttachment,
+        needed: shell.system.attachmentPoints.max,
+      });
+      return false;
+    }
+
+    const attachments = armour.system.attachments;
+    attachments.push({
+      actorId: this.parent.actor?.id,
+      tokenId: this.parent.actor?.token?.id,
+      shellId: shell.id,
+      shell: shell,
+    });
+    armour.update({
+      "system.attachments": attachments,
+      "system.attachmentPoints.used":
+        armour.system.attachmentPoints.used + shell.system.attachmentPoints.max,
+    });
+    return true;
+  }
+
 
   async protect(damage, penetration, damageType, location, protectionLog) {
     const protectedLoc = this.bodyPart;

@@ -8,4 +8,8 @@ export default class NotificationServer {
         const msg = LocalisationServer.parsedLocalisation(id, "Notifications", details);
         ui.notifications.error(msg);
     }
+    static customError(id, group, details = {}) {
+        const msg = LocalisationServer.parsedLocalisation(id, group, details);
+        ui.notifications.error(msg);
+    }
 }

@@ -11,7 +11,7 @@ export default class ControllerCharacter {
   }
 
 
-  async _foodConsume(item: Item) {
+  async useConsumable(item: Item) {
     const existingCopies = this.actor.system.findEffectsByName(
       item.name,
     );
@@ -33,8 +33,9 @@ export default class ControllerCharacter {
     const strainChange = await this.actor.system.applyStrain(
       -strainRoll.total,
     );
+
     ChatServer.transmitEvent(
-      "FOOD CONSUME",
+      item.system.current_type == "food" ? "FOOD CONSUME" : "CONSUMABLE USED",
       {
         details: {
           actorName: this.actor.name,

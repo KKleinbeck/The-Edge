@@ -16,6 +16,9 @@ export default class ChatServer {
                 text = LocalisationServer.parsedLocalisation(details.event, "Crit Fail Event");
                 html = await renderTemplate("systems/the_edge/templates/chat/crit_failure.hbs", { check: details.check, text: text });
                 break;
+            case "CONSUMABLE USED":
+                html = await renderTemplate("systems/the_edge/templates/chat/consumable_used.hbs", details);
+                break;
             case "FALL":
                 html = await renderTemplate("systems/the_edge/templates/chat/fall.hbs", details);
                 break;

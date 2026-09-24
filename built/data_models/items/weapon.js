@@ -60,12 +60,15 @@ export default class WeaponData extends generateDataModelWithComponents(Descript
     // TODO: Remove with v0.17
     static migrateData(source, _options) {
         if ("less_1km" in (source.rangeChart ?? {})) {
-            const newRangeChart = {
-                less_10m: source.rangeChart.less_20m,
-                less_25m: source.rangeChart.less_200m,
-                less_100m: source.rangeChart.less_1km,
-                more_100m: source.rangeChart.more_1km,
-            };
+            const newRangeChart = {};
+            if ("less_20m" in source.rangeChart)
+                newRangeChart["less_10m"] = source.rangeChart.less_20m;
+            if ("less_200m" in source.rangeChart)
+                newRangeChart["less_25m"] = source.rangeChart.less_200m;
+            if ("less_1km" in source.rangeChart)
+                newRangeChart["less_100m"] = source.rangeChart.less_1km;
+            if ("more_1km" in source.rangeChart)
+                newRangeChart["more_100m"] = source.rangeChart.more_1km;
         }
         return super.migrateData(source);
     }

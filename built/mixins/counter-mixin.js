@@ -1,4 +1,5 @@
 import LocalisationServer from "../system/localisation_server.js";
+const { renderTemplate } = foundry.applications.handlebars;
 export default function CounterMixin(BaseApplication) {
     return class CounterHandler extends BaseApplication {
         static DEFAULT_OPTIONS = {
@@ -13,7 +14,21 @@ export default function CounterMixin(BaseApplication) {
         async updateCounters(counters, _context = {}) {
             await this.document.update({ "system.counters": counters }, { render: false });
         }
-        onUpdateCounters(_counters, _context) { }
+        async onUpdateCounters(counters, context) {
+            await this.redrawCounters(counters, context);
+        }
+        async redrawCounters(counters, context) {
+            const template = "systems/the_edge/templates/items/meta-counters.hbs";
+            const html = await renderTemplate(template, {
+                counters: counters,
+                ...context,
+            });
+            const counterGroupElement = this.element.querySelector(".counter-group-hook");
+            if (counterGroupElement === null)
+                return;
+            counterGroupElement.innerHTML = html;
+            this.attachCounterEffectListeners(counterGroupElement);
+        }
         // Public interface - do not override
         attachCounterEffectListeners(element = undefined) {
             if (!element)

@@ -1,6 +1,7 @@
 import DiceServer from "./system/dice_server.js";
 import LocalisationServer from "./system/localisation_server.js";
-import initHooks from "./hooks/init.js";
+import NotificationServer from "./system/notifications.js";
+import setupTheEdgeHooks from "./hooks/init.js";
 import THE_EDGE from "./system/config-the-edge.js";
 import setupGameSettings from "./system/settings.js";
 import TheEdgeHotbar from "./applications/hotbar.js";
@@ -35,6 +36,8 @@ Hooks.once("init", async function () {
     game.the_edge = {
         config: THE_EDGE,
         diceServer: DiceServer,
+        localisationServer: LocalisationServer,
+        notificationServer: NotificationServer,
         socketHandler: new SocketHandler(),
     };
     // Define custom Document classes
@@ -91,7 +94,7 @@ Hooks.once("init", async function () {
     // Text enrichers add additional functionalities to prose mirror text handling
     _setupTextEnrichers();
 });
-initHooks();
+setupTheEdgeHooks();
 function _extendNativePrototypes() {
     Array.prototype.random = function () {
         return this[Math.floor(Math.random() * this.length)];
@@ -208,8 +211,8 @@ function _setupChatConfigs() {
 }
 function _setupTextEnrichers() {
     CONFIG.TextEditor.enrichers.push({
-        id: "my-module-localize",
-        pattern: /@Localise\[TheEdge\.((?<category>[\w\s]+)\.)?(?<id>[\w\s\.]+)\]/gi,
+        id: "the-edge-localisation",
+        pattern: /@Localise\[TheEdge\.((?<category>[\w\s]+)\.)?(?<id>[\w\s-_\.]+)\]/gi,
         enricher: async (match, _options) => {
             const { category, id } = match.groups;
             const span = document.createElement("span");

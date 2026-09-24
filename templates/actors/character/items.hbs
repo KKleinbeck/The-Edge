@@ -55,7 +55,7 @@
             </div>
             {{#if (checkNotEmpty item.system.attachments)}}
               {{#each item.system.attachments as |attachment|}}
-                <div class="item flexrow" data-item-id="{{attachment.shell._id}}" style="border-bottom: 0px;">
+                <div class="item-hook flexrow" data-item-id="{{attachment.shell._id}}" style="border-bottom: 0px;">
                   <div data-action="itemControl" data-subaction="edit" style="cursor: pointer; display: flex; align-items: center;">
                     <a style="padding: 0px 8px;"><i class="fas fa-turn-up" style="transform: rotate(90deg);"></i></a>
                     <img src="{{attachment.shell.img}}" title="{{attachment.shell.name}}" width="24" height="24" />

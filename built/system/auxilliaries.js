@@ -29,7 +29,7 @@ export default class Aux {
         if (tokenID) {
             if (!sceneID) {
                 if (!game.canvas.id)
-                    return undefined; // This can happen during startup of the game
+                    return game.actors.get(actorID);
                 sceneID = game.canvas.id;
             }
             const scene = game.scenes.get(sceneID);

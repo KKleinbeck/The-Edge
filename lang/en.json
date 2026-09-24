@@ -4,7 +4,11 @@
     "TORSO": "Torso",
     "TORSO_ARMS": "Torso & Arms",
     "ARMS": "Arms",
+    "ARMSLEFT": "Arms (Left)",
+    "ARMSRIGHT": "Arms (Right)",
     "LEGS": "Legs",
+    "LEGSLEFT": "Legs (Left)",
+    "LEGSRIGHT": "Legs (Right)",
     "BELOW_NECK": "Below neck",
     "HEAD": "Head",
     "ENTIRE": "Entire"
@@ -69,6 +73,7 @@
     "CONSUMED FOOD": "{actorName} ate {item}.",
     "CONSUMED FOOD W STRAIN": "{actorName} ate {item}, reducing their strain by {strainReduction}.",
     "SAME NAME EFFECT": "This created a new effect under the same name.",
+    "USED CONSUMABLE": "{actorName} used {item}.",
 
     "SKILL USED": "This changed their strain by: {change}."
   },
@@ -306,6 +311,7 @@
     "ROLLMELEECHECK-POSTERIOR": "After melee roll",
     "ROLLPROFICIENCYCHECK-PRIOR": "Before proficiency roll",
     "ROLLPROFICIENCYCHECK-POSTERIOR": "After proficiency roll",
+    "ONEQUIP": "When item is equipped",
     "ONRECEIVEDAMAGE": "On receive damage",
     "ONREST": "On rest",
     "ONUSE": "On use"

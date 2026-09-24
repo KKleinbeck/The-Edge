@@ -2,6 +2,7 @@ type TRollType = "public" | "blind" | "whisper";
 
 type ChatId =
   | "ATTRIBUTE CHECK"
+  | "CONSUMABLE USED"
   | "CRIT FAIL EVENT"
   | "FALL"
   | "FIRING EMPTY WEAPON"
@@ -81,7 +82,7 @@ interface IDetailsWeaponCheckForRanged {
 
 // Hooks
 interface IContextMenuHookConfig {
-  actor: foundryAny;
+  actor: Actor;
   chatMsgCls: foundryAny;
   html: string;
   system: IChatSystem;

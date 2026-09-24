@@ -85,19 +85,32 @@ export class TheEdgeActor extends Actor {
         return true;
     }
     get itemCounters() {
-        const counters = [];
+        const counterMap = {};
         for (const item of this.items) {
+            if ("equipped" in item.system && !item.system.equipped)
+                continue;
             if (!item.system.counters || !item.system.counters.length)
                 continue;
             for (const counter of item.system.counters) {
-                counters.push({
-                    name: `${item.name} - ${counter.name}`,
-                    value: counter.value,
-                    max: counter.max,
-                });
+                var name = `${item.name} - ${counter.name}`;
+                if (item.type == "Armour" && item.system.layer == "Outer" && item.system.attachments.length > 0) {
+                    const attachedTo = this.items.get(item.system.attachments[0].armourId);
+                    var name = `${attachedTo.name} - ${counter.name}`;
+                }
+                if (name in counterMap) {
+                    counterMap[name].value += counter.value;
+                    counterMap[name].max += counter.max;
+                }
+                else {
+                    counterMap[name] = {
+                        name,
+                        value: counter.value,
+                        max: counter.max,
+                    };
+                }
             }
         }
-        return counters;
+        return Object.values(counterMap);
     }
     get embeddedSkills() {
         const skills = [];
@@ -307,36 +320,6 @@ export class TheEdgeActor extends Actor {
                 }
             }
         }
-    }
-    attachOuterArmour(armourId, shellId, tokenId) {
-        const armour = this.items.get(armourId);
-        const shell = this.items.get(shellId);
-        const availableAttachment = armour.system.attachmentPoints.max - armour.system.attachmentPoints.used;
-        if (shell.system.attachmentPoints.max > availableAttachment) {
-            NotificationServer.notify("Missing Attachment points", {
-                available: availableAttachment,
-                needed: shell.system.attachmentPoints.max,
-            });
-            return;
-        }
-        // Hack relevant information into the shells attachment list, needed in item.js upon breaking
-        shell.update({
-            "system.equipped": true,
-            "system.attachments": [
-                { actorId: this.id, tokenId: tokenId, armourId: armour.id },
-            ],
-        });
-        const attachments = armour.system.attachments;
-        attachments.push({
-            actorId: this.id,
-            tokenId: tokenId,
-            shellId: shell.id,
-            shell: shell,
-        });
-        armour.update({
-            "system.attachments": attachments,
-            "system.attachmentPoints.used": armour.system.attachmentPoints.used + shell.system.attachmentPoints.max,
-        });
     }
     chatConfig(roll = "public") {
         return {
