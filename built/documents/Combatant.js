@@ -29,8 +29,9 @@ export class TheEdgeCombatant extends Combatant {
         return context;
     }
     get distanceTravelled() {
-        const movementHistory = this.token.movementHistory;
-        return movementHistory.reduce((acc, current) => acc + current.cost, 0);
+        if (!this.token)
+            return 0;
+        return this.token.movement.history.cost + this.token.movement.passed.cost;
     }
     addAction(payload) {
         let name = payload.action ??
@@ -49,12 +50,14 @@ export class TheEdgeCombatant extends Combatant {
     }
     getMovementOptions(distance) {
         const actor = this.actor;
+        if (!actor)
+            return [];
         const speeds = [
             actor.system.strideSpeed,
             actor.system.runSpeed,
             actor.system.sprintSpeed,
         ];
-        if (speeds[2] == 0)
+        if (speeds[0] <= 0 || speeds[2] <= 0)
             return []; // We cannot possibly do anything here
         const strainCost = [
             THE_EDGE.strainCost.striding,
