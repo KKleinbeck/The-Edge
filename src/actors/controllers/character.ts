@@ -27,12 +27,16 @@ export default class ControllerCharacter {
     if (hasEffect) {
       this.actor.system.createNewEffect(item.name, genericModifiers);
     }
-    const strainRoll = await new Roll(
-      item.system.subtypes.food.strainReduction,
-    ).evaluate();
-    const strainChange = await this.actor.system.applyStrain(
-      -strainRoll.total,
-    );
+
+    var strainReduction = 0;
+    if (item.system.current_type == "food") {
+      const strainRoll = await new Roll(
+        item.system.subtypes.food.strainReduction,
+      ).evaluate();
+      strainReduction = await this.actor.system.applyStrain(
+        -strainRoll.total,
+      );
+    }
 
     ChatServer.transmitEvent(
       item.system.current_type == "food" ? "FOOD CONSUME" : "CONSUMABLE USED",
@@ -40,7 +44,7 @@ export default class ControllerCharacter {
         details: {
           actorName: this.actor.name,
           item: item.name,
-          strainReduction: -strainChange,
+          strainReduction: -strainReduction,
         },
         hasEffects: hasEffect,
       },

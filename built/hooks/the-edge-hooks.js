@@ -31,6 +31,8 @@ async function handleOutOfCombatAction(payload) {
     }
 }
 function _onModifierEvent(field, details) {
+    if (!details.actor)
+        return false;
     switch (field) {
         case "onEquip":
         case "onUse":

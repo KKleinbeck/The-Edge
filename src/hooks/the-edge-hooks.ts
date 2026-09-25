@@ -47,6 +47,8 @@ function _onModifierEvent(
   field: TEventNames,
   details: Record<string, any>,
 ): boolean {
+  if (!details.actor) return false;
+
   switch (field) {
     case "onEquip":
     case "onUse":
