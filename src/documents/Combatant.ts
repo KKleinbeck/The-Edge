@@ -38,7 +38,11 @@ export class TheEdgeCombatant extends Combatant {
 
   get distanceTravelled(): number {
     if (!this.token) return 0;
-    return this.token.movement.history.cost + this.token.movement.passed.cost
+
+    return this.token.movementHistory.reduce(
+      (acc: number, current: foundryAny) => acc + current.cost,
+      0,
+    );
   }
 
   addAction(payload: ITheEdgeActionPayload) {

@@ -31,7 +31,7 @@ export class TheEdgeCombatant extends Combatant {
     get distanceTravelled() {
         if (!this.token)
             return 0;
-        return this.token.movement.history.cost + this.token.movement.passed.cost;
+        return this.token.movementHistory.reduce((acc, current) => acc + current.cost, 0);
     }
     addAction(payload) {
         let name = payload.action ??
