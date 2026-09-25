@@ -76,7 +76,7 @@ export default function () {
         "click",
         async (event: PointerEvent) => {
           if (!game.user.isGM) {
-            NotificationServer.notify("Requires GM");
+            NotificationServer.notify({ id: "Requires GM" });
             return;
           }
 
@@ -94,7 +94,7 @@ export default function () {
         "click",
         async (event: PointerEvent) => {
           if (!game.user.isGM) {
-            NotificationServer.notify("Requires GM");
+            NotificationServer.notify({ id: "Requires GM" });
             return;
           }
 

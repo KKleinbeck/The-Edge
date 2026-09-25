@@ -31,7 +31,10 @@ async function handleOutOfCombatAction(payload) {
     }
 }
 function _onModifierEvent(field, details) {
+    if (!details.actor)
+        return false;
     switch (field) {
+        case "onDestroyed":
         case "onEquip":
         case "onUse":
             const item = details.actor.items.get(details.itemId);

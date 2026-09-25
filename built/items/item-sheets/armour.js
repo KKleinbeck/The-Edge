@@ -91,7 +91,7 @@ export class ItemSheetArmour extends EmbeddedSkillMixin(CounterMixin(TheEdgeItem
     static _detachAttachment(_event, target) {
         const attachment = this._fetchAttachment(target);
         attachment.update({ "system.equipped": false, "system.attachments": [] });
-        Aux.detachFromParent(this.item, attachment._id, attachment.system.attachmentPoints.max);
+        this.item.system.detachShell(attachment);
         this.render();
     }
 }

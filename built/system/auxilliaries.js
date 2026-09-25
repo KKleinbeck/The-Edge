@@ -18,7 +18,7 @@ export default class Aux {
             onEvent(details, id);
         }
         catch {
-            NotificationServer.error("Illicit event");
+            NotificationServer.error({ id: "Illicit event" });
         }
     }
     static filterToGenericModifiers(modifiers) {
@@ -102,20 +102,6 @@ export default class Aux {
     static sleep(duration) {
         return new Promise((r) => setTimeout(r, duration));
     }
-    static unloadAmmunition(weapon, actor) {
-        const ammu = actor.items.get(weapon.system.ammunitionID);
-        const unloadedCopy = actor.findItem(ammu);
-        if (unloadedCopy) {
-            ammu.delete();
-            unloadedCopy.update({
-                "system.quantity": unloadedCopy.system.quantity + 1,
-            });
-        }
-        else {
-            ammu.update({ "system.loaded": false });
-        }
-        weapon.update({ "system.ammunitionID": "" });
-    }
     static _language_cost_table(humanSpoken) {
         return humanSpoken ? [200, 400, 1000, 2000, 3200, 3200] : [600, 3000, 6400];
     }
@@ -127,7 +113,7 @@ export default class Aux {
             if (!maxLevel || costs.length == maxLevel || costs.length == 1)
                 return costs;
         }
-        NotificationServer.notify("Wrong cost string", { str: costStr });
+        NotificationServer.notify({ id: "Wrong cost string", details: { str: costStr } });
         return undefined;
     }
     static getCostFromCostString(costStr, level = 1) {
@@ -221,13 +207,6 @@ export default class Aux {
         let x = (1 - t) * x0 + t * x1 + r * Math.cos(phi);
         let y = (1 - t) * y0 + t * y1 + r * Math.sin(phi);
         return [locationDescription, [x, y]];
-    }
-    static async detachFromParent(parent, childId, regainedAttachmentPoints) {
-        const newAttachments = parent.system.attachments.filter((x) => x.shellId != childId);
-        await parent.update({
-            "system.attachments": newAttachments,
-            "system.attachmentPoints.used": parent.system.attachmentPoints.used - regainedAttachmentPoints,
-        });
     }
     static async promptInput(title_dialog_id = "Prompt number") {
         var result = await foundry.applications.api.DialogV2.prompt({

@@ -31,7 +31,7 @@ export default class Aux {
     try {
       onEvent(details, id);
     } catch {
-      NotificationServer.error("Illicit event");
+      NotificationServer.error({ id: "Illicit event" });
     }
   }
 
@@ -128,20 +128,6 @@ export default class Aux {
     return new Promise((r) => setTimeout(r, duration));
   }
 
-  static unloadAmmunition(weapon: Item, actor: Actor): void {
-    const ammu = actor.items.get(weapon.system.ammunitionID);
-    const unloadedCopy = (actor as any).findItem(ammu);
-    if (unloadedCopy) {
-      ammu.delete();
-      unloadedCopy.update({
-        "system.quantity": unloadedCopy.system.quantity + 1,
-      });
-    } else {
-      ammu.update({ "system.loaded": false });
-    }
-    weapon.update({ "system.ammunitionID": "" });
-  }
-
   static _language_cost_table(humanSpoken) {
     return humanSpoken ? [200, 400, 1000, 2000, 3200, 3200] : [600, 3000, 6400];
   }
@@ -157,7 +143,7 @@ export default class Aux {
       if (!maxLevel || costs.length == maxLevel || costs.length == 1)
         return costs;
     }
-    NotificationServer.notify("Wrong cost string", { str: costStr });
+    NotificationServer.notify({ id: "Wrong cost string", details: { str: costStr } });
     return undefined;
   }
 
@@ -267,17 +253,6 @@ export default class Aux {
     let x = (1 - t) * x0 + t * x1 + r * Math.cos(phi);
     let y = (1 - t) * y0 + t * y1 + r * Math.sin(phi);
     return [locationDescription as TBodyPart, [x, y]];
-  }
-
-  static async detachFromParent(parent, childId, regainedAttachmentPoints) {
-    const newAttachments = parent.system.attachments.filter(
-      (x) => x.shellId != childId,
-    );
-    await parent.update({
-      "system.attachments": newAttachments,
-      "system.attachmentPoints.used":
-        parent.system.attachmentPoints.used - regainedAttachmentPoints,
-    });
   }
 
   static async promptInput(title_dialog_id = "Prompt number"): Promise<number> {

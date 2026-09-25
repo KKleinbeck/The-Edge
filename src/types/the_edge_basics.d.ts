@@ -23,6 +23,7 @@ type TEventNames =
   | "rollMeleeCheck-Posterior"
   | "rollProficiencyCheck-Prior"
   | "rollProficiencyCheck-Posterior"
+  | "onDestroyed"
   | "onEquip"
   | "onReceiveDamage"
   | "onRest"

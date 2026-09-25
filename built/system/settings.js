@@ -41,11 +41,11 @@ function _simpleUpdateInit(formula, notify = false) {
     const isValid = Roll.validate(formula);
     if (!isValid) {
         if (notify)
-            NotificationServer.notify("Settings.Init Formula Invalid", { formula });
+            NotificationServer.notify({ id: "Settings.Init Formula Invalid", details: { formula } });
         return;
     }
     if (notify)
-        NotificationServer.notify("Settings.Init Formula Updated", { formula });
+        NotificationServer.notify({ id: "Settings.Init Formula Updated", details: { formula } });
     CONFIG.Combat.initiative.formula = formula;
 }
 class LicenceDialog extends foundry.applications.api.DialogV2 {

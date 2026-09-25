@@ -7,6 +7,7 @@ export const EVENT_NAMES = [
   "rollMeleeCheck-Posterior",
   "rollProficiencyCheck-Prior",
   "rollProficiencyCheck-Posterior",
+  "onDestroyed",
   "onEquip",
   "onReceiveDamage",
   "onRest",
@@ -26,7 +27,7 @@ export const EFFECTS = {
       "rollAttributeCheck-Prior",
       "rollAttributeCheck-Posterior",
     ];
-    const general: Partial<TEventNames>[] = ["onReceiveDamage", "onRest"];
+    const general: Partial<TEventNames>[] = ["onDestroyed", "onReceiveDamage", "onRest"];
     const proficiency: Partial<TEventNames>[] = [
       "rollProficiencyCheck-Prior",
       "rollProficiencyCheck-Posterior",
@@ -112,6 +113,15 @@ export const EFFECTS = {
           "    // Handle weapon-less attacks\n" +
           "    console.log(details)\n" +
           "  }\n}"
+        );
+
+      case "onDestroyed":
+        return (
+          header +
+          "function onEvent(details, id) {\n" +
+          "  console.log(details)\n" +
+          "  // details.actor = ... \n" +
+          "}"
         );
 
       case "onReceiveDamage":

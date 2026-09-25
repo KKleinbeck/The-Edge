@@ -206,7 +206,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
         const actor = this.actor;
         const token = this.token || Aux.getToken(actor.id);
         if (token === null) {
-            NotificationServer.notify("No Token");
+            NotificationServer.notify({ id: "No Token" });
             return undefined;
         }
         const targetIds = Array.from(game.user.targets.map((x) => x.id));
@@ -215,10 +215,10 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
         const weapon = this.actor.items.get(weaponId);
         if (!weaponId || weapon.system.type === "Hand-to-Hand combat") {
             if (targetIds.length > 1) {
-                NotificationServer.notify("Too many targets", {
-                    weapon: "hand to hand",
-                    max: 1,
-                });
+                NotificationServer.notify({ id: "Too many targets", details: {
+                        weapon: "hand to hand",
+                        max: 1,
+                    } });
                 return undefined;
             }
             const damageRoll = weaponId
@@ -241,14 +241,14 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
             return undefined;
         }
         if (targetIds.length > 1 && !weapon.system.multipleTargets) {
-            NotificationServer.notify("Too many targets", {
-                weapon: weapon.name,
-                max: 1,
-            });
+            NotificationServer.notify({ id: "Too many targets", details: {
+                    weapon: weapon.name,
+                    max: 1,
+                } });
             return undefined;
         }
         if (weapon.system.ammunitionID === "") {
-            NotificationServer.notify("Ammu missing");
+            NotificationServer.notify({ id: "Ammu missing" });
             return undefined;
         }
         const activeEffects = [

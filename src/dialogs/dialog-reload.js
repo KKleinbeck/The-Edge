@@ -24,7 +24,7 @@ export default class DialogReload extends Dialog {
           label: game.i18n.localize("DIALOG.SELECT"),
           callback: async (html) => {
             if (weaponSys.ammunitionID)
-              Aux.unloadAmmunition(checkData.weapon, checkData.actor);
+              checkData.weapon.system.unloadAmmunition();
 
             const selectedID = html.find('[name="AmmunitionSelector"]').val();
             let reloadDuration = weaponSys.reloadDuration;
@@ -61,7 +61,7 @@ export default class DialogReload extends Dialog {
         empty: {
           label: game.i18n.localize("DIALOG.EMPTY"),
           callback: async (_html) => {
-            Aux.unloadAmmunition(checkData.weapon, checkData.actor);
+            checkData.weapon.system.unloadAmmunition();
           },
         },
       });

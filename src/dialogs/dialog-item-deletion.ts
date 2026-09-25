@@ -12,34 +12,7 @@ export default class DialogItemDeletion extends Dialog {
     let buttons = {
       yes: {
         label: LocalisationServer.localise("yes", "dialog"),
-        callback: async (html) => {
-          const item = checkData.item;
-          const actor = checkData.actor;
-
-          if (item.type == "Armour") {
-            if (item.system.layer == "Inner") {
-              for (const attachmentData of item.system.attachments) {
-                const attachment = actor.items.get(attachmentData.shellId);
-                attachment.update({
-                  "system.equipped": false,
-                  "system.attachments": [],
-                });
-              }
-            } else if (item.system.equipped == true) {
-              const parent = actor.items.get(
-                item.system.attachments[0].armourId,
-              );
-              await Aux.detachFromParent(
-                parent,
-                item._id,
-                item.system.attachmentPoints.max,
-              );
-            }
-          } else if (item.type == "Weapon") {
-            if (item.system.ammunitionID) Aux.unloadAmmunition(item, actor);
-          }
-          item.delete();
-        },
+        callback: async (_html) => { checkData.item.delete(); },
       },
       cancel: { label: LocalisationServer.localise("cancel", "dialog") },
     };

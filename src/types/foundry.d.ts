@@ -121,6 +121,7 @@ declare class Item extends FoundryDocument {
   img: string;
   isOwner: boolean;
   system: foundryAny;
+  actor?: Actor;
 
   static create(data: foundryAny, options: foundryAny): foundryAny;
   getFlag(a: string, b: string);

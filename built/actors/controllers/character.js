@@ -8,7 +8,7 @@ export default class ControllerCharacter {
     async useConsumable(item) {
         const existingCopies = this.actor.system.findEffectsByName(item.name);
         if (existingCopies.length) {
-            NotificationServer.notify("Effect already exists");
+            NotificationServer.notify({ id: "Effect already exists" });
             return;
         }
         const genericModifiers = Aux.filterToGenericModifiers(item.system.effect);
@@ -16,13 +16,16 @@ export default class ControllerCharacter {
         if (hasEffect) {
             this.actor.system.createNewEffect(item.name, genericModifiers);
         }
-        const strainRoll = await new Roll(item.system.subtypes.food.strainReduction).evaluate();
-        const strainChange = await this.actor.system.applyStrain(-strainRoll.total);
+        var strainReduction = 0;
+        if (item.system.current_type == "food") {
+            const strainRoll = await new Roll(item.system.subtypes.food.strainReduction).evaluate();
+            strainReduction = await this.actor.system.applyStrain(-strainRoll.total);
+        }
         ChatServer.transmitEvent(item.system.current_type == "food" ? "FOOD CONSUME" : "CONSUMABLE USED", {
             details: {
                 actorName: this.actor.name,
                 item: item.name,
-                strainReduction: -strainChange,
+                strainReduction: -strainReduction,
             },
             hasEffects: hasEffect,
         }, this.actor.chatConfig());
