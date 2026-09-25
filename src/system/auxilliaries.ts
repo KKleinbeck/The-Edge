@@ -269,17 +269,6 @@ export default class Aux {
     return [locationDescription as TBodyPart, [x, y]];
   }
 
-  static async detachFromParent(parent, childId, regainedAttachmentPoints) {
-    const newAttachments = parent.system.attachments.filter(
-      (x) => x.shellId != childId,
-    );
-    await parent.update({
-      "system.attachments": newAttachments,
-      "system.attachmentPoints.used":
-        parent.system.attachmentPoints.used - regainedAttachmentPoints,
-    });
-  }
-
   static async promptInput(title_dialog_id = "Prompt number"): Promise<number> {
     var result = await foundry.applications.api.DialogV2.prompt({
       window: { title: LocalisationServer.localise(title_dialog_id, "dialog") },

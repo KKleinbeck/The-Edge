@@ -63,7 +63,7 @@ export default class ArmourData extends generateDataModelWithComponents(Descript
             const parent = this.parent.actor.items.get(this.attachments[0].armourId);
             const innerArmour = this.parent.actor.items.get(this.attachments[0].armourId);
             await this.parent.update({ "system.attachments": [] }, { render: false });
-            await Aux.detachFromParent(innerArmour, this.parent._id, this.attachmentPoints.max);
+            await innerArmour.system.detachShell(this.parent);
             return false;
         }
         else {
@@ -137,6 +137,13 @@ export default class ArmourData extends generateDataModelWithComponents(Descript
             "system.attachmentPoints.used": armour.system.attachmentPoints.used + shell.system.attachmentPoints.max,
         });
         return true;
+    }
+    async detachShell(shell) {
+        const newAttachments = this.attachments.filter((x) => x.shellId != shell.id);
+        await this.parent.update({
+            "system.attachments": newAttachments,
+            "system.attachmentPoints.used": this.attachmentPoints.used - shell.system.attachmentPoints.max,
+        });
     }
     async protect(damage, penetration, damageType, location, protectionLog) {
         const protectedLoc = this.bodyPart;

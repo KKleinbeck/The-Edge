@@ -24,8 +24,8 @@ export default class DialogItemDeletion extends Dialog {
                             }
                         }
                         else if (item.system.equipped == true) {
-                            const parent = actor.items.get(item.system.attachments[0].armourId);
-                            await Aux.detachFromParent(parent, item._id, item.system.attachmentPoints.max);
+                            const innerArmour = actor.items.get(item.system.attachments[0].armourId);
+                            innerArmour.system.detachShell(item);
                         }
                     }
                     else if (item.type == "Weapon") {

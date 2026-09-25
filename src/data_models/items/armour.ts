@@ -83,11 +83,7 @@ export default class ArmourData extends generateDataModelWithComponents(
 
       const innerArmour = this.parent.actor.items.get(this.attachments[0].armourId);
       await this.parent.update({ "system.attachments": [] }, { render: false });
-      await Aux.detachFromParent(
-        innerArmour,
-        this.parent._id,
-        this.attachmentPoints.max,
-      );
+      await innerArmour.system.detachShell(this.parent);
       return false;
     } else {
       const attachableArmour = this._findAttachableArmour();
@@ -167,6 +163,18 @@ export default class ArmourData extends generateDataModelWithComponents(
         armour.system.attachmentPoints.used + shell.system.attachmentPoints.max,
     });
     return true;
+  }
+
+
+  async detachShell(shell: Item) {
+    const newAttachments = this.attachments.filter(
+      (x) => x.shellId != shell.id,
+    );
+    await this.parent.update({
+      "system.attachments": newAttachments,
+      "system.attachmentPoints.used":
+        this.attachmentPoints.used - shell.system.attachmentPoints.max,
+    });
   }
 
 
