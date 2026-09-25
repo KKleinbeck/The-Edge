@@ -49,6 +49,20 @@ export default class WeaponData extends generateDataModelWithComponents(Descript
         schema.ammunitionID = new StringField({ initial: "" });
         return schema;
     }
+    unloadAmmunition() {
+        const ammu = this.parent.actor.items.get(this.ammunitionID);
+        const unloadedCopy = this.parent.actor.findItem(ammu);
+        if (unloadedCopy) {
+            ammu.delete();
+            unloadedCopy.update({
+                "system.quantity": unloadedCopy.system.quantity + 1,
+            });
+        }
+        else {
+            ammu.update({ "system.loaded": false });
+        }
+        this.parent.update({ "system.ammunitionID": "" });
+    }
     get damageType() {
         if (this.isElemental)
             return "elemental";

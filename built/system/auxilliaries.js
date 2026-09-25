@@ -102,20 +102,6 @@ export default class Aux {
     static sleep(duration) {
         return new Promise((r) => setTimeout(r, duration));
     }
-    static unloadAmmunition(weapon, actor) {
-        const ammu = actor.items.get(weapon.system.ammunitionID);
-        const unloadedCopy = actor.findItem(ammu);
-        if (unloadedCopy) {
-            ammu.delete();
-            unloadedCopy.update({
-                "system.quantity": unloadedCopy.system.quantity + 1,
-            });
-        }
-        else {
-            ammu.update({ "system.loaded": false });
-        }
-        weapon.update({ "system.ammunitionID": "" });
-    }
     static _language_cost_table(humanSpoken) {
         return humanSpoken ? [200, 400, 1000, 2000, 3200, 3200] : [600, 3000, 6400];
     }

@@ -40,6 +40,40 @@ export class TheEdgeItem extends Item {
     } else await this.delete();
   }
 
+  async delete(): Promise<Item | undefined> {
+    // Handle special deletion logic before calling parent delete
+    if (this.type === "Armour") {
+      await this._handleArmourDeletion();
+    } else if (this.type === "Weapon") {
+      if (this.system.ammunitionID && this.actor) {
+        this.system.unloadAmmunition();
+      }
+    }
+    
+    return super.delete();
+  }
+
+  async _handleArmourDeletion(): Promise<void> {
+    const actor = this.actor;
+    if (!actor) return;
+
+    if (this.system.layer === "Inner") {
+      // Unequip and clear attachments of all shells attached to this inner armour
+      for (const attachmentData of this.system.attachments) {
+        const attachment = actor.items.get(attachmentData.shellId);
+        if (attachment) {
+          await attachment.system.toggleEquipped();
+        }
+      }
+    } else if (this.system.equipped === true && this.system.attachments.length > 0) {
+      // Detach this outer armour from its inner armour
+      const innerArmour = actor.items.get(this.system.attachments[0].armourId);
+      if (innerArmour) {
+        await innerArmour.system.detachShell(this);
+      }
+    }
+  }
+
   effectHooks(field: TEventNames, details: Record<string, any>): void {
     for (const modifier of this.system.modifiers) {
       if (modifier.field === field) {
