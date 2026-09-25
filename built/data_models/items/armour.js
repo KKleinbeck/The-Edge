@@ -62,7 +62,7 @@ export default class ArmourData extends generateDataModelWithComponents(Descript
         if (this.equipped) {
             const parent = this.parent.actor.items.get(this.attachments[0].armourId);
             const innerArmour = this.parent.actor.items.get(this.attachments[0].armourId);
-            this.parent.update({ "system.attachments": [] }, { render: false });
+            await this.parent.update({ "system.attachments": [] }, { render: false });
             await Aux.detachFromParent(innerArmour, this.parent._id, this.attachmentPoints.max);
             return false;
         }
@@ -84,7 +84,7 @@ export default class ArmourData extends generateDataModelWithComponents(Descript
                 if (!canAttach)
                     return undefined;
                 // Store outer armour information into the shells attachment list
-                this.parent.update({
+                await this.parent.update({
                     "system.attachments": [{
                             actorId: this.parent.actor.id,
                             tokenId: this.parent.actor.token?.id,
@@ -148,6 +148,8 @@ export default class ArmourData extends generateDataModelWithComponents(Descript
             for (const attachment of this.attachments) {
                 const actor = Aux.getActor(attachment.actorId, attachment.tokenId);
                 const shell = actor.items.get(attachment.shellId);
+                if (shell.system.structurePointsOriginal == 0)
+                    continue;
                 [damage, penetration] = await shell.system.protect(damage, penetration, damageType, location, protectionLog);
             }
         }
@@ -173,22 +175,21 @@ export default class ArmourData extends generateDataModelWithComponents(Descript
         }
         penetration = Math.max(penetration - protection.threshold, 0);
         if (update["system.structurePoints"] == 0) {
-            NotificationServer.notify("Destroyed", { name: this.parent.name });
-            update["name"] =
-                this.parent.name + " - " + LocalisationServer.localise("broken");
-            update["system.equipped"] = false;
-            update["system.attachments"] = [];
-            if (this.layer == "Outer") {
-                const parentInfo = this.attachments[0];
-                const actor = Aux.getActor(parentInfo.actorId, parentInfo.tokenId);
-                const innerArmour = actor.items.get(parentInfo.armourId);
-                await Aux.detachFromParent(innerArmour, this.parent.id, this.attachmentPoints.max);
-            }
+            this._handleArmourBreaking();
         }
         await this.parent.update(update);
         if (this.parent.sheet.rendered) {
             this.parent.sheet.render(true);
         }
         return [damage, penetration];
+    }
+    async _handleArmourBreaking() {
+        NotificationServer.notify("Destroyed", { name: this.parent.name });
+        await this.parent.update({ name: this.parent.name + " - " + LocalisationServer.localise("broken") });
+        await this.toggleEquipped();
+        Hooks.call("onModifierEvent", "onDestroyed", {
+            actor: this.parent.actor,
+            itemId: this.parent.id
+        });
     }
 }

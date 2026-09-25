@@ -278,7 +278,8 @@
     "COMBATICS STRAIN": "1 strain point for every 2.5 level in hand-to-hand combat",
     "PROFICIENCY STRAIN": "1 strain point per proficiency level",
 
-    "NO TREATABLE WOUNDS": "Character has no treatable wounds"
+    "NO TREATABLE WOUNDS": "Character has no treatable wounds",
+    "TARGET ARMOUR": "Select armour piece"
   },
   "EFFECT_GROUP": {
     "BLOODLOSSTHRESHOLD": "Blood loss - threshold",
@@ -311,6 +312,7 @@
     "ROLLMELEECHECK-POSTERIOR": "After melee roll",
     "ROLLPROFICIENCYCHECK-PRIOR": "Before proficiency roll",
     "ROLLPROFICIENCYCHECK-POSTERIOR": "After proficiency roll",
+    "ONDESTROYED": "When armour destroyed",
     "ONEQUIP": "When item is equipped",
     "ONRECEIVEDAMAGE": "On receive damage",
     "ONREST": "On rest",
