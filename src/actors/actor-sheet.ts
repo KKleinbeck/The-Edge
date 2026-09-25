@@ -122,14 +122,14 @@ export class TheEdgeActorSheet extends CounterMixin(
                 actor: this.actor,
               });
             } else {
-              NotificationServer.notify("No wounds on Actor", {
+              NotificationServer.notify({ id: "No wounds on Actor", details: {
                 name: this.actor.name,
-              });
+              } });
             }
             break;
 
           case "grenade":
-            NotificationServer.notify("Grenade use tip");
+            NotificationServer.notify({ id: "Grenade use tip" });
             break;
 
           default:

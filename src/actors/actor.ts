@@ -81,13 +81,13 @@ export class TheEdgeActor extends Actor {
           (x: Item) => x.name.toLowerCase() == requirement.field.toLowerCase(),
         );
         if (skillRef.length == 0) {
-          NotificationServer.notify("Missing requirements", details);
+          NotificationServer.notify({ id: "Missing requirements", details: details });
           return false;
         } else if (skillRef[0].system.level < requirement.value) {
           foundry.utils.mergeObject(details, {
             valueIs: skillRef[0].system.level,
           });
-          NotificationServer.notify("Unmet requirements", details);
+          NotificationServer.notify({ id: "Unmet requirements", details: details });
           return false;
         }
       } else {
@@ -96,7 +96,7 @@ export class TheEdgeActor extends Actor {
         const sysMod = Aux.objectAt(this.system, target);
         if (sysMod < requirement.value) {
           foundry.utils.mergeObject(details, { valueIs: sysMod });
-          NotificationServer.notify("Unmet requirements", details);
+          NotificationServer.notify({ id: "Unmet requirements", details: details });
           return false;
         }
       }
@@ -205,11 +205,11 @@ export class TheEdgeActor extends Actor {
 
     // Can be created or leveled?
     if (vantage.type == "Advantage" && vantage.system.AP + AP.used > AP.max) {
-      NotificationServer.notify("AP missing", {
+      NotificationServer.notify({ id: "AP missing", details: {
         name: vantage.name,
         need: vantage.system.AP,
         available: AP.max - AP.used,
-      });
+      } });
       return;
     }
     const existingCopy = this.findItem(vantage);
@@ -217,7 +217,7 @@ export class TheEdgeActor extends Actor {
       existingCopy &&
       existingCopy.system.level >= existingCopy.system.maxLevel
     ) {
-      NotificationServer.notify("Max Level", { name: vantage.name });
+      NotificationServer.notify({ id: "Max Level", details: { name: vantage.name } });
       return;
     }
 
@@ -254,11 +254,11 @@ export class TheEdgeActor extends Actor {
     const AP = this.system.AdvantagePoints;
     const itemAP = vantage.system.AP;
     if (vantage.type == "Disadvantage" && AP.max - itemAP < AP.used) {
-      NotificationServer.notify("AP missing decrement", {
+      NotificationServer.notify({ id: "AP missing decrement", details: {
         name: vantage.name,
         need: itemAP,
         available: AP.max - AP.used,
-      });
+      } });
       return;
     }
 
@@ -276,11 +276,11 @@ export class TheEdgeActor extends Actor {
     const itemAP =
       (vantage.system.hasLevels ? vantage.system.level : 1) * vantage.system.AP;
     if (vantage.type == "Disadvantage" && AP.max - itemAP < AP.used) {
-      NotificationServer.notify("AP missing deletion", {
+      NotificationServer.notify({ id: "AP missing deletion", details: {
         name: vantage.name,
         need: itemAP,
         available: AP.max - AP.used,
-      });
+      } });
       return;
     }
 

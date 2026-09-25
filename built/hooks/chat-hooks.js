@@ -54,7 +54,7 @@ export default function () {
         if (applyDamageButton) {
             applyDamageButton.addEventListener("click", async (event) => {
                 if (!game.user.isGM) {
-                    NotificationServer.notify("Requires GM");
+                    NotificationServer.notify({ id: "Requires GM" });
                     return;
                 }
                 await applyDamage(event, sys, html);
@@ -65,7 +65,7 @@ export default function () {
         if (applyGrenadeDamageButton) {
             applyGrenadeDamageButton.addEventListener("click", async (event) => {
                 if (!game.user.isGM) {
-                    NotificationServer.notify("Requires GM");
+                    NotificationServer.notify({ id: "Requires GM" });
                     return;
                 }
                 await applyGrenadeDamage(event, sys, applyGrenadeDamageButton);

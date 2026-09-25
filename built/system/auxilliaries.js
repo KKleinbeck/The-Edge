@@ -18,7 +18,7 @@ export default class Aux {
             onEvent(details, id);
         }
         catch {
-            NotificationServer.error("Illicit event");
+            NotificationServer.error({ id: "Illicit event" });
         }
     }
     static filterToGenericModifiers(modifiers) {
@@ -113,7 +113,7 @@ export default class Aux {
             if (!maxLevel || costs.length == maxLevel || costs.length == 1)
                 return costs;
         }
-        NotificationServer.notify("Wrong cost string", { str: costStr });
+        NotificationServer.notify({ id: "Wrong cost string", details: { str: costStr } });
         return undefined;
     }
     static getCostFromCostString(costStr, level = 1) {

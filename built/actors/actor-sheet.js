@@ -102,13 +102,13 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
                             });
                         }
                         else {
-                            NotificationServer.notify("No wounds on Actor", {
-                                name: this.actor.name,
-                            });
+                            NotificationServer.notify({ id: "No wounds on Actor", details: {
+                                    name: this.actor.name,
+                                } });
                         }
                         break;
                     case "grenade":
-                        NotificationServer.notify("Grenade use tip");
+                        NotificationServer.notify({ id: "Grenade use tip" });
                         break;
                     default:
                         this.actor.controller.useConsumable(item);

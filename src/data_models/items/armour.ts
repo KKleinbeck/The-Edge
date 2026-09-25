@@ -55,7 +55,7 @@ export default class ArmourData extends generateDataModelWithComponents(
       this.structurePoints <= 0 &&
       this.structurePointsOriginal > 0
     ) {
-      NotificationServer.notify("EquipBroken");
+      NotificationServer.notify({ id: "EquipBroken" });
       return undefined;
     }
 
@@ -88,7 +88,7 @@ export default class ArmourData extends generateDataModelWithComponents(
     } else {
       const attachableArmour = this._findAttachableArmour();
       if (attachableArmour.length == 0) {
-        NotificationServer.notify("No attachable armour");
+        NotificationServer.notify({ id: "No attachable armour" });
         return undefined;
       }
       const dialogResult = await DialogArmourAttachment.start({
@@ -143,10 +143,10 @@ export default class ArmourData extends generateDataModelWithComponents(
     const availableAttachment =
       armour.system.attachmentPoints.max - armour.system.attachmentPoints.used;
     if (shell.system.attachmentPoints.max > availableAttachment) {
-      NotificationServer.notify("Missing Attachment points", {
+      NotificationServer.notify({ id: "Missing Attachment points", details: {
         available: availableAttachment,
         needed: shell.system.attachmentPoints.max,
-      });
+      } });
       return false;
     }
 
@@ -243,7 +243,7 @@ export default class ArmourData extends generateDataModelWithComponents(
   }
 
   async _handleArmourBreaking() {
-    NotificationServer.notify("Destroyed", { name: this.parent.name });
+    NotificationServer.notify({ id: "Destroyed", details: { name: this.parent.name } });
     await this.parent.update({name: this.parent.name + " - " + LocalisationServer.localise("broken")});
     await this.toggleEquipped();
 

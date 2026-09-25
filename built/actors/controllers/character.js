@@ -8,7 +8,7 @@ export default class ControllerCharacter {
     async useConsumable(item) {
         const existingCopies = this.actor.system.findEffectsByName(item.name);
         if (existingCopies.length) {
-            NotificationServer.notify("Effect already exists");
+            NotificationServer.notify({ id: "Effect already exists" });
             return;
         }
         const genericModifiers = Aux.filterToGenericModifiers(item.system.effect);

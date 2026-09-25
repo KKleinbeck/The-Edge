@@ -16,7 +16,7 @@ export default class ControllerCharacter {
       item.name,
     );
     if (existingCopies.length) {
-      NotificationServer.notify("Effect already exists");
+      NotificationServer.notify({ id: "Effect already exists" });
       return;
     }
 

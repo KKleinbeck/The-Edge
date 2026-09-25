@@ -43,7 +43,7 @@ export default class ArmourData extends generateDataModelWithComponents(Descript
     async toggleEquipped() {
         if (this.structurePoints <= 0 &&
             this.structurePointsOriginal > 0) {
-            NotificationServer.notify("EquipBroken");
+            NotificationServer.notify({ id: "EquipBroken" });
             return undefined;
         }
         const newValue = (this.layer == "Outer" ?
@@ -69,7 +69,7 @@ export default class ArmourData extends generateDataModelWithComponents(Descript
         else {
             const attachableArmour = this._findAttachableArmour();
             if (attachableArmour.length == 0) {
-                NotificationServer.notify("No attachable armour");
+                NotificationServer.notify({ id: "No attachable armour" });
                 return undefined;
             }
             const dialogResult = await DialogArmourAttachment.start({
@@ -119,10 +119,10 @@ export default class ArmourData extends generateDataModelWithComponents(Descript
         const armour = this.parent;
         const availableAttachment = armour.system.attachmentPoints.max - armour.system.attachmentPoints.used;
         if (shell.system.attachmentPoints.max > availableAttachment) {
-            NotificationServer.notify("Missing Attachment points", {
-                available: availableAttachment,
-                needed: shell.system.attachmentPoints.max,
-            });
+            NotificationServer.notify({ id: "Missing Attachment points", details: {
+                    available: availableAttachment,
+                    needed: shell.system.attachmentPoints.max,
+                } });
             return false;
         }
         const attachments = armour.system.attachments;
@@ -191,7 +191,7 @@ export default class ArmourData extends generateDataModelWithComponents(Descript
         return [damage, penetration];
     }
     async _handleArmourBreaking() {
-        NotificationServer.notify("Destroyed", { name: this.parent.name });
+        NotificationServer.notify({ id: "Destroyed", details: { name: this.parent.name } });
         await this.parent.update({ name: this.parent.name + " - " + LocalisationServer.localise("broken") });
         await this.toggleEquipped();
         Hooks.call("onModifierEvent", "onDestroyed", {

@@ -31,7 +31,7 @@ export default class Aux {
     try {
       onEvent(details, id);
     } catch {
-      NotificationServer.error("Illicit event");
+      NotificationServer.error({ id: "Illicit event" });
     }
   }
 
@@ -143,7 +143,7 @@ export default class Aux {
       if (!maxLevel || costs.length == maxLevel || costs.length == 1)
         return costs;
     }
-    NotificationServer.notify("Wrong cost string", { str: costStr });
+    NotificationServer.notify({ id: "Wrong cost string", details: { str: costStr } });
     return undefined;
   }
 
