@@ -1,0 +1,133 @@
+@import "root.less";
+
+
+.system-the_edge {
+  // MARK: Combat Log
+  .combat-log {
+    padding: 0 2px 0 2px;
+  }
+
+
+  // MARK: Counters
+  .counter-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    margin: 7px 0px 15px 0px;
+    gap: 15px;
+    padding: 0;
+    overflow-y: auto;
+
+    > * {
+      width: 100%;
+    }
+
+    .counter-title {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .counter-box-list {
+      padding-top: 5px;
+      display: flex;
+      flex-wrap: wrap;
+      row-gap: 4px;
+      justify-content: center;
+    }
+
+    .full {
+      background: #bd9f09;
+    }
+  }
+
+
+  // MARK: Grenade Picker
+  .grenade-picker {
+    background-color: rgba(42, 80, 122, 0.2);
+  }
+
+
+  // MARK: Icon Selector
+  .icon-selector-row {
+    display: flex;
+    gap: 5px;
+    padding: 0 3px 0 3px;
+    align-items: end;
+    height: 32px;
+    justify-content: space-around;
+  }
+  .icon-selector-outer {
+    display: flex;
+    justify-content: center;
+    width: 70px;
+    height: 30px;
+  }
+  .icon-selector {
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.6;
+    width: 90%;
+    border: 3px solid black;
+    border-radius: 20px;
+    transition: all 0.5s linear;
+  }
+  .icon-selector:focus {
+    outline-color: rgba(0, 0, 0, 0);
+  }
+  .icon-selector-text {
+    text-align: right;
+    padding-right: 5px;
+    height: 28px;
+    width: 90%;
+    border: 3px solid black;
+    border-radius: 20px;
+    transition: all 0.5s linear;
+  }
+  .icon-selector-selected {
+    box-shadow: 0 0 4px 3px var(--colour-ui-secondary);
+    opacity: 1;
+    width: 100%;
+    height: 30px;
+    border-radius: 24px;
+    transition: all 0.5s linear;
+  }
+
+
+  // MARK: Progress Bar
+  .progress-wrapper {
+    height: 33%;
+    width: 100%;
+  }
+  .progress-fill-animation {
+    animation: fillGrow 1.2s ease-out forwards;
+    transform-origin: left center;
+  }
+  .progress-svg-input {
+    text-align: right;
+    font-size: 8px;
+    border-radius: 2px !important;
+    line-height: 10px !important;
+    max-height: 10px;
+    width: 20px;
+    padding: 0 1px 1px 1px !important;
+  }
+  .progress-svg-name {
+    text-align: left;
+    width: 65%;
+    max-height: 11px;
+  }
+  .progress-svg-div-text {
+    font-size: 8px;
+    color: var(--font-main-color);
+    line-height: 10px !important;
+    white-space: nowrap;
+  }
+  .progress-svg-segment-label {
+    display: flex;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.05);
+    border: 1.333px solid rgb(119, 119, 249);
+    border-radius: 5px;
+  }
+}

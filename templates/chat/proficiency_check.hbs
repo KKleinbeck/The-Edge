@@ -2,7 +2,7 @@
 <div class="centered-row">
   <b>{{genName "Check"}}: </b>
   {{#each dice as |die|}}
-  <a class="attr-d20-chat d20-{{die.name}} rerollable" data-index={{@index}} data-type="proficiency">
+  <a class="d20-attr-chat d20-{{die.name}} rerollable" data-index={{@index}} data-type="proficiency">
     <span class="d20-overlay"
       {{#if (checkEqual die.name "proficiency")}}
       data-tooltip="{{genName 'proficiency level'}}: {{die.threshold}}"

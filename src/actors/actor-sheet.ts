@@ -20,7 +20,6 @@ export class TheEdgeActorSheet extends CounterMixin(
   constructor(...args: ConstructorParameters<typeof ActorSheetV2>) {
     super(...args);
     this.effectIsExpanded = {};
-    this._prepareTabs("stest");
   }
 
   static DEFAULT_OPTIONS = {
@@ -32,7 +31,7 @@ export class TheEdgeActorSheet extends CounterMixin(
     form: {
       submitOnChange: true,
     },
-    classes: ["the_edge", "actor"],
+    classes: ["the-edge-actor-sheet"],
     actions: {
       itemControl: TheEdgeActorSheet._onItemControl,
       effectControl: TheEdgeActorSheet._onEffectControl,

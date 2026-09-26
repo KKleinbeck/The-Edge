@@ -1,0 +1,506 @@
+@import "root.less";
+
+// MARK: Actor Sheet
+.the-edge-actor-sheet {
+  // Mixins
+  .actor-column-container-base() {
+    gap: @gap-boxes;
+    padding: 0 10px;
+    width: 100%;
+  }
+  .actor-column-container-box-base() {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    break-inside: avoid;
+  }
+
+  // Classes
+  .actor-sheet-header {
+    flex: 0 0 185px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+
+    .attribute-title {
+      text-transform: capitalize;
+      font-size: 14px;
+      margin: 5px 5px 0 5px;
+      height: 5px;
+      font-weight: bold;
+    }
+
+    .charname {
+      height: 40px;
+      padding: 0px;
+      margin: 5px 0;
+      border-bottom: 0;
+
+      input {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
+    }
+
+    .header-fields {
+      flex: 1;
+      height: 150px;
+    }
+
+    .profile-img {
+      flex: 0 0 160px;
+      height: 160px;
+      margin-right: 10px;
+    }
+
+    .hero-token-img {
+      border: none;
+      margin-left: 5px;
+      margin-right: 5px;
+      padding: 0;
+      width: 45px;
+      height: 65px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      display: inline-block;
+    }
+  }
+
+  .actor-columned-page {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 10px 15px;
+    padding: 0;
+    margin-top: 0;
+
+    .fixed-page {
+      flex: 1;
+    }
+    .page {
+      flex: 0 1 auto; /* Allows the column to take as much width as needed based on content */
+    }
+    .page-centered {
+      flex-wrap: wrap;
+      margin-left: auto;
+      margin-right: auto;
+      flex: 1;
+    }
+    .page-right-aligned {
+      margin-left: auto; /* Moves the page to the right edge*/
+      flex: 0 1 auto;
+    }
+  }
+  
+  .actor-attributes-table {
+    display: block;
+    width: 100%;
+    min-width: var(--minColumnWidth70);
+
+    .table-row {
+      text-align: center;
+      width: 100%;
+      border-bottom: none;
+      border-right: none;
+      display: flex;
+    }
+  }
+
+  .actor-combat-table-element {
+    text-align: right;
+    padding: 4px 8px 4px 8px;
+  }
+
+  .actor-container-language {
+    columns: 2;
+    .actor-column-container-base();
+
+    .language-box {
+      .actor-column-container-box-base();
+    }
+  }
+
+  .actor-container-loadout {
+    columns: 2;
+    .actor-column-container-base();
+
+    .loadout-box {
+      height: 35px;
+      padding: 10px;
+      .actor-column-container-box-base();
+
+      .loadout-name {
+        display: flex;
+        width: 80%;
+        gap: 5px;
+        align-items: center;
+      }
+    }
+  }
+
+  .actor-container-skill {
+    columns: 3;
+    .actor-column-container-base();
+
+    .skill-box {
+      height: 45px;
+      padding: 0px;
+      .actor-column-container-box-base();
+    }
+  }
+
+  // TODO: Refactor to a container like above
+  .actor-generic-table {
+    display: block;
+    width: 100%;
+
+    .center-cell {
+      text-align: center;
+    }
+
+    .table-row {
+      display: flex;
+      width: 100%;
+
+      .cell-right-align {
+        flex: 2;
+        text-align: right;
+      }
+    }
+  }
+  
+  .actor-list-effects {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    margin: 7px 0px 15px 0px;
+    gap: var(--gap-boxes);
+    padding: 0;
+    overflow-y: auto;
+
+    .effect-box {
+      padding: 4px 6px 4px 6px;
+      height: fit-content;
+      background: rgba(0, 0, 0, 0.5);
+      border: solid 2px black;
+      border-radius: 8px;
+      box-shadow:
+        3px 3px rgba(255, 255, 255, 0.1) inset,
+        1px 1px 2px rgba(128, 128, 255, 0.2);
+      transition: all 300ms ease;
+
+      .content {
+        overflow: hidden;
+        height: 0;
+        opacity: 0;
+        transition:
+          height 300ms ease,
+          opacity 200ms ease;
+      }
+    }
+
+    .expanded {
+      grid-column: span 2;
+    }
+  }
+
+  .actor-language-native {
+    display: flex;
+    white-space: nowrap;
+    justify-content: space-between;
+    gap: @gap-boxes;
+    align-items: center;
+  }
+
+  .actor-list-items {
+    list-style: none;
+    columns: 2;
+    margin: 7px 0;
+    padding: 0;
+    overflow-y: hidden;
+
+    .item-element {
+      min-height: 30px;
+      line-height: 24px;
+      padding: 3px 0;
+      border-bottom: 1px solid #bbb;
+      align-items: stretch;
+    }
+
+    .item-element img {
+      flex: 0 0 24px;
+      margin-right: 5px;
+    }
+
+    .item-name {
+      margin: 0;
+    }
+
+    .item-controls {
+      display: flex;
+      padding-left: 5px;
+      gap: 3px;
+      max-width: fit-content;
+      text-align: right;
+    }
+
+    .item-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: row;
+      align-items: center;
+      flex: 2;
+      justify-content: flex-start;
+    }
+
+    .item-button {
+      line-height: 1;
+      font-size: 11px;
+      flex: none;
+      width: auto;
+    }
+    
+    .item-create {
+      height: 31px;
+      gap: 5px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+
+  .actor-proficiency-box {
+    align-items: center;
+    display: flex;
+    width: 100%;
+    gap: 3px;
+    height: 24px;
+    margin-bottom: 1px;
+
+    .proficiency-title {
+      flex: 7;
+      font-weight: 700;
+    }
+
+    .proficiency-column {
+      width: 25px;
+
+      .output {
+        max-height: 20;
+        max-width: 25px;
+        margin-right: 2px;
+        text-align: right;
+      }
+    }
+
+    .proficiency-column-dice {
+      align-items: end;
+      width: 15px;
+      
+      .prof-d20 {
+        border: none;
+        margin: 0;
+        margin-top: 5px;
+        padding: 0;
+        width: 15px;
+        height: 18px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        display: inline-block;
+      }
+    }
+  }
+
+  .section {
+    margin-bottom: 10px;
+
+    .section-content {
+      padding: 0px 10px;
+    }
+
+    .vantage-list {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .vantage-list .vantage {
+      display: flex;
+      justify-content: space-between;
+      padding-right: 12px;
+    }
+  }
+
+  .actor-wound-overview {
+    position: relative;
+    width: 179px;
+    height: 436px;
+
+    .background-image {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border: 0;
+    }
+  }
+}
+
+// MARK: Item Sheet
+.the-edge-item-sheet {
+  overflow: visible;
+
+  .item-header {
+    overflow: visible;
+    justify-content: end;
+
+    .item-header-frame {
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: -1;
+      transform: translateY(-15px);
+
+      width: 100%;
+      height: calc(100% + 15px);
+    }
+
+    .item-header-content {
+      position: absolute;
+      /* Fix to all sides of parent */
+      left: 4%;
+      right: 30%;
+      bottom: 10%;
+      height: 100%;
+      display: flex;
+      gap: 10px;
+      align-items: end;
+
+      .item-header-img-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 12px;
+        background: var(--colour-ui-main-background-2);
+        box-shadow: 0 0 6px var(--colour-ui-main-background-2);
+        filter: drop-shadow(0 0 3px var(--colour-ui-main-background-2));
+      }
+
+      .item-header-img-minimised {
+        display: flex;
+        justify-content: center;
+        max-width: 24px;
+        max-height: 24px;
+        margin-right: 3px;
+        background: var(--colour-ui-main-background);
+      }
+
+      .item-header-img {
+        height: 80%;
+      }
+    }
+    
+    .system-the_edge .item-sheet-header {
+      flex: 0 0 110px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+  }
+
+  .item-footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    overflow: visible;
+    width: 100%;
+
+    .item-footer-content {
+      position: absolute;
+      left: 35%;
+      right: 6%;
+      bottom: 0;
+      padding-bottom: 10px;
+      overflow: visible;
+      display: flex;
+      justify-content: end;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .item-footer-content-entry {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .item-footer-input {
+      width: 50px;
+      text-align: right;
+    }
+  }
+
+  .item-checkbox-container {
+    display: flex;
+    gap: 10px;
+    align-items: start;
+  }
+
+  .item-columned-page {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    width: 100%;
+    gap: 10px 5px;
+    padding: 0;
+    margin-top: 0;
+
+    .item-fields {
+      width: min-content;
+      padding: 10px 0px;
+      text-align: center;
+    }
+  }
+}
+
+
+// MARK: Store Sheet
+.the-edge-store-sheet {
+  .store-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 10px;
+
+    .store-item {
+      border: 1.333px solid #000;
+      border-radius: 5px;
+      padding: 10px;
+      transition: all 0.2s ease-in-out;
+
+      &:hover {
+        box-shadow: 0 5px 15px rgba(145, 92, 182, 0.4);
+      }
+    }
+
+    .store-currency {
+      width: 24px;
+      border: none;
+    }
+    .store-buy {
+      display: flex;
+      justify-content: end;
+
+      .store-buy-inner {
+        min-width: 30px;
+        text-align: center;
+        cursor: pointer;
+        box-sizing: content-box;
+        width: fit-content;
+        line-height: 20px;
+      }
+    }
+  }
+}

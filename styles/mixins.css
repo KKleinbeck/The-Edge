@@ -1,0 +1,124 @@
+:root {
+  --colour-ui-main-1: #70d7f2;
+  --colour-ui-main-background: #31395a;
+  --colour-ui-main-background-1: #2a395a;
+  --colour-ui-main-background-2: #2a507a;
+  --colour-ui-secondary: #bd9f09;
+  --colour-ui-secondary-1: #f29d70;
+  --font-main-color: #e4e7fe;
+  --font-secondary-color: #ccc;
+  --colour-text-light-highlight: #fff;
+  --gap-boxes: 10px;
+  --colour-underline-header: #bd9f09;
+}
+.system-the_edge .combat-log {
+  padding: 0 2px 0 2px;
+}
+.system-the_edge .counter-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 7px 0px 15px 0px;
+  gap: 15px;
+  padding: 0;
+  overflow-y: auto;
+}
+.system-the_edge .counter-list > * {
+  width: 100%;
+}
+.system-the_edge .counter-list .counter-title {
+  display: flex;
+  justify-content: space-between;
+}
+.system-the_edge .counter-list .counter-box-list {
+  padding-top: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 4px;
+  justify-content: center;
+}
+.system-the_edge .counter-list .full {
+  background: #bd9f09;
+}
+.system-the_edge .grenade-picker {
+  background-color: rgba(42, 80, 122, 0.2);
+}
+.system-the_edge .icon-selector-row {
+  display: flex;
+  gap: 5px;
+  padding: 0 3px 0 3px;
+  align-items: end;
+  height: 32px;
+  justify-content: space-around;
+}
+.system-the_edge .icon-selector-outer {
+  display: flex;
+  justify-content: center;
+  width: 70px;
+  height: 30px;
+}
+.system-the_edge .icon-selector {
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.6;
+  width: 90%;
+  border: 3px solid black;
+  border-radius: 20px;
+  transition: all 0.5s linear;
+}
+.system-the_edge .icon-selector:focus {
+  outline-color: rgba(0, 0, 0, 0);
+}
+.system-the_edge .icon-selector-text {
+  text-align: right;
+  padding-right: 5px;
+  height: 28px;
+  width: 90%;
+  border: 3px solid black;
+  border-radius: 20px;
+  transition: all 0.5s linear;
+}
+.system-the_edge .icon-selector-selected {
+  box-shadow: 0 0 4px 3px var(--colour-ui-secondary);
+  opacity: 1;
+  width: 100%;
+  height: 30px;
+  border-radius: 24px;
+  transition: all 0.5s linear;
+}
+.system-the_edge .progress-wrapper {
+  height: 33%;
+  width: 100%;
+}
+.system-the_edge .progress-fill-animation {
+  animation: fillGrow 1.2s ease-out forwards;
+  transform-origin: left center;
+}
+.system-the_edge .progress-svg-input {
+  text-align: right;
+  font-size: 8px;
+  border-radius: 2px !important;
+  line-height: 10px !important;
+  max-height: 10px;
+  width: 20px;
+  padding: 0 1px 1px 1px !important;
+}
+.system-the_edge .progress-svg-name {
+  text-align: left;
+  width: 65%;
+  max-height: 11px;
+}
+.system-the_edge .progress-svg-div-text {
+  font-size: 8px;
+  color: var(--font-main-color);
+  line-height: 10px !important;
+  white-space: nowrap;
+}
+.system-the_edge .progress-svg-segment-label {
+  display: flex;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.05);
+  border: 1.333px solid #7777f9;
+  border-radius: 5px;
+}

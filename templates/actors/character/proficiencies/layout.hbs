@@ -4,10 +4,10 @@
   data-tab="proficiencies"
 >
   {{#each profGroups as |profGroup|}}
-    <div class="columned-page" style="gap: 0; justify-content: space-between; margin-bottom: 15px;">
+    <div class="actor-columned-page" style="gap: 0; justify-content: space-between; margin-bottom: 15px;">
       {{#each profGroup as |proficiencies category|}}
         <div style="width: 31.5%;">
-          <div class="proficiency-box title" style="margin-bottom: 4px;">
+          <div class="actor-proficiency-box title" style="margin-bottom: 4px;">
             <div class="proficiency-title" style="text-transform: capitalize; font-size: 14px;">{{category}}</div>
             <div class="proficiency-column" style="text-align: center;">{{genName "Lvl"}}</div>
             <div class="proficiency-column" style="text-align: center;">{{genName "Sta"}}</div>
@@ -16,7 +16,7 @@
             <div class="proficiency-column-dice"></div>
           </div>
           {{#each proficiencies as |proficiency|}}
-            <div class="proficiency-box">
+            <div class="actor-proficiency-box">
               <div class="proficiency-title" style="font-size: 13px;">
                 {{proficiencyName proficiency}}
               </div>

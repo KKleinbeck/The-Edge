@@ -1,4 +1,4 @@
-<header class="sheet-header-item" style="flex: 0 0 90px;">
+<header class="item-sheet-header" style="flex: 0 0 90px;">
   <div class="item-columned-page">
     <div>
       <div style="display: grid; grid-template-columns: auto auto; gap: 0 5px; grid-auto-rows: 28px; align-items: center;">
@@ -47,7 +47,7 @@
           {{/each}}
         </select>
       {{else}}
-        <a class="attr-d20-chat d20-{{item.system.leadAttr1.name}}">
+        <a class="d20-attr-chat d20-{{item.system.leadAttr1.name}}">
           <span class="d20-overlay" data-tooltip="{{attrName item.system.leadAttr1.name}}">{{item.system.leadAttr1.name}}</span>
         </a>
       {{/if}}
@@ -64,7 +64,7 @@
           {{/each}}
         </select>
       {{else}}
-        <a class="attr-d20-chat d20-{{item.system.leadAttr2.name}}">
+        <a class="d20-attr-chat d20-{{item.system.leadAttr2.name}}">
           <span class="d20-overlay" data-tooltip="{{attrName item.system.leadAttr2.name}}">{{item.system.leadAttr2.name}}</span>
         </a>
       {{/if}}

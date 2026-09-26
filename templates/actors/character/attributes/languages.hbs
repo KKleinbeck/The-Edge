@@ -1,15 +1,15 @@
-<div class="section">
+<div class="actor-sheet-section">
   <div class="title">
     <div class="section-title">{{genName "Languages"}}</div>
   </div>
   <div class="section-content">
-    <div class="native-language">
+    <div class="actor-language-native">
       <b>{{genName "Native language"}}:</b>
       <input name="system.nativeLanguage" type="text" value="{{system.nativeLanguage}}" placeholder="{{genName 'language'}}"
         style="text-align: right;"/>
     </div>
     </select><br/>
-    <div class="language-container">
+    <div class="actor-container-language">
       {{#each Languageskill as |language|}}
         <div class="language-box item-hook skill-hook" data-item-id="{{language._id}}">
           <div data-action="itemControl" data-subaction="edit" style="cursor: pointer;">

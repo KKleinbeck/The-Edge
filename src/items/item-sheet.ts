@@ -33,7 +33,7 @@ export class TheEdgeItemSheet extends EffectModifierMixin(
     form: {
       submitOnChange: true,
     },
-    classes: ["the_edge", "item-sheet"],
+    classes: ["the-edge-item-sheet"],
     actions: {
       createModifier: TheEdgeItemSheet._createModifier,
       deleteModifier: TheEdgeItemSheet._deleteModifier,

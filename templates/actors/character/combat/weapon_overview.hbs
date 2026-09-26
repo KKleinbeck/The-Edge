@@ -2,13 +2,13 @@
   <div class="title">
     <div class="section-title">{{combatName "Loadout"}}</div>
   </div>
-  <div class="loadout-container">
+  <div class="actor-container-loadout">
     <div class="loadout-box">
       <div class="item-control item loadout-name" data-tooltip="1d(Str + Crd) + Str">
         <img class="item-img" src="systems/the_edge/icons/fist.png" title="{{item.name}}" width="24" height="24" />
         <div>{{genName "Hand to Hand"}}</div>
       </div>
-      <a class="weapon-d20 d20-black" data-action="rollAttack"
+      <a class="d20-weapon d20-black" data-action="rollAttack"
         data-tooltip="{{combatName 'Attack'}} - {{combatName 'Lead attr combatics'}}" data-type="Hand-to-Hand combat">
         <span class="d20-overlay-weapon">{{calcCombaticsPL actor}}</span>
       </a>
@@ -27,7 +27,7 @@
               R
             </div>
           {{/if}}
-          <a class="weapon-d20 d20-black" data-action="rollAttack" data-tooltip="{{combatName 'Attack'}}" data-type="{{weapon.system.type}}">
+          <a class="d20-weapon d20-black" data-action="rollAttack" data-tooltip="{{combatName 'Attack'}}" data-type="{{weapon.system.type}}">
             <span class="d20-overlay-weapon">{{calcWeaponPL ../actor weapon._id}}</span>
           </a>
         </div>

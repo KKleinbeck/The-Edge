@@ -1,4 +1,4 @@
-<div class="check-dialog-box" style="padding-bottom: 15px">
+<div class="dialog-form-flex" style="padding-bottom: 15px">
   {{#each actions as |action|}}
   <div
     style="
@@ -10,7 +10,7 @@
     "
   >
     <b>{{combatName action}}</b>
-    <select class="advantage-box" name="StrainSelector" style="width: 60%">
+    <select class="dialog-advantage-box" name="StrainSelector" style="width: 60%">
       {{#each ../strainLevel as |strain|}}
       <option value="{{@index}}">{{combatName strain}}</option>
       {{/each}}

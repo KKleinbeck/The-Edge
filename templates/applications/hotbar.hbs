@@ -21,10 +21,10 @@
       <div style="display: flex; justify-content: center; height: 27%; margin-top: 7px; gap: 10px;">
         {{#times heroToken.max}}
           {{#if (checkST this ../heroToken.available)}}
-            <a class="ui-control hotbar-token-img hero-token-white" data-action="heroTokenUsed"
+            <a class="ui-control hero-token-img hero-token-white" data-action="heroTokenUsed"
               data-tooltip aria-label="{{genName 'HeroToken'}}"></a>
           {{else}}
-            <a class="ui-control hotbar-token-img hero-token-spent" data-action="heroTokenRegen"
+            <a class="ui-control hero-token-img hero-token-spent" data-action="heroTokenRegen"
               data-tooltip aria-label="{{genName 'HeroTokenSpent'}}"></a>
           {{/if}}
         {{/times}}

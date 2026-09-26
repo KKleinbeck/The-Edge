@@ -46,11 +46,11 @@
     {{/each}}
   </div>
   <div style="display: flex; flex-flow: nowrap; justify-content: space-between; padding-top: 2px; margin-right: 14px;">
-    <div class="checkbox-container">
+    <div class="item-checkbox-container">
       <label for="multiple-targets" data-tooltip aria-label="{{combatName 'Multi target help'}}">{{combatName "multiple targets"}}</label>
       <input type="checkbox" id="multiple-targets" name="system.multipleTargets" {{#if item.system.multipleTargets}}checked{{/if}} />
     </div>
-    <div class="checkbox-container">
+    <div class="item-checkbox-container">
       <label for="ReloadDuration">{{combatName 'Reload duration'}}</label>
       <input type="number" name="system.reloadDuration" value="{{item.system.reloadDuration}}"
         data-tooltip aria-label="{{combatName 'reload duration description'}}" id="ReloadDuration"

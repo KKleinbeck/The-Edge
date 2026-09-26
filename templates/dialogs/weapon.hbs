@@ -1,9 +1,7 @@
 <div class="dialog-form-grid">
-  <div class="check-dialog-box" style="gap: 0px;">
+  <div class="dialog-form-flex" style="gap: 0px;">
     {{#if (checkEqual targetIds.length 0)}}
-      <div class="title" style="width: 100%; padding-bottom: 0px;"><div
-          class="section-title"
-        >{{combatName "Missing Target"}}</div></div>
+      <div class="title" style="width: 100%; padding-bottom: 0px;">{{combatName "Missing Target"}}</div>
     {{/if}}
     <table class="dialog-modifier-table">
       <tr>
@@ -16,14 +14,13 @@
               data-dtype="Number"
               value="0"
               id="Modifier"
-              class="input-box"
-              style="text-align: right;"
+              style="width: 25px; text-align: right;"
             />
           </div>
         </td>
         <td>
           <select
-            class="advantage-box"
+            class="dialog-advantage-box"
             name="VantageSelector"
             id="VantageSelector"
           >
@@ -39,7 +36,7 @@
             {{genName "Distance"}}:
           </td>
           <td>
-            <select class="advantage-box" name="RangeSelector">
+            <select class="dialog-advantage-box" name="RangeSelector">
               {{#each weapon.system.rangeChart as |boni range|}}
                 <option value="{{range}}">{{genRange range}}
                   ({{getEntry boni 0}}
@@ -54,7 +51,7 @@
             {{genName "Size"}}:
           </td>
           <td>
-            <select class="advantage-box" name="SizeSelector">
+            <select class="dialog-advantage-box" name="SizeSelector">
               {{#each sizeModifiers as |mali size|}}
                 <option value="{{size}}">{{combatName size}}
                   ({{getEntry mali 0}}
@@ -94,7 +91,7 @@
           {{combatName "Movement"}}:
         </td>
         <td>
-          <select class="advantage-box" name="MovementSelector">
+          <select class="dialog-advantage-box" name="MovementSelector">
             {{#each movementModifiers as |mali movement|}}
               <option value="{{movement}}">{{combatName movement}}
                 ({{getEntry mali 0}}
@@ -109,7 +106,7 @@
           {{combatName "Cover"}}:
         </td>
         <td>
-          <select class="advantage-box" name="CoverSelector">
+          <select class="dialog-advantage-box" name="CoverSelector">
             {{#each coverModifiers as |mali cover|}}
               <option value="{{cover}}">{{combatName cover}} ({{mali}})</option>
             {{/each}}
@@ -129,7 +126,7 @@
               {{getEntry fireMode.precisionPenalty 1}})
             {{/each}}
           {{else}}
-            <select class="advantage-box" name="FireSelector">
+            <select class="dialog-advantage-box" name="FireSelector">
               {{#each weapon.system.fireModes as |fireMode|}}
                 <option value="{{fireMode.name}}">{{fireMode.name}}
                   ({{getEntry fireMode.precisionPenalty 0}}
@@ -145,7 +142,7 @@
           {{combatName "Precision"}}:
         </td>
         <td>
-          <select class="advantage-box" name="PrecisionSelector">
+          <select class="dialog-advantage-box" name="PrecisionSelector">
             <option value="aimed">{{combatName "aimed"}}</option>
             <option value="unaimed">{{combatName "unaimed"}}</option>
           </select>

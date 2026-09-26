@@ -5,7 +5,7 @@
 >
   {{> systems/the_edge/templates/actors/character/attributes/main_attributes.hbs}}
 
-  <div class="columned-page">
+  <div class="actor-columned-page">
     <div class="fixed-page">
       {{> systems/the_edge/templates/actors/character/attributes/languages.hbs}}
     </div>
@@ -19,10 +19,10 @@
     {{> systems/the_edge/templates/actors/character/attributes/embedded-skills.hbs skills=actor.embeddedSkills}}
   {{/if}}
 
-  <div class="columned-page">
+  <div class="actor-columned-page">
     <div class="fixed-page">
-      {{> systems/the_edge/templates/actors/skills.hbs name="Advantage" skills=Advantage skill-container-style="columns: 2"}}
-      {{> systems/the_edge/templates/actors/skills.hbs name="Disadvantage" skills=Disadvantage skill-container-style="columns: 2"}}
+      {{> systems/the_edge/templates/actors/skills.hbs name="Advantage" skills=Advantage actor-container-skill-style="columns: 2"}}
+      {{> systems/the_edge/templates/actors/skills.hbs name="Disadvantage" skills=Disadvantage actor-container-skill-style="columns: 2"}}
     </div>
     <div class="fixed-page">
       {{> systems/the_edge/templates/actors/character/attributes/progress.hbs}}

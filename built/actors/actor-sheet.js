@@ -15,7 +15,6 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
     constructor(...args) {
         super(...args);
         this.effectIsExpanded = {};
-        this._prepareTabs("stest");
     }
     static DEFAULT_OPTIONS = {
         tag: "form",
@@ -26,7 +25,7 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(Handleba
         form: {
             submitOnChange: true,
         },
-        classes: ["the_edge", "actor"],
+        classes: ["the-edge-actor-sheet"],
         actions: {
             itemControl: TheEdgeActorSheet._onItemControl,
             effectControl: TheEdgeActorSheet._onEffectControl,

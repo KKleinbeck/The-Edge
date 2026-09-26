@@ -7,7 +7,7 @@
 <div class="centered-row">
   <b>{{genName "Check"}}: </b>
   {{#each attackRollResult.rolls as |roll|}}
-    <a class="attr-d20-chat {{#if roll.hit}}d20-cha{{else}}d20-end{{/if}} rerollable"
+    <a class="d20-attr-chat {{#if roll.hit}}d20-cha{{else}}d20-end{{/if}} rerollable"
       data-index={{@index}} data-type="weapon" {{#if ../targetId}}data-target-id={{../targetId}}{{/if}}>
       <span class="d20-overlay" style="font-size: 14px;"
         data-tooltip="{{#if roll.hit}}Hit{{else}}Miss{{/if}} - {{genName 'threshold'}}: {{../attackRollQuery.threshold}}">
@@ -20,7 +20,7 @@
   <b>{{genName "Damage"}}: </b>
   <div class="damage-list">
     {{#if (checkEqual attackRollResult.damage.length 0)}}
-      <a class="attr-d20-chat no-damage-box">
+      <a class="d20-attr-chat no-damage-box">
         <span class="d20-overlay-weapon">{{genName "No Hit"}}</span>
       </a>
     {{else}}

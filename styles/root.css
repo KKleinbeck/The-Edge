@@ -1,11 +1,13 @@
 :root {
-  --color-ui-main-1: #70d7f2;
-  --color-ui-main-background: #31395a;
-  --color-ui-main-background-1: #2a395a;
-  --color-ui-main-background-2: #2a507a;
-  --color-ui-secondary: #bd9f09;
-  --color-ui-secondary-1: #f29d70;
+  --colour-ui-main-1: #70d7f2;
+  --colour-ui-main-background: #31395a;
+  --colour-ui-main-background-1: #2a395a;
+  --colour-ui-main-background-2: #2a507a;
+  --colour-ui-secondary: #bd9f09;
+  --colour-ui-secondary-1: #f29d70;
   --font-main-color: #e4e7fe;
   --font-secondary-color: #ccc;
-  --color-text-light-highlight: #fff;
+  --colour-text-light-highlight: #fff;
+  --gap-boxes: 10px;
+  --colour-underline-header: #bd9f09;
 }

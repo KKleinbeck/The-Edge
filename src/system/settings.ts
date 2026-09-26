@@ -73,9 +73,9 @@ class LicenceDialog extends foundry.applications.api.DialogV2 {
   static async prepareContent() {
     const licences = {
       "Lucius Cipher": await LicenceDialog.readLocalFile(
-        "fonts/LicenseLucius.txt",
+        "assets/fonts/LicenseLucius.txt",
       ),
-      "Titlillium Web": await LicenceDialog.readLocalFile("fonts/OFL.txt"),
+      "Titlillium Web": await LicenceDialog.readLocalFile("assets/fonts/OFL.txt"),
     };
 
     LicenceDialog.CONTENT = `<div style="max-height: 280px; overflow-y: scroll">`;

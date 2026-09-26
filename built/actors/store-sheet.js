@@ -17,6 +17,7 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
     }
     static DEFAULT_OPTIONS = {
         ...TheEdgeActorSheet.DEFAULT_OPTIONS,
+        classes: ["the-edge-actor-sheet", "the-edge-store-sheet"],
         actions: {
             itemInformation: TheEdgeStoreSheet._editItem,
             delete: TheEdgeStoreSheet._deleteItem,
@@ -162,7 +163,7 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
     }
     // Actions
     static _editItem(_event, target) {
-        const itemInformation = target.closest(".item").dataset;
+        const itemInformation = target.closest(".item-hook").dataset;
         if ("parentId" in itemInformation) {
             const actor = game.actors.get(itemInformation.parentId);
             const item = actor.items.get(itemInformation.itemId);
@@ -174,7 +175,7 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
         }
     }
     static _deleteItem(_event, target) {
-        const itemInformation = target.closest(".item").dataset;
+        const itemInformation = target.closest(".item-hook").dataset;
         const item = this.actor.items.get(itemInformation.itemId);
         item.delete();
     }
@@ -183,7 +184,7 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
             return;
         const token = this.playerTokens[this.selectedTokenIndex];
         const credits = token.actor.system.credits.chids + token.actor.system.credits.digital;
-        const itemInformation = target.closest(".item").dataset;
+        const itemInformation = target.closest(".item-hook").dataset;
         const price = +itemInformation.price;
         if (credits < price && !this.actor.system.isStorage) {
             NotificationServer.notify("Too expensive", {

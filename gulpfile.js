@@ -22,9 +22,9 @@ function compileProject() {
 /*  Compile LESS
 /* ----------------------------------------- */
 
-const SIMPLE_LESS = ["styles/*.less"];
+const SIMPLE_LESS = ["styles/src/*.less"];
 function compileLESS() {
-  return gulp.src("styles/*.less").pipe(less()).pipe(gulp.dest("./styles/"));
+  return gulp.src("styles/src/*.less").pipe(less()).pipe(gulp.dest("./styles/"));
 }
 const css = gulp.series(compileLESS);
 

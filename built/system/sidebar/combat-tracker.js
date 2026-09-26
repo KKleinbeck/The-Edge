@@ -20,7 +20,7 @@ export class TheEdgeCombatTracker extends CombatTracker {
     async _onRender(context, options) {
         await super._onRender(context, options);
         this.element
-            .querySelectorAll(".token-image, .token-name")
+            .querySelectorAll(".hero-token-image, .token-name")
             .forEach((x) => x.addEventListener("dblclick", (event) => {
             const target = event.target;
             if (!(target instanceof HTMLElement))

@@ -36,8 +36,7 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
         tag: "aside",
         classes: [
             ...foundry.applications.ui.Hotbar.DEFAULT_OPTIONS.classes,
-            "the_edge",
-            "the_edge-hotbar",
+            "the-edge-hotbar",
         ],
         window: {
             frame: false,
@@ -362,7 +361,7 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
         }
     }
     _attachCounterListeners() {
-        this.element.querySelectorAll(".svg-progress-input").forEach((x) => {
+        this.element.querySelectorAll(".progress-svg-input").forEach((x) => {
             x.addEventListener("change", (ev) => {
                 const counters = this.token.actor.system.counters;
                 const index = +ev.target.closest(".counter-index").dataset.index;

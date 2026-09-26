@@ -1,0 +1,26 @@
+:root {
+  --colour-ui-main-1: #70d7f2;
+  --colour-ui-main-background: #31395a;
+  --colour-ui-main-background-1: #2a395a;
+  --colour-ui-main-background-2: #2a507a;
+  --colour-ui-secondary: #bd9f09;
+  --colour-ui-secondary-1: #f29d70;
+  --font-main-color: #e4e7fe;
+  --font-secondary-color: #ccc;
+  --colour-text-light-highlight: #fff;
+  --gap-boxes: 10px;
+  --colour-underline-header: #bd9f09;
+}
+.chat-message .chat-button {
+  display: inline-block;
+  background-color: #000000;
+  color: #fff;
+  border: 1px solid #000;
+  border-radius: 5px;
+  padding: 1px 3px;
+  font-size: 14px;
+  font-weight: bold;
+  width: 122px;
+  box-sizing: border-box;
+  text-align: center;
+}

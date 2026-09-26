@@ -1,0 +1,102 @@
+@import "root.less";
+
+.the-edge-hotbar {
+  position: relative;
+  width: 100%;
+  height: auto;
+  opacity: 1;
+  display: block;
+
+  .hotbar-frame {
+    width: 100%;
+    background-image: url("../assets/hotbar_bg.png") !important;
+    background-size: cover;
+    background-position: center;
+    aspect-ratio: 1729 / 275;
+    opacity: 0.7;
+  }
+
+  .hotbar-content {
+    height: 100%;
+    position: absolute;
+    inset: 0;
+    display: flex;
+    padding: 2.1% 3% 2% 3%;
+
+    .hotbar-actor-name {
+      font-size: 18px;
+      width: 85%;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .hotbar-item-element {
+      padding: 2px 12px 2px 12px !important;
+      height: 30px !important;
+      line-height: 24px !important;
+      color: var(--font-main-color);
+    }
+
+    .hero-token-img {
+      border: none;
+      background-color: transparent;
+      background-position: center center;
+      height: 100%;
+      aspect-ratio: 1;
+      background-size: contain;
+      background-repeat: no-repeat;
+      display: inline-block;
+    }
+
+    .hotbar-separator {
+      height: 90%;
+      width: 0%;
+      border-left: 2pt solid @colour-ui-secondary;
+      filter: blur(1px);
+      margin: 0 1% 0 1%;
+    }
+
+    .hotbar-button {
+      width: 100%;
+      justify-content: start;
+      padding: 0 3px;
+
+      .button-text {
+        width: 80%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: start;
+      }
+    }
+
+    .hotbar-double-column {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-gap: 5px;
+      margin-top: 5px;
+      width: 100%;
+    }
+
+    .hotbar-d20 {
+      width: 130%;
+    }
+
+    .hotbar-d20-overlay {
+      white-space: nowrap;
+      position: absolute;
+      transform: translate(0%, 10%);
+      font-weight: bold;
+      font-size: 12px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 5px;
+      color: @colour-ui-main-background-1;
+    }
+  }
+
+  .hotbar-proficiency-d20 {
+    width: 10%;
+    min-width: 10%;
+  }
+}

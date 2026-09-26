@@ -1,4 +1,4 @@
-<header class="sheet-header">
+<header class="actor-sheet-header">
   <img class="profile-img" src="{{actor.img}}" data-edit="img" data-action="editImage" title="{{actor.name}}"/>
   <div class="header-fields">
     <div style="display: flex; align-items: center;">
@@ -6,7 +6,7 @@
         <h2 class="charname" style="margin-bottom: 0px;">
           <input name="name" type="text" value="{{actor.name}}" placeholder="Name" style="min-height: 32px;"/>
         </h2>
-        <div class="columned-page" style="{{#if (checkEqual helpers.armourProtection.value 0)}}padding: 0 10% 0 10%;{{/if}}">
+        <div class="actor-columned-page" style="{{#if (checkEqual helpers.armourProtection.value 0)}}padding: 0 10% 0 10%;{{/if}}">
           <div class="page-centered">
             <div class="attribute-title" style="margin-bottom: 10px;">{{genName "health"}}</div>
             {{>
@@ -41,22 +41,20 @@
           {{/unless}}
         </div>
       </div>
-      <div style="margin-left: 15px;">
-        <div class="page-centered">
-          {{#times system.heroToken.max}}
-            {{#if (checkST this ../system.heroToken.available)}}
-              <a class="token-img hero-token" data-action="heroTokenUsed" data-tooltip aria-label="{{genName 'HeroToken'}}"></a>
-            {{else}}
-              <a class="token-img hero-token-spent" data-action="heroTokenRegen" data-tooltip aria-label="{{genName 'HeroTokenSpent'}}"></a>
-            {{/if}}
-          {{/times}}
-        </div>
+      <div class="page-centered" style="margin-left: 15px;">
+        {{#times system.heroToken.max}}
+          {{#if (checkST this ../system.heroToken.available)}}
+            <a class="hero-token-img hero-token" data-action="heroTokenUsed" data-tooltip aria-label="{{genName 'HeroToken'}}"></a>
+          {{else}}
+            <a class="hero-token-img hero-token-spent" data-action="heroTokenRegen" data-tooltip aria-label="{{genName 'HeroTokenSpent'}}"></a>
+          {{/if}}
+        {{/times}}
       </div>
     </div>
-    <div class="columned-page" style="text-align: center; margin-top: 12px">
+    <div class="actor-columned-page" style="text-align: center; margin-top: 12px">
       {{#each system.attributes as |details attribute|}}
       <div class="page-centered">
-        <a class="attr-d20 d20-{{attribute}}" data-attribute="{{attribute}}" data-action="rollAttribute">
+        <a class="d20-attr d20-{{attribute}}" data-attribute="{{attribute}}" data-action="rollAttribute">
           <span class="d20-overlay">{{details.value}}</span>
         </a>
         <p class="attribute-title" style="margin-top: -5px;">{{attribute}}</p>
