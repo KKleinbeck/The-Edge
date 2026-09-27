@@ -75,8 +75,8 @@
   transition: all 0.5s linear;
 }
 .system-the_edge .progress-wrapper {
-  height: 33%;
-  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 3;
 }
 .system-the_edge .progress-fill-animation {
   animation: fillGrow 1.2s ease-out forwards;

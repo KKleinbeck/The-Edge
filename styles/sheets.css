@@ -4,12 +4,16 @@
   box-shadow: none;
 }
 .the-edge-actor-sheet .actor-sheet-header {
-  flex: 0 0 185px;
   overflow: hidden;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: flex-start;
+  min-height: 150px;
+  max-height: 185px;
+}
+.the-edge-actor-sheet .actor-sheet-header .actor-header-progress-bar {
+  max-width: 175px;
 }
 .the-edge-actor-sheet .actor-sheet-header .attribute-title {
   text-transform: capitalize;

@@ -21,12 +21,21 @@
 
   // Classes
   .actor-sheet-header {
-    flex: 0 0 185px;
     overflow: hidden;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: flex-start;
+    min-height: 150px;
+    max-height: 185px;
+
+    .actor-header-progress-bars {
+      
+    }
+
+    .actor-header-progress-bar {
+      max-width: 175px;
+    }
 
     .attribute-title {
       text-transform: capitalize;

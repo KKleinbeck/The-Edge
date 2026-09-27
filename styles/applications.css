@@ -57,3 +57,30 @@
   width: 51%;
   height: 4.5%;
 }
+.the-edge-application .custom-footer-bar {
+  position: absolute;
+  right: 8%;
+  bottom: 4%;
+  width: 51%;
+  height: 4.5%;
+}
+.the-edge-application .custom-footer-bar .the-edge-application-footer-tabs {
+  border: none;
+  display: flex;
+  height: 100%;
+  align-items: end;
+  margin: 0;
+  gap: 10px;
+  padding: 0 5px;
+  font-size: 14px;
+  color: #ccc;
+}
+.the-edge-application .custom-footer-bar .the-edge-application-footer-tabs .tab-element {
+  flex: 1;
+  transition: all 0.4s ease-in-out;
+}
+.the-edge-application .custom-footer-bar .the-edge-application-footer-tabs .active {
+  font-size: 18px;
+  color: #e4e7fe;
+  transition: all 0.4s 0.2s ease-in-out;
+}

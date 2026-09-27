@@ -77,9 +77,8 @@ img {
   border: none;
 }
 nav {
-  margin: 8px 0px 12px 0px !important;
-  border-width: 1.333px !important;
-  border-color: #fff !important;
+  border-width: 1.333px;
+  border-color: #fff;
 }
 option {
   background-color: #2a395a;
