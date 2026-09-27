@@ -1,6 +1,6 @@
 :root {
   --colour-ui-main-1: #70d7f2;
-  --colour-ui-main-background: #31395a;
+  --colour-ui-main-background: rgba(49, 57, 84, 0.7);
   --colour-ui-main-background-1: #2a395a;
   --colour-ui-main-background-2: #2a507a;
   --colour-ui-secondary: #bd9f09;

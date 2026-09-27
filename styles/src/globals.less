@@ -1,4 +1,4 @@
-@import "root.less";
+@import "_vars.less";
 
 
 // MARK: - Fonts
@@ -163,11 +163,11 @@ table {
 }
 
 .window-app {
-  color: var(@font-main-color) !important;
+  color: var(--font-main-color) !important;
 }
 .window-content {
-  background-image: url("../assets/background.png") !important;
-  color: var(@font-main-color) !important;
+  // background-image: url("../assets/background.png") !important;
+  color: var(--font-main-color) !important;
 }
 
 
@@ -507,4 +507,10 @@ textarea {
     text-align: right;
     padding-left: 5px;
   }
+}
+
+.my-test-class {
+  background: none;
+  border: none;
+  box-shadow: none;
 }

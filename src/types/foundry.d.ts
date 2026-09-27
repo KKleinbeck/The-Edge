@@ -326,6 +326,7 @@ interface IFoundry {
     };
   };
   utils: {
+    deepClone(obj: any);
     flattenObject(obj: object, _d?: number): object;
     getProperty(a: foundryAny, path: string): foundryAny;
     mergeObject<T, U>(a: T, b: U): T & U;
