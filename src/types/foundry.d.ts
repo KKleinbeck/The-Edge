@@ -246,7 +246,19 @@ declare function getDocumentClass(x: string): foundryAny;
 
 // Mixins
 declare class HandlebarsApplication {
-  public element: Element;
+  public element: HTMLElement;
+  public options: Record<string, foundryAny>;
+  public window: {
+    close: HTMLElement,
+    content: HTMLElement,
+    controls: HTMLElement,
+    header: HTMLElement,
+    icon: HTMLElement,
+    resize: HTMLElement,
+    title: HTMLElement
+  }
+
+  public setPosition(position: Record<string, any>);
 
   public _onRender(context: any, options: any): void;
   public _prepareTabs(tab: string): undefined;

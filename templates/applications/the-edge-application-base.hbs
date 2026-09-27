@@ -1,0 +1,70 @@
+<svg width="0" height="0" style="position: absolute" aria-hidden="true">
+  <clipPath id="outline" clipPathUnits="objectBoundingBox">
+    <path id="outlinePath" d="
+        M 0, 0.05
+        L 0.05, 0 L 0.6, 0 L 0.65, 0.05
+        L 1, 0.05 L 1, 0.95 L 0.95, 1
+        L 0.4, 1 L 0.35, 0.95 L 0, 0.95
+        Z
+      ",
+    />
+  </clipPath>
+  <path id="borderTopPath" d="
+      M 0, 0.2
+      L 0, 0.05 L 0.05, 0 L 0.6, 0
+      L 0.65, 0.05 L 1, 0.05 L 1, 0.2
+    ",
+  />
+
+  <path id="borderBottomPath" d="
+      M 1, 0.8
+      L 1, 0.95 L 0.95, 1 L 0.4, 1
+      L 0.35, 0.95 L 0, 0.95 L 0, 0.8
+    ",
+  />
+</svg>
+
+<svg class="application-shape-container" viewBox="0 0 1 1" preserveAspectRatio="none">
+  {{!-- Background  --}}
+  <g transform="translate(0.03, 0.03) scale(0.94)">
+    <use href="#outlinePath" fill="var(--colour-ui-main-background)" />
+  </g>
+
+  <g transform="translate(0.03, 0.03) scale(0.94)">
+    <use class="border-hook" href="#outlinePath" fill="none" stroke="#6cf" stroke-width="0.004"
+        data-border-pixel-width="1" vector-effect="non-scaling-stroke"
+        style="filter: drop-shadow(0 0 0.005px #6cf) drop-shadow(0 0 0.015px #6cf);"/>
+
+    <use class="border-hook" href="#borderTopPath" fill="none" stroke="#6cf" stroke-width="0.01"
+        data-border-pixel-width="3" vector-effect="non-scaling-stroke"/>
+    <use class="border-hook" href="#borderBottomPath" fill="none" stroke="#6cf" stroke-width="0.01"
+        data-border-pixel-width="3" vector-effect="non-scaling-stroke"/>
+  </g>
+</svg>
+
+<header class="window-header the-edge-application-header">
+  <div class="application-header-details">
+    <div class="details-icons">
+      <i class="fa-solid fa-up-down-left-right"></i>
+      <i class="window-icon hidden" inert></i>
+    </div>
+    <h1 class="window-title"></h1>
+
+    <button type="button" class="header-control icon fa-solid fa-ellipsis-vertical"
+            data-tooltip="${labels.toggleControls}" aria-label="${labels.toggleControls}"
+            data-action="toggleControls"></button>
+  </div>
+  <button type="button" class="header-control icon fa-solid fa-xmark"
+          data-tooltip="{{genName 'close'}}" aria-label="${labels.close}" data-action="close"></button>
+</header>
+
+<div class="content-clip" style="clip-path: url(#outline);">
+  <div class="custom-header-bar" style="clip-path: url(#outline);">
+  </div>
+
+  <div class="window-content the-edge-window-content">
+  </div>
+
+  <div class="window-resize-handle" style="position: absolute; right: 3%; bottom: 3%; justify-content: end;">
+  </div>
+</div>

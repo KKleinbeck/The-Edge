@@ -1,0 +1,73 @@
+@import "_vars.less";
+
+.the-edge-application {
+  .application-shape-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  .the-edge-application-header {
+    position: absolute;
+    left: 65%;
+    top: 3%;
+    right: 2%;
+    height: 4%;
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 6px 0 4px;
+
+    background: none;
+    border: 0 solid;
+    border-radius: 12px;
+
+    .application-header-details {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+
+      opacity: 0;
+      transition: all 0.4s ease-in-out;
+      
+      .details-icons {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+    }
+
+    &:hover {
+      background-color: @colour-ui-main-background-opague;
+
+      .application-header-details {
+        opacity: 1;
+      }
+    }
+    transition: background-color 0.4s ease-in-out;
+  }
+
+  .content-clip {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    
+    .the-edge-window-content {
+      position: absolute;
+      left: 5%;
+      top: 9.5%;
+      right: 5%;
+      bottom: 9%; padding: 0;
+    }
+  }
+
+  .custom-header-bar {
+    position: absolute;
+    left: 8%;
+    top: 4%;
+    width: 51%;
+    height: 4.5%;
+  }
+}

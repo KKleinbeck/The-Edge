@@ -7,34 +7,47 @@ import DialogProficiency from "../dialogs/dialog-proficiency.js";
 import EffectModifierMixin from "../mixins/effect-modifier-mixin.js";
 import LocalisationServer from "../system/localisation_server.js";
 import NotificationServer from "../system/notifications.js";
+import TheEdgeApplicationMixin from "../mixins/the-edge-application.js";
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
 const { renderTemplate } = foundry.applications.handlebars;
-export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(HandlebarsApplicationMixin(ActorSheetV2))) {
+export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(TheEdgeApplicationMixin(HandlebarsApplicationMixin(ActorSheetV2)))) {
     effectIsExpanded = {};
     constructor(...args) {
         super(...args);
         this.effectIsExpanded = {};
     }
     static DEFAULT_OPTIONS = {
-        tag: "form",
-        position: {
-            width: 740,
-            height: 800,
-        },
-        form: {
-            submitOnChange: true,
-        },
-        classes: ["the-edge-actor-sheet"],
         actions: {
             itemControl: TheEdgeActorSheet._onItemControl,
             effectControl: TheEdgeActorSheet._onEffectControl,
             embeddedSkillControl: TheEdgeActorSheet._onEmbeddedSkillControl,
             skillControl: TheEdgeActorSheet._onSkillControl,
         },
+        classes: ["the-edge-actor-sheet"],
+        form: {
+            submitOnChange: true,
+        },
+        position: {
+            width: 780,
+            height: 900,
+        },
+        tag: "form",
+        theEdgeParameters: {
+            minWidth: 780,
+            minHeight: 780
+        },
+        window: {
+            resizable: true
+        }
     };
     get title() {
         return this.actor.name;
+    }
+    get customHeaderBar() {
+        return `<h3 class="charname">` +
+            `<input name="name" type="text" value="${this.actor.name}" placeholder="Name" style="min-height: 32px;"/>` +
+            `</h3>`;
     }
     async _prepareContext(options) {
         const context = await super._prepareContext(options);

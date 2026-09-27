@@ -65,3 +65,7 @@ interface ISliderContext {
   _orig_min: number;
   _orig_max: number;
 }
+
+// ----------------------------------------
+// The Edge Application Modifier
+declare class TheEdgeApplication {}

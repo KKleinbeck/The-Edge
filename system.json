@@ -13,6 +13,7 @@
   "esmodules": ["built/the_edge.js"],
   "styles": [
     "styles/animations.css",
+    "styles/applications.css",
     "styles/chat.css",
     "styles/dialogs.css",
     "styles/globals.css",
