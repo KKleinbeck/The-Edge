@@ -7,15 +7,6 @@
   opacity: 1;
   display: block;
 
-  .hotbar-frame {
-    width: 100%;
-    background-image: url("../assets/hotbar_bg.png") !important;
-    background-size: cover;
-    background-position: center;
-    aspect-ratio: 1729 / 275;
-    opacity: 0.7;
-  }
-
   .hotbar-content {
     height: 100%;
     position: absolute;
@@ -45,11 +36,21 @@
     .hotbar-d20 {
       width: 130%;
       box-shadow: none;
-      color: var(--font-main-color);
 
       &:hover {
-        filter: drop-shadow(0 0 3px var(--font-main-color))
+        filter: drop-shadow(0 0 3px var(--font-main-color));
       }
+    }
+
+    .hotbar-d20-overlay {
+      white-space: nowrap;
+      position: absolute;
+      transform: translate(0%, 10%);
+      font-weight: bold;
+      font-size: 14px;
+      filter: drop-shadow(0 0 2px white);
+      border-radius: 5px;
+      color: @font-main-color-inverted;
     }
 
     .hotbar-double-column {
@@ -98,17 +99,6 @@
         white-space: nowrap;
         text-align: start;
       }
-    }
-
-    .hotbar-d20-overlay {
-      white-space: nowrap;
-      position: absolute;
-      transform: translate(0%, 10%);
-      font-weight: bold;
-      font-size: 12px;
-      background: rgba(255, 255, 255, 0.5);
-      border-radius: 5px;
-      color: @colour-ui-main-background-1;
     }
   }
 

@@ -1,5 +1,17 @@
 <aside>
-  <div class="hotbar-frame"></div>
+  <svg id="hotbarFrame" style="display: block; width: 100%; height: 10vw; overflow: visible" preserveAspectRatio="none">
+    <path id="hotbarOutlinePath" fill="var(--colour-ui-main-background)" stroke="var(--colour-ui-main-1)" stroke-width="2"
+      style="filter: drop-shadow(0 0 2px var(--colour-ui-main-1)) drop-shadow(0 0 4px var(--colour-ui-main-1));"/>
+
+    <path id="hotbarBorderTopPath" fill="none" stroke="var(--colour-ui-main-1)" stroke-width="8"
+      style="filter: drop-shadow(0 0 2px var(--colour-ui-main-1)) drop-shadow(0 0 4px var(--colour-ui-main-1));"/>
+    <path id="hotbarBorderBottomPath" fill="none" stroke="var(--colour-ui-main-1)" stroke-width="8"
+      style="filter: drop-shadow(0 0 2px var(--colour-ui-main-1)) drop-shadow(0 0 4px var(--colour-ui-main-1));"/>
+
+    <path id="hotbarBackground" fill="var(--colour-ui-main-background)"/>
+  </svg>
+
+
   <div class="hotbar-content" data-action="click">
     <div style="flex: 4; min-width: 100px;"> {{!-- Name and attr dice section --}}
       <div style="display: flex; justify-content: space-between; align-items: bottom;">

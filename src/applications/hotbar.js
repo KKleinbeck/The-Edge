@@ -265,6 +265,8 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(
   }
 
   async _onRender(_context, _options) {
+    this._drawFrame();
+
     const input = this.element.querySelector("input[name='proficiency']");
     input?.addEventListener("keypress", async (ev) => {
       if (ev.key === "Enter") {
@@ -293,6 +295,34 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(
     });
 
     this._attachCounterListeners();
+  }
+
+  _drawFrame() {
+    const svg = this.element.querySelector('#hotbarFrame');
+    const path = this.element.querySelector('#hotbarOutlinePath');
+    const background = this.element.querySelector('#hotbarBackground');
+    const pathTop = this.element.querySelector('#hotbarBorderTopPath');
+    const pathBottom = this.element.querySelector('#hotbarBorderBottomPath');
+
+    function layout() {
+      const r = svg.getBoundingClientRect();
+
+      const pathSegmentTop = `0, 30 L 30, 0 L ${0.35 * r.width - 15}, 0 L ${0.35 * r.width}, 15 `;
+      const pathSegmentBottom = `L ${r.width}, ${r.height - 30} L ${r.width - 30}, ${r.height} ` +
+        `L ${0.65 * r.width + 15}, ${r.height} L ${0.65 * r.width}, ${r.height - 15}`;
+      const pathHotbar = `M ${pathSegmentTop} L ${r.width -15}, 15 L ${r.width}, 30  ${pathSegmentBottom}` +
+        `L 15, ${r.height - 15} L 0, ${r.height - 30} Z`;
+
+      if (r.width < 1 || r.height < 1) return;
+      svg.setAttribute('viewBox', `-5 -5 ${r.width + 10} ${r.height + 10}`);
+      path.setAttribute('d', pathHotbar);
+      pathTop.setAttribute('d', `M 0, 60 L ${pathSegmentTop} L ${0.65 * r.width}, 15`);
+      pathBottom.setAttribute('d', `M ${r.width}, ${r.height - 60} ${pathSegmentBottom} L ${0.35 * r.width}, ${r.height - 15}`);
+      background.setAttribute('d', pathHotbar);
+    }
+
+    new ResizeObserver(layout).observe(svg);
+    layout();
   }
 
   _saveSearchAndReset() {
