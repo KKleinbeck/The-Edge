@@ -15,10 +15,11 @@ import THE_EDGE from "../system/config-the-edge.js";
 import { TheEdgeActor } from "./actor.js";
 import { TheEdgeActorSheet } from "./actor-sheet.js";
 
+const { renderTemplate } = foundry.applications.handlebars;
+
 export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   declare actor: TheEdgeActor;
-  declare static actor: TheEdgeActor;
-  declare static token: TokenDocument;
+  declare token: TokenDocument;
   declare definedEffects: Record<string, string[]>;
 
   constructor(...args: ConstructorParameters<typeof TheEdgeActorSheet>) {
@@ -58,6 +59,9 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     form: {
       template: "systems/the_edge/templates/actors/character/actor-header.hbs",
     },
+    separator: {
+      template: "systems/the_edge/templates/generic/separator-horizontal.hbs",
+    },
     attributes: {
       template:
         "systems/the_edge/templates/actors/character/attributes/layout.hbs",
@@ -95,34 +99,13 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     },
   };
 
-  get customFooterBar(): string {
-    return `
-    <nav class="tabs the-edge-application-footer-tabs" aria-roledescription="Form Tab Navigation" data-application-part="tabs">
-      <a data-action="tab" data-group="primary" data-tab="attributes" class="tab-element active">
-          
-          <span>Attributes</span>
-      </a>
-      <a data-action="tab" data-group="primary" data-tab="proficiencies" class="tab-element">
-          
-          <span>Proficiencies</span>
-      </a>
-      <a data-action="tab" data-group="primary" data-tab="combat" class="tab-element">
-          
-          <span>Combat</span>
-      </a>
-      <a data-action="tab" data-group="primary" data-tab="items" class="tab-element">
-          
-          <span>Items</span>
-      </a>
-      <a data-action="tab" data-group="primary" data-tab="health" class="tab-element">
-          
-          <span>Health</span>
-      </a>
-      <a data-action="tab" data-group="primary" data-tab="biography" class="tab-element">
-          
-          <span>Biography</span>
-      </a>
-    </nav>`
+  async getCustomFooterBar(): Promise<string> {
+    // @ts-expect-error
+    const tabs = this.constructor.TABS;
+
+    const template = "systems/the_edge/templates/applications/the-edge-tab-navigation.hbs";
+    const footer = await renderTemplate(template, tabs.primary);
+    return footer;
   }
 
   async _prepareContext(options) {
@@ -211,7 +194,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   }
 
   // actions
-  static async _onWoundControl(event, target) {
+  static async _onWoundControl(this, event, target) {
     event.preventDefault();
 
     // Obtain event data
@@ -232,11 +215,11 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     }
   }
 
-  static async useHeroToken(_event, _target) {
+  static async useHeroToken(this, _event, _target) {
     await this.actor.system.useHeroToken();
   }
 
-  static async regenerateHeroToken(_event, _target) {
+  static async regenerateHeroToken(this, _event, _target) {
     if (game.user.isGM) {
       await this.actor.system.regenerateHeroToken();
     } else {
@@ -244,12 +227,12 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     }
   }
 
-  static async advanceAttr(_event, target) {
+  static async advanceAttr(this, _event, target) {
     const dataset = target.dataset;
     this.actor.system.advanceAttr(dataset.name, dataset.type);
   }
 
-  static async rollAttribute(_event, target) {
+  static async rollAttribute(this, _event, target) {
     DialogAttribute.start({
       actor: this.actor,
       actorId: this.actor.id,
@@ -259,7 +242,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     });
   }
 
-  static async rollProficiency(_event, target) {
+  static async rollProficiency(this, _event, target) {
     DialogProficiency.start({
       actor: this.actor,
       actorId: this.actor.id,
@@ -269,7 +252,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     });
   }
 
-  static async rollAttack(_event, target) {
+  static async rollAttack(this, _event, target) {
     const actor = this.actor;
     const token = this.token || Aux.getToken(actor.id);
     if (token === null) {
@@ -357,7 +340,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     });
   }
 
-  static async reload(_event, target) {
+  static async reload(this, _event, target) {
     const weaponId = target.closest(".weapon-id").dataset.weaponId;
     const weapon = this.actor.items.get(weaponId);
     const ammunitionOptions = this.actor.itemTypes["Ammunition"].filter((x) => {
@@ -374,14 +357,14 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     });
   }
 
-  static longRest(_) {
+  static longRest(this, _) {
     DialogRest.start({ actor: this.actor, type: "long rest" });
   }
-  static shortRest(_) {
+  static shortRest(this, _) {
     DialogRest.start({ actor: this.actor, type: "short rest" });
   }
 
-  static applyDamage(_event, target) {
+  static applyDamage(this, _event, target) {
     const location = target.dataset.location;
     DialogDamage.start({ actor: this.actor, location: location });
   }

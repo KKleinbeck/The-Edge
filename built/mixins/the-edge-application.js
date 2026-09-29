@@ -18,9 +18,9 @@ export default function TheEdgeApplicationMixin(BaseApplication) {
             frame.innerHTML += applicationTemplate;
             // Custom Footer and Header
             const customHeaderBarElement = frame.querySelector(".custom-header-bar");
-            customHeaderBarElement.innerHTML = this.customHeaderBar;
+            customHeaderBarElement.innerHTML = await this.getCustomHeaderBar();
             const customFooterBarElement = frame.querySelector(".custom-footer-bar");
-            customFooterBarElement.innerHTML = this.customFooterBar;
+            customFooterBarElement.innerHTML = await this.getCustomFooterBar();
             this.window.close = frame.querySelector("button[data-action=close]");
             this.window.content = frame.querySelector(".window-content");
             this.window.controls = frame.querySelector("button[data-action=toggleControls]");
@@ -93,8 +93,8 @@ export default function TheEdgeApplicationMixin(BaseApplication) {
                 this.setPosition(positionUpdate);
             }
         }
-        get customFooterBar() { return ""; }
-        get customHeaderBar() { return ""; }
+        async getCustomFooterBar() { return ""; }
+        async getCustomHeaderBar() { return ""; }
     }
     return TheEdgeApplication;
 }

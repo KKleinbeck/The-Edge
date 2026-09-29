@@ -37,9 +37,9 @@ export default function TheEdgeApplicationMixin<T extends intype>(
 
       // Custom Footer and Header
       const customHeaderBarElement = frame.querySelector(".custom-header-bar");
-      customHeaderBarElement.innerHTML = this.customHeaderBar;
+      customHeaderBarElement.innerHTML = await this.getCustomHeaderBar();
       const customFooterBarElement = frame.querySelector(".custom-footer-bar");
-      customFooterBarElement.innerHTML = this.customFooterBar;
+      customFooterBarElement.innerHTML = await this.getCustomFooterBar();
 
       this.window.close = frame.querySelector("button[data-action=close]");
       this.window.content = frame.querySelector(".window-content");
@@ -111,8 +111,8 @@ export default function TheEdgeApplicationMixin<T extends intype>(
     }
 
 
-    get customFooterBar(): string {return "";}
-    get customHeaderBar(): string {return "";}
+    async getCustomFooterBar(): Promise<string> {return "";}
+    async getCustomHeaderBar(): Promise<string> {return "";}
   }
   return TheEdgeApplication
 }

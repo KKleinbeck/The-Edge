@@ -44,7 +44,7 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(TheEdgeA
     get title() {
         return this.actor.name;
     }
-    get customHeaderBar() {
+    async getCustomHeaderBar() {
         return `<h3 class="charname">` +
             `<input name="name" type="text" value="${this.actor.name}" placeholder="Name" style="min-height: 32px;"/>` +
             `</h3>`;

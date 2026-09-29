@@ -52,7 +52,7 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(
     return this.actor.name;
   }
 
-  get customHeaderBar(): string {
+  async getCustomHeaderBar(): Promise<string> {
     return `<h3 class="charname">` +
       `<input name="name" type="text" value="${this.actor.name}" placeholder="Name" style="min-height: 32px;"/>` +
       `</h3>`;

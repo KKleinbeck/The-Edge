@@ -16,6 +16,7 @@ export default function () {
     tooltipText: (a) => LocalisationServer.localise(a, "tooltip"),
     proficiencyName: (a) => LocalisationServer.localise(a, "proficiency"),
     textLocalisation: (a) => LocalisationServer.localise(a, "text"),
+    generalLocalisation: (a, b) => LocalisationServer.localise(b, a),
     detailedLocalisation: (a, b, c) =>
       LocalisationServer.parsedLocalisation(b, a, c),
     effectRequirementName: (a, b) =>

@@ -25,20 +25,20 @@
 </svg>
 
 <svg class="application-shape-container" viewBox="0 0 1 1" preserveAspectRatio="none">
-  {{!-- Background  --}}
   <g transform="translate(0.03, 0.03) scale(0.94)">
+    {{!-- Background  --}}
     <use href="#outlinePath" fill="var(--colour-ui-main-background)" />
-  </g>
 
-  <g transform="translate(0.03, 0.03) scale(0.94)">
-    <use class="border-hook" href="#outlinePath" fill="none" stroke="#6cf" stroke-width="0.004"
+    {{!-- Main Border --}}
+    <use class="border-hook" href="#outlinePath" fill="none" stroke="var(--colour-ui-main-1)" stroke-width="0.005"
         data-border-pixel-width="1" vector-effect="non-scaling-stroke"
-        style="filter: drop-shadow(0 0 0.005px #6cf) drop-shadow(0 0 0.015px #6cf);"/>
+        style="filter: drop-shadow(0 0 0.005px var(--colour-ui-main-1)) drop-shadow(0 0 0.015px var(--colour-ui-main-1));"/>
 
-    <use class="border-hook" href="#borderTopPath" fill="none" stroke="#6cf" stroke-width="0.01"
-        data-border-pixel-width="3" vector-effect="non-scaling-stroke"/>
-    <use class="border-hook" href="#borderBottomPath" fill="none" stroke="#6cf" stroke-width="0.01"
-        data-border-pixel-width="3" vector-effect="non-scaling-stroke"/>
+    {{!-- Thick Border decoration --}}
+    <use class="border-hook" href="#borderTopPath" fill="none" stroke="var(--colour-ui-main-1)" stroke-width="0.01"
+        data-border-pixel-width="2" vector-effect="non-scaling-stroke"/>
+    <use class="border-hook" href="#borderBottomPath" fill="none" stroke="var(--colour-ui-main-1)" stroke-width="0.01"
+        data-border-pixel-width="2" vector-effect="non-scaling-stroke"/>
   </g>
 </svg>
 

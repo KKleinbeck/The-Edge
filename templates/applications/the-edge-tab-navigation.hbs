@@ -1,0 +1,7 @@
+<nav class="tabs the-edge-application-footer-tabs" aria-roledescription="Form Tab Navigation" data-application-part="tabs">
+  {{#each tabs as |tab|}}
+    <a data-action="tab" data-group="primary" data-tab="{{tab.id}}" class="tab-element {{#if (checkEqual ../initial tab.id)}}active{{/if}}">
+        <span>{{generalLocalisation ../labelPrefix tab.id}}</span>
+    </a>
+  {{/each}}
+</nav>`

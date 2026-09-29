@@ -11,6 +11,7 @@ import LocalisationServer from "../system/localisation_server.js";
 import NotificationServer from "../system/notifications.js";
 import THE_EDGE from "../system/config-the-edge.js";
 import { TheEdgeActorSheet } from "./actor-sheet.js";
+const { renderTemplate } = foundry.applications.handlebars;
 export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     constructor(...args) {
         super(...args);
@@ -46,6 +47,9 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
         form: {
             template: "systems/the_edge/templates/actors/character/actor-header.hbs",
         },
+        separator: {
+            template: "systems/the_edge/templates/generic/separator-horizontal.hbs",
+        },
         attributes: {
             template: "systems/the_edge/templates/actors/character/attributes/layout.hbs",
         },
@@ -79,34 +83,12 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
             initial: "attributes",
         },
     };
-    get customFooterBar() {
-        return `
-    <nav class="tabs the-edge-application-footer-tabs" aria-roledescription="Form Tab Navigation" data-application-part="tabs">
-      <a data-action="tab" data-group="primary" data-tab="attributes" class="tab-element active">
-          
-          <span>Attributes</span>
-      </a>
-      <a data-action="tab" data-group="primary" data-tab="proficiencies" class="tab-element">
-          
-          <span>Proficiencies</span>
-      </a>
-      <a data-action="tab" data-group="primary" data-tab="combat" class="tab-element">
-          
-          <span>Combat</span>
-      </a>
-      <a data-action="tab" data-group="primary" data-tab="items" class="tab-element">
-          
-          <span>Items</span>
-      </a>
-      <a data-action="tab" data-group="primary" data-tab="health" class="tab-element">
-          
-          <span>Health</span>
-      </a>
-      <a data-action="tab" data-group="primary" data-tab="biography" class="tab-element">
-          
-          <span>Biography</span>
-      </a>
-    </nav>`;
+    async getCustomFooterBar() {
+        // @ts-expect-error
+        const tabs = this.constructor.TABS;
+        const template = "systems/the_edge/templates/applications/the-edge-tab-navigation.hbs";
+        const footer = await renderTemplate(template, tabs.primary);
+        return footer;
     }
     async _prepareContext(options) {
         const context = await super._prepareContext(options);
