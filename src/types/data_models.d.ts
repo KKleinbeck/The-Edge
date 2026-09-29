@@ -68,7 +68,6 @@ interface IWeaponsEnergy {
 interface IWeaponsGeneral {
   "General weapon proficiency": foundryAny;
   "Hand-to-Hand combat": foundryAny;
-  "Recoilless Rifles": foundryAny;
 }
 
 interface IWeaponsKinetic {

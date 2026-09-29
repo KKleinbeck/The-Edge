@@ -21,7 +21,6 @@ export default class WeaponData extends DataModelComponent {
         general: new SchemaField({
           "General weapon proficiency": WEAPON_FIELD(),
           "Hand-to-Hand combat": WEAPON_FIELD(),
-          "Recoilless Rifles": WEAPON_FIELD(),
         }),
         energy: new SchemaField({
           "Blaster Pistols": WEAPON_FIELD(),

@@ -225,7 +225,7 @@ THE_EDGE.coreValueMap = {
     strain: {},
     weapons: {},
 };
-THE_EDGE.weapon_damage_types = { "Recoilless Rifles": "general" };
+THE_EDGE.weapon_damage_types = {};
 THE_EDGE.weapon_partners = {};
 THE_EDGE.translationPercentage = {
     // Maps language level to chance of getting a word

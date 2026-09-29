@@ -43,7 +43,6 @@ type TWeapon =
   | "Blaster Snipers"
   | "General weapon proficiency"
   | "Hand-to-Hand combat"
-  | "Recoilless Rifles"
   | "Kinetic Pistols"
   | "Slug Throwers"
   | "LMGs"
