@@ -4,9 +4,7 @@
   data-tab="health"
 >
   {{> systems/the_edge/templates/actors/character/health/effects.hbs}}
-  <div class="title">
-    <div class="section-title">{{genName "Injuries"}}</div>
-  </div>
+  <div class="title">{{genName "Injuries"}}</div>
   <div style="display: flex; justify-content: flex-start; gap: 20px; padding: 10px;">
     <div class="actor-wound-overview">
       {{#if (checkEqual system.sex "female")}}

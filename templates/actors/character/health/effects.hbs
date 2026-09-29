@@ -1,7 +1,7 @@
 {{#each effectDict as |effects sourceName|}}
   {{#if (checkDisplayEffects sourceName effects)}}
     <div class="title" style="padding-right: 10px;">
-      <div class="section-title">{{genName sourceName}}</div>
+      {{genName sourceName}}
       {{#if (checkEqual sourceName "effects")}}
         <div class="effect-hook" title="{{ itemName 'Create' }}" data-action="effectControl" data-source="{{sourceName}}"
           data-subaction="create" style="gap: 5px; cursor: pointer;">

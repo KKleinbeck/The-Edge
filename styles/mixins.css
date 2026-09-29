@@ -24,7 +24,7 @@
   justify-content: center;
 }
 .system-the_edge .counter-list .full {
-  background: #bd9f09;
+  background: var(--colour-ui-secondary);
 }
 .system-the_edge .grenade-picker {
   background-color: rgba(42, 80, 122, 0.2);

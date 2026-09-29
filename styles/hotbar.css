@@ -46,7 +46,7 @@
 .the-edge-hotbar .hotbar-content .hotbar-separator {
   height: 90%;
   width: 0%;
-  border-left: 2pt solid #bd9f09;
+  border-left: 2pt solid #a2acba;
   filter: blur(1px);
   margin: 0 1% 0 1%;
 }

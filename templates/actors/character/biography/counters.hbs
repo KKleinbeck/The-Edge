@@ -5,7 +5,7 @@
 {{#define editable=(or editable false)}}
 <div class="counter-context-hook" data-type="{{type}}" data-editable="{{editable}}">
   <div class="title" style="padding-right: 10px;">
-    <div class="section-title">{{title}}</div>
+    {{title}}
     {{#if editable}}
       <div title="{{ itemName 'Create Counter' }}" data-action="counterControl" data-subaction="create-counter" style="gap: 5px; cursor: pointer;">
         {{itemName "New Counter"}}

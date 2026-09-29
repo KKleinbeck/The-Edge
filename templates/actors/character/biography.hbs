@@ -4,9 +4,7 @@
   data-tab="biography"
   style="overflow-y: auto; overflow-x: hidden"
 >
-  <div class="title">
-    <div class="section-title">{{genName "Biology"}}</div>
-  </div>
+  <div class="title">{{genName "Biology"}}</div>
   <div style="display: flex; justify-content: space-between;">
     <div style="white-space: nowrap;">
       <label for="Age">{{genName "Age"}}</label>
@@ -56,9 +54,7 @@
     </div>
   {{/if}}
 
-  <div class="title">
-    <div class="section-title">{{genName "Biography"}}</div>
-  </div>
+  <div class="title">{{genName "Biography"}}</div>
   <div style="padding-left: 10px;">
     {{#if editable}}
       <prose-mirror
@@ -71,9 +67,7 @@
       {{{system.biography}}}
     {{/if}}
   </div>
-  <div class="title">
-    <div class="section-title">{{genName "Notes"}}</div>
-  </div>
+  <div class="title">{{genName "Notes"}}</div>
   <div style="padding-left: 10px;">
     {{#if editable}}
       <prose-mirror

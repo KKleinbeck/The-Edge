@@ -5,7 +5,7 @@
 >
   {{#each helpers.itemTypes as |type|}}
     <div class="title">
-      <div class="section-title">{{itemName type}}</div>
+      {{itemName type}}
       <div class="item-hook" title="{{ itemName 'Create' }}" data-action="itemControl" data-subaction="create"
         data-type="{{type}}" style="gap: 5px; cursor: pointer;">
         {{itemName "Create"}}
@@ -74,12 +74,10 @@
       {{/each}}
     </ol>
   {{/each}}
-  <div class="title">
-    <div class="section-title">{{itemName "Others"}}</div>
-  </div>
+  <div class="title">{{itemName "Others"}}</div>
   <div style="display: flex; justify-content: space-between;">
     <div style="display: flex; gap: 20px;">
-      <div class="section-title">{{genName "Credits"}}</div>
+      {{genName "Credits"}}
       <div style="max-width: 30%;">
         <input type="Number" id="Chids" style="width: 70%; text-align: right;" name="system.credits.chids" value="{{system.credits.chids}}"/>
         <lavel for="Chids">Chids</lavel>
@@ -90,7 +88,7 @@
       </div>
     </div>
     <div style="display: flex; gap: 20px; align-items: center; padding-right: 15px;">
-      <div class="section-title">{{genName "Weight"}}</div>
+      {{genName "Weight"}}
       <div>{{round helpers.weight 2}}</div>
       <div style="white-space: nowrap;" title="{{getNextWeightClass helpers.weightTillNextOverload}}">
         ({{effectName "Overload"}}: {{helpers.overloadLevel}})
