@@ -27,6 +27,15 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+.the-edge-hotbar .hotbar-content .hotbar-carousel-button {
+  border: none;
+  background: none;
+  box-shadow: none;
+  color: var(--font-main-color);
+}
+.the-edge-hotbar .hotbar-content .hotbar-carousel-button:hover {
+  filter: drop-shadow(0 0 3px var(--font-main-color));
+}
 .the-edge-hotbar .hotbar-content .hotbar-item-element {
   padding: 2px 12px 2px 12px !important;
   height: 30px !important;
@@ -80,7 +89,7 @@
   font-size: 12px;
   background: rgba(255, 255, 255, 0.5);
   border-radius: 5px;
-  color: #2a395a;
+  color: rgba(3, 14, 35, 0.5);
 }
 .the-edge-hotbar .hotbar-proficiency-d20 {
   width: 10%;

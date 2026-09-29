@@ -45,8 +45,15 @@ h4 {
   border-bottom-width: 1.5px;
 }
 button {
-  background-color: var(--colour-ui-main-background-1);
-  color: var(--font-main-color) !important;
+  background-color: var(--colour-ui-main-background);
+  color: var(--font-main-color);
+  border-color: var(--colour-ui-main-1);
+  box-shadow: 0 0 2px var(--colour-ui-main-1);
+  transition: box-shadow 0.4s ease-in-out;
+}
+button:hover {
+  border-color: var(--colour-ui-main-2);
+  box-shadow: 1px 0 5px var(--colour-ui-main-2), 0 1px 5px var(--colour-ui-main-2), -1px 0 5px var(--colour-ui-main-2), 0 -1px 5px var(--colour-ui-main-2);
 }
 input {
   height: 24px;
@@ -67,7 +74,7 @@ input[type="checkbox"]::before {
   font-weight: 400;
 }
 input[type="checkbox"]::after {
-  color: var(--colour-ui-main-background-1);
+  color: var(--colour-ui-main-background);
   font-weight: 100;
 }
 input::placeholder {
@@ -81,10 +88,10 @@ nav {
   border-color: #fff;
 }
 option {
-  background-color: #2a395a;
+  background-color: rgba(3, 20, 51, 0.9);
 }
 optgroup {
-  background-color: #2a395a;
+  background-color: rgba(3, 20, 51, 0.9);
 }
 select {
   background-image: url("../assets/background.png") !important;
@@ -111,7 +118,7 @@ table .chat-table td {
   color: var(--font-main-color);
 }
 .application select option {
-  background-color: #2a395a;
+  background-color: rgba(3, 14, 35, 0.5);
   background-image: url("../assets/background.png") !important;
   color: var(--font-main-color) !important;
 }
@@ -184,21 +191,21 @@ table .chat-table td {
 }
 .prosemirror menu button:hover,
 .prosemirror menu button.active {
-  background-color: var(--colour-ui-main-background-2) !important;
+  background-color: var(--colour-ui-main-background-2);
 }
 .prosemirror menu .pm-dropdown {
   background-color: var(--colour-ui-main-background-1);
 }
 .standard-form .form-group > label {
-  color: var(--font-main-color) !important;
+  color: var(--font-main-color);
 }
 .table-description {
-  color: var(--font-main-color) !important;
+  color: var(--font-main-color);
   font-size: 14px;
 }
 textarea {
-  color: var(--font-main-color) !important;
-  background-image: url("../assets/background.png") !important;
+  color: var(--font-main-color);
+  background-color: var(--colour-ui-main-background);
 }
 .system-the_edge .d20-end {
   background-image: url("../icons/d20r1.png");

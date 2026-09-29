@@ -59,8 +59,21 @@ h4 {
 
 // MARK: - HTML Default Elements
 button {
-  background-color: var(--colour-ui-main-background-1);
-  color: var(--font-main-color) !important;
+  background-color: var(--colour-ui-main-background);
+  color: var(--font-main-color);
+  border-color: var(--colour-ui-main-1);
+  box-shadow: 0 0 2px var(--colour-ui-main-1);
+
+  transition: box-shadow 0.4s ease-in-out;
+
+  &:hover {
+    border-color: var(--colour-ui-main-2);
+    box-shadow:
+      1px 0 5px var(--colour-ui-main-2),
+      0 1px 5px var(--colour-ui-main-2),
+      -1px 0 5px var(--colour-ui-main-2),
+      0 -1px 5px var(--colour-ui-main-2);
+  }
 }
 input {
   height: 24px;
@@ -81,7 +94,7 @@ input[type="checkbox"]::before {
   font-weight: 400;
 }
 input[type="checkbox"]::after {
-  color: var(--colour-ui-main-background-1);
+  color: var(--colour-ui-main-background);
   font-weight: 100;
 }
 input::placeholder {
@@ -95,10 +108,10 @@ nav {
   border-color: @colour-text-light-highlight;
 }
 option {
-  background-color: @colour-ui-main-background-1;
+  background-color: @colour-ui-main-background;
 }
 optgroup {
-  background-color: @colour-ui-main-background-1;
+  background-color: @colour-ui-main-background;
 }
 select {
   background-image: url("../assets/background.png") !important;
@@ -216,21 +229,21 @@ table {
 }
 .prosemirror menu button:hover,
 .prosemirror menu button.active {
-  background-color: var(--colour-ui-main-background-2) !important;
+  background-color: var(--colour-ui-main-background-2);
 }
 .prosemirror menu .pm-dropdown {
   background-color: var(--colour-ui-main-background-1);
 }
 .standard-form .form-group > label {
-  color: var(--font-main-color) !important;
+  color: var(--font-main-color);
 }
 .table-description {
-  color: var(--font-main-color) !important;
+  color: var(--font-main-color);
   font-size: 14px;
 }
 textarea {
-  color: var(--font-main-color) !important;
-  background-image: url("../assets/background.png") !important;
+  color: var(--font-main-color);
+  background-color: var(--colour-ui-main-background);
 }
 
 

@@ -1,7 +1,6 @@
 <div class="dynamic-field-element" style="flex: 7;">
   <h5 style="display: flex; gap: 10px; align-items: center; margin-bottom: 2px; width: 40%; justify-content: space-between;">
-    <button type="button" data-action="changeDynamicField" data-type="items" data-dir="decrement"
-      style="border: none; background: none; color: white;">
+    <button class="hotbar-carousel-button" type="button" data-action="changeDynamicField" data-type="items" data-dir="decrement">
       &#9664;
     </button>
     {{#if (checkEqual dynamicField "item")}}
@@ -13,8 +12,7 @@
     {{#if (checkEqual dynamicField "counter")}}
       {{genName "Counters"}}
     {{/if}}
-    <button type="button" data-action="changeDynamicField" data-type="items" data-dir="increment"
-      style="border: none; background: none; color: white;">
+    <button class="hotbar-carousel-button" type="button" data-action="changeDynamicField" data-type="items" data-dir="increment">
       &#9654;
     </button>
   </h5>

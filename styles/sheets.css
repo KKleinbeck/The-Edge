@@ -106,6 +106,11 @@
   justify-content: space-between;
   align-items: center;
   break-inside: avoid;
+  padding: 3px;
+  background-color: var(--colour-ui-main-background-1);
+  border: solid 1px var(--colour-ui-secondary);
+  border-radius: 5px;
+  box-shadow: 0 0 4px var(--colour-ui-secondary), inset 0 0 8px var(--colour-ui-main-background-1);
 }
 .the-edge-actor-sheet .actor-container-loadout {
   columns: 2;
@@ -120,6 +125,11 @@
   justify-content: space-between;
   align-items: center;
   break-inside: avoid;
+  padding: 3px;
+  background-color: var(--colour-ui-main-background-1);
+  border: solid 1px var(--colour-ui-secondary);
+  border-radius: 5px;
+  box-shadow: 0 0 4px var(--colour-ui-secondary), inset 0 0 8px var(--colour-ui-main-background-1);
 }
 .the-edge-actor-sheet .actor-container-loadout .loadout-box .loadout-name {
   display: flex;
@@ -140,6 +150,11 @@
   justify-content: space-between;
   align-items: center;
   break-inside: avoid;
+  padding: 3px;
+  background-color: var(--colour-ui-main-background-1);
+  border: solid 1px var(--colour-ui-secondary);
+  border-radius: 5px;
+  box-shadow: 0 0 4px var(--colour-ui-secondary), inset 0 0 8px var(--colour-ui-main-background-1);
 }
 .the-edge-actor-sheet .actor-generic-table {
   display: block;
