@@ -36,6 +36,21 @@
 .the-edge-hotbar .hotbar-content .hotbar-carousel-button:hover {
   filter: drop-shadow(0 0 3px var(--font-main-color));
 }
+.the-edge-hotbar .hotbar-content .hotbar-d20 {
+  width: 130%;
+  box-shadow: none;
+  color: var(--font-main-color);
+}
+.the-edge-hotbar .hotbar-content .hotbar-d20:hover {
+  filter: drop-shadow(0 0 3px var(--font-main-color));
+}
+.the-edge-hotbar .hotbar-content .hotbar-double-column {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-gap: 5px;
+  margin-top: 5px;
+  width: 100%;
+}
 .the-edge-hotbar .hotbar-content .hotbar-item-element {
   padding: 2px 12px 2px 12px !important;
   height: 30px !important;
@@ -70,16 +85,6 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   text-align: start;
-}
-.the-edge-hotbar .hotbar-content .hotbar-double-column {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-gap: 5px;
-  margin-top: 5px;
-  width: 100%;
-}
-.the-edge-hotbar .hotbar-content .hotbar-d20 {
-  width: 130%;
 }
 .the-edge-hotbar .hotbar-content .hotbar-d20-overlay {
   white-space: nowrap;

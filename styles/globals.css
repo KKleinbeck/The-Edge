@@ -45,26 +45,32 @@ h4 {
   border-bottom-width: 1.5px;
 }
 button {
-  background-color: var(--colour-ui-main-background);
-  color: var(--font-main-color);
   border-color: var(--colour-ui-main-1);
   box-shadow: 0 0 2px var(--colour-ui-main-1);
   transition: box-shadow 0.4s ease-in-out;
+  background-color: var(--colour-ui-main-background);
+  color: var(--font-main-color);
 }
 button:hover {
   border-color: var(--colour-ui-main-2);
   box-shadow: 1px 0 5px var(--colour-ui-main-2), 0 1px 5px var(--colour-ui-main-2), -1px 0 5px var(--colour-ui-main-2), 0 -1px 5px var(--colour-ui-main-2);
 }
 input {
+  border-color: var(--colour-ui-main-1);
+  box-shadow: 0 0 2px var(--colour-ui-main-1);
+  transition: box-shadow 0.4s ease-in-out;
   height: 24px;
   padding-left: 3px;
   padding-right: 3px;
   background-color: rgba(255, 255, 255, 0.2);
-  border-color: var(--colour-ui-main-1);
   border-width: 1.333px;
   border-radius: 5px;
   font-family: "Titillium-Regular";
   color: var(--font-main-color);
+}
+input:focus {
+  border-color: var(--colour-ui-main-2);
+  box-shadow: 1px 0 5px var(--colour-ui-main-2), 0 1px 5px var(--colour-ui-main-2), -1px 0 5px var(--colour-ui-main-2), 0 -1px 5px var(--colour-ui-main-2);
 }
 input[type="checkbox"] {
   background: none;

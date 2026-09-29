@@ -24,7 +24,21 @@
     border-radius: 5px;
     box-shadow:
       0 0 4px var(--colour-ui-secondary),
+      0 0 0 transparent,
+      0 0 0 transparent,
+      0 0 0 transparent,
       inset 0 0 8px var(--colour-ui-main-background-1);
+    
+    transition: box-shadow 0.4s ease-in-out;
+
+    &:hover {
+      box-shadow:
+        2px 0 5px var(--colour-ui-secondary),
+        0 2px 5px var(--colour-ui-secondary),
+        -2px 0 5px var(--colour-ui-secondary),
+        0 -2px 5px var(--colour-ui-secondary),
+        inset 0 0 8px var(--colour-ui-main-background-1);
+    }
   }
 
   // Classes
@@ -36,10 +50,6 @@
     justify-content: flex-start;
     min-height: 150px;
     max-height: 185px;
-
-    .actor-header-progress-bars {
-      
-    }
 
     .actor-header-progress-bar {
       max-width: 175px;

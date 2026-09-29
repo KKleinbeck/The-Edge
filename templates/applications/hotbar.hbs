@@ -4,8 +4,8 @@
     <div style="flex: 4; min-width: 100px;"> {{!-- Name and attr dice section --}}
       <div style="display: flex; justify-content: space-between; align-items: bottom;">
         <div class="hotbar-actor-name">{{selectedActorName}}</div>
-        <a class="ui-control fa-solid fa-rotate-right icon" data-action="reloadActor"
-          data-tooltip aria-label="{{localize 'HOTBAR.RELOAD'}}" style="width: 22px; height: 22px;"></a>
+        <button class="ui-control fa-solid fa-rotate-right icon" data-action="reloadActor"
+          data-tooltip aria-label="{{localize 'HOTBAR.RELOAD'}}" style="width: 22px; min-height: 22px; max-height: 24px;"></button>
       </div>
       <div style="display: grid; grid-template-columns: repeat(9, 1fr); margin-top: 5px; width: 95%;">
         {{#each attributes as |attr name|}}
@@ -55,9 +55,9 @@
     {{!-- Lowered right section --}}
     <div style="flex: 16; padding-top: 0.7%; display: flex", id="hotbar-lowered-right">
       <div style="flex: 3">
-        <button type="button" data-action="searchProficiency" style="width: 100%; border: none; background: none; height: 28px;">
+        <button type="button" data-action="searchProficiency" style="width: 100%; border: none; background: none;">
           <input class="proficiency-input" name="proficiency" type="text" value="" placeholder="{{genName 'Search Proficiency'}}"
-            style="text-align: right; padding-right: 8px;">
+            style="text-align: right; padding-right: 8px; height: 100%;">
         </button>
         {{> systems/the_edge/templates/applications/hotbar/proficiency.hbs}}
       </div>

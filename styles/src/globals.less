@@ -58,33 +58,46 @@ h4 {
 
 
 // MARK: - HTML Default Elements
-button {
-  background-color: var(--colour-ui-main-background);
-  color: var(--font-main-color);
+.ui-interface() {
   border-color: var(--colour-ui-main-1);
   box-shadow: 0 0 2px var(--colour-ui-main-1);
 
   transition: box-shadow 0.4s ease-in-out;
+}
+.ui-active-interface() {
+  border-color: var(--colour-ui-main-2);
+  box-shadow:
+    1px 0 5px var(--colour-ui-main-2),
+    0 1px 5px var(--colour-ui-main-2),
+    -1px 0 5px var(--colour-ui-main-2),
+    0 -1px 5px var(--colour-ui-main-2);
+}
+
+button {
+  .ui-interface();
+
+  background-color: var(--colour-ui-main-background);
+  color: var(--font-main-color);
 
   &:hover {
-    border-color: var(--colour-ui-main-2);
-    box-shadow:
-      1px 0 5px var(--colour-ui-main-2),
-      0 1px 5px var(--colour-ui-main-2),
-      -1px 0 5px var(--colour-ui-main-2),
-      0 -1px 5px var(--colour-ui-main-2);
+    .ui-active-interface();
   }
 }
 input {
+  .ui-interface();
+
   height: 24px;
   padding-left: 3px;
   padding-right: 3px;
   background-color: rgba(255, 255, 255, 0.2);
-  border-color: var(--colour-ui-main-1);
   border-width: 1.333px;
   border-radius: 5px;
   font-family: "Titillium-Regular";
   color: var(--font-main-color);
+
+  &:focus {
+    .ui-active-interface();
+  }
 }
 input[type="checkbox"] {
   background: none;
