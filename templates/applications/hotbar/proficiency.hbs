@@ -1,26 +1,31 @@
-<div class="proficiency-element" style="height: calc(100% - 28px); overflow-y: hidden;">
-  {{#if searchCandidate}}
-    <div style="display: flex; align-items: center; gap: 5px; margin-top: 5px;">
-      <div style="color: rgba(200, 200, 200, 1)">{{proficiencyName searchCandidate.name}}</div>
-      {{#each searchCandidate.dice as |dice|}}
-        <button type="button" class="hotbar-proficiency-d20" data-action="rollSearchProficiency" data-proficiency="{{../searchCandidate.name}}"
-          style="height: fit-content; min-height: 10pt; background: none; border: none;"
-          data-tooltip aria-label="{{proficiencyName ../searchCandidate.name}} {{genName 'Check'}} - {{attrName dice}}">
-          <img class="hotbar-d20-{{dice}}"/>
-        </button>
-      {{/each}}
-    </div>
-  {{/if}}
-  {{#each proficiencySearchHistory as |prof|}}
-    <div style="display: flex; align-items: center; gap: 5px; margin-top: 5px;">
-      <div style="color: white">{{proficiencyName prof.name}}</div>
-      {{#each prof.dice as |dice|}}
-        <button type="button" class="hotbar-proficiency-d20" data-action="rollProficiency" data-proficiency="{{prof.name}}"
-          style="height: fit-content; min-height: 10pt; background: none; border: none;"
-          data-tooltip aria-label="{{proficiencyName prof.name}} {{genName 'Check'}} - {{attrName dice}}">
-          <img class="hotbar-d20-{{dice}}"/>
-        </button>
-      {{/each}}
-    </div>
-  {{/each}}
+<div class="hotbar-content-proficiency">
+  <button type="button" data-action="searchProficiency" style="width: 100%; border: none; background: none;">
+    <input class="proficiency-input" name="proficiency" type="text" value="" placeholder="{{genName 'Search Proficiency'}}"
+      style="text-align: right; padding-right: 8px; height: 100%;">
+  </button>
+
+  <div class="proficiency-element" style="height: calc(100% - 28px); overflow-y: hidden;">
+    {{#if searchCandidate}}
+      <div style="display: flex; align-items: center; gap: 5px; margin-top: 5px;">
+        <div style="color: rgba(200, 200, 200, 1)">{{proficiencyName searchCandidate.name}}</div>
+        {{#each searchCandidate.dice as |dice|}}
+          <button type="button" class="hotbar-d20-proficiency" data-action="rollSearchProficiency" data-proficiency="{{../searchCandidate.name}}"
+            data-tooltip aria-label="{{proficiencyName ../searchCandidate.name}} {{genName 'Check'}} - {{attrName dice}}">
+            <img class="hotbar-d20-{{dice}}"/>
+          </button>
+        {{/each}}
+      </div>
+    {{/if}}
+    {{#each proficiencySearchHistory as |prof|}}
+      <div style="display: flex; align-items: center; gap: 5px; margin-top: 5px;">
+        <div style="color: white">{{proficiencyName prof.name}}</div>
+        {{#each prof.dice as |dice|}}
+          <button type="button" class="hotbar-d20-proficiency" data-action="rollProficiency" data-proficiency="{{prof.name}}"
+            data-tooltip aria-label="{{proficiencyName prof.name}} {{genName 'Check'}} - {{attrName dice}}">
+            <img class="hotbar-d20-{{dice}}"/>
+          </button>
+        {{/each}}
+      </div>
+    {{/each}}
+  </div>
 </div>

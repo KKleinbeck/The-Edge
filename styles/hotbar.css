@@ -7,10 +7,10 @@
 }
 .the-edge-hotbar .hotbar-content {
   height: 100%;
+  width: 100%;
   position: absolute;
   inset: 0;
   display: flex;
-  padding: 2.1% 3% 2% 3%;
 }
 .the-edge-hotbar .hotbar-content .hotbar-actor-name {
   font-size: 18px;
@@ -28,12 +28,56 @@
 .the-edge-hotbar .hotbar-content .hotbar-carousel-button:hover {
   filter: drop-shadow(0 0 3px var(--font-main-color));
 }
+.the-edge-hotbar .hotbar-content .hotbar-content-attributes {
+  position: absolute;
+  left: 15px;
+  top: 10px;
+  width: calc(17% - 15px);
+  bottom: 15px;
+}
+.the-edge-hotbar .hotbar-content .hotbar-content-status-bars {
+  position: absolute;
+  left: 19%;
+  top: 10px;
+  width: 14%;
+  bottom: 15px;
+}
+.the-edge-hotbar .hotbar-content .hotbar-content-proficiency {
+  position: absolute;
+  left: 35%;
+  top: 25px;
+  width: 14%;
+  bottom: 0;
+}
+.the-edge-hotbar .hotbar-content .hotbar-content-weapon {
+  position: absolute;
+  left: 51%;
+  top: 25px;
+  width: 14%;
+  bottom: 0;
+}
+.the-edge-hotbar .hotbar-content .hotbar-content-dynamic {
+  position: absolute;
+  left: 67%;
+  top: 25px;
+  right: 15px;
+  bottom: 0;
+}
 .the-edge-hotbar .hotbar-content .hotbar-d20 {
   width: 130%;
   box-shadow: none;
 }
 .the-edge-hotbar .hotbar-content .hotbar-d20:hover {
   filter: drop-shadow(0 0 3px var(--font-main-color));
+}
+.the-edge-hotbar .hotbar-content .hotbar-d20-proficiency {
+  width: 10%;
+  min-width: 10%;
+  height: fit-content;
+  min-height: 10pt;
+  background: none;
+  border: none;
+  box-shadow: none;
 }
 .the-edge-hotbar .hotbar-content .hotbar-d20-overlay {
   white-space: nowrap;
@@ -68,13 +112,6 @@
   background-repeat: no-repeat;
   display: inline-block;
 }
-.the-edge-hotbar .hotbar-content .hotbar-separator {
-  height: 90%;
-  width: 0%;
-  border-left: 2pt solid #a2acba;
-  filter: blur(1px);
-  margin: 0 1% 0 1%;
-}
 .the-edge-hotbar .hotbar-content .hotbar-button {
   width: 100%;
   justify-content: start;
@@ -86,8 +123,4 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   text-align: start;
-}
-.the-edge-hotbar .hotbar-proficiency-d20 {
-  width: 10%;
-  min-width: 10%;
 }

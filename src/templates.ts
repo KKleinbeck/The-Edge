@@ -61,11 +61,13 @@ export const preloadHandlebarsTemplates = async function () {
     "systems/the_edge/templates/dialogs/meta-chat-options.html",
 
     // Hotbar
+    "systems/the_edge/templates/applications/hotbar/attributes.hbs",
     "systems/the_edge/templates/applications/hotbar/dynamic-field.hbs",
     "systems/the_edge/templates/applications/hotbar/counter.hbs",
     "systems/the_edge/templates/applications/hotbar/health.hbs",
     "systems/the_edge/templates/applications/hotbar/item.hbs",
     "systems/the_edge/templates/applications/hotbar/proficiency.hbs",
+    "systems/the_edge/templates/applications/hotbar/status-bars.hbs",
     "systems/the_edge/templates/applications/hotbar/weapon.hbs",
 
     // Sidebar

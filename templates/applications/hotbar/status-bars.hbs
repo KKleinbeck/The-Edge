@@ -1,0 +1,16 @@
+<div class="hotbar-content-status-bars">
+  {{>
+    systems/the_edge/templates/generic/progress-bar-modern.hbs
+    name="Health" value=actor.system.health.value max=actor.system.health.max.value fillId="health"
+  }}
+  {{>
+    systems/the_edge/templates/generic/progress-bar-modern.hbs
+    name="Strain" value=actor.system.strain.value max=actor.system.strain.max.value fillId="strain"
+  }}
+  {{#unless (checkEqual armourProtection.value 0)}}
+    {{>
+      systems/the_edge/templates/generic/progress-bar-modern.hbs
+      name="Armour" value=armourProtection.value max=armourProtection.original fillId="armour"
+    }}
+  {{/unless}}
+</div>

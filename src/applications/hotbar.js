@@ -362,8 +362,7 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(
   }
 
   _onResize() {
-    const hotbar = window.document.getElementById("hotbar-lowered-right");
-    this.nItemsShown = Math.floor((hotbar.clientHeight - 40) / 31);
+    this.nItemsShown = Math.floor((this.element.clientHeight - 40) / 31);
     this.render(true);
   }
 
