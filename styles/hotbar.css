@@ -102,6 +102,9 @@
   line-height: 24px !important;
   color: var(--font-main-color);
 }
+.the-edge-hotbar .hotbar-content .hotbar-separator {
+  filter: blur(1px) drop-shadow(0 0 2px var(--colour-ui-secondary)) brightness(var(--animated-pulsate-glow));
+}
 .the-edge-hotbar .hotbar-content .hero-token-img {
   border: none;
   background-color: transparent;
