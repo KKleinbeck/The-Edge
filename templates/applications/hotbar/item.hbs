@@ -1,32 +1,32 @@
-<div class="hotbar-item-element" style="display: flex; height: 82%;">
+<div class="hotbar-item-element item-element-hook" style="display: flex; height: 82%;">
   {{#if itemsScroll}}
     <div
       style="height: 100%; display: flex; flex-direction: column; justify-content: space-between; margin-right: 5px;"
     >
       <button
+        class="hotbar-scroll-button"
         type="button"
         data-action="scroll"
         data-type="items"
         data-dir="down"
-        style="border: none; background: none; color: white;"
       >
         &#9650;
       </button>
       <button
+        class="hotbar-scroll-button"
         type="button"
         data-action="scroll"
         data-type="items"
         data-dir="up"
-        style="border: none; background: none; color: white;"
       >
         &#9660;
       </button>
     </div>
   {{/if}}
-  <div class="hotbar-double-column" style="height: 65%">
+  <div class="hotbar-double-column">
     {{#each consumables as |consumable|}}
       <button
-        class="hotbar-button item"
+        class="hotbar-button item-hook"
         type="button"
         data-tooltip
         aria-label="{{consumable.tooltip}}"

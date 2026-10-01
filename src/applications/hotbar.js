@@ -342,7 +342,8 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(
   }
 
   _onResize() {
-    this.nItemsShown = Math.floor((this.element.clientHeight - 40) / 31);
+    const itemElement = this.element.querySelector(".item-element-hook");
+    this.nItemsShown = Math.floor(itemElement.clientHeight / 34);
     this.render(true);
   }
 
@@ -438,7 +439,7 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(
     const template = `systems/the_edge/templates/applications/hotbar/${element}.hbs`;
     const html = await renderTemplate(template, context);
 
-    const alteredElement = this.element.querySelector(`.${element}-element`);
+    const alteredElement = this.element.querySelector(`.${element}-element-hook`);
     alteredElement.outerHTML = html;
 
     const currentField =

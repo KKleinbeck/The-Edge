@@ -284,7 +284,8 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
         }
     }
     _onResize() {
-        this.nItemsShown = Math.floor((this.element.clientHeight - 40) / 31);
+        const itemElement = this.element.querySelector(".item-element-hook");
+        this.nItemsShown = Math.floor(itemElement.clientHeight / 34);
         this.render(true);
     }
     static _onChangeDynamicField(_event, target) {
@@ -358,7 +359,7 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(Applicatio
         const context = await this._prepareContext();
         const template = `systems/the_edge/templates/applications/hotbar/${element}.hbs`;
         const html = await renderTemplate(template, context);
-        const alteredElement = this.element.querySelector(`.${element}-element`);
+        const alteredElement = this.element.querySelector(`.${element}-element-hook`);
         alteredElement.outerHTML = html;
         const currentField = element == "dynamic-field" ? context.dynamicField : element;
         switch (currentField) {

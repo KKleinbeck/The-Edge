@@ -111,26 +111,42 @@
       width: 100%;
     }
 
-    .hotbar-item-element {
-      padding: 2px 12px 2px 12px !important;
-      height: 30px !important;
-      line-height: 24px !important;
-      color: var(--font-main-color);
-    }
-
-    .hotbar-separator {
-      filter: blur(1px) drop-shadow(0 0 2px var(--colour-ui-secondary)) brightness(var(--animated-pulsate-glow));
-    }
-
-    .hero-token-img {
+    .hotbar-hero-token-anchor {
       border: none;
       background-color: transparent;
       background-position: center center;
       height: 100%;
+      width: auto;
       aspect-ratio: 1;
-      background-size: contain;
-      background-repeat: no-repeat;
       display: inline-block;
+    }
+
+    .hotbar-hero-token-img {
+      height: 100%;
+      width: auto;
+      object-fit: cover;
+    }
+
+    .hotbar-item-element {
+      padding: 2px 12px 2px 12px;
+      position: absolute;
+      left: 0;
+      top: 13%;
+      right: 0;
+      bottom: 20px;
+      line-height: 24px;
+      color: var(--font-main-color);
+    }
+
+    .hotbar-scroll-button {
+      border: none;
+      box-shadow: none;
+      background: none;
+      color: white;
+    }
+
+    .hotbar-separator {
+      filter: blur(1px) drop-shadow(0 0 2px var(--colour-ui-secondary)) brightness(var(--animated-pulsate-glow));
     }
 
     .hotbar-button {
