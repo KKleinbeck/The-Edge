@@ -73,6 +73,7 @@ input:focus {
   box-shadow: 1px 0 5px var(--colour-ui-main-2), 0 1px 5px var(--colour-ui-main-2), -1px 0 5px var(--colour-ui-main-2), 0 -1px 5px var(--colour-ui-main-2);
 }
 input[type="checkbox"] {
+  box-shadow: none;
   background: none;
 }
 input[type="checkbox"]::before {

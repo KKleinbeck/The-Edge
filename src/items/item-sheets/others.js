@@ -126,7 +126,7 @@ export class ItemSheetSkill extends TheEdgeItemSheet {
     },
   };
 
-  _footerContent() {
+  async getCustomFooterBar() {
     let content = `
       <div style="width: 40%; white-space: nowrap">
         <input name="system.maxLevel" type="number" id="maxLevel" value="${this.item.system.maxLevel}"
@@ -256,8 +256,8 @@ export class ItemSheetConsumables extends TheEdgeItemSheet {
     },
   };
 
-  _footerContent() {
-    let content = super._footerContent();
+  async getCustomFooterBar() {
+    let content = super.getCustomFooterBar();
     content += `
       <select class="selection-box type-selection-hook" name="system.current_type"
         style="padding-left: 1px; padding-right: 1px;">`;
@@ -419,12 +419,9 @@ export class ItemSheetGear extends TheEdgeItemSheet {
 
 export class ItemSheetLanguage extends ItemSheetGear {
   // Inherit Gear as a minimal interface
-  _footerContent() {
-    return `
-      <div style="display: flex; gap: 5px; align-items: center; white-space: nowrap">
-        <label for="hasLevels">
-          ${LocalisationServer.localise("human spoken", "item")}
-        </label>
+  async getCustomFooterBar() {
+    return `<div style="display: flex; gap: 5px; align-items: center; white-space: nowrap">
+      <label for="hasLevels">${LocalisationServer.localise("human spoken", "item")}</label>
         <input type="checkbox" id="hasLevels" name="system.humanSpoken"
           ${this.item.system.humanSpoken ? "checked" : ""} />
       </div>`;
@@ -433,7 +430,7 @@ export class ItemSheetLanguage extends ItemSheetGear {
 
 export class ItemSheetVantage extends ItemSheetGear {
   // Inherit Gear as a minimal interface
-  _footerContent() {
+  async getCustomFooterBar() {
     return `
       <div style="display: flex; gap: 5px; align-items: center; white-space: nowrap">
         <input class="item-footer-input" type="number" name="system.AP" value="${this.item.system.AP}" data-dtype="Number" id="AP"/>

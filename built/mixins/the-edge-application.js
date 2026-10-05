@@ -31,6 +31,8 @@ export default function TheEdgeApplicationMixin(BaseApplication) {
             return frame;
         }
         setPosition(position) {
+            if (typeof position == "undefined")
+                return;
             const tep = this.options.theEdgeParameters;
             if ("width" in position && position.width < tep.minWidth)
                 position.width = tep.minWidth;

@@ -330,6 +330,9 @@
 }
 .the-edge-item-sheet {
   overflow: visible;
+  background: none;
+  border: none;
+  box-shadow: none;
 }
 .the-edge-item-sheet .item-header {
   overflow: visible;

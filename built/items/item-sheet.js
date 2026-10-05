@@ -2,10 +2,11 @@ import THE_EDGE from "../system/config-the-edge.js";
 import EffectModifierMixin from "../mixins/effect-modifier-mixin.js";
 import IconSelectorMixin from "../mixins/icon-selector-mixin.js";
 import LocalisationServer from "../system/localisation_server.js";
+import TheEdgeApplicationMixin from "../mixins/the-edge-application.js";
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ItemSheetV2 } = foundry.applications.sheets;
 const { renderTemplate } = foundry.applications.handlebars;
-export class TheEdgeItemSheet extends EffectModifierMixin(IconSelectorMixin(HandlebarsApplicationMixin(ItemSheetV2))) {
+export class TheEdgeItemSheet extends EffectModifierMixin(IconSelectorMixin(TheEdgeApplicationMixin(HandlebarsApplicationMixin(ItemSheetV2)))) {
     constructor(options) {
         super(options);
         this.headerWidth = 0;
@@ -16,25 +17,32 @@ export class TheEdgeItemSheet extends EffectModifierMixin(IconSelectorMixin(Hand
             this.definedEffects.dynamicModifiers = dynamicModifiers;
     }
     static DEFAULT_OPTIONS = {
-        position: {
-            width: 390,
-            height: 480,
-        },
-        form: {
-            submitOnChange: true,
-        },
-        classes: ["the-edge-item-sheet"],
         actions: {
             createModifier: TheEdgeItemSheet._createModifier,
             deleteModifier: TheEdgeItemSheet._deleteModifier,
         },
+        classes: ["the-edge-item-sheet"],
+        form: {
+            submitOnChange: true,
+        },
+        position: {
+            width: 390,
+            height: 480,
+        },
+        theEdgeParameters: {
+            minWidth: 390,
+            minHeight: 480
+        },
+        window: {
+            resizable: true
+        }
     };
     static PARTS = {
         form: {
             template: "templates/sheets/item-sheet.html",
         },
         tabs: {
-            template: "templates/generic/tab-navigation.hbs",
+            template: "systems/the_edge/templates/applications/the-edge-tab-navigation.hbs"
         },
         description: {
             template: "systems/the_edge/templates/items/meta-description.hbs",
@@ -50,39 +58,11 @@ export class TheEdgeItemSheet extends EffectModifierMixin(IconSelectorMixin(Hand
     get title() {
         return this.item.name;
     }
-    async _dynamicHeader(width, height) {
-        const lineLength = 0.3 * height;
-        const path = `
-      M0 ${height} V${lineLength} L${lineLength} 0
-      H${0.382 * width - 0.5 * lineLength} L${0.382 * width + 0.5 * lineLength} ${lineLength}
-      H${width} V${height}
-    `;
-        const template = "systems/the_edge/templates/items/layout-header.hbs";
-        const html = await renderTemplate(template, {
-            width: width,
-            height: height,
-            path: path,
-            name: this.item.name,
-            imgPath: this.item.img,
-        });
-        return html;
+    async getCustomHeaderBar() {
+        return `<input class="item-header-name" name="name" type="text"
+      value="${this.item.name}" placeholder="Name" style="width: 100%;"/>`;
     }
-    async _dynamicFooter(width, height) {
-        const lineLength = 0.5 * height;
-        const path = `
-      M0 0 H${0.32 * width - 0.5 * lineLength} L${0.32 * width + 0.5 * lineLength} ${lineLength}
-      H${width - lineLength} L${width} 0
-    `;
-        const template = "systems/the_edge/templates/items/layout-footer.hbs";
-        const html = await renderTemplate(template, {
-            width: width,
-            pathHeight: lineLength,
-            path: path,
-            content: this._footerContent(),
-        });
-        return html;
-    }
-    _footerContent() {
+    async getCustomFooterBar() {
         let content = "";
         if (this.item.system.weight !== undefined) {
             content += `
@@ -101,25 +81,6 @@ export class TheEdgeItemSheet extends EffectModifierMixin(IconSelectorMixin(Hand
       `;
         }
         return content;
-    }
-    async _renderFrame(options) {
-        const frame = await super._renderFrame(options);
-        // Add image to header and modify to custom class
-        const headers = frame.getElementsByClassName("window-header");
-        if (headers.length) {
-            headers[0].classList.add("item-header");
-        }
-        // Make title dynamic
-        const titles = frame.getElementsByClassName("window-title");
-        if (titles.length) {
-            titles[0].outerHTML = await this._dynamicHeader(0, 0);
-        }
-        // Make footer
-        const footer = document.createElement("div");
-        footer.classList.add("item-footer");
-        frame.appendChild(footer);
-        footer.outerHTML = await this._dynamicFooter(this.headerWidth, this.headerHeight);
-        return frame;
     }
     _attachFrameListeners() {
         super._attachFrameListeners();
@@ -151,12 +112,18 @@ export class TheEdgeItemSheet extends EffectModifierMixin(IconSelectorMixin(Hand
             this.headerWidth = Math.max(header.offsetWidth, this.headerWidth);
             // @ts-expect-error
             this.headerHeight = Math.max(header.offsetHeight, this.headerHeight);
-            header.outerHTML = await this._dynamicHeader(this.headerWidth, this.headerHeight);
+            // header.outerHTML = await this._dynamicHeader(
+            //   this.headerWidth,
+            //   this.headerHeight,
+            // );
         }
         const footers = this.element.getElementsByClassName("item-footer");
         if (footers.length) {
             const footer = footers[0];
-            footer.outerHTML = await this._dynamicFooter(this.headerWidth, this.headerHeight);
+            // footer.outerHTML = await this._dynamicFooter(
+            //   this.headerWidth,
+            //   this.headerHeight,
+            // );
         }
         this._attachAdditionalFrameListeners();
     }
