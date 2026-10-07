@@ -67,22 +67,43 @@
   justify-content: space-around;
 }
 .the-edge-application .the-edge-application-nav {
-  height: 24px;
+  height: 28px;
   border: none;
   display: flex;
-  justify-content: space-around;
-  align-items: end;
-  margin: 0;
+  align-items: start;
+  margin: 0 8px 8px 8px;
   gap: 10px;
   padding: 0 5px;
   font-size: 14px;
   color: #ccc;
+  gap: 0;
+}
+.the-edge-application .the-edge-application-nav::after {
+  content: "";
+  position: absolute;
+  position-anchor: --hovered-highlight;
+  border-radius: 6px;
+  inset: anchor(top) anchor(right) anchor(bottom) anchor(left);
+  box-shadow: 0 0 8px 0 white;
+  transition: all 0.2s linear;
+  pointer-events: none;
 }
 .the-edge-application .the-edge-application-nav .tab-element {
+  flex: 1;
+  height: 28px;
+  line-height: calc(28px - 8px);
+  box-shadow: inset 0 0 8px 0 rgba(3, 14, 35, 0.5);
   transition: all 0.4s ease-in-out;
 }
+.the-edge-application .the-edge-application-nav .tab-element:hover {
+  anchor-name: --hovered-highlight;
+}
 .the-edge-application .the-edge-application-nav .active {
-  transform: scale(1.3);
+  font-size: 18px;
   color: #e4e7fe;
   transition: all 0.4s 0.2s ease-in-out;
+  anchor-name: --hovered-highlight;
+}
+.the-edge-application .the-edge-application-nav:has(.tab-element:hover) .tab-element.active:not(:hover) {
+  anchor-name: none;
 }
