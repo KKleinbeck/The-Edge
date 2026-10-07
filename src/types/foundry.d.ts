@@ -261,6 +261,7 @@ declare class HandlebarsApplication {
   public setPosition(position: Record<string, any>);
 
   public _onRender(context: any, options: any): void;
+  public _prepareContext(options: any): Record<string, any>;
   public _prepareTabs(tab: string): undefined;
 }
 declare function HandlebarsApplicationMixin<T extends Constructor>(

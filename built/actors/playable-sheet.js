@@ -44,7 +44,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
         },
     };
     static PARTS = {
-        form: {
+        header: {
             template: "systems/the_edge/templates/actors/character/actor-header.hbs",
         },
         separator: {
@@ -68,6 +68,12 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
         biography: {
             template: "systems/the_edge/templates/actors/character/biography.hbs",
         },
+        separatorTabs: {
+            template: "systems/the_edge/templates/generic/separator-horizontal.hbs",
+        },
+        tabs: {
+            template: "systems/the_edge/templates/applications/the-edge-tab-navigation.hbs"
+        },
     };
     static TABS = {
         primary: {
@@ -84,11 +90,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
         },
     };
     async getCustomFooterBar() {
-        // @ts-expect-error
-        const tabs = this.constructor.TABS;
-        const template = "systems/the_edge/templates/applications/the-edge-tab-navigation.hbs";
-        const footer = await renderTemplate(template, tabs.primary);
-        return footer;
+        return "";
     }
     async _prepareContext(options) {
         const context = await super._prepareContext(options);

@@ -5,6 +5,8 @@ export const REPLACEMENTS = {
 export const preloadHandlebarsTemplates = async function () {
     // Define template paths to load
     const templatePaths = [
+        // The Edge Application
+        "systems/the_edge/templates/applications/the-edge-tab-navigation.hbs",
         // Actor templates
         // Generics
         "systems/the_edge/templates/actors/skills.hbs",

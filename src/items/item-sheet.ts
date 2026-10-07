@@ -49,14 +49,20 @@ export class TheEdgeItemSheet extends EffectModifierMixin(IconSelectorMixin(
   };
 
   static PARTS = {
-    form: {
+    header: {
       template: "templates/sheets/item-sheet.html",
     },
-    tabs: {
-      template: "systems/the_edge/templates/applications/the-edge-tab-navigation.hbs"
+    separatorHeader: {
+      template: "systems/the_edge/templates/generic/separator-horizontal.hbs",
     },
     description: {
       template: "systems/the_edge/templates/items/meta-description.hbs",
+    },
+    separatorTabs: {
+      template: "systems/the_edge/templates/generic/separator-horizontal.hbs",
+    },
+    tabs: {
+      template: "systems/the_edge/templates/applications/the-edge-tab-navigation.hbs"
     },
   };
 

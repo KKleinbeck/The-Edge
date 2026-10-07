@@ -14,18 +14,25 @@ export default class ItemSheetWeapon extends EmbeddedSkillMixin(CounterMixin(Ran
             addFiringMode: ItemSheetWeapon._addFiringMode,
             deleteFiringMode: ItemSheetWeapon._deleteFiringMode,
         },
+        position: {
+            width: 390,
+            height: 630,
+        },
     };
     static PARTS = {
-        ...TheEdgeItemSheet.PARTS,
-        form: {
+        header: {
             template: `systems/the_edge/templates/items/Weapon-header.hbs`,
         },
+        separatorHeader: TheEdgeItemSheet.PARTS.separatorHeader,
         effects: {
             template: "systems/the_edge/templates/items/meta-effects-counters-skills.hbs",
         },
         details: {
             template: "systems/the_edge/templates/items/Weapon-details.hbs",
         },
+        description: TheEdgeItemSheet.PARTS.description,
+        separatorTabs: TheEdgeItemSheet.PARTS.separatorTabs,
+        tabs: TheEdgeItemSheet.PARTS.tabs,
     };
     static TABS = {
         primary: {
