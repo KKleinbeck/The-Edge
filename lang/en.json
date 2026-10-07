@@ -480,6 +480,8 @@
 
     "ILLICIT EVENT": "Cannot execute the event. Did you define `onEvent`?",
 
+    "INVALID DAMAGE FORMULA": "Tried setting weapon's damage to '{formula}', which is not a proper dice formula.",
+
     "MAX LEVEL": "{name} is already at it's max level.",
 
     "GAIN": "Gain {gain} PH",

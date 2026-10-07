@@ -27,7 +27,7 @@ export default function TheEdgeApplicationMixin<T extends intype>(
     async _renderFrame(options) {
       const document = (options.window?.host ?? window).document;
       const frame = document.createElement(this.options.tag);
-      frame.id = `app-${options.uniqueId ?? 0}`;
+      frame.id = this.id;
       if ( this.options.classes.length ) frame.className = this.options.classes.join(" ");
 
       const { renderTemplate } = foundry.applications.handlebars;

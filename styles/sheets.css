@@ -386,14 +386,7 @@
   flex-wrap: wrap;
   justify-content: flex-start;
 }
-.the-edge-item-sheet .item-footer {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  overflow: visible;
-  width: 100%;
-}
-.the-edge-item-sheet .item-footer .item-footer-content {
+.the-edge-item-sheet .item-footer-content {
   position: absolute;
   left: 35%;
   right: 6%;
@@ -405,12 +398,12 @@
   align-items: center;
   gap: 10px;
 }
-.the-edge-item-sheet .item-footer .item-footer-content-entry {
+.the-edge-item-sheet .item-footer-content-entry {
   display: flex;
   align-items: center;
   gap: 5px;
 }
-.the-edge-item-sheet .item-footer .item-footer-input {
+.the-edge-item-sheet .item-footer-input {
   width: 50px;
   text-align: right;
 }

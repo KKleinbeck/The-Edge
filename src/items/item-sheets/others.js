@@ -257,7 +257,7 @@ export class ItemSheetConsumables extends TheEdgeItemSheet {
   };
 
   async getCustomFooterBar() {
-    let content = super.getCustomFooterBar();
+    let content = await super.getCustomFooterBar();
     content += `
       <select class="selection-box type-selection-hook" name="system.current_type"
         style="padding-left: 1px; padding-right: 1px;">`;

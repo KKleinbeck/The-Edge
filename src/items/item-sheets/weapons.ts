@@ -1,6 +1,7 @@
 import CounterMixin from "../../mixins/counter-mixin.js";
 import EmbeddedSkillMixin from "../../mixins/embedded-skills-mixin.js";
 import LocalisationServer from "../../system/localisation_server.js";
+import NotificationServer from "../../system/notifications.js";
 import RangeChartSelectorMixin from "../../mixins/range-chart-selector-mixin.js";
 import THE_EDGE from "../../system/config-the-edge.js";
 
@@ -156,8 +157,13 @@ export default class ItemSheetWeapon extends EmbeddedSkillMixin(
     if (field.includes("precisionPenalty")) {
       const penaltyIndex = +field.slice(-1);
       fireModes[+index].precisionPenalty[penaltyIndex] = +target.value;
-    } else if (field === "name" || field === "damage") {
+    } else if (field === "name") {
       fireModes[+index][field] = target.value;
+    } else if (field === "damage") {
+      if (Roll.validate(target.value)) fireModes[+index][field] = target.value;
+      else {
+        NotificationServer.error({id: "Invalid Damage Formula", details: {formula: target.value}});
+      }
     } else {
       fireModes[+index][field] = +target.value;
     }
