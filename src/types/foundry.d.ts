@@ -168,6 +168,7 @@ declare class ItemSheetV2 {
   constructor(args: foundryAny);
   public document: Item;
   public item: Item;
+  public tabGroups: Record<string, any>
 
   protected _attachFrameListeners(): void; // Check whether this is ever called
   protected _prepareContext(options: any): Promise<foundryAny>;

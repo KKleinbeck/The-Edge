@@ -1,12 +1,10 @@
 import { TheEdgeItemSheet } from "../item-sheet.js";
-import {
-  ItemSheetAmmunition,
-  ItemSheetConsumables,
-  ItemSheetGear,
-  ItemSheetLanguage,
-  ItemSheetSkill,
-  ItemSheetVantage,
-} from "./others.js";
+import { ItemSheetAmmunition } from "./ammunition.js";
+import { ItemSheetConsumables } from "./consumables.js";
+import { ItemSheetGear } from "./gear.js";
+import { ItemSheetLanguage } from "./language.js";
+import { ItemSheetSkill } from "./skills.js";
+import { ItemSheetVantage } from "./vantage.js";
 import { ItemSheetArmour } from "./armour.js";
 import ItemSheetWeapon from "./weapons.js";
 

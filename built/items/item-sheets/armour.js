@@ -14,9 +14,11 @@ export class ItemSheetArmour extends EmbeddedSkillMixin(CounterMixin(TheEdgeItem
         },
     };
     static PARTS = {
-        ...TheEdgeItemSheet.PARTS,
-        form: {
+        header: {
             template: `systems/the_edge/templates/items/Armour-header.hbs`,
+        },
+        separatorHeader: {
+            template: "systems/the_edge/templates/generic/separator-horizontal.hbs",
         },
         effects: {
             template: "systems/the_edge/templates/items/meta-effects-counters-skills.hbs",
@@ -26,6 +28,15 @@ export class ItemSheetArmour extends EmbeddedSkillMixin(CounterMixin(TheEdgeItem
         },
         attachments: {
             template: "systems/the_edge/templates/items/meta-attachments.hbs",
+        },
+        description: {
+            template: "systems/the_edge/templates/items/meta-description.hbs",
+        },
+        separatorTabs: {
+            template: "systems/the_edge/templates/generic/separator-horizontal.hbs",
+        },
+        tabs: {
+            template: "systems/the_edge/templates/applications/the-edge-tab-navigation.hbs"
         },
     };
     static TABS = {

@@ -28,20 +28,28 @@ export default class ItemSheetWeapon extends EmbeddedSkillMixin(
     },
   };
 
-  static PARTS = {
+  static PARTS = {    // header: {
     header: {
       template: `systems/the_edge/templates/items/Weapon-header.hbs`,
     },
-    separatorHeader: TheEdgeItemSheet.PARTS.separatorHeader,
+    separatorHeader: {
+      template: "systems/the_edge/templates/generic/separator-horizontal.hbs",
+    },
     effects: {
       template: "systems/the_edge/templates/items/meta-effects-counters-skills.hbs",
     },
     details: {
       template: "systems/the_edge/templates/items/Weapon-details.hbs",
     },
-    description: TheEdgeItemSheet.PARTS.description,
-    separatorTabs: TheEdgeItemSheet.PARTS.separatorTabs,
-    tabs: TheEdgeItemSheet.PARTS.tabs,
+    description: {
+      template: "systems/the_edge/templates/items/meta-description.hbs",
+    },
+    separatorTabs: {
+      template: "systems/the_edge/templates/generic/separator-horizontal.hbs",
+    },
+    tabs: {
+      template: "systems/the_edge/templates/applications/the-edge-tab-navigation.hbs"
+    }
   };
 
   static TABS = {

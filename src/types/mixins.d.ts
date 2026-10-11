@@ -1,6 +1,7 @@
 // ----------------------------------------
 // Effect Modifier
 declare class EffectModifier {
+  attachEffectListeners(): void
   getModifiers(_target: Element): IModifiersAndContext;
   updateModifiers(
     modifiers: IModifier[],
@@ -31,7 +32,7 @@ declare class IconSelector {
   updateIcons(
     iconType: string,
     details: Record<string, IIconSelected>,
-    dynamicValue: string,
+    dynamicValue?: string,
   );
 }
 

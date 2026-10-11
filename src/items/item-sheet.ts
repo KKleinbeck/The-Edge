@@ -48,24 +48,6 @@ export class TheEdgeItemSheet extends EffectModifierMixin(IconSelectorMixin(
     }
   };
 
-  static PARTS = {
-    header: {
-      template: "templates/sheets/item-sheet.html",
-    },
-    separatorHeader: {
-      template: "systems/the_edge/templates/generic/separator-horizontal.hbs",
-    },
-    description: {
-      template: "systems/the_edge/templates/items/meta-description.hbs",
-    },
-    separatorTabs: {
-      template: "systems/the_edge/templates/generic/separator-horizontal.hbs",
-    },
-    tabs: {
-      template: "systems/the_edge/templates/applications/the-edge-tab-navigation.hbs"
-    },
-  };
-
   static TABS = {
     primary: {
       tabs: [{ id: "description" }],
@@ -201,7 +183,7 @@ export class TheEdgeItemSheet extends EffectModifierMixin(IconSelectorMixin(
     return context;
   }
 
-  getModifiers(_target) {
+  getModifiers(_target): IModifiersAndContext {
     return { modifiers: this.item.system.effect, context: {} };
   }
 
