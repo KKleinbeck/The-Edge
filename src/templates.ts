@@ -53,6 +53,7 @@ export const preloadHandlebarsTemplates = async function () {
     "systems/the_edge/templates/items/meta-counters.hbs",
     "systems/the_edge/templates/items/meta-effects.hbs",
     "systems/the_edge/templates/items/meta-embedded-skills.hbs",
+    "systems/the_edge/templates/items/Skill-header.hbs",
 
     // Chat templates
     "systems/the_edge/templates/chat/items/meta-effects.hbs",

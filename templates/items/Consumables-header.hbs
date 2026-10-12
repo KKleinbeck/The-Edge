@@ -1,4 +1,33 @@
-<header class="item-sheet-header" style="{{#if smallHeader}}flex: 0 0 56px;{{/if}}">
+<header class="item-sheet-header" style="flex: 0 0 {{uiConsumablesHeaderHeight item.system.current_type}}px;">
+  {{!-- Selector bar --}}
+  <div style="width: 100%; display: flex; justify-content: space-between;">
+    {{#if (checkEqual item.system.current_type "food")}}
+      <div style="display: flex; width: 100%; gap: 5px;">
+        <label for="strainReduction">{{itemName "Strain Reduction"}}</label>
+        <input type="text" id="strainReduction"
+          name="system.subtypes.food.strainReduction" value="{{item.system.subtypes.food.strainReduction}}"
+          style="width: 90px; text-align: center;">
+      </div>
+    {{/if}}
+    {{#if (checkEqual item.system.current_type "grenade")}}
+      <div style="display: flex; width: 100%; gap: 5px;">
+        <label for="grenadeDAmageType">{{genName "Damage type"}}</label>
+        <select class="selection-box" name="system.subtypes.grenade.type" id="grenadeDamageType" style="width: 120px; text-align: right;">
+          {{#each helpers.damageTypes as |type|}}
+            <option value="{{type}}" {{#if (checkEqual ../item.system.subtypes.grenade.type type)}}selected{{/if}}>{{combatName type}}</option>
+          {{/each}}
+        </select>
+      </div>
+    {{/if}}
+    <select class="selection-box type-selection-hook" name="system.current_type" style="width: 35%; margin-left: auto;">
+      {{#each item.system.subtypes as |_ subtype|}}
+        <option value="{{subtype}}" {{#if (checkEqual subtype ../item.system.current_type)}}selected{{/if}}>
+          {{itemName subtype}}
+        </option>
+      {{/each}}
+    </select>
+  </div>
+
   {{#if (checkEqual item.system.current_type "grenade")}}
     <div class="item-columned-page" style="gap: 15px;">
       <table class="grenade">
@@ -19,31 +48,7 @@
             <td><input type="text" style="text-align: right;" name="system.subtypes.grenade.damage" value="{{damage}}"/></td>
           {{/each}}
         </tr>
-        <tr>
-          <td>{{genName "Damage type"}}</td>
-          <td colspan="2">
-            <select class="selection-box" name="system.subtypes.grenade.type" id="Grenade Damage Type Selector" style="text-align: right;">
-              {{#each helpers.damageTypes as |type|}}
-                <option value="{{type}}" {{#if (checkEqual ../item.system.subtypes.grenade.type type)}}selected{{/if}}>{{combatName type}}</option>
-              {{/each}}
-            </select>
-          </td>
-        </tr>
       </table>
-      <div style="display: flex; flex-direction: column; justify-content: space-between; margin: 5px 5px 0 0; height: 90%">
-        {{#each grenadeEffects as |value effect|}}
-          <div style="display: flex; gap: 5px; align-items: center;">
-            <div class="icon-selector-outer">
-              <a class="icon-selector {{#if value.selected}}icon-selector-selected{{/if}}"
-                data-action="iconSelectorClicked" data-icon-type="grenadeEffect" data-value="{{effect}}"
-                data-tooltip="{{tooltipText effect}}">
-                <i class="fa-{{value.render}} fa-{{value.icon}}" style="color: black;"></i>
-              </a>
-            </div>
-          </div>
-        {{/each}}
-        </select>
-      </div>
     </div> 
   {{/if}}
   {{#if (checkEqual item.system.current_type "medicine")}}
@@ -73,13 +78,5 @@
         </select>
       </div>
     </div> 
-  {{/if}}
-  {{#if (checkEqual item.system.current_type "food")}}
-    <div style="display: flex; width: 100%; gap: 5px; justify-content: center; align-items:center;">
-      <label for="strainReduction">{{itemName "Strain Reduction"}}</label>
-      <input type="text" id="strainReduction"
-        name="system.subtypes.food.strainReduction" value="{{item.system.subtypes.food.strainReduction}}"
-        style="width: 90px; text-align: center;">
-    </div>
   {{/if}}
 </header>

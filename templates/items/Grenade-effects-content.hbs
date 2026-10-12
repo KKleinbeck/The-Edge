@@ -1,6 +1,7 @@
 {{#each item.system.subtypes.grenade.effects as |effectGroups category|}}
   {{#unless (checkEqual category "smoke")}}
   {{#if effectGroups.active}}
+    <hr />
     <h4>{{combatName category}}</h4>
     {{#each effectGroups as |modifiers distance|}}
       {{#unless (checkEqual distance "active")}}
@@ -15,7 +16,6 @@
         </div>
       {{/unless}}
       {{#unless @last}}
-        <hr />
       {{/unless}}
     {{/each}}
   {{/if}}

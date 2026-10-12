@@ -36,21 +36,6 @@ export class ItemSheetConsumables extends TheEdgeItemSheet {
             initial: "description",
         },
     };
-    async getCustomFooterBar() {
-        let content = await super.getCustomFooterBar();
-        content += `
-      <select class="selection-box type-selection-hook" name="system.current_type"
-        style="padding-left: 1px; padding-right: 1px;">`;
-        for (const typeName of Object.keys(this.item.system.subtypes)) {
-            const selected = this.item.system.current_type == typeName ? "selected" : "";
-            content += `
-        <option value="${typeName}" ${selected}>
-          ${LocalisationServer.localise(typeName, "Item")}
-        </option>`;
-        }
-        content += `</select>`;
-        return content;
-    }
     async render(options = {}, _options = {}) {
         const ctor = this.constructor;
         // Disable effects for generic
@@ -75,20 +60,6 @@ export class ItemSheetConsumables extends TheEdgeItemSheet {
             ctor.PARTS.effects.template =
                 "systems/the_edge/templates/items/meta-effects.hbs";
         }
-        // Remove non necessary headers
-        switch (this.item.system.current_type) {
-            case "drugs":
-            case "generic":
-                ctor.PARTS.header.template =
-                    "systems/the_edge/templates/items/meta-no-header.hbs";
-                break;
-            case "food":
-            case "grenade":
-            case "medicine":
-                ctor.PARTS.header.template =
-                    "systems/the_edge/templates/items/Consumables-header.hbs";
-                break;
-        }
         return super.render(options, _options);
     }
     async _prepareContext(options) {
@@ -99,7 +70,6 @@ export class ItemSheetConsumables extends TheEdgeItemSheet {
             displayHint: this.options.displayHint,
             damageTypes: THE_EDGE.combat_damage_types,
         };
-        context.smallHeader = ["medicine", "food"].includes(this.item.system.current_type);
         return context;
     }
     getModifiers(target) {
@@ -151,7 +121,7 @@ export class ItemSheetConsumables extends TheEdgeItemSheet {
     async _drawGrenadeEffects() {
         const template = "systems/the_edge/templates/items/Grenade-effects-content.hbs";
         const html = await renderTemplate(template, await this._prepareContext());
-        const grenadeEffectsHTML = this.element.querySelector(".grenade-effects");
+        const grenadeEffectsHTML = this.element.querySelector(".grenade-effects-hook");
         if (!grenadeEffectsHTML)
             return;
         grenadeEffectsHTML.innerHTML = html;

@@ -15,8 +15,12 @@ export default class ItemSheetWeapon extends EmbeddedSkillMixin(CounterMixin(Ran
             deleteFiringMode: ItemSheetWeapon._deleteFiringMode,
         },
         position: {
-            width: 390,
-            height: 630,
+            width: 490,
+            height: 790,
+        },
+        theEdgeParameters: {
+            minWidth: 490,
+            minHeight: 790
         },
     };
     static PARTS = {

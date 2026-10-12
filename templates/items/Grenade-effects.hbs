@@ -1,8 +1,22 @@
 <section
-  class="tab {{tabs.effects.cssClass}} grenade-effects"
+  class="tab {{tabs.effects.cssClass}}"
   data-group="primary"
   data-tab="effects"
   style="overflow-y: auto; overflow-x: hidden"
 >
-  {{> systems/the_edge/templates/items/Grenade-effects-content.hbs}}
+  <div style="width: 100%; display: flex; justify-content: space-around; margin-top: 3px;">
+    {{#each grenadeEffects as |value effect|}}
+      <div class="icon-selector-outer">
+        <a class="icon-selector {{#if value.selected}}icon-selector-selected{{/if}}"
+          data-action="iconSelectorClicked" data-icon-type="grenadeEffect" data-value="{{effect}}"
+          data-tooltip="{{tooltipText effect}}">
+          <i class="fa-{{value.render}} fa-{{value.icon}}" style="color: black;"></i>
+        </a>
+      </div>
+    {{/each}}
+  </div>
+
+  <div class="grenade-effects-hook">
+    {{> systems/the_edge/templates/items/Grenade-effects-content.hbs}}
+  </div>
 </section>

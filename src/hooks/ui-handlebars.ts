@@ -54,5 +54,11 @@ export default function () {
         </div>
       `;
     },
+    uiConsumablesHeaderHeight: (type: string): number => {
+      console.log(type)
+      if (type === "drugs" || type === "food" || type === "generic") return 29;
+      if (type === "medicine") return 80;
+      return 112;
+    }
   });
 }

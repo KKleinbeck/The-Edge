@@ -9,12 +9,6 @@ export class ItemSheetSkill extends TheEdgeItemSheet {
         },
     };
     static PARTS = {
-        header: {
-            template: `systems/the_edge/templates/items/Skill-header.hbs`,
-        },
-        separatorHeader: {
-            template: "systems/the_edge/templates/generic/separator-horizontal.hbs",
-        },
         details: {
             template: `systems/the_edge/templates/items/Skill-details.hbs`,
         },
@@ -37,13 +31,12 @@ export class ItemSheetSkill extends TheEdgeItemSheet {
     };
     async getCustomFooterBar() {
         let content = `
-      <div style="width: 40%; white-space: nowrap">
-        <input name="system.maxLevel" type="number" id="maxLevel" value="${this.item.system.maxLevel}"
-          style="text-align: right; width: 35%;"/>
+      <div class="item-footer-content-entry">
+        <input class="item-footer-input" name="system.maxLevel" type="number" id="maxLevel" value="${this.item.system.maxLevel}"/>
         <label for="maxLevel" style="display: inline-block;">${LocalisationServer.localise("Levels")}</label>
       </div>
-      <div class="display: flex; gap: 3px; width: 50%; white-space: nowrap">
-        <input type="text" id="cost" name="system.cost" value="${this.item.system.cost}" style="text-align: right; width: 80%"/>
+      <div class="item-footer-content-entry">
+        <input class="item-footer-input" type="text" id="cost" name="system.cost" value="${this.item.system.cost}"/>
         <label for="cost" data-tooltip="${LocalisationServer.localise("PH Cost")}">
           ${LocalisationServer.localise("PH")}
         </label>

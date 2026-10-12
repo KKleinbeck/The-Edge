@@ -1,9 +1,9 @@
-<header class="item-sheet-header" style="flex: 0 0 24px;">
+<header class="item-sheet-header" style="flex: 0 0 24px; margin-top: 6px;">
   <div style="display: flex; align-items: center; gap: 10px; width: 100%">
   {{#if (checkIn "strainCost" item.system)}}
+    <input type="text" id="hrCost" name="system.strainCost" value="{{item.system.strainCost}}" style="text-align: right; width: 50%"/>
     <label for="hrCost" style="white-space: nowrap;">{{genName "Strain Cost"}}</label>
-    <input type="text" id="hrCost" name="system.strainCost" value="{{item.system.strainCost}}" style="text-align: right;"/>
-    {{!-- Change input to dynamic width --}}
+    {{!-- TODO Change input to dynamic width --}}
   {{/if}}
   {{#if (checkIn "basis" item.system)}}
     <label for="basis" style="white-space: nowrap; padding-left: 10px;">{{genName "Uses"}}</label>

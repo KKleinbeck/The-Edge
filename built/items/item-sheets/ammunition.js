@@ -3,6 +3,17 @@ import THE_EDGE from "../../system/config-the-edge.js";
 import { TheEdgeItemSheet } from "../item-sheet.js";
 const { renderTemplate } = foundry.applications.handlebars;
 export class ItemSheetAmmunition extends RangeChartSelectorMixin(TheEdgeItemSheet) {
+    static DEFAULT_OPTIONS = {
+        ...TheEdgeItemSheet.DEFAULT_OPTIONS,
+        position: {
+            width: 490,
+            height: 540,
+        },
+        theEdgeParameters: {
+            minWidth: 490,
+            minHeight: 540
+        },
+    };
     static PARTS = {
         header: {
             template: `systems/the_edge/templates/items/Ammunition-header.hbs`,

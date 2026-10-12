@@ -4,6 +4,9 @@
   data-tab="details"
   style="overflow-y: auto; overflow-x: hidden"
 >
+  {{> systems/the_edge/templates/items/Skill-header.hbs}}
+  {{> systems/the_edge/templates/generic/separator-horizontal.hbs}}
+  
   <h3>{{genName "Effects"}}</h3>
   {{#each item.system.effects as |modifiers|}}
     <div class="effect-modifiers-hook" data-type="effects" data-index="{{@index}}"
