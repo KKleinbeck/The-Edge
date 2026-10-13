@@ -76,6 +76,7 @@
 }
 .system-the_edge .progress-wrapper {
   max-width: 100%;
+  max-height: 100%;
   aspect-ratio: 3;
 }
 .system-the_edge .progress-fill-animation {
