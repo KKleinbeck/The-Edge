@@ -149,10 +149,13 @@ table .chat-table td {
   vertical-align: middle;
 }
 .window-app {
-  color: var(--font-main-color) !important;
+  color: var(--font-main-color);
 }
 .window-content {
-  color: var(--font-main-color) !important;
+  color: var(--font-main-color);
+}
+.window-title {
+  text-overflow: ellipsis;
 }
 .journal-entry-content {
   background-image: url("../assets/background.png") !important;
