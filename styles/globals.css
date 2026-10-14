@@ -200,6 +200,18 @@ table .chat-table td {
   max-height: none;
   white-space: pre-wrap;
 }
+prose-mirror {
+  margin: 0 2px;
+}
+prose-mirror.inactive {
+  border: solid 1px var(--colour-ui-secondary);
+  border-radius: 5px;
+  background-color: var(--colour-ui-main-background-1);
+  box-shadow: 0 0 4px var(--colour-ui-secondary), inset 0 0 6px var(--colour-ui-main-background-1);
+}
+.prosemirror menu {
+  background: none;
+}
 .prosemirror menu button:hover,
 .prosemirror menu button.active {
   background-color: var(--colour-ui-main-background-2);

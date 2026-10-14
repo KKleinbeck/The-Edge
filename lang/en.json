@@ -234,8 +234,8 @@
     "SPRINT": "Sprint",
     "STRIDE": "Stride",
 
-    "DESCRIPTION ENERGY": "<div class=\"output bold\" style=\"width: fit-content;\">{name}</div>: Fires <div class=\"output\" style=\"width: 15px;\">{nDie}</div> shots, using <div class=\"output\" style=\"width: 15px;\">{cost}</div> energy, with precision <div class=\"output\" style=\"width: 30px;\">{precisionPenalty}</div>",
-    "DESCRIPTION KINETIC": "<div class=\"output bold\" style=\"width: fit-content;\">{name}</div>: Fires <div class=\"output\" style=\"width: 15px;\">{nDie}</div> shots, with precision <div class=\"output\" style=\"width: 30px;\">{precisionPenalty}</div>"
+    "DESCRIPTION ENERGY": "<h6 class=\"output\" style=\"width: fit-content;\">{name}</h6>: Fires <div class=\"output\" style=\"width: 15px;\">{nDie}</div> shots, using <div class=\"output\" style=\"width: 15px;\">{cost}</div> energy, with precision <div class=\"output\" style=\"width: 30px;\">{precisionPenalty}</div>",
+    "DESCRIPTION KINETIC": "<h6 class=\"output\" style=\"width: fit-content;\">{name}</h6>: Fires <div class=\"output\" style=\"width: 15px;\">{nDie}</div> shots, with precision <div class=\"output\" style=\"width: 30px;\">{precisionPenalty}</div>"
   },
   "CRIT FAIL EVENT": {
     "SPONTANEOUS DISCHARGE": "Weapon Spontaneously discharges and fires again with the currently selected fire mode.<br />Perform a Crd check:<br /> - QL 0 - 3: The shot hits a random structure within a 90deg arc infront of you.<br /> - QL > 3: Perform another attack modified -8+QL against your last target. - FL < 0: Attack a random creature within 20m and a 90deg arch infront of you, with modifier -FL.",
@@ -570,14 +570,6 @@
     "INIT FORMULA NAME": "Initiative Formula",
     "INIT FORMULA HINT": "Enter an initiative formula, such as d20+d@attributes.str.value"
   },
-  "SIMPLE": {
-    "NotifyGroupDuplicate": "Attribute group already exists.",
-    "NotifyGroupAttrDuplicate": "Attribute group already exists as an attribute.",
-    "NotifyGroupAlphanumeric": "Attribute group names may not contain spaces or periods.",
-    "NotifyGroupReserved": "Attribute group \"{key}\" is reserved and cannot be used.",
-    "NotifyAttrDuplicate": "Attribute key already exists as a group.",
-    "NotifyAttrInvalid": "Attribute keys may not contain spaces or periods."
-  },
   "SKILL": {
     "DECREASE": "Decrease skill level",
     "INCREASE": "Increase skill level",
@@ -628,7 +620,9 @@
 
     "STRIDE SPEED": "Min(5 + Spd/6, 75% foc)",
     "RUN SPEED": "Min(7 + Spd/3, 125% Foc)",
-    "SPRINT SPEED": "Min(8 + Spd/1.5, 175% Foc)"
+    "SPRINT SPEED": "Min(8 + Spd/1.5, 175% Foc)",
+
+    "TOGGLE CONTROLS": "Toggle controls"
   },
   "ACTION COST": "Action cost",
   "ACTION": "Action",

@@ -9,9 +9,4 @@ export class ItemSheetGear extends TheEdgeItemSheet {
             template: "systems/the_edge/templates/items/meta-description.hbs",
         },
     };
-    async _prepareContext(options) {
-        const context = await super._prepareContext(options);
-        context.userIsGM = false; // Prevent GM notes on credits
-        return context;
-    }
 }
