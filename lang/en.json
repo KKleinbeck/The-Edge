@@ -234,8 +234,8 @@
     "SPRINT": "Sprint",
     "STRIDE": "Stride",
 
-    "DESCRIPTION ENERGY": "<div class=\"output\" style=\"width: fit-content;\">{name}</div>: Fires <div class=\"output\" style=\"width: 15px;\">{nDie}</div> shots, using <div class=\"output\" style=\"width: 15px;\">{cost}</div> energy, with precision <div class=\"output\" style=\"width: 30px;\">{precisionPenalty}</div>",
-    "DESCRIPTION KINETIC": "<div class=\"output\" style=\"width: fit-content;\">{name}</div>: Fires <div class=\"output\" style=\"width: 15px;\">{nDie}</div> shots, with precision <div class=\"output\" style=\"width: 30px;\">{precisionPenalty}</div>"
+    "DESCRIPTION ENERGY": "<div class=\"output bold\" style=\"width: fit-content;\">{name}</div>: Fires <div class=\"output\" style=\"width: 15px;\">{nDie}</div> shots, using <div class=\"output\" style=\"width: 15px;\">{cost}</div> energy, with precision <div class=\"output\" style=\"width: 30px;\">{precisionPenalty}</div>",
+    "DESCRIPTION KINETIC": "<div class=\"output bold\" style=\"width: fit-content;\">{name}</div>: Fires <div class=\"output\" style=\"width: 15px;\">{nDie}</div> shots, with precision <div class=\"output\" style=\"width: 30px;\">{precisionPenalty}</div>"
   },
   "CRIT FAIL EVENT": {
     "SPONTANEOUS DISCHARGE": "Weapon Spontaneously discharges and fires again with the currently selected fire mode.<br />Perform a Crd check:<br /> - QL 0 - 3: The shot hits a random structure within a 90deg arc infront of you.<br /> - QL > 3: Perform another attack modified -8+QL against your last target. - FL < 0: Attack a random creature within 20m and a 90deg arch infront of you, with modifier -FL.",
