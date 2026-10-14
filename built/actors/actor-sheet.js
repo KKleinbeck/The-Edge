@@ -30,7 +30,7 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(TheEdgeA
         },
         position: {
             width: 780,
-            height: 900,
+            height: 930,
         },
         tag: "form",
         theEdgeParameters: {

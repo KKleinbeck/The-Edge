@@ -74,25 +74,4 @@
       {{/each}}
     </ol>
   {{/each}}
-  <div class="title">{{itemName "Others"}}</div>
-  <div style="display: flex; justify-content: space-between;">
-    <div style="display: flex; gap: 20px;">
-      {{genName "Credits"}}
-      <div style="max-width: 30%;">
-        <input type="Number" id="Chids" style="width: 70%; text-align: right;" name="system.credits.chids" value="{{system.credits.chids}}"/>
-        <lavel for="Chids">Chids</lavel>
-      </div>
-      <div style="max-width: 30%;">
-        <input type="Number" id="Chids" style="width: 70%; text-align: right;" name="system.credits.digital" value="{{system.credits.digital}}"/>
-        <lavel for="Chids">{{genName "digital"}}</lavel>
-      </div>
-    </div>
-    <div style="display: flex; gap: 20px; align-items: center; padding-right: 15px;">
-      {{genName "Weight"}}
-      <div>{{round helpers.weight 2}}</div>
-      <div style="white-space: nowrap;" title="{{getNextWeightClass helpers.weightTillNextOverload}}">
-        ({{effectName "Overload"}}: {{helpers.overloadLevel}})
-      </div>
-    </div>
-  </div>
 </section>

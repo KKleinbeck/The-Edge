@@ -106,7 +106,52 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   };
 
   async getCustomFooterBar(): Promise<string> {
-    return ""
+    if (this.tabGroups.primary == "items") return this._footerItems();
+    return this._footerPracticeHours();
+  }
+
+  _footerPracticeHours(): string {
+    var footer = `<div style="display: flex; gap: 15px; align-items: end;">
+      <div>
+        ${LocalisationServer.localise("PracticeHours")}
+      </div>
+      <div>
+        <div style="text-align: center;"><b>${LocalisationServer.localise("used")}</b></div>
+        <div class="output" style="width: 80px;">${this.actor.system.PracticeHours.used}</div>
+      </div>
+      <div>
+        <div style="text-align: center;"><b>${LocalisationServer.localise("used")}</b></div>
+    `
+    if (game.user.isGM) {
+      footer += `<input style="width: 80px; text-align: center;"
+        value="${this.actor.system.PracticeHours.max}" name="system.PracticeHours.max" type="number">`;
+    } else {
+      footer += `<span class="output" style="width: 80px;">${this.actor.system.PracticeHours.max}</span>`;
+    }
+    footer += `</div></div>`
+    return footer;
+  }
+
+  _footerItems(): string {
+    const weightTillNextOverload = this.actor.system.weightTillNextOverload;
+
+    var footer = `
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      ${LocalisationServer.localise("Credits")}
+      <div style="max-width: 30%;">
+        <input type="Number" id="Chids" style="width: 70%; text-align: right;" name="system.credits.chids"
+          value="${this.actor.system.credits.chids}"/>
+      </div>
+      <div style="display: flex; gap: 20px; align-items: center; padding-right: 15px;">
+        <div>${LocalisationServer.localise("Weight")}: ${this.actor.itemWeight.toFixed(1)} kg</div>
+        <div style="white-space: nowrap; text-align: right;">
+          <div>${LocalisationServer.localise("Overload", "Effect_Group")}: ${this.actor.system.overloadLevel}</div>
+          <div>${weightTillNextOverload.toFixed(0)}kg ${LocalisationServer.localise("to next level")}</div>
+        </div>
+      </div>
+    </div>
+    `
+    return footer;
   }
 
   async _prepareContext(options) {
@@ -154,8 +199,6 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       (a: Item) => a.system.equipped,
     );
 
-    const weight = this.actor.itemWeight;
-
     context.helpers = {
       armourProtection: armourProtection,
       equippedWeapons: equippedWeapons,
@@ -173,9 +216,6 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
         ),
       },
       itemTypes: ["Weapon", "Armour", "Ammunition", "Gear", "Consumables"],
-      weight: weight,
-      overloadLevel: this.actor.system.overloadLevel,
-      weightTillNextOverload: this.actor.system.weightTillNextOverload,
     };
 
     context.effectDict = {
@@ -193,6 +233,14 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     context.tabs = this._prepareTabs("primary");
     return context;
   }
+
+  async changeTab(tab: string, group: string, options: Record<string, any>) {
+    const result = super.changeTab(tab, group, options);
+    const footer = await this.getCustomFooterBar();
+    this.element.querySelector(".custom-footer-bar").innerHTML = footer;
+    return result;
+  }
+
 
   // actions
   static async _onWoundControl(this, event, target) {

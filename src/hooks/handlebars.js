@@ -252,9 +252,6 @@ export default function () {
     getDmgModifier: (a) => {
       return `dmg: ${a.system.damage.bonus} / ${a.system.damage.penetration}`;
     },
-    getNextWeightClass: (weightTillNextOverload) => {
-      return `${Math.floor(10 * weightTillNextOverload) / 10}kg ${LocalisationServer.localise("to next level")}`;
-    },
     localiseDescription: (description) => {
       function replacer(_match, _p1, p2, p3) {
         return LocalisationServer.localise(p3, p2);
