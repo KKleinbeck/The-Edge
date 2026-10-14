@@ -76,44 +76,8 @@ export class TheEdgeItemSheet extends EffectModifierMixin(IconSelectorMixin(TheE
         this._attachAdditionalFrameListeners();
     }
     _attachAdditionalFrameListeners() { }
-    async minimize() {
-        super.minimize();
-        const headers = this.element.getElementsByClassName("item-header-frame-tag");
-        if (headers.length) {
-            headers[0].outerHTML = `
-        <div class="item-header-frame-tag" style="display: flex; gap: 10px; width: 100%; align-items: center;">
-          <img class="item-header-img-minimised" src="${this.item.img}"/>
-          ${this.item.name}
-        </div>
-      `;
-        }
-        const footers = this.element.getElementsByClassName("item-footer");
-        if (footers.length) {
-            footers[0].innerHTML = "";
-        }
-    }
     async maximize() {
         super.maximize();
-        const headers = this.element.getElementsByClassName("item-header-frame-tag");
-        if (headers.length) {
-            const header = headers[0];
-            // @ts-expect-error
-            this.headerWidth = Math.max(header.offsetWidth, this.headerWidth);
-            // @ts-expect-error
-            this.headerHeight = Math.max(header.offsetHeight, this.headerHeight);
-            // header.outerHTML = await this._dynamicHeader(
-            //   this.headerWidth,
-            //   this.headerHeight,
-            // );
-        }
-        const footers = this.element.getElementsByClassName("item-footer");
-        if (footers.length) {
-            const footer = footers[0];
-            // footer.outerHTML = await this._dynamicFooter(
-            //   this.headerWidth,
-            //   this.headerHeight,
-            // );
-        }
         this._attachAdditionalFrameListeners();
     }
     _onRender(context, options) {

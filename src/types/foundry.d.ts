@@ -259,6 +259,8 @@ declare class HandlebarsApplication {
     title: HTMLElement
   }
 
+  public minimize();
+  public maximize();
   public setPosition(position: Record<string, any>);
 
   public _onRender(context: any, options: any): void;

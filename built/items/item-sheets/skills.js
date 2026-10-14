@@ -81,14 +81,6 @@ export class ItemSheetSkill extends TheEdgeItemSheet {
             .querySelectorAll("#maxLevel")
             ?.forEach((x) => x.addEventListener("change", (ev) => this._onMaxLevelChange(ev)));
     }
-    // _onRender(context, options) {
-    //   super._onRender(context, options);
-    //   this.element
-    //     .querySelectorAll(".effect-level-modify")
-    //     ?.forEach((x) =>
-    //       x.addEventListener("change", (ev) => this._onLevelModify(ev)),
-    //     );
-    // }
     async _onMaxLevelChange(ev) {
         const maxLevel = ev.target.value;
         const eff = this.item.system.effects;

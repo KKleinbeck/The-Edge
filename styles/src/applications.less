@@ -7,6 +7,24 @@
     height: 100%;
   }
 
+  .minimised {
+    scale: 0;
+    transform-origin: top right;
+    transition: all 0.4s ease-in-out;
+  }
+
+  .minimised-header {
+    background-color: @colour-ui-main-background-opague !important;
+    left: 0% !important;
+    width: 100% !important;
+    top: 0% !important;
+    height: 34px !important;
+
+    .application-header-details {
+      opacity: 1 !important;
+    }
+  }
+
   .the-edge-application-header {
     position: absolute;
     left: 65%;

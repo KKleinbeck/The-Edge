@@ -99,14 +99,6 @@ export class ItemSheetSkill extends TheEdgeItemSheet {
       );
   }
 
-  // _onRender(context, options) {
-  //   super._onRender(context, options);
-  //   this.element
-  //     .querySelectorAll(".effect-level-modify")
-  //     ?.forEach((x) =>
-  //       x.addEventListener("change", (ev) => this._onLevelModify(ev)),
-  //     );
-  // }
 
   async _onMaxLevelChange(ev) {
     const maxLevel = ev.target.value;
