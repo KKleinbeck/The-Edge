@@ -1,4 +1,5 @@
 import DiceServer from "./system/dice_server.js";
+import DiceDistribution from "./system/dice-distribution.js";
 import LocalisationServer from "./system/localisation_server.js";
 import NotificationServer from "./system/notifications.js";
 
@@ -53,6 +54,7 @@ Hooks.once("init", async function () {
   game.the_edge = {
     config: THE_EDGE,
     diceServer: DiceServer,
+    diceDistribution: DiceDistribution,
     localisationServer: LocalisationServer,
     notificationServer: NotificationServer,
     socketHandler: new SocketHandler(),

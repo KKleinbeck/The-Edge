@@ -74,6 +74,25 @@
   border-radius: 24px;
   transition: all 0.5s linear;
 }
+.system-the_edge .probability-distribution {
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 10;
+}
+.system-the_edge .probability-distribution .animated-lines line {
+  stroke: #70d7f2;
+  filter: drop-shadow(0 0 2px #70d7f2);
+  transform-box: fill-box;
+  transform-origin: bottom;
+  transform: scaleY(0);
+  animation: grow 0.3s ease-out forwards;
+  animation-delay: calc(sibling-index() * 0.025s);
+}
+@keyframes grow {
+  to {
+    transform: scaleY(1);
+  }
+}
 .system-the_edge .progress-wrapper {
   max-width: 100%;
   max-height: 100%;

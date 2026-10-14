@@ -17,8 +17,8 @@
     <tr>
       <td>{{mode.name}}</td>
       <td>
-        <span data-tooltip aria-label="{{combatName 'damage dice'}}">{{mode.dices}}</span>
-        {{#unless (checkEqual mode.dices mode.cost)}}
+        <span data-tooltip aria-label="{{combatName 'damage dice'}}">{{mode.nDie}}</span>
+        {{#unless (checkEqual mode.nDie mode.cost)}}
         <span data-tooltip aria-label="{{combatName 'ammunition cost'}}">({{mode.cost}})</span>
         {{/unless}}
       </td>

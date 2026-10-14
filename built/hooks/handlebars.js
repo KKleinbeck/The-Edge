@@ -113,12 +113,6 @@ export default function () {
                 return a;
             return b;
         },
-        getSys: (a, b, c, d) => {
-            return a.system[b][c][d];
-        },
-        getSys5: (a, b, c, d, e) => {
-            return a.system[b][c][d][e];
-        },
         getEntry: (a, b) => {
             return a[b];
         },
@@ -143,6 +137,9 @@ export default function () {
         },
         mul: (a, b) => {
             return a * b;
+        },
+        mod: (a, b) => {
+            return a % b;
         },
         and: (a, b) => {
             return a && b;
@@ -265,16 +262,6 @@ export default function () {
             const matches = localisationEnricher.pattern.exec(description);
             return description.replaceAll(localisationEnricher.pattern, replacer);
         },
-        getWoundIcon: (status) => {
-            switch (status) {
-                case "treatable":
-                    return "fa-droplet";
-                // case "coagulated":
-                //   return "fa-droplet-slash";
-                case "treated":
-                    return "fa-bandage";
-            }
-        },
         restDescription: (restType) => {
             switch (restType) {
                 case "short rest":
@@ -318,5 +305,6 @@ export default function () {
                 return -2;
             return value;
         },
+        maxValue: (a) => { return Math.max(...Object.values(a)); }
     });
 }

@@ -51,6 +51,14 @@ interface STRAIN {
   maxUseReduction: foundryAny;
 }
 
+// MARK: WEAPONS
+interface IFireMode {
+  name: string;
+  damage: string;
+  nDie: number;
+  cost: number;
+  precisionPenalty: number[]
+}
 interface IWeapons {
   energy: IWeaponsEnergy;
   general: IWeaponsGeneral;

@@ -94,6 +94,28 @@
   }
 
 
+  // MARK: Probability Distribution
+  .probability-distribution {
+    max-width: 100%;
+    max-height: 100%;
+    aspect-ratio: 10;
+
+    .animated-lines line {
+      stroke: @colour-ui-main-1;
+      filter: drop-shadow(0 0 2px @colour-ui-main-1);
+      transform-box: fill-box;
+      transform-origin: bottom;
+      transform: scaleY(0);
+      animation: grow 0.3s ease-out forwards;
+      animation-delay: calc(sibling-index() * 0.025s);
+    }
+
+    @keyframes grow {
+      to { transform: scaleY(1); }
+    }
+  }
+
+
   // MARK: Progress Bar
   .progress-wrapper {
     max-width: 100%;

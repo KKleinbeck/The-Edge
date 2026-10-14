@@ -1,11 +1,11 @@
 import CounterMixin from "../../mixins/counter-mixin.js";
+import DialogEditFireMode from "../../dialogs/dialog-edit-fire-mode.js";
+import DiceDistribution from "../../system/dice-distribution.js";
 import EmbeddedSkillMixin from "../../mixins/embedded-skills-mixin.js";
 import LocalisationServer from "../../system/localisation_server.js";
-import NotificationServer from "../../system/notifications.js";
 import RangeChartSelectorMixin from "../../mixins/range-chart-selector-mixin.js";
 import THE_EDGE from "../../system/config-the-edge.js";
 import { TheEdgeItemSheet } from "../item-sheet.js";
-const { renderTemplate } = foundry.applications.handlebars;
 export default class ItemSheetWeapon extends EmbeddedSkillMixin(CounterMixin(RangeChartSelectorMixin(TheEdgeItemSheet))) {
     static DEFAULT_OPTIONS = {
         ...TheEdgeItemSheet.DEFAULT_OPTIONS,
@@ -13,6 +13,7 @@ export default class ItemSheetWeapon extends EmbeddedSkillMixin(CounterMixin(Ran
             ...TheEdgeItemSheet.DEFAULT_OPTIONS.actions,
             addFiringMode: ItemSheetWeapon._addFiringMode,
             deleteFiringMode: ItemSheetWeapon._deleteFiringMode,
+            editFiringMode: ItemSheetWeapon._editFiringMode,
         },
         position: {
             width: 490,
@@ -91,13 +92,16 @@ export default class ItemSheetWeapon extends EmbeddedSkillMixin(CounterMixin(Ran
         context.dynamicSubtype = context.ammunitionTypeIsArbitrary
             ? this.item.system.ammunitionType
             : "";
+        context.fireModes = [];
+        for (const fm of this.item.system.fireModes) {
+            const distributionData = DiceDistribution.calculateDistribution(fm.damage);
+            context.fireModes.push({
+                ...fm,
+                ...distributionData,
+                distribution: DiceDistribution.toNormalisedMap(distributionData.distribution),
+            });
+        }
         return context;
-    }
-    _onRender(context, options) {
-        super._onRender(context, options);
-        this.element
-            .querySelectorAll(".firing-mode-modify")
-            .forEach((x) => x.addEventListener("change", (ev) => this._onModeModify(ev)));
     }
     _setAmmunitionTypesDict() {
         const ammunitionTypes = {};
@@ -118,16 +122,22 @@ export default class ItemSheetWeapon extends EmbeddedSkillMixin(CounterMixin(Ran
                 break;
         }
     }
-    static _addFiringMode(_event, _target) {
-        const fireModes = this.item.system.fireModes;
-        fireModes.push({
-            name: "",
+    static async _addFiringMode(_event, _target) {
+        const fireModeTemplate = {
+            name: "Name",
             damage: "1d20",
-            dices: 1,
+            nDie: 1,
             cost: 1,
             precisionPenalty: [0, 0],
+        };
+        const newFireMode = await DialogEditFireMode.prompt({
+            fireMode: fireModeTemplate, weaponType: this.item.system.weaponType
         });
-        this.item.update({ "system.fireModes": fireModes });
+        if (newFireMode) {
+            const fireModes = this.item.system.fireModes;
+            fireModes.push(newFireMode);
+            this.item.update({ "system.fireModes": fireModes });
+        }
     }
     static _deleteFiringMode(_event, target) {
         const index = target.dataset.index;
@@ -135,28 +145,15 @@ export default class ItemSheetWeapon extends EmbeddedSkillMixin(CounterMixin(Ran
         fireModes.splice(index, 1);
         this.item.update({ "system.fireModes": fireModes });
     }
-    async _onModeModify(event) {
-        const target = event.target;
-        const index = +target.dataset.index;
-        const field = target.dataset.field;
-        const fireModes = this.item.system.fireModes;
-        if (field.includes("precisionPenalty")) {
-            const penaltyIndex = +field.slice(-1);
-            fireModes[+index].precisionPenalty[penaltyIndex] = +target.value;
+    static async _editFiringMode(_event, target) {
+        const index = target.dataset.index;
+        const change = await DialogEditFireMode.prompt({
+            fireMode: this.item.system.fireModes[index], weaponType: this.item.system.weaponType
+        });
+        if (change) {
+            const fireModes = this.item.system.fireModes;
+            fireModes[index] = change;
+            this.item.update({ "system.fireModes": fireModes });
         }
-        else if (field === "name") {
-            fireModes[+index][field] = target.value;
-        }
-        else if (field === "damage") {
-            if (Roll.validate(target.value))
-                fireModes[+index][field] = target.value;
-            else {
-                NotificationServer.error({ id: "Invalid Damage Formula", details: { formula: target.value } });
-            }
-        }
-        else {
-            fireModes[+index][field] = +target.value;
-        }
-        await this.item.update({ "system.fireModes": fireModes });
     }
 }

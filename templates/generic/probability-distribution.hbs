@@ -1,0 +1,30 @@
+<div class="probability-distribution">
+  <svg height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <style>
+        .legend { fill: white; font-size: 6px; }
+      </style>
+    </defs>
+    
+    <g class="animated-lines">
+      {{#each distribution as |prob _|}}
+        <line
+          x1="{{mul (div (add @index 1) (add (objectLength ../distribution) 2)) 100}}%"
+          y1="50%"
+          x2="{{mul (div (add @index 1) (add (objectLength ../distribution) 2)) 100}}%"
+          y2="{{mul (div (sub (maxValue ../distribution) prob) (maxValue ../distribution)) 48}}%"
+          stroke-width="3" stroke="white"/>
+      {{/each}}
+    </g>
+
+    {{#each distribution as |_ label|}}
+      {{#unless (mod @index 5)}}
+        <text class="legend"
+          x="{{mul (div (add @index 1) (add (objectLength ../distribution) 2)) 100}}%"
+          y="95%">
+          {{label}}
+        </text>
+      {{/unless}}
+    {{/each}}
+  </svg>
+</div>

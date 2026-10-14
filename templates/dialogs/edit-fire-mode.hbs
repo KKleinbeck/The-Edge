@@ -1,0 +1,24 @@
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 5px 10px; align-items: center;">
+  <div class="bold">{{genName "name"}}:</div>
+  <input data-field="name" type="text" value="{{fireMode.name}}" style="text-align: right;"/>
+
+  <div class="bold">{{genName "Damage"}}:</div>
+  <input data-field="damage" type="text" value="{{fireMode.damage}}" style="text-align: center;"/>
+
+  <div class="bold" style="white-space: nowrap;">{{combatName "Shots Per Attack"}}:</div>
+  <input data-field="nDie" type="number" value="{{fireMode.nDie}}" style="text-align: center;"/>
+
+  {{#if (checkEqual weaponType "energy")}}
+    <div class="bold" style="white-space: nowrap;">{{combatName "Ammunition Cost"}}:</div>
+    <input data-field="cost" type="number" value="{{fireMode.cost}}" style="text-align: center;"/>
+  {{/if}}
+
+  <div class="bold" style="white-space: nowrap; margin-top: 3px">{{combatName "Precision penalty"}}</div>
+  <div></div>
+
+  <div class="bold" style="white-space: nowrap; padding-left: 15px;">{{combatName "unaimed"}}:</div>
+  <input data-field="precisionPenaltyUnaimed" type="number" value="{{getEntry fireMode.precisionPenalty 0}}" style="text-align: center;"/>
+
+  <div class="bold" style="white-space: nowrap; padding-left: 15px;">{{combatName "aimed"}}:</div>
+  <input data-field="precisionPenaltyAimed" type="number" value="{{getEntry fireMode.precisionPenalty 1}}" style="text-align: center;"/>
+</div>

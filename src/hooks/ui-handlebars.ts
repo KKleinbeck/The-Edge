@@ -17,6 +17,16 @@ export default function () {
         return definitions.progressBar[a as string][i];
       return definitions.progressBar.default[i];
     },
+    getWoundIcon: (status: string) => {
+      switch (status) {
+        case "treatable":
+          return "fa-droplet";
+        // case "coagulated":
+        //   return "fa-droplet-slash";
+        case "treated":
+          return "fa-bandage";
+      }
+    },
     getWoundHTML: (wound, longTooltip = false) => {
       const colour = wound.bleeding > 0 ? "red" : "orange";
       let icon: string = "";
@@ -55,7 +65,6 @@ export default function () {
       `;
     },
     uiConsumablesHeaderHeight: (type: string): number => {
-      console.log(type)
       if (type === "drugs" || type === "food" || type === "generic") return 29;
       if (type === "medicine") return 80;
       return 112;

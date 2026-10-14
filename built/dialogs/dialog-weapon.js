@@ -149,7 +149,7 @@ export default class DialogWeapon extends DialogV2 {
         await ammunition.update({
             "system.capacity.value": ammuCapa.value - ammuCost,
         });
-        return Math.floor(((ammuCost + 0.1) * fireModeModifier.dices) / fireModeModifier.cost);
+        return Math.floor(((ammuCost + 0.1) * fireModeModifier.nDie) / fireModeModifier.cost);
     }
     static async _onRollRollDamage(checkData, parseResult) {
         const ammunition = checkData.actor.items.get(checkData.weapon.system.ammunitionID);

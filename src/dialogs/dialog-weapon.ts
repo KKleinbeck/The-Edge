@@ -263,7 +263,7 @@ export default class DialogWeapon extends DialogV2 {
     });
 
     return Math.floor(
-      ((ammuCost + 0.1) * fireModeModifier.dices) / fireModeModifier.cost,
+      ((ammuCost + 0.1) * fireModeModifier.nDie) / fireModeModifier.cost,
     );
   }
 

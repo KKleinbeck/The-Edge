@@ -282,6 +282,9 @@ textarea {
 .system-the_edge .hero-token-white {
   content: url("../icons/hero_token_white.png");
 }
+.system-the_edge .bold {
+  font-weight: bold;
+}
 .system-the_edge .d20-attr {
   border: none;
   margin-left: 0px;

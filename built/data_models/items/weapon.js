@@ -17,7 +17,7 @@ export default class WeaponData extends generateDataModelWithComponents(Descript
                     name: "Single",
                     damage: "1d20",
                     cost: 1,
-                    dices: 1,
+                    nDie: 1,
                     precisionPenalty: [0, 0],
                 },
             ],
@@ -71,6 +71,12 @@ export default class WeaponData extends generateDataModelWithComponents(Descript
         }
         return "kinetic";
     }
+    get weaponType() {
+        if (this.type == "Blaster Pistols" || this.type == "Pulse Rifle" ||
+            this.type == "SABs" || this.type == "Blaster Shockguns" || this.type == "Blaster Snipers")
+            return "energy";
+        return "kinetic";
+    }
     // TODO: Remove with v0.17
     static migrateData(source, _options) {
         if ("less_1km" in (source.rangeChart ?? {})) {
@@ -83,6 +89,12 @@ export default class WeaponData extends generateDataModelWithComponents(Descript
                 newRangeChart["less_100m"] = source.rangeChart.less_1km;
             if ("more_1km" in source.rangeChart)
                 newRangeChart["more_100m"] = source.rangeChart.more_1km;
+        }
+        // TODO: Remove with v0.18
+        for (var i = 0; i < source.fireModes.length; ++i) {
+            if ("dices" in source.fireModes[i]) {
+                source.fireModes[i].nDie = source.fireModes[i].dices;
+            }
         }
         return super.migrateData(source);
     }
