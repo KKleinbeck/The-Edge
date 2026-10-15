@@ -11,7 +11,6 @@ export default class HumanoidData extends DataModelComponent {
                 required: true,
             }),
             sex: new StringField({ initial: "female" }),
-            handedness: new StringField({ initial: "right" }),
             race: new StringField({ initial: "Human" }),
             nativeLanguage: new StringField({ initial: "Standard" }),
         };

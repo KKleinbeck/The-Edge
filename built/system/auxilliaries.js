@@ -74,6 +74,10 @@ export default class Aux {
         }
         return tokens;
     }
+    static getSizeGroup(size) {
+        const [group, _] = Object.entries(THE_EDGE.sizes).find(([_, value]) => value > size);
+        return group;
+    }
     static getToken(actorID, sceneID = undefined) {
         if (!sceneID) {
             if (!game.canvas.id)

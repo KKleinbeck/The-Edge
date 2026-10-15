@@ -98,6 +98,13 @@ export default class Aux {
     return tokens;
   }
 
+  static getSizeGroup(size: number): TSize {
+    const [group, _] = Object.entries(THE_EDGE.sizes).find(
+      ([_, value]) => (value as number) > size
+    ) as [TSize, number];
+    return group;
+  }
+
   static getToken(actorID, sceneID = undefined) {
     if (!sceneID) {
       if (!game.canvas.id) return undefined; // This can happen during startup of the game

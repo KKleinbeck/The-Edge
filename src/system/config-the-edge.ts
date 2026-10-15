@@ -26,7 +26,7 @@ THE_EDGE.sizes = {
   normal: 250,
   large: 500,
   giant: Infinity,
-};
+} as Record<string, number>;
 THE_EDGE.sizeModifiers = {
   normal: [0, 0],
   tiny: [-8, -4],

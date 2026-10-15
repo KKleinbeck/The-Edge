@@ -92,6 +92,8 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     async getCustomFooterBar() {
         if (this.tabGroups.primary == "items")
             return this._footerItems();
+        if (this.tabGroups.primary == "biography")
+            return this._footerBiography();
         return this._footerPracticeHours();
     }
     _footerPracticeHours() {
@@ -133,6 +135,40 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
         </div>
       </div>
     </div>
+    `;
+        return footer;
+    }
+    _footerBiography() {
+        var footer = `
+      <div style="display: flex; width: 100%; justify-content: space-between;">
+        <div>
+          <label style="display: block; text-align: center;" for="Age Selector">${LocalisationServer.localise("Age")}</label>
+          <input name="system.age" id="Age Selector" type="text" value="${this.actor.system.age}"
+            min="21" placeholder="Name" style="max-width: 40px; text-align: right;"/>
+        </div>
+        <div>
+          <label style="display: block; text-align: center;" for="Sex Selector">${LocalisationServer.localise("Sex")}</label>
+          <select class="selection-box" name="system.sex" id="Sex Selector" style="width: 75px; padding: 0 2px 0 0;">
+            <option value="female" ${this.actor.system.sex == 'female' ? "selected" : ""}>${LocalisationServer.localise("female")}</option>
+            <option value="male" ${this.actor.system.sex == 'male' ? "selected" : ""}>${LocalisationServer.localise("make")}</option>
+            <option value="other" ${this.actor.system.sex == 'other' ? "selected" : ""}>${LocalisationServer.localise("other")}</option>
+          </select>
+        </div>
+        <div>
+          <label style="display: block; text-align: center;" for="height selectr">${LocalisationServer.localise("Height")} [cm]</label>
+          <div style="display: flex; gap: 5px; align-items: center;">
+            <input
+              name="system.height" type="number" value="${this.actor.system.height}" placeholder="165" min="0"
+              style="max-width: 36px; text-align: right; padding: 0 2px 0 0;" id="height selector"/>
+            (${LocalisationServer.localise(Aux.getSizeGroup(this.actor.system.height), "combat")})
+          </div>
+        </div>
+        <div>
+          <label style="display: block; text-align: center;" for="race selector">${LocalisationServer.localise("Race")}</label>
+          <input name="system.race" id="race selector" type="text" value="${this.actor.system.race}"
+            placeholder="${LocalisationServer.localise('Race ...')}" style="max-width: 80px; text-align: right;"/>
+        </div>
+      </div>
     `;
         return footer;
     }
@@ -360,8 +396,10 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
         DialogDamage.start({ actor: this.actor, location: location });
     }
     // Specific Listeners
-    _onRender(context, options) {
+    async _onRender(context, options) {
         super._onRender(context, options);
+        const footer = await this.getCustomFooterBar();
+        this.element.querySelector(".custom-footer-bar").innerHTML = footer;
         this.element
             .querySelectorAll("[data-action='advanceAttr']")
             .forEach((attr) => attr.addEventListener("mouseover", this._attrCostTooltip));

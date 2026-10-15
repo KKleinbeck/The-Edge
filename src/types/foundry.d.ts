@@ -43,14 +43,18 @@ declare class Actor extends FoundryDocument {
   items: Items;
   itemTypes: Record<string, Items>;
   system: {
+    age: number;
     attributes: ATTRIBUTES;
     combaticsDamage: string;
     combaticsPL: number;
     counters: ICounter[];
     credits: { chids: number; digital: number };
     effects: IEffect[];
+    height: number;
     heroToken: {available: number}
     overloadLevel: number;
+    race: string;
+    sex: TSex;
     statusEffects: IStatusEffect[];
     weapons: {
       energy: IWeaponsEnergy;
