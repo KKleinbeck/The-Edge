@@ -134,6 +134,17 @@ declare class Item extends FoundryDocument {
 
 interface Items extends FoundryContainer<Item> {}
 
+declare class Store extends FoundryDocument {
+  items: Items;
+  itemTypes: Record<string, Items>;
+  system: {
+    buysFromPlayer: boolean;
+    isStorage: boolean;
+
+  }
+  token: TokenDocument
+}
+
 declare class TokenDocument {
   static getTrackedAttributes(data: foundryAny, _path: string[]): foundryAny;
 
@@ -161,6 +172,7 @@ declare class ActorSheetV2 {
   constructor(args: foundryAny);
   static DEFAULT_OPTIONS: IDEFAULT_OPTIONS;
   public actor: Actor;
+  public document: Actor;
   public token: TokenDocument;
 
   public _prepareContext(options: foundryAny): foundryAny;
@@ -251,6 +263,8 @@ declare function getDocumentClass(x: string): foundryAny;
 
 // Mixins
 declare class HandlebarsApplication {
+  new (...args: any[]): HandlebarsApplication;
+
   public element: HTMLElement;
   public options: Record<string, foundryAny>;
   public window: {
@@ -274,6 +288,7 @@ declare class HandlebarsApplication {
 declare function HandlebarsApplicationMixin<T extends Constructor>(
   x: T,
 ): T & Constructor<HandlebarsApplication>;
+type HandlebarsApplicationCtor = new (...args: any[]) => HandlebarsApplication;
 
 // Canvas Interface
 interface ICanvas {

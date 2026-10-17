@@ -3,23 +3,25 @@ const { NumberField, SchemaField } = foundry.data.fields;
 export default class CreditData extends DataModelComponent {
     static defineSchema() {
         return {
-            credits: new SchemaField({
-                chids: new NumberField({ initial: 0, integer: true, required: true }),
-                digital: new NumberField({ initial: 0, integer: true, required: true }),
-            }),
+            credits: new NumberField({ initial: 0, integer: true, required: true }),
         };
     }
+    // TODO: Remove with v0.17
+    static migrateData(source, _options) {
+        if ("credits" in source && typeof (source.credits) != "number") {
+            source.credits = (source.credits.chids ?? 0) + (source.credits.digital ?? 0);
+        }
+        return source;
+    }
     // Credits related
-    addCredits(chids, digital) {
+    addCredits(credits) {
         this.parent.update({
-            "system.credits.chids": this.credits.chids + chids,
-            "system.credits.digital": this.credits.digital + digital,
+            "system.credits": this.credits + credits,
         });
     }
     payCredits(price) {
         this.parent.update({
-            "system.credits.digital": this.credits.digital - price,
+            "system.credits": this.credits - price,
         });
-        return [0, price];
     }
 }

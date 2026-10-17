@@ -103,14 +103,15 @@ input {
 input[type="checkbox"] {
   box-shadow: none;
   background: none;
-}
-input[type="checkbox"]::before {
-  color: var(--colour-ui-main-1);
-  font-weight: 400;
-}
-input[type="checkbox"]::after {
-  color: var(--colour-ui-main-background);
-  font-weight: 100;
+
+  &::before {
+    color: var(--colour-ui-main-1);
+    font-weight: 400;
+  }
+  &::after {
+    color: var(--colour-ui-main-background);
+    font-weight: 400;
+  }
 }
 input::placeholder {
   color: var(--font-secondary-color);
@@ -548,7 +549,7 @@ textarea {
     transition: rotate 300ms ease;
   }
 
-  .dynamic-size {
+  .dynamic-size-hook {
     /* Intend: scaled to width of content through js */
     display: inline-block;
     text-align: right;

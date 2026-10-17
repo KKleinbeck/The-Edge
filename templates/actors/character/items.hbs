@@ -36,7 +36,7 @@
                 {{#if (checkIn "quantity" item.system)}}
                   <div style="display: flex; margin-right: 8px; gap: 2px;">
                     x
-                    <input class="dynamic-size quantity-input" type="number" min="1" value="{{item.system.quantity}}"/>
+                    <input class="dynamic-size-hook quantity-input" type="number" min="1" value="{{item.system.quantity}}"/>
                   </div>
                 {{/if}}
                 {{#if (checkIn "equipped" item.system)}}

@@ -83,7 +83,7 @@ input[type="checkbox"]::before {
 }
 input[type="checkbox"]::after {
   color: var(--colour-ui-main-background);
-  font-weight: 100;
+  font-weight: 400;
 }
 input::placeholder {
   color: var(--font-secondary-color);
@@ -486,7 +486,7 @@ textarea {
 .system-the_edge .chevron-hook {
   transition: rotate 300ms ease;
 }
-.system-the_edge .dynamic-size {
+.system-the_edge .dynamic-size-hook {
   /* Intend: scaled to width of content through js */
   display: inline-block;
   text-align: right;

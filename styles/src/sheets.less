@@ -1,5 +1,29 @@
 @import "_vars.less";
 
+.container-box-template() {
+  background-color: var(--colour-ui-main-background-1);
+
+  border: solid 1px var(--colour-ui-secondary);
+  border-radius: 5px;
+  box-shadow:
+    0 0 4px var(--colour-ui-secondary),
+    0 0 0 transparent,
+    0 0 0 transparent,
+    0 0 0 transparent,
+    inset 0 0 8px var(--colour-ui-main-background-1);
+  
+  transition: box-shadow 0.4s ease-in-out;
+
+  &:hover {
+    box-shadow:
+      2px 0 5px var(--colour-ui-secondary),
+      0 2px 5px var(--colour-ui-secondary),
+      -2px 0 5px var(--colour-ui-secondary),
+      0 -2px 5px var(--colour-ui-secondary),
+      inset 0 0 8px var(--colour-ui-main-background-1);
+  }
+}
+
 // MARK: Actor Sheet
 .the-edge-actor-sheet {
   background: none;
@@ -12,33 +36,12 @@
     padding: 0 10px;
     width: 100%;
   }
-  .actor-column-container-box-base() {
+  .actor-container-box-template() {
     display: flex;
     justify-content: space-between;
     align-items: center;
     break-inside: avoid;
     padding: 3px;
-    background-color: var(--colour-ui-main-background-1);
-
-    border: solid 1px var(--colour-ui-secondary);
-    border-radius: 5px;
-    box-shadow:
-      0 0 4px var(--colour-ui-secondary),
-      0 0 0 transparent,
-      0 0 0 transparent,
-      0 0 0 transparent,
-      inset 0 0 8px var(--colour-ui-main-background-1);
-    
-    transition: box-shadow 0.4s ease-in-out;
-
-    &:hover {
-      box-shadow:
-        2px 0 5px var(--colour-ui-secondary),
-        0 2px 5px var(--colour-ui-secondary),
-        -2px 0 5px var(--colour-ui-secondary),
-        0 -2px 5px var(--colour-ui-secondary),
-        inset 0 0 8px var(--colour-ui-main-background-1);
-    }
   }
 
   // Classes
@@ -150,7 +153,8 @@
     .actor-column-container-base();
 
     .language-box {
-      .actor-column-container-box-base();
+      .container-box-template();
+      .actor-container-box-template();
     }
   }
 
@@ -161,7 +165,8 @@
     .loadout-box {
       height: 35px;
       padding: 10px;
-      .actor-column-container-box-base();
+      .container-box-template();
+      .actor-container-box-template();
 
       .loadout-name {
         display: flex;
@@ -179,7 +184,8 @@
     .skill-box {
       height: 45px;
       padding: 0px;
-      .actor-column-container-box-base();
+      .container-box-template();
+      .actor-container-box-template();
     }
   }
 
@@ -444,6 +450,13 @@
 
 // MARK: Store Sheet
 .the-edge-store-sheet {
+  .store-header {
+    display: flex;
+    min-height: 70px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5px 0 5px;
+  }
   .store-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -451,14 +464,7 @@
     padding: 10px;
 
     .store-item {
-      border: 1.333px solid #000;
-      border-radius: 5px;
-      padding: 10px;
-      transition: all 0.2s ease-in-out;
-
-      &:hover {
-        box-shadow: 0 5px 15px rgba(145, 92, 182, 0.4);
-      }
+      .container-box-template();
     }
 
     .store-currency {

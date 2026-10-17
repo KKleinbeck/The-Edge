@@ -30,6 +30,32 @@ export default function TheEdgeApplicationMixin(BaseApplication) {
             this.window.title = frame.querySelector(".window-title");
             return frame;
         }
+        _onRender(context, options) {
+            super._onRender(context, options);
+            this.element.querySelectorAll(".dynamic-size-hook").forEach((input) => {
+                this._adjustInputWidth(input);
+                input.addEventListener("input", () => this._adjustInputWidth(input));
+            });
+        }
+        _adjustInputWidth(input) {
+            if (!(input instanceof HTMLInputElement))
+                return;
+            const width = this._getWidthForContent(input.value || input.placeholder || "", getComputedStyle(input).font);
+            input.style.width = `${width}px`;
+        }
+        _getWidthForContent(content, font = undefined) {
+            const span = document.createElement("span");
+            span.style.visibility = "hidden";
+            span.style.whiteSpace = "pre";
+            span.style.position = "absolute";
+            if (font)
+                span.style.font = font;
+            span.textContent = content;
+            document.body.appendChild(span);
+            const width = span.offsetWidth + 20;
+            document.body.removeChild(span);
+            return width;
+        }
         setPosition(position) {
             if (typeof position == "undefined")
                 return;

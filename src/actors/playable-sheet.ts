@@ -135,20 +135,23 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
 
   _footerItems(): string {
     const weightTillNextOverload = this.actor.system.weightTillNextOverload;
+    const creditWidth = this._getWidthForContent(this.actor.system.credits);
 
     var footer = `
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-      ${LocalisationServer.localise("Credits")}
-      <div style="max-width: 30%;">
-        <input type="Number" id="Chids" style="width: 70%; text-align: right;" name="system.credits.chids"
-          value="${this.actor.system.credits.chids}"/>
+    <div style="display: flex; width: 100%; justify-content: space-between; align-items: center;">
+      <div style="display: flex; gap: 5px; align-items: center;">
+        ${LocalisationServer.localise("Credits")}
+        <input class="dynamic-size-hook" type="Number" id="Chids"
+          style="width: ${creditWidth}px; text-align: right;" name="system.credits"
+          value="${this.actor.system.credits}"/>
       </div>
-      <div style="display: flex; gap: 20px; align-items: center; padding-right: 15px;">
-        <div>${LocalisationServer.localise("Weight")}: ${this.actor.itemWeight.toFixed(1)} kg</div>
-        <div style="white-space: nowrap; text-align: right;">
-          <div>${LocalisationServer.localise("Overload", "Effect_Group")}: ${this.actor.system.overloadLevel}</div>
-          <div>${weightTillNextOverload.toFixed(0)}kg ${LocalisationServer.localise("to next level")}</div>
-        </div>
+      <div>
+        <div>${LocalisationServer.localise("Weight")}:</div>
+        <div style="white-space: nowrwap">${this.actor.itemWeight.toFixed(1)} kg</div>
+      </div>
+      <div style="white-space: nowrap; text-align: right;">
+        <div>${LocalisationServer.localise("Overload", "Effect_Group")}: ${this.actor.system.overloadLevel}</div>
+        <div>${weightTillNextOverload.toFixed(0)}kg ${LocalisationServer.localise("to next level")}</div>
       </div>
     </div>
     `
@@ -458,9 +461,6 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   async _onRender(context, options) {
     super._onRender(context, options);
     
-    const footer = await this.getCustomFooterBar();
-    this.element.querySelector(".custom-footer-bar").innerHTML = footer;
-
     this.element
       .querySelectorAll("[data-action='advanceAttr']")
       .forEach((attr) =>

@@ -3,7 +3,12 @@ import IconSelectorMixin from "../mixins/icon-selector-mixin.js";
 import NotificationServer from "../system/notifications.js";
 import { TheEdgeActorSheet } from "./actor-sheet.js";
 
-export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
+export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet as unknown as Constructor<HandlebarsApplication & TheEdgeActorSheet>) {
+  declare actor: Store;
+  declare document: Store;
+  declare playerTokens: TokenDocument[];
+  declare selectedTokenIndex: number;
+
   constructor(options) {
     super(options);
 
@@ -35,8 +40,8 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
     form: {
       template: "systems/the_edge/templates/actors/store/store-header.hbs",
     },
-    tabs: {
-      template: "templates/generic/tab-navigation.hbs", // Foundry default
+    separator: {
+      template: "systems/the_edge/templates/generic/separator-horizontal.hbs",
     },
     Ammunition: {
       template: "systems/the_edge/templates/actors/store/meta-item-page.hbs",
@@ -59,6 +64,12 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
     Store: {
       template: "systems/the_edge/templates/actors/store/buy-from-player.hbs",
     },
+    separatorTabs: {
+      template: "systems/the_edge/templates/generic/separator-horizontal.hbs",
+    },
+    tabs: {
+      template: "systems/the_edge/templates/applications/the-edge-tab-navigation.hbs"
+    },
   };
 
   static TABS = {
@@ -76,11 +87,12 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
       .map((x) => {
         return { id: x[0] };
       });
-    if (this.actor.system.buysFromPlayer) {
+    if (this.actor.system.buysFromPlayer || this.actor.system.isStorage) {
       if (this.actor.system.isStorage) tabs.push({ id: "Store" });
       else tabs.push({ id: "Sell" });
     }
-    this.constructor.TABS.primary.tabs = tabs;
+    const ctor = this.constructor as typeof TheEdgeStoreSheet;
+    ctor.TABS.primary.tabs = tabs;
     super.render(options, _options);
   }
 
@@ -167,8 +179,9 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
     super._onRender(context, options);
 
     this.element.querySelectorAll(".actor-selection-hook").forEach((x) =>
-      x.addEventListener("change", (event) => {
-        this.selectedTokenIndex = event.currentTarget.value;
+      x.addEventListener("change", (event: Event) => {
+        if (!(event.currentTarget instanceof HTMLSelectElement)) return;
+        this.selectedTokenIndex = +event.currentTarget.value;
       }),
     );
   }
@@ -181,7 +194,7 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
   }
 
   // Actions
-  static _editItem(_event, target) {
+  static _editItem(this, _event, target) {
     const itemInformation = target.closest(".item-hook").dataset;
     if ("parentId" in itemInformation) {
       const actor = game.actors.get(itemInformation.parentId);
@@ -193,26 +206,28 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
     }
   }
 
-  static _deleteItem(_event, target) {
+  static _deleteItem(this, _event, target) {
     const itemInformation = target.closest(".item-hook").dataset;
     const item = this.actor.items.get(itemInformation.itemId);
     item.delete();
   }
 
-  static _buyOrRetrieveItem(_event, target) {
+  static _buyOrRetrieveItem(this, _event, target) {
     if (!this.playerTokens.length) return;
     const token = this.playerTokens[this.selectedTokenIndex];
 
-    const credits =
-      token.actor.system.credits.chids + token.actor.system.credits.digital;
+    const credits = token.actor.system.credits;
 
     const itemInformation = target.closest(".item-hook").dataset;
     const price = +itemInformation.price;
     if (credits < price && !this.actor.system.isStorage) {
-      NotificationServer.notify("Too expensive", {
-        name: token.name,
-        price: price,
-        credits: credits,
+      NotificationServer.notify({
+        id: "Too expensive",
+        details: {
+          name: token.name,
+          price: price,
+          credits: credits,
+        }
       });
       return;
     }
@@ -238,12 +253,12 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
     const item = store.items.get(itemId);
 
     const price = item.system.value * store.system.tradeFactor;
-    const credits = actor.system.credits.chids + actor.system.credits.digital;
+    const credits = actor.system.credits;
 
     if (credits >= price || store.system.isStorage) {
       if (!store.system.isStorage) {
-        const [chids, digital] = actor.system.payCredits(price);
-        store.system.addCredits(chids, digital);
+        actor.system.payCredits(price);
+        store.system.addCredits(price);
       }
 
       actor.addOneItem(item);
@@ -253,20 +268,27 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
     }
   }
 
-  static _sellOrStoreItem(_event, target) {
+  static _sellOrStoreItem(this, _event, target: HTMLElement) {
     if (!this.playerTokens.length) return;
     const token = this.playerTokens[this.selectedTokenIndex];
 
-    const credits =
-      this.actor.system.credits.chids + this.actor.system.credits.digital;
+    const credits = this.actor.system.credits;
 
-    const itemInformation = target.closest(".store-item").dataset;
+    const storeItem = target.closest(".store-item");
+    if (!(storeItem instanceof HTMLElement)) return;
+
+    const itemInformation = storeItem.dataset;
+    if (!("price" in itemInformation) || typeof(itemInformation.price) == "undefined") return;
     const price = +itemInformation.price;
+
     if (credits < price && !this.actor.system.isStorage) {
-      NotificationServer.notify("Too expensive", {
-        name: this.actor.name,
-        price: price,
-        credits: credits,
+      NotificationServer.notify({
+        id: "Too expensive",
+        details: {
+          name: this.actor.name,
+          price: price,
+          credits: credits,
+        }
       });
       return;
     }
@@ -292,18 +314,19 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
     const item = actor.items.get(itemId);
 
     const price = item.system.value / store.system.tradeFactor;
-    const credits = store.system.credits.chids + store.system.credits.digital;
+    const credits = store.system.credits;
 
     if (credits >= price || store.system.isStorage) {
-      if (!store.system.isStorage) {
-        const [chids, digital] = store.system.payCredits(price);
-        actor.system.addCredits(chids, digital);
-      }
-
-      store.addOneItem(item);
       if (item.system.quantity > 1)
         await item.update({ "system.quantity": item.system.quantity - 1 });
       else await item.delete();
+
+      store.addOneItem(item);
+
+      if (!store.system.isStorage) {
+        store.system.payCredits(price);
+        actor.system.addCredits(price);
+      }
 
       game.the_edge.socketHandler.emit("ITEM_SOLD_OR_STORED", {
         sceneId,

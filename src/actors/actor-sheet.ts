@@ -18,10 +18,10 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(
 ) {
   effectIsExpanded: any = {};
 
-  constructor(...args: ConstructorParameters<typeof ActorSheetV2>) {
-    super(...args);
-    this.effectIsExpanded = {};
-  }
+  // constructor(...args: ConstructorParameters<typeof ActorSheetV2>) {
+  //   super(...args);
+  //   this.effectIsExpanded = {};
+  // }
 
   static DEFAULT_OPTIONS = {
     actions: {
@@ -498,24 +498,6 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(
         this._onItemQuantiyChange(ev);
       });
     }
-
-    this.element.querySelectorAll(".dynamic-size").forEach((input) => {
-      this._adjustInputWidth(input);
-      input.addEventListener("input", () => this._adjustInputWidth(input));
-    });
-  }
-
-  _adjustInputWidth(input) {
-    const span = document.createElement("span");
-    span.style.visibility = "hidden";
-    span.style.whiteSpace = "pre";
-    span.style.position = "absolute";
-    span.style.font = getComputedStyle(input).font;
-    span.textContent = input.value || input.placeholder || "";
-    document.body.appendChild(span);
-    const width = span.offsetWidth + 20;
-    document.body.removeChild(span);
-    input.style.width = `${width}px`;
   }
 
   async _onItemQuantiyChange(ev) {

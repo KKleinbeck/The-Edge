@@ -25,7 +25,14 @@
             {{> systems/the_edge/templates/actors/store/meta-consumables.hbs}}
           {{/if}}
         </div>
-        {{> systems/the_edge/templates/actors/store/meta-sell-or-store.hbs storeDetails=../../store.system}}
+        <div style="display: flex; width: 100%; justify-content: space-between;">
+          {{#if (checkIn "quantity" item.system)}}
+            <div class="output quantity-hook" style="width: 64px;" data-quantity="{{item.system.quantity}}">
+              {{item.system.quantity}}
+            </div>
+          {{/if}}
+          {{> systems/the_edge/templates/actors/store/meta-sell-or-store.hbs storeDetails=../../store.system}}
+        </div>
       </div>
     {{/each}}
   </div>

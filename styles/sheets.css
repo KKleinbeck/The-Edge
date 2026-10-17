@@ -102,16 +102,16 @@
   width: 100%;
 }
 .the-edge-actor-sheet .actor-container-language .language-box {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  break-inside: avoid;
-  padding: 3px;
   background-color: var(--colour-ui-main-background-1);
   border: solid 1px var(--colour-ui-secondary);
   border-radius: 5px;
   box-shadow: 0 0 4px var(--colour-ui-secondary), 0 0 0 transparent, 0 0 0 transparent, 0 0 0 transparent, inset 0 0 8px var(--colour-ui-main-background-1);
   transition: box-shadow 0.4s ease-in-out;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  break-inside: avoid;
+  padding: 3px;
 }
 .the-edge-actor-sheet .actor-container-language .language-box:hover {
   box-shadow: 2px 0 5px var(--colour-ui-secondary), 0 2px 5px var(--colour-ui-secondary), -2px 0 5px var(--colour-ui-secondary), 0 -2px 5px var(--colour-ui-secondary), inset 0 0 8px var(--colour-ui-main-background-1);
@@ -125,16 +125,16 @@
 .the-edge-actor-sheet .actor-container-loadout .loadout-box {
   height: 35px;
   padding: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  break-inside: avoid;
-  padding: 3px;
   background-color: var(--colour-ui-main-background-1);
   border: solid 1px var(--colour-ui-secondary);
   border-radius: 5px;
   box-shadow: 0 0 4px var(--colour-ui-secondary), 0 0 0 transparent, 0 0 0 transparent, 0 0 0 transparent, inset 0 0 8px var(--colour-ui-main-background-1);
   transition: box-shadow 0.4s ease-in-out;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  break-inside: avoid;
+  padding: 3px;
 }
 .the-edge-actor-sheet .actor-container-loadout .loadout-box:hover {
   box-shadow: 2px 0 5px var(--colour-ui-secondary), 0 2px 5px var(--colour-ui-secondary), -2px 0 5px var(--colour-ui-secondary), 0 -2px 5px var(--colour-ui-secondary), inset 0 0 8px var(--colour-ui-main-background-1);
@@ -154,16 +154,16 @@
 .the-edge-actor-sheet .actor-container-skill .skill-box {
   height: 45px;
   padding: 0px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  break-inside: avoid;
-  padding: 3px;
   background-color: var(--colour-ui-main-background-1);
   border: solid 1px var(--colour-ui-secondary);
   border-radius: 5px;
   box-shadow: 0 0 4px var(--colour-ui-secondary), 0 0 0 transparent, 0 0 0 transparent, 0 0 0 transparent, inset 0 0 8px var(--colour-ui-main-background-1);
   transition: box-shadow 0.4s ease-in-out;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  break-inside: avoid;
+  padding: 3px;
 }
 .the-edge-actor-sheet .actor-container-skill .skill-box:hover {
   box-shadow: 2px 0 5px var(--colour-ui-secondary), 0 2px 5px var(--colour-ui-secondary), -2px 0 5px var(--colour-ui-secondary), 0 -2px 5px var(--colour-ui-secondary), inset 0 0 8px var(--colour-ui-main-background-1);
@@ -383,6 +383,13 @@
   padding: 10px 0px;
   text-align: center;
 }
+.the-edge-store-sheet .store-header {
+  display: flex;
+  min-height: 70px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5px 0 5px;
+}
 .the-edge-store-sheet .store-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -390,13 +397,14 @@
   padding: 10px;
 }
 .the-edge-store-sheet .store-grid .store-item {
-  border: 1.333px solid #000;
+  background-color: var(--colour-ui-main-background-1);
+  border: solid 1px var(--colour-ui-secondary);
   border-radius: 5px;
-  padding: 10px;
-  transition: all 0.2s ease-in-out;
+  box-shadow: 0 0 4px var(--colour-ui-secondary), 0 0 0 transparent, 0 0 0 transparent, 0 0 0 transparent, inset 0 0 8px var(--colour-ui-main-background-1);
+  transition: box-shadow 0.4s ease-in-out;
 }
 .the-edge-store-sheet .store-grid .store-item:hover {
-  box-shadow: 0 5px 15px rgba(145, 92, 182, 0.4);
+  box-shadow: 2px 0 5px var(--colour-ui-secondary), 0 2px 5px var(--colour-ui-secondary), -2px 0 5px var(--colour-ui-secondary), 0 -2px 5px var(--colour-ui-secondary), inset 0 0 8px var(--colour-ui-main-background-1);
 }
 .the-edge-store-sheet .store-grid .store-currency {
   width: 24px;

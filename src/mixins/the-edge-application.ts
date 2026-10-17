@@ -52,6 +52,41 @@ export default function TheEdgeApplicationMixin<T extends intype>(
     }
 
 
+    public _onRender(context: any, options: any): void {
+      super._onRender(context, options);
+
+      this.element.querySelectorAll(".dynamic-size-hook").forEach((input: Element) => {
+        this._adjustInputWidth(input);
+        input.addEventListener("input", () => this._adjustInputWidth(input));
+      });
+    }
+
+
+    _adjustInputWidth(input: Element) {
+      if (!(input instanceof HTMLInputElement)) return;
+      
+      const width = this._getWidthForContent(
+        input.value || input.placeholder || "",
+        getComputedStyle(input).font
+      );
+      input.style.width = `${width}px`;
+    }
+
+
+    _getWidthForContent(content: string, font: string | undefined = undefined): number {
+      const span = document.createElement("span");
+      span.style.visibility = "hidden";
+      span.style.whiteSpace = "pre";
+      span.style.position = "absolute";
+      if (font) span.style.font = font;
+      span.textContent = content;
+      document.body.appendChild(span);
+      const width = span.offsetWidth + 20;
+      document.body.removeChild(span);
+      return width;
+    }
+
+
     setPosition(position) {
       if (typeof position == "undefined") return;
 

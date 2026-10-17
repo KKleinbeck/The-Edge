@@ -10,18 +10,18 @@
     {{/if}}
     {{#if system.quantity}}
       <input
-        class="quantity-input dynamic-size"
+        class="quantity-input dynamic-size-hook"
         type="number"
         value="{{system.quantity}}"
         style="text-align: right;"
       />
     {{/if}}
   </div>
-  <a class="store-buy-inner beveled-box" data-action="buyOrRetrieve">
+  <button class="store-buy-inner beveled-box" data-action="buyOrRetrieve">
     {{#if storeDetails.isStorage}}
       {{genName "Retrieve"}}
     {{else}}
       {{genName "Buy"}}
     {{/if}}
-  </a>
+  </button>
 </div>
