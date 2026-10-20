@@ -41,12 +41,16 @@ export default class WeaponData extends DataModelComponent {
             2);
         if (weaponType == "Hand-to-Hand combat")
             return level;
+        level += this.weaponPartnerBoost(weaponType);
+        return level;
+    }
+    weaponPartnerBoost(weaponType) {
         const partner = THE_EDGE.weapon_partners[weaponType];
         if (partner) {
             const partnerType = THE_EDGE.weapon_damage_types[partner];
-            level += Math.floor(this.weapons[partnerType][partner].value / 4);
+            return Math.floor(this.weapons[partnerType][partner].value / 4);
         }
-        return level;
+        return 0;
     }
     async rollAttackCheck(prompt) {
         return await DiceServer.attackCheck(prompt);

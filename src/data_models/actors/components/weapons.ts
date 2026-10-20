@@ -49,12 +49,17 @@ export default class WeaponData extends DataModelComponent {
     );
     if (weaponType == "Hand-to-Hand combat") return level;
 
+    level += this.weaponPartnerBoost(weaponType);
+    return level;
+  }
+
+  weaponPartnerBoost(weaponType: TWeapon): number {
     const partner: TWeapon = THE_EDGE.weapon_partners[weaponType];
     if (partner) {
       const partnerType: TWeaponType = THE_EDGE.weapon_damage_types[partner];
-      level += Math.floor(this.weapons[partnerType][partner].value / 4);
+      return Math.floor(this.weapons[partnerType][partner].value / 4);
     }
-    return level;
+    return 0;
   }
 
   async rollAttackCheck(prompt: IAttackRollPrompt): Promise<IAttackRollResult> {

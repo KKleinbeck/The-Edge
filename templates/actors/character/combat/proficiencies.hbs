@@ -1,45 +1,132 @@
-<div style="display: flex; gap: 5px;">
-  {{#each system.weapons as |group groupName|}}
-    <table>
-      <thead>
+<div class="fixed-page">
+  <div class="title">{{combatName "Weapon proficiency"}}</div>
+
+  {{!-- General proficiency and hand to hand combat --}}
+  <table style="width: 99%">
+    <thead>
+      <tr>
+        <th style="width: 30%"><p style="font-size: 14; text-transform: uppercase;">{{itemName "General"}}</p></th>
+        <th class="actor-combat-table-element" data-tooltip aria-label="{{genName 'Level'}}">{{genName "Lvl"}}</th>
+        <th class="actor-combat-table-element" data-tooltip aria-label="{{genName 'Status'}}">{{genName "Sta"}}</th>
+        <th class="actor-combat-table-element" data-tooltip aria-label="{{genName 'Total'}}">{{genName "Ttl"}}</th>
+        <th></th>
+        <th style="width: 30%"></th>
+        <th class="actor-combat-table-element" data-tooltip aria-label="{{genName 'Level'}}">{{genName "Lvl"}}</th>
+        <th class="actor-combat-table-element" data-tooltip aria-label="{{genName 'Status'}}">{{genName "Sta"}}</th>
+        <th class="actor-combat-table-element" data-tooltip aria-label="{{genName 'Total'}}">{{genName "Ttl"}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="font-weight: bold;">{{combatName "General weapon proficiency"}}</td>
+        <td class="actor-combat-table-element" align="right">
+          <input
+            class="core-value" data-target="system.weapons.general.General weapon proficiency.advances" type="number"
+            value="{{getEntries system 'weapons' 'general' "General weapon proficiency" 'advances'}}" data-dtype="Number"
+            style="max-height: 22px; text-align: right; width: 28px; padding: 0 2px 0 0;"
+          >
+        </td>
+        <td class="actor-combat-table-element" align="right">
+          <div class="output" style="max-height: 22px; width: 28px; text-align: right;">
+            {{getEntries system "weapons" "general" "General weapon proficiency" 'status'}}
+          </div>
+        </td>
+        <td class="actor-combat-table-element" align="right">
+          <div class="output" style="max-height: 22px; width: 28px; text-align: right;">
+            {{getWeaponLevel actor "General weapon proficiency"}}
+          </div>
+        </td>
+        <td></td>
+        <td style="font-weight: bold;">{{combatName "Hand-to-Hand combat"}}</td>
+        <td class="actor-combat-table-element" align="right">
+          <input
+            class="core-value" data-target="system.weapons.general.Hand-to-Hand combat.advances" type="number"
+            value="{{getEntries system 'weapons' 'general' "Hand-to-Hand combat" 'advances'}}" data-dtype="Number"
+            style="max-height: 22px; text-align: right; width: 28px; padding: 0 2px 0 0;"
+          >
+        </td>
+        <td class="actor-combat-table-element" align="right">
+          <div class="output" style="max-height: 22px; width: 28px; text-align: right;">
+            {{getEntries system "weapons" "general" "Hand-to-Hand combat" 'status'}}
+          </div>
+        </td>
+        <td class="actor-combat-table-element" align="right">
+          <div class="output" style="max-height: 22px; width: 28px; text-align: right;">
+            {{getWeaponLevel actor "Hand-to-Hand combat"}}
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  {{!-- Energy and kinetic weapons --}}
+  <table style="width: 99%">
+    <thead>
+      <tr>
+        <th style="width: 30%"><p style="font-size: 14; text-transform: uppercase;">{{itemName "Energy"}}</p></th>
+        <th class="actor-combat-table-element" data-tooltip aria-label="{{genName 'Level'}}">{{genName "Lvl"}}</th>
+        <th class="actor-combat-table-element" data-tooltip aria-label="{{genName 'Status'}}">{{genName "Sta"}}</th>
+        <th class="actor-combat-table-element" data-tooltip aria-label="{{genName 'Total'}}">{{genName "Ttl"}}</th>
+        <th></th>
+        <th style="width: 30%"><p style="font-size: 14; text-transform: uppercase;">{{itemName "Kinetic"}}</p></th>
+        <th class="actor-combat-table-element" data-tooltip aria-label="{{genName 'Level'}}">{{genName "Lvl"}}</th>
+        <th class="actor-combat-table-element" data-tooltip aria-label="{{genName 'Status'}}">{{genName "Sta"}}</th>
+        <th class="actor-combat-table-element" data-tooltip aria-label="{{genName 'Total'}}">{{genName "Ttl"}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each helpers.weaponPairs as |weaponPair|}}
         <tr>
-          <th style="width: 60%"><p style="font-size: 14; text-transform: uppercase;">{{itemName groupName}}</p></th>
-          <th class="actor-combat-table-element" data-tooltip aria-label="{{genName 'Level'}}">{{genName "Lvl"}}</th>
-          <th class="actor-combat-table-element" data-tooltip aria-label="{{genName 'Status'}}">{{genName "Sta"}}</th>
-          {{#if (checkEqual groupName "general")}}
-          {{else}}
-            <th class="actor-combat-table-element" data-tooltip aria-label="{{genName 'Total'}}">{{genName "Ttl"}}</th>
-          {{/if}}
+          {{!-- Energy Weapons --}}
+          <td style="font-weight: bold;">{{combatName weaponPair.[0]}}</td>
+          <td class="actor-combat-table-element" align="right">
+            <input
+              class="core-value" data-target="system.weapons.energy.{{weaponPair.[0]}}.advances" type="number"
+              value="{{getEntries ../system 'weapons' 'energy' weaponPair.[0] 'advances'}}" data-dtype="Number"
+              style="max-height: 22px; text-align: right; width: 28px; padding: 0 2px 0 0;"
+            >
+          </td>
+          <td class="actor-combat-table-element" align="right">
+            <div class="output" style="max-height: 22px; width: 28px; text-align: right;">
+              {{getEntries ../system "weapons" "energy" weaponPair.[0] 'status'}}
+            </div>
+          </td>
+          <td class="actor-combat-table-element" align="right"
+            data-tooltip aria-label="{{combatName 'Weapon Prof Total'}}">
+            <div class="output" style="max-height: 22px; width: 28px; text-align: right;">
+              {{getWeaponLevel ../actor weaponPair.[0]}}
+            </div>
+          </td>
+          {{!-- Link --}}
+          <td>
+            <div class="actor-combat-table-link" data-tooltip aria-label="{{combatName "Weapon Prof Exchange"}}">
+              +{{getWeaponPartnerBoost ../actor weaponPair.[0]}}
+              <i class="fa-regular fa-arrow-right-arrow-left"></i>
+              +{{getWeaponPartnerBoost ../actor weaponPair.[1]}}
+            </div>
+          </td>
+          {{!-- Kinetic Weapons --}}
+          <td style="font-weight: bold;">{{combatName weaponPair.[1]}}</td>
+          <td class="actor-combat-table-element" align="right">
+            <input
+              class="core-value" data-target="system.weapons.kinetic.{{weaponPair.[1]}}.advances" type="number"
+              value="{{getEntries ../system 'weapons' 'kinetic' weaponPair.[1] 'advances'}}" data-dtype="Number"
+              style="max-height: 22px; text-align: right; width: 28px; padding: 0 2px 0 0;"
+            >
+          </td>
+          <td class="actor-combat-table-element" align="right">
+            <div class="output" style="max-height: 22px; width: 28px; text-align: right;">
+              {{getEntries ../system "weapons" "kinetic" weaponPair.[1] 'status'}}
+            </div>
+          </td>
+          <td class="actor-combat-table-element" align="right"
+            data-tooltip aria-label="{{combatName 'Weapon Prof Total'}}">
+            <div class="output" style="max-height: 22px; width: 28px; text-align: right;">
+              {{getWeaponLevel ../actor weaponPair.[1]}}
+            </div>
+          </td>
         </tr>
-      </thead>
-      <tbody>
-        {{#each group as |modifiers weapon|}}
-          <tr>
-            <td style="font-weight: bold;">{{combatName weapon}}</td>
-            <td class="actor-combat-table-element" align="right">
-              <input
-                class="core-value" data-target="system.weapons.{{groupName}}.{{weapon}}.advances" type="number"
-                value="{{getWeaponProficiency ../../actor groupName weapon 'advances'}}" data-dtype="Number"
-                style="max-height: 22px; text-align: right; width: 28px; padding: 0 2px 0 0;"
-              >
-            </td>
-            <td class="actor-combat-table-element" align="right">
-              <div class="output" style="max-height: 22px; width: 28px; text-align: right;">
-                {{getWeaponProficiency ../../actor groupName weapon 'status'}}
-              </div>
-            </td>
-            {{#if (checkEqual groupName "general")}}
-            {{else}}
-              <td class="actor-combat-table-element" align="right"
-                data-tooltip aria-label="{{combatName 'Weapon Prof Total'}}">
-                <div class="output" style="max-height: 22px; width: 28px; text-align: right;">
-                  {{getWeaponLevel ../../actor weapon}}
-                </div>
-              </td>
-            {{/if}}
-          </tr>
-        {{/each}}
-      </tbody>
-    </table>
-  {{/each}}
+      {{/each}}
+    </tbody>
+  </table>
 </div>

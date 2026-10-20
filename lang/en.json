@@ -106,6 +106,7 @@
     "HAND TO HAND COMBAT": "Hand to hand combat",
     "HAND-TO-HAND COMBAT": "Hand to hand combat",
     "RECOILLESS RIFLES": "Recoilless Rifles",
+    "WEAPON PROFICIENCY": "Weapon proficiency",
 
     "ABSORPTION": "Absorption",
     "ARMOUR PENETRATION": "Armour penetration",
@@ -227,6 +228,7 @@
     "CRIT": "Critical roll dice",
     "CRITFAIL": "Critical fail dice",
 
+    "WEAPON PROF EXCHANGE": "Gain 25% of the neighbour proficiency",
     "WEAPON PROF TOTAL": "50% General proficiency + 50% specific proficiency + 25% neighbour proficiency",
 
     "IDLE": "Idle",

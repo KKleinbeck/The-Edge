@@ -92,8 +92,14 @@
   display: flex;
 }
 .the-edge-actor-sheet .actor-combat-table-element {
-  text-align: right;
+  text-align: center;
   padding: 4px 8px 4px 8px;
+}
+.the-edge-actor-sheet .actor-combat-table-link {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: var(--colour-ui-main-1);
 }
 .the-edge-actor-sheet .actor-container-language {
   columns: 2;

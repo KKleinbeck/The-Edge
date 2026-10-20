@@ -217,6 +217,13 @@ THE_EDGE.impactDamageWoundCount = (speed) => {
     return Math.floor(speed / 3);
 };
 THE_EDGE.medicine_effects = ["heals", "treats"];
+THE_EDGE.weaponPairs = [
+    ["Blaster Pistols", "Kinetic Pistols"],
+    ["Pulse Rifle", "Slug Throwers"],
+    ["SABs", "LMGs"],
+    ["Blaster Shockguns", "Shotguns"],
+    ["Blaster Snipers", "Projectile Snipers"]
+];
 THE_EDGE.wound_status = ["treatable", "treated"];
 // Entries below are primarily implemented in the_edge.js
 THE_EDGE.coreValueMap = {

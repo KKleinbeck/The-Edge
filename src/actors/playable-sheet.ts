@@ -255,6 +255,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
         ),
       },
       itemTypes: ["Weapon", "Armour", "Ammunition", "Gear", "Consumables"],
+      weaponPairs: THE_EDGE.weaponPairs
     };
 
     context.effectDict = {

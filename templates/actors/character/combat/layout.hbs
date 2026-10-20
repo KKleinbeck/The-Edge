@@ -4,12 +4,7 @@
   data-tab="combat"
 >
   {{> systems/the_edge/templates/actors/character/combat/weapon_overview.hbs}}
-  {{>
-    systems/the_edge/templates/actors/skills.hbs name="Combat skills" skills=Combatskill
-  }}
-  {{>
-    systems/the_edge/templates/actors/skills.hbs name="Medical skills" skills=Medicalskill
-  }}
-  <br />
+  {{> systems/the_edge/templates/actors/skills.hbs name="Combat skills" skills=Combatskill }}
+  {{> systems/the_edge/templates/actors/skills.hbs name="Medical skills" skills=Medicalskill }}
   {{> systems/the_edge/templates/actors/character/combat/proficiencies.hbs}}
 </section>

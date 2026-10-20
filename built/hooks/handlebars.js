@@ -176,11 +176,11 @@ export default function () {
         getProficiencyDice: (a, b, c, d) => {
             return a.system.proficiencies[b][c].dice[d];
         },
-        getWeaponProficiency: (a, b, c, d) => {
-            return a.system.weapons[b][c][d];
-        },
         getWeaponLevel: (actor, weaponType) => {
             return actor.system.getWeaponLevel(weaponType);
+        },
+        getWeaponPartnerBoost: (actor, weaponType) => {
+            return actor.system.weaponPartnerBoost(weaponType);
         },
         getLoadedAmmunition: (actor, weapon) => {
             if (weapon.system.type == "Hand-to-Hand combat")

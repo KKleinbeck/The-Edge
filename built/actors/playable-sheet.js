@@ -223,6 +223,7 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
                 parsedFormula: Roll.parse(CONFIG.Combat.initiative.formula, foundry.utils.flattenObject(this.actor.system)).reduce((acc, dieTerm) => acc + dieTerm.formula, ""),
             },
             itemTypes: ["Weapon", "Armour", "Ammunition", "Gear", "Consumables"],
+            weaponPairs: THE_EDGE.weaponPairs
         };
         context.effectDict = {
             effects: this.actor.system.effects,
