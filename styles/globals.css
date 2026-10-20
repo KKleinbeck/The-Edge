@@ -106,17 +106,26 @@ select {
   color: var(--font-main-color) !important;
   border-color: var(--colour-ui-main-1);
 }
-table .grenade {
-  margin: 5px 0 0 0;
+table {
+  background-color: var(--colour-ui-main-background-1);
+  border: solid 1px var(--colour-ui-secondary);
+  border-radius: 5px;
+  box-shadow: 0 0 4px var(--colour-ui-secondary), 0 0 0 transparent, 0 0 0 transparent, 0 0 0 transparent, inset 0 0 8px var(--colour-ui-main-background-1);
+  transition: box-shadow 0.4s ease-in-out;
 }
-table .grenade td {
-  padding: 0 0 0 10px;
-  max-height: 15px !important;
+table:hover {
+  box-shadow: 2px 0 5px var(--colour-ui-secondary), 0 2px 5px var(--colour-ui-secondary), -2px 0 5px var(--colour-ui-secondary), 0 -2px 5px var(--colour-ui-secondary), inset 0 0 8px var(--colour-ui-main-background-1);
 }
-table .chat-table {
+table thead {
+  background-color: var(--table-row-color-even);
+}
+table.table-grenade {
+  margin: 5px 5px 0 5px;
+}
+table.chat-table {
   margin: 3px 0 3px 0;
 }
-table .chat-table td {
+table.chat-table td {
   padding: 0 2px 0 2px;
   text-align: right;
 }

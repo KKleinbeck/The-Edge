@@ -28,29 +28,6 @@
     </select>
   </div>
 
-  {{#if (checkEqual item.system.current_type "grenade")}}
-    <div class="item-columned-page" style="gap: 15px;">
-      <table class="grenade">
-        <tr>
-          <td></td>
-          <td style="width: 26%; text-align: center;">{{combatName "close"}}</td>
-          <td style="width: 26%; text-align: center;">{{combatName "far"}}</td>
-        </tr>
-        <tr>
-          <td>{{combatName "Blast distance"}}</td>
-          {{#each item.system.subtypes.grenade.blastDistance as |distance|}}
-            <td><input type="number" style="text-align: right;" name="system.subtypes.grenade.blastDistance" value="{{distance}}"/></td>
-          {{/each}}
-        </tr>
-        <tr>
-          <td>{{genName "Damage"}}</td>
-          {{#each item.system.subtypes.grenade.damage as |damage|}}
-            <td><input type="text" style="text-align: right;" name="system.subtypes.grenade.damage" value="{{damage}}"/></td>
-          {{/each}}
-        </tr>
-      </table>
-    </div> 
-  {{/if}}
   {{#if (checkEqual item.system.current_type "medicine")}}
     <div class="item-columned-page" style="align-items: baseline;">
       <div class="item-fields" style="width: 20%;">

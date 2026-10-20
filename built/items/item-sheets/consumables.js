@@ -16,6 +16,9 @@ export class ItemSheetConsumables extends TheEdgeItemSheet {
         separatorHeader: {
             template: "systems/the_edge/templates/generic/separator-horizontal.hbs",
         },
+        damage: {
+            template: "systems/the_edge/templates/items/Grenade-damage.hbs",
+        },
         effects: {
             template: "systems/the_edge/templates/items/meta-effects.hbs",
         },
@@ -39,17 +42,25 @@ export class ItemSheetConsumables extends TheEdgeItemSheet {
     async render(options = {}, _options = {}) {
         const ctor = this.constructor;
         // Disable effects for generic
-        if (this.item.system.current_type != "generic") {
+        if (this.item.system.current_type == "grenade") {
             ctor.TABS.primary.tabs = [
+                { id: "damage" },
                 { id: "effects" },
                 { id: "description" },
             ];
         }
+        else if (this.item.system.current_type != "generic") {
+            ctor.TABS.primary.tabs = [
+                { id: "effects" },
+                { id: "description" },
+            ];
+            if (this.tabGroups.primary == "damage")
+                this.tabGroups.primary = "effects";
+        }
         else {
-            ctor.TABS.primary.tabs =
-                ctor.TABS.primary.tabs.filter((x) => x.id != "effects");
+            ctor.TABS.primary.tabs = [{ id: "description" }];
             if (this.tabGroups.primary == "effects")
-                this.tabGroups.primary = "details";
+                this.tabGroups.primary = "description";
         }
         // Special Effects tab for Grenades
         if (this.item.system.current_type == "grenade") {

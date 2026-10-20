@@ -135,15 +135,17 @@ select {
   border-color: var(--colour-ui-main-1);
 }
 table {
-  .grenade {
-    margin: 5px 0 0 0;
+  .container-box-template();
 
-    td {
-      padding: 0 0 0 10px;
-      max-height: 15px !important;
-    }
+  thead {
+    background-color: var(--table-row-color-even);
   }
-  .chat-table {
+
+  &.table-grenade {
+    margin: 5px 5px 0 5px;
+  }
+  
+  &.chat-table {
     margin: 3px 0 3px 0;
 
     td {

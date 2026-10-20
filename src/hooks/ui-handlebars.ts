@@ -65,9 +65,9 @@ export default function () {
       `;
     },
     uiConsumablesHeaderHeight: (type: string): number => {
-      if (type === "drugs" || type === "food" || type === "generic") return 29;
+      // if (type === "drugs" || type === "food" || type === "generic") return 29;
       if (type === "medicine") return 80;
-      return 112;
+      return 29;
     }
   });
 }
