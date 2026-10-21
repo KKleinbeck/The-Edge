@@ -2,6 +2,7 @@ import Aux from "../system/auxilliaries.js";
 import IconSelectorMixin from "../mixins/icon-selector-mixin.js";
 import NotificationServer from "../system/notifications.js";
 import { TheEdgeActorSheet } from "./actor-sheet.js";
+import LocalisationServer from "../system/localisation_server.js";
 export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
     constructor(options) {
         super(options);
@@ -67,6 +68,31 @@ export class TheEdgeStoreSheet extends IconSelectorMixin(TheEdgeActorSheet) {
             initial: "Gear",
         },
     };
+    async getCustomFooterBar() {
+        var footer = `
+      <div style="display: flex; justify-content: space-between; width: 100%;">
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <label for="credits" style="flex: 1; text-align: right;">Chids</label>`;
+        if (game.user.isGM) {
+            footer += `<input class="credit-input-hook" name="system.credits" type="number"
+        value="${this.document.system.credits}" id="credits" style="text-align: right;">`;
+        }
+        else {
+            footer += `<div class="output" style="flex: 1; text-align: right;">${this.document.system.credits}</div>`;
+        }
+        footer += `</div>`;
+        if (!this.document.system.isStorage) {
+            footer += `
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <label for="tradeFactor">${LocalisationServer.localise("trade factor")}</label>
+          <input type="number" name="system.tradeFactor" id="tradeFactor" value="${this.document.system.tradeFactor}"
+            style="width: 40px; text-align: right;"/>
+        </div>
+      `;
+        }
+        footer += `</div>`;
+        return footer;
+    }
     async render(options = {}, _options = {}) {
         // Select only item classes that have content (+ always Gear)
         const tabs = Object.entries(this.document.itemTypes)

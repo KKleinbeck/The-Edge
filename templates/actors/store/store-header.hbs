@@ -1,6 +1,10 @@
 <header class="actor-sheet-header store-header">
+  <img class="store-profile-img" src="{{actor.img}}" data-edit="img" data-action="editImage" title="{{actor.name}}"/>
+
   <div style="display: flex; align-items: center; gap: 3px;">
-    {{genName "Trades with"}}:
+    <div style="white-space: nowrap;">
+      {{genName "Trades with"}}:
+    </div>
     {{#if (checkNotEmpty tokens)}}
       {{#if userIsGM}}
         <select class="actor-selection-hook" style="width: 70%; text-align: right; height: 28px; margin-left: auto">
@@ -35,21 +39,6 @@
         </a>
       </div>
     {{/if}}
-  </div>
-
-  <div style="width: 140px;">
-    <div style="display: flex; gap: 10px; justify-content: space-between; align-items: center;">
-      <label for="credits" style="flex: 1; text-align: right;">Chids</label>
-      {{#if userIsGM}}
-        <input name="system.credits" type="number" value="{{store.system.credits}}" id="credits" style="text-align: right;">
-      {{else}}
-        <div class="output" style="flex: 1; text-align: right;">{{store.system.credits}}</div>
-      {{/if}}
-    </div>
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-      <label for="tradeFactor">{{genName "trade factor"}}</label>
-      <input type="number" name="system.tradeFactor" id="tradeFactor" value="{{store.system.tradeFactor}}" style="width: 40px; text-align: right;"/>
-    </div>
   </div>
 
   {{#if userIsGM}}

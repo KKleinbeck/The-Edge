@@ -139,8 +139,9 @@ declare class Store extends FoundryDocument {
   itemTypes: Record<string, Items>;
   system: {
     buysFromPlayer: boolean;
+    credits: number;
     isStorage: boolean;
-
+    tradeFactor: number;
   }
   token: TokenDocument
 }

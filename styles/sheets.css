@@ -396,6 +396,11 @@
   align-items: center;
   padding: 0 5px 0 5px;
 }
+.the-edge-store-sheet .store-header .store-profile-img {
+  flex: 0 0 70px;
+  height: 70px;
+  margin-right: 10px;
+}
 .the-edge-store-sheet .store-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
