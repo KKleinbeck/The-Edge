@@ -395,9 +395,28 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     static shortRest(_) {
         DialogRest.start({ actor: this.actor, type: "short rest" });
     }
-    static applyDamage(_event, target) {
+    static async applyDamage(_event, target) {
         const location = target.dataset.location;
-        DialogDamage.start({ actor: this.actor, location: location });
+        const woundDetails = await DialogDamage.prompt();
+        if (!woundDetails || !("damageType" in woundDetails))
+            return;
+        if (woundDetails.damageType == "fall") {
+            this.actor.system.applyFallDamage(woundDetails.height, location);
+        }
+        else if (woundDetails.damageType == "impact") {
+            this.actor.system.applyImpactDamage(woundDetails.speed, location);
+        }
+        else {
+            const details = {
+                crit: false,
+                damage: woundDetails.damage,
+                damageType: woundDetails.damageType,
+                givenLocation: location,
+                name: LocalisationServer.localise("New wound"),
+                penetration: 0
+            };
+            this.actor.system.applyDamage(details);
+        }
     }
     // Specific Listeners
     async _onRender(context, options) {

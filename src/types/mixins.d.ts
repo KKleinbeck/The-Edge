@@ -37,6 +37,7 @@ declare class IconSelector {
 }
 
 interface IIconSelected {
+  icon?: string;
   selected: boolean;
 }
 

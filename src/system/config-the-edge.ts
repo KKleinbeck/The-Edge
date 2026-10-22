@@ -207,16 +207,17 @@ THE_EDGE.dying = {
   strainPerBR: 10,
   maxStrainBuffer: 20,
 };
-THE_EDGE.fallDamageRoll = (height) => {
-  return `${height}d12 + ${4 * height - 22}`;
+THE_EDGE.fallDamageRoll = (height: number): string => {
+  return `${height}d12 ${4 * height - 22 > 0 ? "+" : "-"} ${Math.abs(4 * height - 22)}`;
 };
-THE_EDGE.fallDamageWoundCount = (height) => {
+THE_EDGE.fallDamageWoundCount = (height: number): number => {
   return Math.floor(height / 2);
 };
-THE_EDGE.impactDamageRoll = (speed) => {
-  return `${speed}d${speed}+${speed - 30}`;
+THE_EDGE.impactDamageRoll = (speed: number): string => {
+  if (speed < 6) return "0";
+  return `${speed}d${speed} ${speed - 30 > 0 ? "+" : "-"} ${Math.abs(speed - 30)}`;
 };
-THE_EDGE.impactDamageWoundCount = (speed) => {
+THE_EDGE.impactDamageWoundCount = (speed: number): number => {
   return Math.floor(speed / 3);
 };
 THE_EDGE.medicine_effects = ["heals", "treats"];

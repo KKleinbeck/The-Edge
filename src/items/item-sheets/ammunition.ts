@@ -63,7 +63,7 @@ export class ItemSheetAmmunition extends RangeChartSelectorMixin(
     return context;
   }
 
-  _setTypesDict() {
+  _setTypesDict(): Record<string, IIconSelected> {
     const types = {};
     for (const type of ["energy", "kinetic"]) {
       types[type] = {

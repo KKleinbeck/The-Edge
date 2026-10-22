@@ -29,7 +29,6 @@ export default function IconSelectorMixin(BaseApplication) {
         static _onIconSelected(_event, target) {
             const iconType = target.dataset.iconType;
             const value = target.dataset.value;
-            // @ts-expect-error
             this.onIconSelected(iconType, value);
         }
         async onIconSelected(iconType, value) { }

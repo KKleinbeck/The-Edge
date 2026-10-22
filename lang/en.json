@@ -114,9 +114,9 @@
 
     "DAMAGE MODIFIERS": "Damage Modifiers",
     "ENERGY": "Energy",
+    "FALL": "Fall damage",
     "KINETIC": "Kinetic",
     "ELEMENTAL": "Elemental",
-    "FALL": "Fall damage",
     "IMPACT": "Impact damage",
 
     "MULTIPLE TARGETS": "Multiple targets",
@@ -257,6 +257,7 @@
     "NEW EFFECT": "New Effect"
   },
   "DIALOG": {
+    "ACCEPT": "Accept",
     "ACCEPT CHANGES": "Accept changes",
     "ATTACK": "Attack",
     "CANCEL": "Cancel",
@@ -678,6 +679,7 @@
   "COUNTERS": "Counters",
   "DAMAGE": "Damage",
   "DAMAGE MODIFIERS": "Damage mods",
+  "DAMAGE ROLL": "Damage roll",
   "DAMAGE TYPE": "Damage type",
   "DEFAULT": "Default",
   "DELETE": "Delete",

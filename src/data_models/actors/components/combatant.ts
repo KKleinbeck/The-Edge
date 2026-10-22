@@ -242,7 +242,7 @@ export default class CombatantData extends DataModelComponent {
     return [protectionLog, damage];
   }
 
-  async applyFallDamage(height, location) {
+  async applyFallDamage(height: number, location) {
     const woundCountGuess = THE_EDGE.fallDamageWoundCount(height);
     const damageDetails = {
       damageRoll: THE_EDGE.fallDamageRoll(height),
@@ -255,7 +255,7 @@ export default class CombatantData extends DataModelComponent {
     await this._applyImpactOrFallDamage("fall", damageDetails);
   }
 
-  async applyImpactDamage(speed, location) {
+  async applyImpactDamage(speed: number, location) {
     const woundCountGuess = THE_EDGE.impactDamageWoundCount(speed);
     const damageDetails = {
       damageRoll: THE_EDGE.impactDamageRoll(speed),
@@ -278,6 +278,8 @@ export default class CombatantData extends DataModelComponent {
     const approxDamagePerWound = Math.ceil(details.damage / details.nWounds);
     const bt = THE_EDGE.bleedingThreshold[type];
     for (let i = 0; i < 2 * details.nWounds; i++) {
+      if (damageRemaining <= 0) break;
+
       const nextDamage = Math.min(
         damageRemaining,
         Math.floor(approxDamagePerWound / 2) +
@@ -302,7 +304,6 @@ export default class CombatantData extends DataModelComponent {
       await this._generateNewWound(woundDetails);
 
       damageRemaining -= Math.ceil(nextDamage);
-      if (damageRemaining <= 0) break;
     }
     // TODO: refactor to use this.applyDamage to handle death correctly
     this.parent.update({

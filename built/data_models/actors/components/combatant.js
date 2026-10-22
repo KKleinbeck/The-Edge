@@ -211,6 +211,8 @@ export default class CombatantData extends DataModelComponent {
         const approxDamagePerWound = Math.ceil(details.damage / details.nWounds);
         const bt = THE_EDGE.bleedingThreshold[type];
         for (let i = 0; i < 2 * details.nWounds; i++) {
+            if (damageRemaining <= 0)
+                break;
             const nextDamage = Math.min(damageRemaining, Math.floor(approxDamagePerWound / 2) +
                 Aux.randomInt(1, approxDamagePerWound));
             const [bodyPart, coordinates] = Aux.generateWoundLocation(false, this.sex);
@@ -226,8 +228,6 @@ export default class CombatantData extends DataModelComponent {
             };
             await this._generateNewWound(woundDetails);
             damageRemaining -= Math.ceil(nextDamage);
-            if (damageRemaining <= 0)
-                break;
         }
         // TODO: refactor to use this.applyDamage to handle death correctly
         this.parent.update({

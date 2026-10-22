@@ -73,6 +73,7 @@ export const preloadHandlebarsTemplates = async function () {
         "systems/the_edge/templates/generic/counter-token.hbs",
         "systems/the_edge/templates/generic/effect-modifiers.hbs",
         "systems/the_edge/templates/generic/icon-selector.hbs",
+        "systems/the_edge/templates/generic/icon-selector-text.hbs",
         "systems/the_edge/templates/generic/probability-distribution.hbs",
         "systems/the_edge/templates/generic/progress-bar-modern.hbs",
         "systems/the_edge/templates/generic/range-chart.hbs",

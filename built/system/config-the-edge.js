@@ -205,13 +205,15 @@ THE_EDGE.dying = {
     maxStrainBuffer: 20,
 };
 THE_EDGE.fallDamageRoll = (height) => {
-    return `${height}d12 + ${4 * height - 22}`;
+    return `${height}d12 ${4 * height - 22 > 0 ? "+" : "-"} ${Math.abs(4 * height - 22)}`;
 };
 THE_EDGE.fallDamageWoundCount = (height) => {
     return Math.floor(height / 2);
 };
 THE_EDGE.impactDamageRoll = (speed) => {
-    return `${speed}d${speed}+${speed - 30}`;
+    if (speed < 6)
+        return "0";
+    return `${speed}d${speed} ${speed - 30 > 0 ? "+" : "-"} ${Math.abs(speed - 30)}`;
 };
 THE_EDGE.impactDamageWoundCount = (speed) => {
     return Math.floor(speed / 3);

@@ -34,10 +34,9 @@ export default function IconSelectorMixin<T extends intype>(
         });
     }
 
-    static _onIconSelected(_event, target) {
+    static _onIconSelected(this, _event, target) {
       const iconType = target.dataset.iconType;
       const value = target.dataset.value;
-      // @ts-expect-error
       this.onIconSelected(iconType, value);
     }
 

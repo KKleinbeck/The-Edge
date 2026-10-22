@@ -1,0 +1,58 @@
+<div style="display: flex; justify-content: space-between;">
+  {{>
+    systems/the_edge/templates/generic/icon-selector-text.hbs
+    text=(genName "fall damage") iconType="type" value="fall" width="30%"
+    selected=(checkEqual selectedType "fall")
+  }}
+  {{>
+    systems/the_edge/templates/generic/icon-selector-text.hbs
+    text=(genName "impact damage") iconType="type" value="impact" width="30%"
+    selected=(checkEqual selectedType "impact")
+  }}
+  {{>
+    systems/the_edge/templates/generic/icon-selector-text.hbs
+    text=(genName "general") iconType="type" value="general" width="30%"
+    selected=(checkEqual selectedType "general")
+  }}
+</div>
+
+<div id="fall" style="display: flex; justify-content: space-around; white-space: nowrap; align-items: center">
+  <div style="display: flex; gap: 10px; alig-items: center;">
+    <label for="fallHeight">{{genName "Fall distance"}} [m]:</label>
+    <input id="fallHeight" type="number" value="0" style="max-width: 64px; text-align: right"/>
+  </div>
+  <div style="display: flex; gap: 10px;">
+    <div style="white-space: nowrap;">
+      {{genName "Damage roll"}}
+    </div>
+    <div class="output" id="fallDamageRoll" style="width: 128px; text-align: right;">{{fallDamageRoll}}</div>
+  </div>
+</div>
+
+<div class="hidden" id="impact" style="display: flex; justify-content: space-around; white-space: nowrap; align-items: center">
+  <div style="display: flex; gap: 10px; alig-items: center;">
+    <label for="impactSpeed">{{genName "Impact Speed"}} [m/s]:</label>
+    <input id="impactSpeed" type="number" value="0" style="max-width: 64px; text-align: right"/>
+  </div>
+  <div style="display: flex; gap: 10px;">
+    <div style="white-space: nowrap;">
+      {{genName "Damage roll"}}
+    </div>
+    <div class="output" id="impactSpeedRoll" style="width: 128px; text-align: right;">{{impactSpeedRoll}}</div>
+  </div>
+</div>
+
+<div class="hidden" id="general" style="display: flex; justify-content: space-around; white-space: nowrap; align-items: center">
+  <div style="display: flex; gap: 10px; white-space: nowrap; align-items: center">
+    <label for="generalDamage">{{genName "damage"}}:</label>
+    <input name="damage" id="generalDamage" type="number" value="0" style="max-width: 64px; text-align: right;"/>
+  </div>
+  <div style="display: flex; gap: 10px; white-space: nowrap; align-items: center">
+    <label for="damageType">{{genName "Damage type"}}:</label>
+    <select name="type" id="damageType">
+      {{#each damageTypes as |type|}}
+        <option value="{{type}}">{{combatName type}}</option>
+      {{/each}}
+    </select>
+  </div>
+</div>

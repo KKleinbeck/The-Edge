@@ -149,6 +149,12 @@ table.chat-table td {
 .filepicker .favorites .path {
   background-color: var(--colour-ui-main-background-2) !important;
 }
+.form-footer {
+  position: absolute;
+  bottom: 3%;
+  left: 3%;
+  right: 3%;
+}
 .resource {
   height: 40px;
   margin-top: 10px;
@@ -387,6 +393,9 @@ textarea {
   height: 28px;
   background-color: #666;
   border-radius: 14px;
+}
+.system-the_edge .hidden {
+  display: none;
 }
 .system-the_edge .item-img {
   background-color: #fff;
