@@ -1,9 +1,45 @@
 import Aux from "../../system/auxilliaries.js";
 import ChatServer from "../../system/chat_server.js";
+import DiceServer from "../../system/dice_server.js";
 import NotificationServer from "../../system/notifications.js";
 export default class ControllerCharacter {
     constructor(actor) {
         this.actor = actor;
+    }
+    async applyMedicine(woundIndex, medicineItem) {
+        const wounds = this.actor.system.wounds;
+        const wound = wounds[woundIndex];
+        const medicine = medicineItem.system.subtypes.medicine;
+        const effect = medicine.effect;
+        let healing = await DiceServer.genericRoll(medicine.healing);
+        healing = Math.min(healing, wound.damage);
+        let coagulation = await DiceServer.genericRoll(medicine.coagulation);
+        coagulation = Math.min(coagulation, wound.bleeding);
+        if (healing == wound.damage && coagulation == wound.bleeding) {
+            this.actor.system.deleteWound(woundIndex);
+        }
+        else {
+            if (effect == "treats")
+                wound.status = "treated";
+            wound.bleeding -= coagulation;
+            wound.damage -= healing;
+            this.actor.update({
+                "system.health.value": Math.min(this.actor.system.health.max.value, this.actor.system.health.value + healing),
+                "system.wounds": wounds,
+            });
+        }
+        const details = {
+            healing: healing,
+            healingDice: medicine.healing,
+            coagulation: coagulation,
+            coagulationDice: medicine.coagulation,
+            actor: this.actor.name,
+            medicineName: medicineItem.name,
+        };
+        ChatServer.transmitEvent("MEDICINE", details, {
+            speaker: { actor: this.actor.id },
+        });
+        medicineItem.useOne();
     }
     async useConsumable(item) {
         const existingCopies = this.actor.system.findEffectsByName(item.name);

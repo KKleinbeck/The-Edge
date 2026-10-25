@@ -50,6 +50,10 @@ declare class Actor extends FoundryDocument {
     counters: ICounter[];
     credits: { chids: number; digital: number };
     effects: IEffect[];
+    health: {
+      max: {value: number},
+      value: number
+    }
     height: number;
     heroToken: {available: number}
     overloadLevel: number;

@@ -124,19 +124,19 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(
         Hooks.call("TheEdgeAction", payload);
         break;
       case "consume":
-        Hooks.call("onModifierEvent", "onUse", {
-          actor: this.actor,
-          itemId: item.id,
-        });
         switch (item.system.current_type) {
           case "medicine":
             const wounds = this.actor.system.wounds;
             if (wounds.length) {
-              DialogMedicine.start({
-                medicineItem: item,
-                wounds: wounds,
-                actor: this.actor,
-              });
+              const result = await DialogMedicine.prompt({wounds: wounds});
+              if (result.woundIndex >= 0) {
+                this.actor.controller.applyMedicine(result.woundIndex, item);
+
+                Hooks.call("onModifierEvent", "onUse", {
+                  actor: this.actor,
+                  itemId: item.id,
+                });
+              }
             } else {
               NotificationServer.notify({ id: "No wounds on Actor", details: {
                 name: this.actor.name,
@@ -149,6 +149,10 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(
             break;
 
           default:
+            Hooks.call("onModifierEvent", "onUse", {
+              actor: this.actor,
+              itemId: item.id,
+            });
             this.actor.controller.useConsumable(item);
             break;
         }

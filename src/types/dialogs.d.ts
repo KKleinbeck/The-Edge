@@ -1,7 +1,8 @@
-interface IDialogMedicineData {
-  medicineItem: foundryAny;
+interface IDialogMedicineDetails {
   wounds: IWound[];
-  actor: foundryAny;
+}
+interface IDialogMedicineResult {
+  woundIndex: number
 }
 
 interface IDialogWeaponData {

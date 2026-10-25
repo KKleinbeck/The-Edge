@@ -2,12 +2,12 @@
   {{#if hasNoWounds}}
     {{detailedLocalisation "Dialog" "No treatable wounds"}}
   {{else}}
-    <select name="WoundSelector">
+    <select id="woundSelector">
       {{#each wounds as |wound|}}
         {{#unless (checkEqual wound.status "treated")}}
           <option value="{{@index}}">{{itemName wound.bodyPart}}
-            - D{{wound.damage}}
-            B{{wound.bleeding}}</option>
+            - {{genName "Damage"}} {{wound.damage}}
+            {{genName "Bleeding"}} {{wound.bleeding}}</option>
         {{/unless}}
       {{/each}}
     </select>
