@@ -84,8 +84,11 @@ export class TheEdgeActorSheet extends CounterMixin(EffectModifierMixin(TheEdgeA
             case "delete":
                 if (item.type.includes("vantage"))
                     this.actor.deleteVantage(item);
-                else
-                    DialogItemDeletion.start({ item: item, actor: this.actor });
+                else {
+                    const result = await DialogItemDeletion.wait({ name: item.name });
+                    if (result.delete)
+                        item.delete();
+                }
                 break;
             case "toggle-equip":
                 const equippedFlag = await item.system.toggleEquipped();
