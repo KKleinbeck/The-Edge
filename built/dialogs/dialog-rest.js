@@ -4,7 +4,7 @@ const { renderTemplate } = foundry.applications.handlebars;
 export default class DialogRest extends DialogV2 {
     static get DEFAULT_CONFIG() {
         return {
-            position: { width: 300, height: 100 },
+            position: { width: 300 },
         };
     }
     static async prompt(details, config = {}) {

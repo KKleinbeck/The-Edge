@@ -7,7 +7,7 @@ export default class DialogDamage extends IconSelectorMixin(DialogV2) {
     damageType = "fall";
     static get DEFAULT_CONFIG() {
         return {
-            position: { width: 450, height: 200 },
+            position: { width: 450 },
             window: { title: LocalisationServer.localise("Apply Damage") },
         };
     }

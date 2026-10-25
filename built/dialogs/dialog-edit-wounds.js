@@ -4,7 +4,7 @@ const { renderTemplate } = foundry.applications.handlebars;
 export default class DialogEditWounds extends DialogV2 {
     static get DEFAULT_CONFIG() {
         return {
-            position: { width: 250, height: 250 },
+            position: { width: 250 },
             window: { title: LocalisationServer.localise("Edit Wound", "dialog") },
         };
     }

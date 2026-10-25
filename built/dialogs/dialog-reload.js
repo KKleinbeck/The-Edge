@@ -4,7 +4,7 @@ const { renderTemplate } = foundry.applications.handlebars;
 export default class DialogReload extends DialogV2 {
     static get DEFAULT_CONFIG() {
         return {
-            position: { width: 400, height: 180 },
+            position: { width: 400 },
             window: { title: LocalisationServer.localise("Select ammunition", "dialog") },
         };
     }

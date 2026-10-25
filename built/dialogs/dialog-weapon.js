@@ -12,7 +12,7 @@ export default class DialogWeapon extends DialogV2 {
     static async start(checkData) {
         const checkDataExtended = DialogWeapon._extendCheckData(checkData);
         const config = {
-            position: { width: 320, height: 380 },
+            position: { width: 320 },
             window: {
                 title: checkData.weapon.name + " " + LocalisationServer.localise("Check"),
             },

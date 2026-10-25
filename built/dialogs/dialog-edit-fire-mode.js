@@ -4,7 +4,7 @@ const { renderTemplate } = foundry.applications.handlebars;
 export default class DialogEditFireMode extends DialogV2 {
     static get DEFAULT_CONFIG() {
         return {
-            position: { width: 300, height: 310 },
+            position: { width: 300 },
             window: { title: LocalisationServer.localise("Edit Wound", "dialog") },
         };
     }

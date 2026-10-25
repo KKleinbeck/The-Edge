@@ -149,12 +149,6 @@ table.chat-table td {
 .filepicker .favorites .path {
   background-color: var(--colour-ui-main-background-2) !important;
 }
-.form-footer {
-  position: absolute;
-  bottom: 3%;
-  left: 3%;
-  right: 3%;
-}
 .resource {
   height: 40px;
   margin-top: 10px;

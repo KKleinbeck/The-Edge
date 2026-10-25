@@ -4,7 +4,7 @@ const { renderTemplate } = foundry.applications.handlebars;
 export default class DialogMedicine extends DialogV2 {
     static get DEFAULT_CONFIG() {
         return {
-            position: { width: 350, height: 160 },
+            position: { width: 350 },
             window: { title: LocalisationServer.localise("Select wound", "dialog") }
         };
     }

@@ -3,7 +3,7 @@ const { DialogV2 } = foundry.applications.api;
 export default class DialogItemDeletion extends DialogV2 {
     static get DEFAULT_CONFIG() {
         return {
-            position: { width: 200, height: 100 },
+            position: { width: 200 },
         };
     }
     static async wait(details, config = {}) {
