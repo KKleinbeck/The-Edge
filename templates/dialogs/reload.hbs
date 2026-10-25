@@ -1,0 +1,12 @@
+<div class="dialog-form-flex" style="padding-bottom: 15px">
+  {{#if (checkNotEmpty ammunitionOptions)}}
+  <select id="ammunitionSelector" style="width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+    {{#each ammunitionOptions as |ammunition|}}
+      <option value="{{ammunition.id}}">
+        {{ammunition.name}} - {{getDmgModifier ammunition}} {{getAmmunitionCount ammunition}} -
+        {{add ammunition.system.reloadDuration ../weaponReloadDuration}} {{genName "actions"}}
+      </option>
+    {{/each}}
+  </select>
+  {{/if}}
+</div>

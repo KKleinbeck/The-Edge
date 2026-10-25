@@ -325,6 +325,9 @@ textarea {
   width: 35px;
   height: 42px;
 }
+.system-the_edge .d20-attr:hover {
+  filter: drop-shadow(0 0 4px #a2acba);
+}
 .system-the_edge .d20-attr-chat {
   border: none;
   margin-left: 0px;
@@ -337,6 +340,9 @@ textarea {
   width: 28px;
   height: 33px;
 }
+.system-the_edge .d20-attr-chat:hover {
+  filter: drop-shadow(0 0 4px #a2acba);
+}
 .system-the_edge .d20-weapon {
   border: none;
   margin-left: 0px;
@@ -348,6 +354,9 @@ textarea {
   position: relative;
   width: 25px;
   height: 30px;
+}
+.system-the_edge .d20-weapon:hover {
+  filter: drop-shadow(0 0 4px #a2acba);
 }
 .system-the_edge .d20-overlay {
   white-space: nowrap;

@@ -308,6 +308,19 @@
   background-repeat: no-repeat;
   display: inline-block;
 }
+.the-edge-actor-sheet .reload-button {
+  background-color: black;
+  font-size: large;
+  font-weight: 500;
+  color: #e4e7fe;
+  width: 25px;
+  height: 25px;
+  text-align: center;
+  cursor: pointer;
+}
+.the-edge-actor-sheet .reload-button:hover {
+  filter: drop-shadow(0 0 3px #a2acba);
+}
 .the-edge-actor-sheet .section {
   margin-bottom: 10px;
 }

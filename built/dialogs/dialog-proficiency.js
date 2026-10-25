@@ -55,7 +55,7 @@ export default class DialogProficiency extends CheckDialog {
             },
             content: content,
             buttons: buttons,
-            position: { width: 300 },
+            position: { width: 300, height: 330 },
             submit: async (result, dialog) => {
                 if (result === "cheat")
                     DialogProficiency.cheatCallback(dialog, checkData, onSubmitCallback);

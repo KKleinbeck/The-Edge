@@ -31,4 +31,22 @@ export default class ControllerCharacter {
         }, this.actor.chatConfig());
         item.useOne();
     }
+    async loadWeapon(weapon, ammunitionId) {
+        const ammunition = this.actor.items.get(ammunitionId);
+        if (weapon.system.ammunitionID)
+            weapon.system.unloadAmmunition();
+        // Copy the ammuniation and load the weapon with it
+        const created = await Item.create(ammunition, { parent: this.actor });
+        created.update({ "system.loaded": true, "system.quantity": 1 });
+        await weapon.update({ "system.ammunitionID": created.id, });
+        ammunition.useOne();
+        const reloadDuration = weapon.system.reloadDuration + ammunition.system.reloadDuration;
+        Hooks.call("TheEdgeAction", {
+            action: "reload",
+            actionType: "reload",
+            actor: this.actor,
+            actionCost: reloadDuration,
+            details: { weapon: weapon.name },
+        });
+    }
 }

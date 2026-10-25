@@ -429,8 +429,11 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     });
   }
 
-  static async reload(this, _event, target) {
-    const weaponId = target.closest(".weapon-id").dataset.weaponId;
+  static async reload(this, _event, target: HTMLElement) {
+    const weaponElement = target.closest(".weapon-id");
+    if (!(weaponElement instanceof HTMLElement)) return;
+
+    const weaponId = weaponElement.dataset.weaponId;
     const weapon = this.actor.items.get(weaponId);
     const ammunitionOptions = this.actor.itemTypes["Ammunition"].filter((x) => {
       const subtypeMatches = x.system.subtype == weapon.system.ammunitionType;
@@ -438,12 +441,14 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
       return subtypeMatches && isNotLoaded;
     });
 
-    await DialogReload.start({
-      weaponId: weaponId,
-      actor: this.actor,
-      weapon: weapon,
-      ammunitionOptions: ammunitionOptions,
+
+    const result = await DialogReload.wait({
+      ammunitionOptions,
+      weaponReloadDuration: weapon.system.reloadDuration
     });
+
+    if (result.outcome == "empty") weapon.system.unloadAmmunition();
+    else if (result.outcome == "load") this.actor.controller.loadWeapon(weapon, result.ammunitionId);
   }
 
   static longRest(this, _) {

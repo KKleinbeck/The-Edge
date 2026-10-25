@@ -248,6 +248,7 @@ declare class DialogV2 extends HandlebarsApplication {
   render(options?: foundryAny): Promise<DialogV2>;
   static input(config: foundryAny): Promise<any>;
   static prompt(config?: foundryAny): Promise<any>;
+  static wait(config: foundryAny): Promise<any>;
 }
 
 declare class Roll {

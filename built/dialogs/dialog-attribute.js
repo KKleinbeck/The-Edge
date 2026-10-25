@@ -45,7 +45,7 @@ export default class DialogAttribute extends CheckDialog {
             },
             content: content,
             buttons: buttons,
-            position: { width: 300 },
+            position: { width: 300, height: 330 },
             submit: (result, dialog) => {
                 if (result === "cheat") {
                     DialogAttribute.cheatCallback(dialog, checkData);

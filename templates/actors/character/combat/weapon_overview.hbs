@@ -21,9 +21,7 @@
         <div class="weapon-id" style="display: flex; flex-wrap: nowrap; gap: 5px; align-items: center;" data-weapon-id="{{weapon._id}}">
           {{#if (checkEqual weapon.system.type "Hand-to-Hand combat")}}
           {{else}}
-            <div data-action="reload" style="background-color: black; font-size: large; font-weight: 500; color: white; width: 25px; height: 25px; text-align: center;">
-              R
-            </div>
+            <div class="reload-button" data-action="reload">R</div>
           {{/if}}
           <a class="d20-weapon d20-black" data-action="rollAttack" data-tooltip="{{combatName 'Attack'}}" data-type="{{weapon.system.type}}">
             <span class="d20-overlay-weapon">{{calcWeaponPL ../actor weapon._id}}</span>
