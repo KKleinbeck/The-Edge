@@ -5,6 +5,13 @@ interface IDialogMedicineResult {
   woundIndex: number
 }
 
+interface IDialogRestDetails {
+  type: "long rest" | "short rest"
+}
+interface IDialogRestResult {
+  confirm: boolean
+}
+
 interface IDialogWeaponData {
   actor: Actor;
   effects: IEffectOverview[];

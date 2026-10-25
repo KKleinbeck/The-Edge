@@ -1,35 +1,20 @@
 import LocalisationServer from "../system/localisation_server.js";
+const { DialogV2 } = foundry.applications.api;
 const { renderTemplate } = foundry.applications.handlebars;
-export default class DialogRest extends Dialog {
-    static get defaultOptions() {
-        return foundry.utils.mergeObject(super.defaultOptions, {
-            width: 300,
-        });
-    }
-    static async start(checkData) {
-        const template = "systems/the_edge/templates/dialogs/rest.html";
-        let html = await renderTemplate(template, checkData);
-        let buttons = {
-            rest: {
-                label: LocalisationServer.localise("rest", "dialog"),
-                callback: async (html) => {
-                    switch (checkData.type) {
-                        case "short rest":
-                            checkData.actor.system.shortRest();
-                            break;
-                        case "long rest":
-                            checkData.actor.system.longRest();
-                            break;
-                    }
-                },
-            },
-            cancel: { label: LocalisationServer.localise("cancel", "dialog") },
+export default class DialogRest extends DialogV2 {
+    static get DEFAULT_CONFIG() {
+        return {
+            position: { width: 300, height: 100 },
         };
-        return new DialogRest({
-            title: LocalisationServer.localise(checkData.type),
-            content: html,
-            buttons: buttons,
-            default: "rest",
-        }).render(true);
+    }
+    static async prompt(details, config = {}) {
+        config.content = "";
+        config.ok = {
+            callback: () => { return { confirm: true }; },
+            label: LocalisationServer.localise("rest", "dialog")
+        };
+        config.close = () => { return { confirm: false }; };
+        config.window = { title: LocalisationServer.localise(details.type) };
+        return await super.prompt(foundry.utils.mergeObject(this.DEFAULT_CONFIG, config));
     }
 }

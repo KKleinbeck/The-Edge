@@ -394,11 +394,15 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
         else if (result.outcome == "load")
             this.actor.controller.loadWeapon(weapon, result.ammunitionId);
     }
-    static longRest(_) {
-        DialogRest.start({ actor: this.actor, type: "long rest" });
+    static async longRest(_) {
+        const result = await DialogRest.prompt({ type: "long rest" });
+        if (result.confirm)
+            this.actor.system.longRest();
     }
-    static shortRest(_) {
-        DialogRest.start({ actor: this.actor, type: "short rest" });
+    static async shortRest(_) {
+        const result = await DialogRest.prompt({ type: "short rest" });
+        if (result.confirm)
+            this.actor.system.shortRest();
     }
     static async applyDamage(_event, target) {
         const location = target.dataset.location;
