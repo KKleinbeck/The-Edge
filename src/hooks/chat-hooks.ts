@@ -24,7 +24,7 @@ export default function () {
   Hooks.on("renderChatMessageHTML", async (chatMsgCls, html, message) => {
     const newContent = await Aux.replacePlaceholderInContent(
       chatMsgCls.content,
-      chatMsgCls.system.item?.system ?? {},
+      chatMsgCls.system.details?.item?.system ?? {},
     );
     html.querySelector(".message-content").innerHTML = newContent;
     const sys = message.message.system;

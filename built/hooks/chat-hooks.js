@@ -12,7 +12,7 @@ export default function () {
         data.content = await Aux.replacePlaceholderInContent(data.content, data.system.item?.system ?? data.system.details?.item?.system ?? {});
     });
     Hooks.on("renderChatMessageHTML", async (chatMsgCls, html, message) => {
-        const newContent = await Aux.replacePlaceholderInContent(chatMsgCls.content, chatMsgCls.system.item?.system ?? {});
+        const newContent = await Aux.replacePlaceholderInContent(chatMsgCls.content, chatMsgCls.system.details?.item?.system ?? {});
         html.querySelector(".message-content").innerHTML = newContent;
         const sys = message.message.system;
         const actor = Aux.getActorNew(message.message.speaker);
