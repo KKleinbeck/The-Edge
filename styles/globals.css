@@ -469,11 +469,9 @@ textarea {
   border-bottom: 1.5px solid var(--colour-ui-secondary);
 }
 .system-the_edge .wound-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  position: relative;
+  height: 436px;
+  width: 179px;
 }
 .system-the_edge .wound-overlay .red-dot {
   position: absolute;
@@ -484,7 +482,6 @@ textarea {
   background-color: red;
   border-radius: 50%;
   filter: blur(4px);
-  /* Gaussian blur effect */
 }
 .system-the_edge .wound-overlay .orange-dot {
   position: absolute;
@@ -492,10 +489,9 @@ textarea {
   transform: translate(-50%, 0);
   width: 10px;
   height: 10px;
-  background-color: orange;
+  background-color: darkorange;
   border-radius: 50%;
   filter: blur(4px);
-  /* Gaussian blur effect */
 }
 .system-the_edge .wound-overlay .dot-label {
   position: absolute;

@@ -3,45 +3,12 @@
   data-group="primary"
   data-tab="health"
 >
-  {{> systems/the_edge/templates/actors/character/health/effects.hbs}}
-  <div class="title">{{genName "Injuries"}}</div>
-  <div style="display: flex; justify-content: flex-start; gap: 20px; padding: 10px;">
-    <div class="actor-wound-overview">
-      {{#if (checkEqual system.sex "female")}}
-        <img src="systems/the_edge/icons/body_female.png" alt="Background" class="background-image">
-      {{else}}
-        <img src="systems/the_edge/icons/body_male.png" alt="Background" class="background-image">
-      {{/if}}
-      <div class="wound-overlay">
-        {{#each system.wounds as |wound|}}
-          <div>
-            {{{getWoundHTML wound false}}}
-          </div>
-        {{/each}}
-      </div>
-    </div>
-    <div>
-      <div style="gap: 20px;">
-        <div style="display: flex; gap: 20px; padding-bottom: 10px;">
-          <div style="display: flex; white-space: nowrap; gap: 5px; cursor: pointer;" title="{{genName 'Short rest duration'}}">
-            <b>{{genName "Short rest"}}</b>
-            <a data-action="shortRest"><i class="fas fa-campground"></i></a>
-          </div>
-          <div style="display: flex; white-space: nowrap; gap: 5px; cursor: pointer;" title="{{genName 'Long rest duration'}}">
-            <b>{{genName "Long rest"}}</b>
-            <a data-action="longRest"><i class="fas fa-bed"></i></a>
-          </div>
-          <div style="display: flex; white-space: nowrap; gap: 5px; cursor: pointer;">
-            <b>{{genName "Apply Damage"}}</b>
-            <a data-action="applyDamage"><i class="fas fa-heart-circle-minus"></i></a>
-          </div>
-        </div>
-        <div style="display: flex; gap: 20px; padding-bottom: 20px; vertical-align: middle;">
-          <div>{{genName "Total Damage"}}: {{helpers.damage}}</div>
-          <div>{{genName "Total Bleeding"}}: {{helpers.bleeding}}</div>
-        </div>
-      </div>
+  <div style="display: flex; width: 100%; gap: 10px;">
+    <div style="flex: 1;">
       {{> systems/the_edge/templates/actors/character/health/wounds.hbs}}
+    </div>
+    <div style="flex: 4;">
+      {{> systems/the_edge/templates/actors/character/health/effects.hbs}}
     </div>
   </div>
 </section>

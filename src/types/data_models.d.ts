@@ -91,6 +91,7 @@ interface IWound {
   bodyPart: TBodyPart;
   coordinates: TCoordinate;
   damage: number;
+  source: string,
   status: TWoundStatus;
   type: TWoundType;
 }

@@ -46,7 +46,7 @@ export default class HumanoidData extends DataModelComponent {
     let accHealing = 0;
     let accCoagulation = 0;
 
-    const newWounds: any[] = [];
+    const newWounds: IWound[] = [];
     for (const wound of this.wounds) {
       if (wound.bleeding > 0) {
         const coagulationRoll = await new Roll(

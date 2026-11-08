@@ -27,7 +27,7 @@ export default function () {
           return "fa-bandage";
       }
     },
-    getWoundHTML: (wound, longTooltip = false) => {
+    getWoundHTML: (wound: IWound, longTooltip: boolean = false) => {
       const colour = wound.bleeding > 0 ? "red" : "orange";
       let icon: string = "";
       switch (wound.status) {
@@ -55,12 +55,20 @@ export default function () {
       } else {
         tooltip = LocalisationServer.localise(wound.status, "item");
       }
-      const coords = wound.coordinates;
       return `
-        <div class="${colour}-dot" style="left: ${coords[0]}%; top: ${coords[1]}%;"></div>
-        <div class="dot-label" data-tooltip aria-label="${tooltip}"
-          style="left: ${coords[0]}%; top: ${coords[1]}%; will-change: transform;">
-          <i class="${icon}"></i>
+        <div class="${colour}-dot"></div>
+        <div class="dot-label" data-tooltip aria-label="${tooltip}" style="will-change: transform;">
+          <i class="${icon}" style="color: ${colour}"></i>
+        </div>
+      `;
+    },
+    getWoundAnnotationHTML: (wound: IWound): string => {
+      const rightOffset = wound.bodyPart == "Head" ? 40 : 28;
+      const topOffset = wound.coordinates[1];
+      const colour = wound.bleeding > 0 ? "red" : "orange";
+      return `
+        <div style="position: absolute; right: ${rightOffset}%; top: ${topOffset}%; color: ${colour}">
+          D${wound.damage} - B${wound.bleeding}
         </div>
       `;
     },

@@ -194,7 +194,7 @@
   
   .actor-list-effects {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     margin: 7px 0px 15px 0px;
     gap: var(--gap-boxes);
     padding: 0;
@@ -369,11 +369,13 @@
 
   .actor-wound-overview {
     position: relative;
-    width: 179px;
-    height: 436px;
+    width: 100%;
+    height: @wound-overview-height;
 
     .background-image {
-      width: 100%;
+      position: absolute;
+      left: 0;
+      width: @wound-overview-width;
       height: 100%;
       display: block;
       border: 0;

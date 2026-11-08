@@ -24,6 +24,8 @@ export default function TheEdgeApplicationMixin(BaseApplication) {
             this.window.close = frame.querySelector("button[data-action=close]");
             this.window.content = frame.querySelector(".window-content");
             this.window.controls = frame.querySelector("button[data-action=toggleControls]");
+            // TODO: deprecate next line when moving to Foundry VTT14 exlusive
+            this.window.controlsDropdown = { replaceChildren: _ => { } };
             this.window.header = frame.querySelector(".window-header");
             this.window.icon = frame.querySelector(".window-icon");
             this.window.resize = frame.querySelector(".window-resize-handle");
