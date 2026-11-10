@@ -181,7 +181,8 @@ export default class Aux {
         const index = cumSum.findIndex((x) => x >= threshold);
         return Object.keys(objectWithOdds)[index];
     }
-    static generateWoundLocation(crit, sex, givenLocation = undefined) {
+    static generateWoundLocation(crit, givenLocation = undefined) {
+        console.log(givenLocation);
         let locationDescription = "";
         if (givenLocation === undefined) {
             if (crit)
@@ -203,7 +204,7 @@ export default class Aux {
             else
                 locationDescription = givenLocation;
         }
-        let cordDescription = THE_EDGE.wounds_pixel_coords[sex][locationDescription];
+        let cordDescription = THE_EDGE.wounds_pixel_coords[locationDescription];
         let [x0, y0] = cordDescription.coords[0];
         let [x1, y1] = cordDescription.coords[1];
         let r = cordDescription.radius * Math.random();

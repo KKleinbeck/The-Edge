@@ -145,7 +145,7 @@ export default class CombatantData extends DataModelComponent {
             damageType: damageType,
         };
         [woundDetails.bodyPart, woundDetails.coordinates] =
-            Aux.generateWoundLocation(damageConfig.crit, this.sex, damageConfig.givenLocation);
+            Aux.generateWoundLocation(damageConfig.crit, damageConfig.givenLocation);
         let protectionLog = {};
         [protectionLog, damage] = await this._determineArmourProtection(damage, damageConfig.penetration, damageType, woundDetails.bodyPart);
         woundDetails.damage = damage;
@@ -215,7 +215,8 @@ export default class CombatantData extends DataModelComponent {
                 break;
             const nextDamage = Math.min(damageRemaining, Math.floor(approxDamagePerWound / 2) +
                 Aux.randomInt(1, approxDamagePerWound));
-            const [bodyPart, coordinates] = Aux.generateWoundLocation(false, this.sex);
+            const [bodyPart, coordinates] = Aux.generateWoundLocation(false, details.location);
+            console.log("In combatant", bodyPart);
             const woundDetails = {
                 bleeding: CombatantData._determineBleeding(damageRemaining, bt),
                 bodyPart: bodyPart,

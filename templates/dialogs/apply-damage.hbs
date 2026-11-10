@@ -16,7 +16,7 @@
   }}
 </div>
 
-<div id="fall" style="display: flex; justify-content: space-around; white-space: nowrap; align-items: center">
+<div id="fall" style="display: flex; justify-content: space-around; white-space: nowrap; align-items: center; height: 32px;">
   <div style="display: flex; gap: 10px; alig-items: center;">
     <label for="fallHeight">{{genName "Fall distance"}} [m]:</label>
     <input id="fallHeight" type="number" value="0" style="max-width: 64px; text-align: right"/>
@@ -29,7 +29,7 @@
   </div>
 </div>
 
-<div class="hidden" id="impact" style="display: flex; justify-content: space-around; white-space: nowrap; align-items: center">
+<div class="hidden" id="impact" style="display: flex; justify-content: space-around; white-space: nowrap; align-items: center; height: 32px;">
   <div style="display: flex; gap: 10px; alig-items: center;">
     <label for="impactSpeed">{{genName "Impact Speed"}} [m/s]:</label>
     <input id="impactSpeed" type="number" value="0" style="max-width: 64px; text-align: right"/>
@@ -42,7 +42,7 @@
   </div>
 </div>
 
-<div class="hidden" id="general" style="display: flex; justify-content: space-around; white-space: nowrap; align-items: center">
+<div class="hidden" id="general" style="display: flex; justify-content: space-around; white-space: nowrap; align-items: center; height: 32px;">
   <div style="display: flex; gap: 10px; white-space: nowrap; align-items: center">
     <label for="generalDamage">{{genName "damage"}}:</label>
     <input name="damage" id="generalDamage" type="number" value="0" style="max-width: 64px; text-align: right;"/>
@@ -55,4 +55,15 @@
       {{/each}}
     </select>
   </div>
+</div>
+
+<div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+  <label for="locationSelector">{{actorName "body part"}}</label>
+  <select id="locationSelector" style="width: 100px; text-align: right;">
+    <option value="random" "selected">{{genName "random"}}</option>
+    <option value="Arms">{{actorName "Arms"}}</option>
+    <option value="Legs">{{actorName "Legs"}}</option>
+    <option value="Torso">{{actorName "Torso"}}</option>
+    <option value="Head">{{actorName "Head"}}</option>
+  </select>
 </div>

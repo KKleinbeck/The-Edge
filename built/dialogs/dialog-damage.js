@@ -41,17 +41,21 @@ export default class DialogDamage extends IconSelectorMixin(DialogV2) {
         return {
             label: LocalisationServer.localise("Accept", "dialog"),
             callback: async (_event, _button, dialog) => {
+                const locationElement = dialog.element.querySelector("#locationSelector");
+                if (!(locationElement instanceof HTMLSelectElement))
+                    return {};
+                const location = locationElement.value == "random" ? undefined : locationElement.value;
                 if (dialog.damageType == "fall") {
                     const heightElement = dialog.element.querySelector("#fallHeight");
                     if (!(heightElement instanceof HTMLInputElement))
                         return {};
-                    return { damageType: dialog.damageType, height: +heightElement.value };
+                    return { damageType: dialog.damageType, height: +heightElement.value, location };
                 }
                 if (dialog.damageType == "impact") {
                     const impactElement = dialog.element.querySelector("#impactSpeed");
                     if (!(impactElement instanceof HTMLInputElement))
                         return {};
-                    return { damageType: dialog.damageType, speed: +impactElement.value };
+                    return { damageType: dialog.damageType, speed: +impactElement.value, location };
                 }
                 const damageElement = dialog.element.querySelector("#generalDamage");
                 if (!(damageElement instanceof HTMLInputElement))
@@ -61,7 +65,7 @@ export default class DialogDamage extends IconSelectorMixin(DialogV2) {
                 if (!(damageTypeElement instanceof HTMLSelectElement))
                     return {};
                 const damageType = damageTypeElement.value;
-                return { damage, damageType };
+                return { damage, damageType, location };
             },
         };
     }

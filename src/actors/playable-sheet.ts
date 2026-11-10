@@ -3,6 +3,7 @@ import Aux from "../system/auxilliaries.js";
 import DialogAttribute from "../dialogs/dialog-attribute.js";
 import DialogCombatics from "../dialogs/dialog-combatics.js";
 import DialogDamage from "../dialogs/dialog-damage.js";
+import DialogItemDeletion from "../dialogs/dialog-item-deletion.js";
 import DialogEditWounds from "../dialogs/dialog-edit-wounds.js";
 import DialogProficiency from "../dialogs/dialog-proficiency.js";
 import DialogReload from "../dialogs/dialog-reload.js";
@@ -14,8 +15,6 @@ import NotificationServer from "../system/notifications.js";
 import THE_EDGE from "../system/config-the-edge.js";
 import { TheEdgeActor } from "./actor.js";
 import { TheEdgeActorSheet } from "./actor-sheet.js";
-
-const { renderTemplate } = foundry.applications.handlebars;
 
 export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   declare actor: TheEdgeActor;
@@ -293,7 +292,8 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
     // Handle different actions
     switch (target.dataset.subaction) {
       case "delete":
-        this.actor.system.deleteWound(index);
+        const result = await DialogItemDeletion.wait({ name: this.actor.system.wounds[index].source });
+        if (result.delete) this.actor.system.deleteWound(index);
         break;
 
       case "edit":
@@ -461,20 +461,19 @@ export class TheEdgePlayableSheet extends TheEdgeActorSheet {
   }
 
   static async applyDamage(this, _event, target) {
-    const location = target.dataset.location;
     const woundDetails = await DialogDamage.prompt();
     if (!woundDetails || !("damageType" in woundDetails)) return;
 
     if (woundDetails.damageType == "fall") {
-      this.actor.system.applyFallDamage(woundDetails.height, location);
+      this.actor.system.applyFallDamage(woundDetails.height, woundDetails.location);
     } else if (woundDetails.damageType == "impact") {
-      this.actor.system.applyImpactDamage(woundDetails.speed, location);
+      this.actor.system.applyImpactDamage(woundDetails.speed, woundDetails.location);
     } else {
       const details: IFApplyDamage = {
         crit: false,
         damage: woundDetails.damage,
         damageType: woundDetails.damageType,
-        givenLocation: location,
+        givenLocation: woundDetails.location,
         name: LocalisationServer.localise("New wound"),
         penetration: 0
       }

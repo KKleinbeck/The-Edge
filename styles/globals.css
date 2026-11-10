@@ -497,7 +497,14 @@ textarea {
   position: absolute;
   left: 50%;
   transform: translate(-50%, 0);
-  font-size: 11px;
+  font-size: 12px;
+}
+.system-the_edge .wound-annotation {
+  position: absolute;
+  cursor: pointer;
+}
+.system-the_edge .wound-annotation:hover {
+  filter: drop-shadow(0 0 2px);
 }
 .system-the_edge .chevron-hook {
   transition: rotate 300ms ease;

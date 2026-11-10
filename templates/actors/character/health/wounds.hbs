@@ -18,19 +18,20 @@
   <img src="systems/the_edge/assets/nervous_system_background.svg" alt="Background" class="background-image">
   <img src="systems/the_edge/assets/nervous_system.svg" alt="Background" class="background-image">
 
-  <div style="position: absolute; top: 0; right: 5%;">
-    <div>{{genName "Total Damage"}}: {{helpers.damage}}</div>
-    <div>{{genName "Total Bleeding"}}: {{helpers.bleeding}}</div>
+  <div style="position: absolute; top: 0; right: 3%;">
+    <div style="text-align: right;">{{genName "Total Damage"}}: {{helpers.damage}}</div>
+    <div style="text-align: right;">{{genName "Total Bleeding"}}: {{helpers.bleeding}}</div>
   </div>
 
   <div class="wound-overlay">
     {{#each system.wounds as |wound|}}
-      <div style="position: absolute; left: {{wound.coordinates.[0]}}%; top: {{wound.coordinates.[1]}}%">
+      <div class="wound-hook wound-annotation" data-action="woundControl" data-subaction="edit" data-index="${index}"
+        style="left: {{wound.coordinates.[0]}}%; top: {{wound.coordinates.[1]}}%;">
         {{{getWoundHTML wound false}}}
       </div>
     {{/each}}
   </div>
   {{#each system.wounds as |wound|}}
-    {{{getWoundAnnotationHTML wound false}}}
+    {{{getWoundAnnotationHTML wound @index}}}
   {{/each}}
 </div>

@@ -52,7 +52,8 @@ export default function () {
                         LocalisationServer.localise("Bleeding");
             }
             else {
-                tooltip = LocalisationServer.localise(wound.status, "item");
+                tooltip = wound.source + " &mdash; " + LocalisationServer.localise(wound.type, "combat") +
+                    " &mdash; " + LocalisationServer.localise(wound.status, "item");
             }
             return `
         <div class="${colour}-dot"></div>
@@ -61,13 +62,19 @@ export default function () {
         </div>
       `;
         },
-        getWoundAnnotationHTML: (wound) => {
-            const rightOffset = wound.bodyPart == "Head" ? 40 : 28;
+        getWoundAnnotationHTML: (wound, index) => {
+            const rightOffset = wound.bodyPart == "Head" ? 36 : 18;
             const topOffset = wound.coordinates[1];
             const colour = wound.bleeding > 0 ? "red" : "orange";
+            const tooltip = wound.source + " &mdash; " + LocalisationServer.localise(wound.type, "combat") +
+                " &mdash; " + LocalisationServer.localise(wound.status, "item");
             return `
-        <div style="position: absolute; right: ${rightOffset}%; top: ${topOffset}%; color: ${colour}">
-          D${wound.damage} - B${wound.bleeding}
+        <div class="wound-hook wound-annotation" style="right: ${rightOffset}%; top: ${topOffset}%; color: ${colour}"
+          data-tooltip aria-label="${tooltip}" data-action="woundControl" data-subaction="edit" data-index="${index}">
+          D&thinsp;${wound.damage} &ndash; B&thinsp;${wound.bleeding}
+          <a title="${LocalisationServer.localise("Delete", "item")}" data-action="woundControl" data-subaction="delete">
+            <i class="fas fa-trash"></i>
+          </a>
         </div>
       `;
         },

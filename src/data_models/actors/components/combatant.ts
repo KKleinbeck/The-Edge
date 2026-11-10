@@ -177,7 +177,6 @@ export default class CombatantData extends DataModelComponent {
     [woundDetails.bodyPart, woundDetails.coordinates] =
       Aux.generateWoundLocation(
         damageConfig.crit,
-        this.sex,
         damageConfig.givenLocation,
       );
 
@@ -242,7 +241,7 @@ export default class CombatantData extends DataModelComponent {
     return [protectionLog, damage];
   }
 
-  async applyFallDamage(height: number, location) {
+  async applyFallDamage(height: number, location: TBodyPartCoarse) {
     const woundCountGuess = THE_EDGE.fallDamageWoundCount(height);
     const damageDetails = {
       damageRoll: THE_EDGE.fallDamageRoll(height),
@@ -255,7 +254,7 @@ export default class CombatantData extends DataModelComponent {
     await this._applyImpactOrFallDamage("fall", damageDetails);
   }
 
-  async applyImpactDamage(speed: number, location) {
+  async applyImpactDamage(speed: number, location: TBodyPartCoarse) {
     const woundCountGuess = THE_EDGE.impactDamageWoundCount(speed);
     const damageDetails = {
       damageRoll: THE_EDGE.impactDamageRoll(speed),
@@ -286,10 +285,8 @@ export default class CombatantData extends DataModelComponent {
           Aux.randomInt(1, approxDamagePerWound),
       );
 
-      const [bodyPart, coordinates] = Aux.generateWoundLocation(
-        false,
-        this.sex,
-      );
+      const [bodyPart, coordinates] = Aux.generateWoundLocation(false, details.location);
+      console.log("In combatant", bodyPart)
       const woundDetails: IWoundDetails = {
         bleeding: CombatantData._determineBleeding(damageRemaining, bt),
         bodyPart: bodyPart,
