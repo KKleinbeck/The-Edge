@@ -473,7 +473,7 @@ textarea {
   height: 436px;
   width: 179px;
 }
-.system-the_edge .wound-overlay .red-dot {
+.system-the_edge .red-dot {
   position: absolute;
   left: 50%;
   transform: translate(-50%, 0);
@@ -481,9 +481,9 @@ textarea {
   height: 10px;
   background-color: red;
   border-radius: 50%;
-  filter: blur(4px);
+  filter: blur(6px);
 }
-.system-the_edge .wound-overlay .orange-dot {
+.system-the_edge .orange-dot {
   position: absolute;
   left: 50%;
   transform: translate(-50%, 0);
@@ -491,9 +491,9 @@ textarea {
   height: 10px;
   background-color: darkorange;
   border-radius: 50%;
-  filter: blur(4px);
+  filter: blur(6px);
 }
-.system-the_edge .wound-overlay .dot-label {
+.system-the_edge .dot-label {
   position: absolute;
   left: 50%;
   transform: translate(-50%, 0);

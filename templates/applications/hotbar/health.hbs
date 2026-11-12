@@ -47,11 +47,13 @@
       {{/if}}
     </div>
   </div>
-  <div style="height: 100%; transform: translateY(-30px);">
-    {{{bodyImg}}}
-    <div class="wound-overlay">
+  <div class="hotbar-wound-overview">
+    <div style="position: absolute; top: 0; right: 0; height: 100%">
+      {{!-- use image 1 to generate absolute reference --}}
+      <img src="systems/the_edge/assets/nervous_system_background.svg" alt="Background" style="display: block; height: 100%">
+      <img src="systems/the_edge/assets/nervous_system.svg" alt="Background" style="position: absolute; top: 0; right: 0; height: 100%;">
       {{#each actor.system.wounds as |wound|}}
-        <div style="pointer-events: auto;">
+        <div style="position: absolute; left: {{wound.coordinates.[0]}}%; top: {{wound.coordinates.[1]}}%; pointer-events: auto;">
           {{{getWoundHTML wound true}}}
         </div>
       {{/each}}

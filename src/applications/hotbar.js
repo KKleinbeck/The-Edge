@@ -117,12 +117,6 @@ export default class TheEdgeHotbar extends HandlebarsApplicationMixin(
     context.dynamicField =
       dynamicFields[this.dynamicFieldIndex.mod(dynamicFields.length)];
 
-    const sex = context.actor?.system.sex ?? "female";
-    const img = await fetch(`systems/the_edge/icons/body_${sex}.svg`).then(
-      (res) => res.text(),
-    );
-    context.bodyImg = img;
-
     const effects = {};
     if (context.actor) {
       const effectDict = {
