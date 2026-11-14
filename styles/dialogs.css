@@ -42,6 +42,14 @@
   display: block;
   border: 0;
 }
+.dialog-medicine .medicine-wound-overview .selected {
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 1px 3px;
+  box-shadow: 2px 0 4px,
+        0 2px 4px,
+        0 0 2px inset;
+}
 .dialog-medicine .selections {
   border-bottom: solid 1px var(--colour-ui-secondary);
   box-shadow: 0 1px 1px var(--colour-ui-secondary);

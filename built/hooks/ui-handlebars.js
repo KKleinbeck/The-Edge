@@ -78,14 +78,16 @@ export default function () {
         </div>
       `;
         },
-        getWoundDialogHTML: (wound, index) => {
+        getWoundDialogHTML: (wound, index, selectedIndex) => {
             const topOffset = wound.coordinates[1];
             const colour = wound.bleeding > 0 ? "red" : "orange";
             const tooltip = wound.source + " &mdash; " + LocalisationServer.localise(wound.type, "combat") +
                 " &mdash; " + LocalisationServer.localise(wound.status, "item");
+            const selected = index == String(selectedIndex) ? "selected" : "";
             return `
-        <div class="wound-hook wound-annotation" style="right: 0%; top: ${topOffset}%; color: ${colour}"
-          data-tooltip aria-label="${tooltip}" data-action="woundControl" data-subaction="edit" data-index="${index}">
+        <div class="wound-selection-hook wound-annotation ${selected}"
+          style="right: 0%; top: ${topOffset}%; color: ${colour}"
+          data-tooltip aria-label="${tooltip}"  data-index="${index}" data-source="${wound.source}">
           D&thinsp;${wound.damage} &ndash; B&thinsp;${wound.bleeding}
         </div>
       `;

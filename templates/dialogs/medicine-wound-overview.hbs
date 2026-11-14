@@ -12,8 +12,7 @@
     {{/each}}
   </div>
   {{#each mappedWounds as |wound index|}}
-    <div class="wound-selection-hook" data-index="{{index}}" data-source="{{wound.source}}">
-      {{{getWoundDialogHTML wound index true}}}
-    </div>
+    {{!-- toString relevant because javascript casts keys to String --}}
+    {{{getWoundDialogHTML wound index ../selectedIndex}}}
   {{/each}}
 </div>

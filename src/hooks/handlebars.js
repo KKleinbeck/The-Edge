@@ -62,6 +62,7 @@ export default function () {
     toLowerCase: (a) => {
       return a.toLowerCase();
     },
+    toString: (a) => { return String(a); },
 
     concat: (...args) => {
       let result = "";

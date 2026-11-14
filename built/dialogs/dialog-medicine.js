@@ -16,15 +16,15 @@ export default class DialogMedicine extends DialogV2 {
     static async prompt(details, config = {}) {
         const mappedWounds = {};
         details.wounds.forEach((x, index) => mappedWounds[index] = x);
-        config.content = await DialogMedicine._setupContent(mappedWounds);
+        config.content = await DialogMedicine._setupContent(mappedWounds, -1);
         config.ok = DialogMedicine._setupCallback();
         config.close = () => { return { woundIndex: -1, source: "" }; };
         config.mappedWounds = mappedWounds;
         return await super.prompt(foundry.utils.mergeObject(this.DEFAULT_CONFIG, config));
     }
-    static async _setupContent(mappedWounds) {
+    static async _setupContent(mappedWounds, selectedIndex) {
         const template = "systems/the_edge/templates/dialogs/medicine.hbs";
-        return await renderTemplate(template, { mappedWounds });
+        return await renderTemplate(template, { mappedWounds, selectedIndex });
     }
     static _setupCallback() {
         return {
@@ -61,10 +61,15 @@ export default class DialogMedicine extends DialogV2 {
         return dialog;
     }
     #attachWoundSelectionHooks() {
-        this.element.querySelectorAll(".wound-selection-hook").forEach((x) => {
+        const woundSelectionElements = this.element.querySelectorAll(".wound-selection-hook");
+        woundSelectionElements.forEach((x) => {
             x.addEventListener("click", () => {
                 if (!(x instanceof HTMLElement))
                     return;
+                for (const woundSelectionElement of woundSelectionElements) {
+                    woundSelectionElement.classList.remove("selected");
+                }
+                x.classList.add("selected");
                 this.selectedWound = {
                     woundIndex: +(x.dataset.index ?? -1),
                     source: x.dataset.source ?? LocalisationServer.localise("Unknown Wound", "dialog")
@@ -78,6 +83,6 @@ export default class DialogMedicine extends DialogV2 {
     }
     async #renderWoundOverview(mappedWounds) {
         const template = "systems/the_edge/templates/dialogs/medicine-wound-overview.hbs";
-        return await renderTemplate(template, { mappedWounds });
+        return await renderTemplate(template, { mappedWounds, selectedIndex: this.selectedWound.woundIndex });
     }
 }
