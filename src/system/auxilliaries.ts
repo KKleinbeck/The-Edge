@@ -234,7 +234,6 @@ export default class Aux {
     crit: boolean,
     givenLocation: TBodyPartCoarse | undefined = undefined,
   ): [TBodyPart, TCoordinate] {
-    console.log(givenLocation)
     let locationDescription = "";
     if (givenLocation === undefined) {
       if (crit) locationDescription = "Head";

@@ -39,3 +39,29 @@
     padding-right: 0;
   }
 }
+
+.dialog-medicine {
+  .medicine-wound-overview {
+    position: relative;
+    width: 100%;
+    height: var(--wound-verview-height);
+
+    .background-image {
+      position: absolute;
+      left: 0;
+      width: @wound-overview-width;
+      height: 100%;
+      display: block;
+      border: 0;
+    }
+  }
+
+  .selections {
+    .list-element-template();
+
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}

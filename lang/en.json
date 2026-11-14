@@ -272,7 +272,9 @@
     "PROMPT NUMBER": "Insert number",
     "REST": "Rest",
     "SELECT AMMUNITION": "Select Ammunition",
+    "SELECT BODY PART": "Select body part",
     "SELECT WOUND": "Select Wound",
+    "SELECTION": "Selection",
 
     "BLIND ROLL": "Blind roll",
     "ROLL": "Roll",
@@ -287,7 +289,9 @@
     "PROFICIENCY STRAIN": "1 strain point per proficiency level",
 
     "NO TREATABLE WOUNDS": "Character has no treatable wounds",
-    "TARGET ARMOUR": "Select armour piece"
+    "TARGET ARMOUR": "Select armour piece",
+
+    "UNKNOWN WOUND": "Unknown Wound"
   },
   "EFFECT_GROUP": {
     "BLOODLOSSTHRESHOLD": "Blood loss - threshold",
@@ -754,6 +758,7 @@
   "NEW WOUND": "New Wound",
   "NOBODY": "Nobody",
   "NO HIT": "No hits",
+  "NONE": "None",
   "NOTES": "Notes",
   "OR": "or",
   "OF": "of",

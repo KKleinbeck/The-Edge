@@ -1,0 +1,19 @@
+<div class="medicine-wound-overview wound-overview-hook">
+  <img src="systems/the_edge/assets/nervous_system_background.svg" alt="Background" class="background-image">
+  <img src="systems/the_edge/assets/nervous_system.svg" alt="Background" class="background-image">
+
+  <div class="wound-overlay">
+    {{#each mappedWounds as |wound index|}}
+      <div class="wound-selection-hook wound-annotation"
+        style="left: {{wound.coordinates.[0]}}%; top: {{wound.coordinates.[1]}}%;"
+        data-index="{{index}}" data-source="{{wound.source}}">
+        {{{getWoundHTML wound false}}}
+      </div>
+    {{/each}}
+  </div>
+  {{#each mappedWounds as |wound index|}}
+    <div class="wound-selection-hook" data-index="{{index}}" data-source="{{wound.source}}">
+      {{{getWoundDialogHTML wound index true}}}
+    </div>
+  {{/each}}
+</div>

@@ -1,15 +1,19 @@
-<div class="dialog-form-flex" style="padding-bottom: 15px;">
-  {{#if hasNoWounds}}
-    {{detailedLocalisation "Dialog" "No treatable wounds"}}
-  {{else}}
-    <select id="woundSelector">
-      {{#each wounds as |wound|}}
-        {{#unless (checkEqual wound.status "treated")}}
-          <option value="{{@index}}">{{itemName wound.bodyPart}}
-            - {{genName "Damage"}} {{wound.damage}}
-            {{genName "Bleeding"}} {{wound.bleeding}}</option>
-        {{/unless}}
-      {{/each}}
+<div class="dialog-form-flex dialog-medicine" style="padding-bottom: 15px;">
+  {{> systems/the_edge/templates/dialogs/medicine-wound-overview.hbs }}
+
+  <div class="selections">
+    <label for="bodyPartSelector">{{generalLocalisation "dialog" "select body part"}}</label>
+    <select id="bodyPartSelector" style="width: 125px; text-align: right;">
+      <option value="all">{{genName "all"}}</option>
+      <option value="Head">{{actorName "head"}}</option>
+      <option value="Torso">{{actorName "torso"}}</option>
+      <option value="Arms">{{actorName "arms"}}</option>
+      <option value="Legs">{{actorName "legs"}}</option>
     </select>
-  {{/if}}
+  </div>
+
+  <div class="selections">
+    <div>{{generalLocalisation "dialog" "selection"}}</div>
+    <div class="output selected-wound-hook" style="width: 125px;">{{genName "None"}}</div>
+  </div>
 </div>

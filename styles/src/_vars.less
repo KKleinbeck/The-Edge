@@ -44,3 +44,14 @@
       inset 0 0 8px var(--colour-ui-main-background-1);
   }
 }
+
+.list-element-template() {
+  border-bottom: solid 1px var(--colour-ui-secondary);
+  box-shadow: 0 1px 1px var(--colour-ui-secondary);
+  
+  transition: box-shadow 0.4s ease-in-out;
+
+  &:hover {
+    box-shadow: 0 3px 3px var(--colour-ui-secondary),
+  }
+}

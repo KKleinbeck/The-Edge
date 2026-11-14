@@ -2,7 +2,8 @@ interface IDialogMedicineDetails {
   wounds: IWound[];
 }
 interface IDialogMedicineResult {
-  woundIndex: number
+  woundIndex: number;
+  source: string;
 }
 
 interface IDialogRestDetails {

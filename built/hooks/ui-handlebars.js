@@ -78,6 +78,18 @@ export default function () {
         </div>
       `;
         },
+        getWoundDialogHTML: (wound, index) => {
+            const topOffset = wound.coordinates[1];
+            const colour = wound.bleeding > 0 ? "red" : "orange";
+            const tooltip = wound.source + " &mdash; " + LocalisationServer.localise(wound.type, "combat") +
+                " &mdash; " + LocalisationServer.localise(wound.status, "item");
+            return `
+        <div class="wound-hook wound-annotation" style="right: 0%; top: ${topOffset}%; color: ${colour}"
+          data-tooltip aria-label="${tooltip}" data-action="woundControl" data-subaction="edit" data-index="${index}">
+          D&thinsp;${wound.damage} &ndash; B&thinsp;${wound.bleeding}
+        </div>
+      `;
+        },
         uiConsumablesHeaderHeight: (type) => {
             // if (type === "drugs" || type === "food" || type === "generic") return 29;
             if (type === "medicine")

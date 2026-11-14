@@ -29,3 +29,28 @@
 .dialog-modifier-table > tbody > tr > td:last-child {
   padding-right: 0;
 }
+.dialog-medicine .medicine-wound-overview {
+  position: relative;
+  width: 100%;
+  height: var(--wound-verview-height);
+}
+.dialog-medicine .medicine-wound-overview .background-image {
+  position: absolute;
+  left: 0;
+  width: 179px;
+  height: 100%;
+  display: block;
+  border: 0;
+}
+.dialog-medicine .selections {
+  border-bottom: solid 1px var(--colour-ui-secondary);
+  box-shadow: 0 1px 1px var(--colour-ui-secondary);
+  transition: box-shadow 0.4s ease-in-out;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.dialog-medicine .selections:hover {
+  box-shadow: 0 3px 3px var(--colour-ui-secondary);
+}

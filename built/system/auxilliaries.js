@@ -182,7 +182,6 @@ export default class Aux {
         return Object.keys(objectWithOdds)[index];
     }
     static generateWoundLocation(crit, givenLocation = undefined) {
-        console.log(givenLocation);
         let locationDescription = "";
         if (givenLocation === undefined) {
             if (crit)
